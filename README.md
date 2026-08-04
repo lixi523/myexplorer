@@ -4,13 +4,13 @@
 
 Fast, keyboard-first desktop file manager with dual panes, tabs, network drives, Quick Look, plugins and a native Rust core.
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.35+-02569B?logo=flutter&logoColor=white&style=flat-square)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.38+-02569B?logo=flutter&logoColor=white&style=flat-square)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.10+-0175C2?logo=dart&logoColor=white&style=flat-square)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Windows-informational?style=flat-square)]()
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 <p>
-  <a href="https://github.com/Waydir/Waydir/releases"><b>Download</b></a>
+  <a href="https://github.com/lixi523/Waydir/releases"><b>Download</b></a>
   -
   <a href="#install"><b>Install</b></a>
   -
@@ -66,7 +66,7 @@ Waydir is a native-feeling desktop file manager focused on speed, direct control
 
 ## Install
 
-Download the `.exe` installer or portable `.zip` from [Releases](https://github.com/Waydir/Waydir/releases). Run the installer, or unpack the archive and launch `waydir.exe`.
+Download the `.exe` installer or portable `.zip` from [Releases](https://github.com/lixi523/Waydir/releases). Run the installer, or unpack the archive and launch `waydir.exe`.
 
 ## Features
 
@@ -102,6 +102,8 @@ Download the `.exe` installer or portable `.zip` from [Releases](https://github.
 
 - Light, Dark, Nord and One Dark themes, plus your own themes.
 - Adjust density, sorting, hidden files and date format to taste.
+- Total Commander-style shortcut bar: import `.bar` button bars, app icons, separators and `CD` folder jumps.
+- Simplified Chinese UI, selected automatically on Chinese systems.
 - Launch from the command line with a folder to open.
 
 ## Plugins
@@ -190,14 +192,14 @@ The native Rust library is required. There is no Dart fallback for the Rust core
 
 Requirements:
 
-- Flutter 3.35+
+- Flutter 3.38+
 - Dart 3.10+
 - Rust stable from [rustup](https://rustup.rs)
 
 Run from the repository root:
 
 ```powershell
-git clone https://github.com/Waydir/Waydir.git
+git clone https://github.com/lixi523/Waydir.git
 cd Waydir
 flutter pub get
 cargo build --release --manifest-path rust/waydir_core/Cargo.toml

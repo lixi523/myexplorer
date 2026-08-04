@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.50.0] - 2026-08-04
+
+### Added
+- Total Commander-style shortcut bar: import `.bar` button bars (UTF-8 and GBK), app icons from `path,index` specs or embedded exe/dll icons, separators, `CD <path>` folder navigation and `cm_` built-in commands (`cm_OpenDesktop`, `cm_OpenRecycled`, `cm_OpenDrives`).
+- Simplified Chinese localization, auto-detected on Chinese systems.
+- Optional icon field when adding shortcut bar items.
+
+### Changed
+- Windows-only: Linux and macOS support, directories, CI jobs and platform-specific code removed.
+- CI rebuilt around `windows-latest` runners; the Rust core is built and vendored in the pipeline.
+- Integration tests no longer require a live SMB server (live cases are gated behind the `WAYDIR_LIVE_SMB` compile-time flag and skipped by default).
+- `sqlite3` pinned to 3.1.7 to avoid the native-assets build hook.
+
+### Fixed
+- Integration tests hanging on CI when no SMB server is present.
+- Integration tests on Windows runners.
+
 ## [0.23.0] - 2026-07-18
 
 ### Added
