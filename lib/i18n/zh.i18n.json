@@ -361,6 +361,13 @@
       "rename": "重命名",
       "remove": "移除"
     },
+    "shortcutBar": {
+      "title": "快捷栏",
+      "labelHint": "名称",
+      "targetHint": "文件夹、文件路径或命令",
+      "pickFile": "文件",
+      "add": "添加"
+    },
     "diagnostics": {
       "title": "诊断",
       "subtitle": "最近的警告和错误。日志会写入磁盘用于错误报告。",

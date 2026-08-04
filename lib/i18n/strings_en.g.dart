@@ -582,6 +582,7 @@ class Translations$preferences$en {
 	late final Translations$preferences$quickLook$en quickLook = Translations$preferences$quickLook$en.internal(_root);
 	late final Translations$preferences$appearance$en appearance = Translations$preferences$appearance$en.internal(_root);
 	late final Translations$preferences$bookmarks$en bookmarks = Translations$preferences$bookmarks$en.internal(_root);
+	late final Translations$preferences$shortcutBar$en shortcutBar = Translations$preferences$shortcutBar$en.internal(_root);
 	late final Translations$preferences$diagnostics$en diagnostics = Translations$preferences$diagnostics$en.internal(_root);
 	late final Translations$preferences$about$en about = Translations$preferences$about$en.internal(_root);
 }
@@ -2930,6 +2931,30 @@ class Translations$preferences$bookmarks$en {
 	String get remove => 'Remove';
 }
 
+// Path: preferences.shortcutBar
+class Translations$preferences$shortcutBar$en {
+	Translations$preferences$shortcutBar$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Shortcut Bar'
+	String get title => 'Shortcut Bar';
+
+	/// en: 'Name'
+	String get labelHint => 'Name';
+
+	/// en: 'Folder, file path or command'
+	String get targetHint => 'Folder, file path or command';
+
+	/// en: 'File'
+	String get pickFile => 'File';
+
+	/// en: 'Add'
+	String get add => 'Add';
+}
+
 // Path: preferences.diagnostics
 class Translations$preferences$diagnostics$en {
 	Translations$preferences$diagnostics$en.internal(this._root);
@@ -4322,6 +4347,11 @@ extension on Translations {
 			'preferences.bookmarks.empty' => 'No bookmarks yet. Drop a folder onto the sidebar to add one.',
 			'preferences.bookmarks.rename' => 'Rename',
 			'preferences.bookmarks.remove' => 'Remove',
+			'preferences.shortcutBar.title' => 'Shortcut Bar',
+			'preferences.shortcutBar.labelHint' => 'Name',
+			'preferences.shortcutBar.targetHint' => 'Folder, file path or command',
+			'preferences.shortcutBar.pickFile' => 'File',
+			'preferences.shortcutBar.add' => 'Add',
 			'preferences.diagnostics.title' => 'Diagnostics',
 			'preferences.diagnostics.subtitle' => 'Recent warnings and errors. Logs are written to disk for bug reports.',
 			'preferences.diagnostics.empty' => 'No warnings or errors logged this session.',
@@ -4508,13 +4538,13 @@ extension on Translations {
 			'keybindings.quickLookSave' => 'Save changes',
 			'keybindings.cursorUp' => 'Move up',
 			'keybindings.cursorDown' => 'Move down',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.pageUp' => 'Move up one page',
 			'keybindings.pageDown' => 'Move down one page',
 			'keybindings.home' => 'Jump to start',
 			'keybindings.end' => 'Jump to end',
 			'keybindings.newTab' => 'New tab',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.closeTab' => 'Close tab',
 			'keybindings.nextTab' => 'Next tab',
 			'keybindings.prevTab' => 'Previous tab',

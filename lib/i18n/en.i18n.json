@@ -361,6 +361,13 @@
       "rename": "Rename",
       "remove": "Remove"
     },
+    "shortcutBar": {
+      "title": "Shortcut Bar",
+      "labelHint": "Name",
+      "targetHint": "Folder, file path or command",
+      "pickFile": "File",
+      "add": "Add"
+    },
     "diagnostics": {
       "title": "Diagnostics",
       "subtitle": "Recent warnings and errors. Logs are written to disk for bug reports.",

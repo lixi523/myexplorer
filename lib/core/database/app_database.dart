@@ -119,6 +119,17 @@ class Bookmarks extends Table {
   TextColumn get path => text().unique()();
 }
 
+/// User-defined items on the shortcut bar below the title bar. [target] is a
+/// folder/file path or a command line; [actionId] is an optional built-in
+/// action id for buttons that mirror keyboard shortcuts.
+class ShortcutBarItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get orderIndex => integer()();
+  TextColumn get label => text()();
+  TextColumn get target => text()();
+  TextColumn get icon => text().nullable()();
+}
+
 class FolderPrefs extends Table {
   TextColumn get path => text()();
   TextColumn get sortKey => text().withDefault(const Constant('name'))();
@@ -232,6 +243,7 @@ class SidebarPrefs extends Table {
     AppSettings,
     SessionTabs,
     Bookmarks,
+    ShortcutBarItems,
     FolderPrefs,
     RecentApps,
     RecentEnteredPaths,
@@ -248,7 +260,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 43;
+  int get schemaVersion => 44;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -450,6 +462,9 @@ class AppDatabase extends _$AppDatabase {
           DELETE FROM tags
           WHERE id NOT IN (SELECT MIN(id) FROM tags GROUP BY name, color);
         ''');
+      }
+      if (from < 44) {
+        await m.createTable(shortcutBarItems);
       }
     },
   );
@@ -824,6 +839,47 @@ class AppDatabase extends _$AppDatabase {
         b.update(
           bookmarks,
           BookmarksCompanion(orderIndex: Value(i)),
+          where: (t) => t.id.equals(idsInOrder[i]),
+        );
+      }
+    });
+  }
+
+  Future<List<ShortcutBarItem>> getShortcutBarItems() {
+    return (select(
+      shortcutBarItems,
+    )..orderBy([(t) => OrderingTerm.asc(t.orderIndex)])).get();
+  }
+
+  Future<ShortcutBarItem> addShortcutBarItem(
+    String label,
+    String target,
+  ) async {
+    final maxOrder = shortcutBarItems.orderIndex.max();
+    final row = await (selectOnly(
+      shortcutBarItems,
+    )..addColumns([maxOrder])).getSingleOrNull();
+    final nextOrder = (row?.read(maxOrder) ?? -1) + 1;
+
+    return into(shortcutBarItems).insertReturning(
+      ShortcutBarItemsCompanion.insert(
+        orderIndex: nextOrder,
+        label: label,
+        target: target,
+      ),
+    );
+  }
+
+  Future<void> deleteShortcutBarItem(int id) {
+    return (delete(shortcutBarItems)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<void> reorderShortcutBarItems(List<int> idsInOrder) async {
+    await batch((b) {
+      for (var i = 0; i < idsInOrder.length; i++) {
+        b.update(
+          shortcutBarItems,
+          ShortcutBarItemsCompanion(orderIndex: Value(i)),
           where: (t) => t.id.equals(idsInOrder[i]),
         );
       }

@@ -3723,6 +3723,347 @@ class $BookmarksTable extends Bookmarks
   }
 }
 
+class $ShortcutBarItemsTable extends ShortcutBarItems
+    with TableInfo<$ShortcutBarItemsTable, ShortcutBarItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ShortcutBarItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _orderIndexMeta = const VerificationMeta(
+    'orderIndex',
+  );
+  @override
+  late final GeneratedColumn<int> orderIndex = GeneratedColumn<int>(
+    'order_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<String> target = GeneratedColumn<String>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+    'icon',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, orderIndex, label, target, icon];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'shortcut_bar_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ShortcutBarItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('order_index')) {
+      context.handle(
+        _orderIndexMeta,
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderIndexMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMeta);
+    }
+    if (data.containsKey('icon')) {
+      context.handle(
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ShortcutBarItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ShortcutBarItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      orderIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_index'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target'],
+      )!,
+      icon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon'],
+      ),
+    );
+  }
+
+  @override
+  $ShortcutBarItemsTable createAlias(String alias) {
+    return $ShortcutBarItemsTable(attachedDatabase, alias);
+  }
+}
+
+class ShortcutBarItem extends DataClass implements Insertable<ShortcutBarItem> {
+  final int id;
+  final int orderIndex;
+  final String label;
+  final String target;
+  final String? icon;
+  const ShortcutBarItem({
+    required this.id,
+    required this.orderIndex,
+    required this.label,
+    required this.target,
+    this.icon,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['order_index'] = Variable<int>(orderIndex);
+    map['label'] = Variable<String>(label);
+    map['target'] = Variable<String>(target);
+    if (nullToAbsent || icon != null) {
+      map['icon'] = Variable<String>(icon);
+    }
+    return map;
+  }
+
+  ShortcutBarItemsCompanion toCompanion(bool nullToAbsent) {
+    return ShortcutBarItemsCompanion(
+      id: Value(id),
+      orderIndex: Value(orderIndex),
+      label: Value(label),
+      target: Value(target),
+      icon: Value(icon),
+    );
+  }
+
+  factory ShortcutBarItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ShortcutBarItem(
+      id: serializer.fromJson<int>(json['id']),
+      orderIndex: serializer.fromJson<int>(json['orderIndex']),
+      label: serializer.fromJson<String>(json['label']),
+      target: serializer.fromJson<String>(json['target']),
+      icon: serializer.fromJson<String?>(json['icon']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'orderIndex': serializer.toJson<int>(orderIndex),
+      'label': serializer.toJson<String>(label),
+      'target': serializer.toJson<String>(target),
+      if (icon != null) 'icon': serializer.toJson<String?>(icon),
+    };
+  }
+
+  ShortcutBarItem copyWith({
+    int? id,
+    int? orderIndex,
+    String? label,
+    String? target,
+    String? icon,
+  }) => ShortcutBarItem(
+    id: id ?? this.id,
+    orderIndex: orderIndex ?? this.orderIndex,
+    label: label ?? this.label,
+    target: target ?? this.target,
+    icon: icon ?? this.icon,
+  );
+  ShortcutBarItem copyWithCompanion(ShortcutBarItemsCompanion data) {
+    return ShortcutBarItem(
+      id: data.id.present ? data.id.value : this.id,
+      orderIndex: data.orderIndex.present
+          ? data.orderIndex.value
+          : this.orderIndex,
+      label: data.label.present ? data.label.value : this.label,
+      target: data.target.present ? data.target.value : this.target,
+      icon: data.icon.present ? data.icon.value : this.icon,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShortcutBarItem(')
+          ..write('id: $id, ')
+          ..write('orderIndex: $orderIndex, ')
+          ..write('label: $label, ')
+          ..write('target: $target, ')
+          ..write('icon: $icon')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, orderIndex, label, target, icon);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ShortcutBarItem &&
+          other.id == this.id &&
+          other.orderIndex == this.orderIndex &&
+          other.label == this.label &&
+          other.target == this.target &&
+          other.icon == this.icon);
+}
+
+class ShortcutBarItemsCompanion extends UpdateCompanion<ShortcutBarItem> {
+  final Value<int> id;
+  final Value<int> orderIndex;
+  final Value<String> label;
+  final Value<String> target;
+  final Value<String?> icon;
+  const ShortcutBarItemsCompanion({
+    this.id = const Value.absent(),
+    this.orderIndex = const Value.absent(),
+    this.label = const Value.absent(),
+    this.target = const Value.absent(),
+    this.icon = const Value.absent(),
+  });
+  ShortcutBarItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required int orderIndex,
+    required String label,
+    required String target,
+    this.icon = const Value.absent(),
+  }) : orderIndex = Value(orderIndex),
+       label = Value(label),
+       target = Value(target);
+  static Insertable<ShortcutBarItem> custom({
+    Expression<int>? id,
+    Expression<int>? orderIndex,
+    Expression<String>? label,
+    Expression<String>? target,
+    Expression<String>? icon,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderIndex != null) 'order_index': orderIndex,
+      if (label != null) 'label': label,
+      if (target != null) 'target': target,
+      if (icon != null) 'icon': icon,
+    });
+  }
+
+  ShortcutBarItemsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? orderIndex,
+    Value<String>? label,
+    Value<String>? target,
+    Value<String?>? icon,
+  }) {
+    return ShortcutBarItemsCompanion(
+      id: id ?? this.id,
+      orderIndex: orderIndex ?? this.orderIndex,
+      label: label ?? this.label,
+      target: target ?? this.target,
+      icon: icon ?? this.icon,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (orderIndex.present) {
+      map['order_index'] = Variable<int>(orderIndex.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(target.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShortcutBarItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('orderIndex: $orderIndex, ')
+          ..write('label: $label, ')
+          ..write('target: $target, ')
+          ..write('icon: $icon')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class Bookmark extends DataClass implements Insertable<Bookmark> {
   final int id;
   final int orderIndex;
@@ -6967,6 +7308,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   late final $SessionTabsTable sessionTabs = $SessionTabsTable(this);
   late final $BookmarksTable bookmarks = $BookmarksTable(this);
+  late final $ShortcutBarItemsTable shortcutBarItems = $ShortcutBarItemsTable(
+    this,
+  );
   late final $FolderPrefsTable folderPrefs = $FolderPrefsTable(this);
   late final $RecentAppsTable recentApps = $RecentAppsTable(this);
   late final $RecentEnteredPathsTable recentEnteredPaths =
@@ -6990,6 +7334,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appSettings,
     sessionTabs,
     bookmarks,
+    shortcutBarItems,
     folderPrefs,
     recentApps,
     recentEnteredPaths,

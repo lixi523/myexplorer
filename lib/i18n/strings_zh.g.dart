@@ -302,6 +302,7 @@ class _Translations$preferences$zh extends Translations$preferences$en {
 	@override late final _Translations$preferences$quickLook$zh quickLook = _Translations$preferences$quickLook$zh._(_root);
 	@override late final _Translations$preferences$appearance$zh appearance = _Translations$preferences$appearance$zh._(_root);
 	@override late final _Translations$preferences$bookmarks$zh bookmarks = _Translations$preferences$bookmarks$zh._(_root);
+	@override late final _Translations$preferences$shortcutBar$zh shortcutBar = _Translations$preferences$shortcutBar$zh._(_root);
 	@override late final _Translations$preferences$diagnostics$zh diagnostics = _Translations$preferences$diagnostics$zh._(_root);
 	@override late final _Translations$preferences$about$zh about = _Translations$preferences$about$zh._(_root);
 }
@@ -1294,6 +1295,20 @@ class _Translations$preferences$bookmarks$zh extends Translations$preferences$bo
 	@override String get empty => '暂无书签。将文件夹拖到侧边栏即可添加。';
 	@override String get rename => '重命名';
 	@override String get remove => '移除';
+}
+
+// Path: preferences.shortcutBar
+class _Translations$preferences$shortcutBar$zh extends Translations$preferences$shortcutBar$en {
+	_Translations$preferences$shortcutBar$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '快捷栏';
+	@override String get labelHint => '名称';
+	@override String get targetHint => '文件夹、文件路径或命令';
+	@override String get pickFile => '文件';
+	@override String get add => '添加';
 }
 
 // Path: preferences.diagnostics
@@ -2341,6 +2356,11 @@ extension on TranslationsZh {
 			'preferences.bookmarks.empty' => '暂无书签。将文件夹拖到侧边栏即可添加。',
 			'preferences.bookmarks.rename' => '重命名',
 			'preferences.bookmarks.remove' => '移除',
+			'preferences.shortcutBar.title' => '快捷栏',
+			'preferences.shortcutBar.labelHint' => '名称',
+			'preferences.shortcutBar.targetHint' => '文件夹、文件路径或命令',
+			'preferences.shortcutBar.pickFile' => '文件',
+			'preferences.shortcutBar.add' => '添加',
 			'preferences.diagnostics.title' => '诊断',
 			'preferences.diagnostics.subtitle' => '最近的警告和错误。日志会写入磁盘用于错误报告。',
 			'preferences.diagnostics.empty' => '本次会话没有记录警告或错误。',
@@ -2527,13 +2547,13 @@ extension on TranslationsZh {
 			'keybindings.quickLookSave' => '保存更改',
 			'keybindings.cursorUp' => '上移',
 			'keybindings.cursorDown' => '下移',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.pageUp' => '上翻一页',
 			'keybindings.pageDown' => '下翻一页',
 			'keybindings.home' => '跳到开头',
 			'keybindings.end' => '跳到结尾',
 			'keybindings.newTab' => '新建标签页',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.closeTab' => '关闭标签页',
 			'keybindings.nextTab' => '下一个标签页',
 			'keybindings.prevTab' => '上一个标签页',

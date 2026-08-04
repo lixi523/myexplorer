@@ -1,5 +1,6 @@
 import 'dart:io' show Process, ProcessStartMode;
 
+import 'package:signals/signals_flutter.dart';
 import '../window/move_window.dart';
 import '../window/window_buttons.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,12 @@ import 'package:waydir/ui/icons/waydir_icons.dart';
 
 import '../../app/app_info.dart';
 import '../../app/waydir_app.dart';
+import '../../core/database/app_database.dart';
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../features/command_palette/command_palette_launcher.dart';
 import '../../features/help/changelog_dialog.dart';
 import '../../features/help/help_dialog.dart';
+import '../../features/navigation/shortcut_bar_store.dart';
 import '../../features/plugins/plugin_icons.dart';
 import '../../features/plugins/plugin_models.dart';
 import '../../features/settings/keybindings_help_view.dart';
@@ -20,6 +23,7 @@ import '../../features/settings/panes/diagnostics_pane.dart';
 import '../../features/settings/panes/plugins_pane.dart';
 import '../../features/settings/preferences_view.dart';
 import '../../i18n/strings.g.dart';
+import '../dialogs/shortcut_bar_config_dialog.dart';
 import '../overlays/context_menu.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_text_styles.dart';
@@ -419,10 +423,32 @@ class _WindowButtons extends StatelessWidget {
   }
 }
 
-class ShortcutBar extends StatelessWidget {
+class ShortcutBar extends StatefulWidget {
   final ValueChanged<String> onAction;
 
   const ShortcutBar({super.key, required this.onAction});
+
+  @override
+  State<ShortcutBar> createState() => _ShortcutBarState();
+}
+
+class _ShortcutBarState extends State<ShortcutBar> {
+  final _store = ShortcutBarStore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _store.load();
+  }
+
+  void _openItem(ShortcutBarItem item) {
+    widget.onAction('custom:${item.id}');
+  }
+
+  void _openConfig() {
+    final ctx = waydirNavigatorKey.currentContext;
+    if (ctx != null) showShortcutBarConfigDialog(ctx);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -438,22 +464,22 @@ class ShortcutBar extends StatelessWidget {
           _ShortcutButton(
             icon: WaydirIconsRegular.arrowLeft,
             tooltip: t.keybindings.goBack,
-            onTap: () => onAction('go_back'),
+            onTap: () => widget.onAction('go_back'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.arrowRight,
             tooltip: t.keybindings.goForward,
-            onTap: () => onAction('go_forward'),
+            onTap: () => widget.onAction('go_forward'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.arrowUp,
             tooltip: t.keybindings.goUp,
-            onTap: () => onAction('go_up'),
+            onTap: () => widget.onAction('go_up'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.arrowClockwise,
             tooltip: t.keybindings.refresh,
-            onTap: () => onAction('refresh'),
+            onTap: () => widget.onAction('refresh'),
           ),
           const SizedBox(width: 12),
           Container(width: 1, color: AppColors.bgDivider),
@@ -461,44 +487,70 @@ class ShortcutBar extends StatelessWidget {
           _ShortcutButton(
             icon: WaydirIconsRegular.folderPlus,
             tooltip: t.keybindings.newFolder,
-            onTap: () => onAction('new_folder'),
+            onTap: () => widget.onAction('new_folder'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.copy,
             tooltip: t.keybindings.copy,
-            onTap: () => onAction('copy'),
+            onTap: () => widget.onAction('copy'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.scissors,
             tooltip: t.keybindings.cut,
-            onTap: () => onAction('cut'),
+            onTap: () => widget.onAction('cut'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.clipboard,
             tooltip: t.keybindings.paste,
-            onTap: () => onAction('paste'),
+            onTap: () => widget.onAction('paste'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.trashSimple,
             tooltip: t.keybindings.delete,
-            onTap: () => onAction('trash'),
+            onTap: () => widget.onAction('trash'),
           ),
           _ShortcutButton(
             icon: WaydirIconsRegular.info,
             tooltip: t.menu.properties,
-            onTap: () => onAction('properties'),
+            onTap: () => widget.onAction('properties'),
+          ),
+          const SizedBox(width: 12),
+          Container(width: 1, color: AppColors.bgDivider),
+          const SizedBox(width: 12),
+          SignalBuilder(
+            builder: (context) {
+              final customItems = _store.items.value;
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final item in customItems)
+                    _ShortcutButton(
+                      icon: WaydirIconsRegular.folderOpen,
+                      tooltip: item.label,
+                      onTap: () => _openItem(item),
+                    ),
+                ],
+              );
+            },
           ),
           const Spacer(),
           _ShortcutButton(
             icon: WaydirIconsRegular.list,
             tooltip: t.toolbar.listView,
-            onTap: () => onAction('toggle_view'),
+            onTap: () => widget.onAction('toggle_view'),
           ),
           const SizedBox(width: 8),
           _ShortcutButton(
             icon: WaydirIconsRegular.magnifyingGlass,
             tooltip: t.keybindings.search,
-            onTap: () => onAction('search'),
+            onTap: () => widget.onAction('search'),
+          ),
+          const SizedBox(width: 8),
+          _ShortcutButton(
+            icon: WaydirIconsRegular.plus,
+            tooltip: t.preferences.shortcutBar.title,
+            onTap: _openConfig,
           ),
           const SizedBox(width: 16),
         ],

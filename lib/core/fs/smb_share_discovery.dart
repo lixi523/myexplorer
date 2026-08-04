@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:io';
 
 import '../../features/locations/location_resolver.dart';
@@ -89,7 +89,11 @@ class SmbShareDiscovery {
   static Future<SmbShareListResult> _windows(String host) async {
     ProcessResult result;
     try {
-      result = await Process.run('net', ['view', '\\\\$host', '/all']).timeout(const Duration(seconds: 10));
+      result = await Process.run('net', [
+        'view',
+        '\\\\$host',
+        '/all',
+      ]).timeout(const Duration(seconds: 10));
     } on ProcessException catch (e) {
       return SmbShareListError(t.errors.netUnavailable(message: e.message));
     }
