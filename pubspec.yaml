@@ -1,0 +1,80 @@
+name: waydir
+description: "Waydir - A fast, minimal desktop file manager built with Flutter. Custom dark theme, custom title bar, and keyboard-driven workflow."
+publish_to: 'none'
+version: 0.23.0+30
+
+homepage: https://github.com/Waydir/Waydir
+repository: https://github.com/Waydir/Waydir
+issue_tracker: https://github.com/Waydir/Waydir/issues
+
+environment:
+  sdk: ^3.10.0
+
+topics:
+  - file-manager
+  - desktop
+  - flutter
+
+screenshots: []
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  path_provider: ^2.1.5
+  signals: ^7.1.0
+  collection: ^1.19.1
+  super_drag_and_drop: ^0.9.1
+  slang: ^4.15.0
+  slang_flutter: ^4.15.0
+  intl: ^0.20.2
+  path: ^1.9.1
+  ffi: ^2.2.0
+  package_info_plus: ^9.0.1
+  win32: ^5.15.0
+  drift: ^2.34.0
+  drift_flutter: ^0.3.0
+  sqlite3_flutter_libs: ^0.6.0
+  exif: ^3.3.0
+  mime: ^2.0.0
+  flutter_svg: ^2.3.0
+  archive: ^4.0.9
+  crypto: ^3.0.7
+  http: ^1.6.0
+  flutter_markdown_plus: ^1.0.7
+  file_picker: ^11.0.2
+  re_editor: ^0.9.0
+  re_highlight: ^0.0.3
+  waydir_term:
+    path: packages/waydir_term
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.9
+  drift_dev: ^2.34.0
+  slang_build_runner: ^4.16.0
+  sqlite3: 3.1.7
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icons/material/
+    - assets/
+    - docs/gifs/
+    - CHANGELOG.md
+  fonts:
+    - family: PhosphorRegular
+      fonts:
+        - asset: assets/fonts/phosphor/PhosphorRegular.ttf
+    - family: PhosphorBold
+      fonts:
+        - asset: assets/fonts/phosphor/PhosphorBold.ttf
+    - family: PhosphorFill
+      fonts:
+        - asset: assets/fonts/phosphor/PhosphorFill.ttf
+    - family: DistroLogos
+      fonts:
+        - asset: assets/fonts/font-logos/font-logos.ttf

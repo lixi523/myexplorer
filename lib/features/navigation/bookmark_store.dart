@@ -1,0 +1,114 @@
+import 'dart:io';
+
+import 'package:signals/signals.dart';
+
+import '../../core/database/app_database.dart';
+import '../../core/platform/platform_paths.dart';
+import '../../core/settings/settings_store.dart';
+import '../locations/location_resolver.dart';
+import '../locations/location_uri.dart';
+
+class BookmarkStore {
+  static final BookmarkStore instance = BookmarkStore._();
+
+  BookmarkStore._();
+
+  final bookmarks = signal<List<Bookmark>>([]);
+
+  AppDatabase get _db => SettingsStore.instance.db;
+
+  Future<void> load() async {
+    bookmarks.value = await _db.getBookmarks();
+  }
+
+  Future<void> addPath(String path) async {
+    final storedPath = _storedPathFor(path);
+    if (storedPath == null) return;
+    final uri = LocationUri.parse(storedPath);
+    final label = uri.isLocal
+        ? PlatformPaths.fileName(storedPath)
+        : uri.displayLabel;
+    await _addUnique(label, storedPath);
+  }
+
+  bool containsPath(String path) {
+    final storedPath = _storedPathFor(path);
+    if (storedPath == null) return false;
+
+    return bookmarks.value.any((b) => b.path == storedPath);
+  }
+
+  Future<void> togglePath(String path) async {
+    final storedPath = _storedPathFor(path);
+    if (storedPath == null) return;
+    final existing = await _db.getBookmarkByPath(storedPath);
+    if (existing != null) {
+      await _db.deleteBookmark(existing.id);
+      await load();
+
+      return;
+    }
+    final uri = LocationUri.parse(storedPath);
+    final label = uri.isLocal
+        ? PlatformPaths.fileName(storedPath)
+        : uri.displayLabel;
+    await _addUnique(label, storedPath);
+  }
+
+  String? _storedPathFor(String path) {
+    final uri = LocationUri.parse(path);
+    if (uri.isLocal) {
+      final normalized = PlatformPaths.normalize(path);
+      final logical = LocationResolver.physicalToLogical(normalized);
+      if (logical != null) return logical;
+      if (!Directory(normalized).existsSync()) return null;
+
+      return normalized;
+    }
+
+    return uri.raw;
+  }
+
+  Future<void> addLocation(String location, {String? label}) async {
+    final uri = LocationUri.parse(location);
+    final stored = uri.isLocal ? PlatformPaths.normalize(uri.raw) : uri.raw;
+    final lbl = (label != null && label.trim().isNotEmpty)
+        ? label.trim()
+        : (uri.isLocal ? PlatformPaths.fileName(stored) : uri.displayLabel);
+    await _addUnique(lbl, stored);
+  }
+
+  Future<void> _addUnique(String label, String storedPath) async {
+    final existing = await _db.getBookmarkByPath(storedPath);
+    if (existing != null) return;
+    await _db.addBookmark(label, storedPath);
+    await load();
+  }
+
+  Future<void> rename(Bookmark bookmark, String label) async {
+    final trimmed = label.trim();
+    if (trimmed.isEmpty || trimmed == bookmark.label) return;
+    await _db.renameBookmark(bookmark.id, trimmed);
+    await load();
+  }
+
+  Future<void> remove(Bookmark bookmark) async {
+    await _db.deleteBookmark(bookmark.id);
+    await load();
+  }
+
+  /// [newIndex] is the post-removal target index, as supplied by
+  /// `ReorderableListView.onReorderItem`.
+  Future<void> reorder(int oldIndex, int newIndex) async {
+    final list = [...bookmarks.value];
+    if (oldIndex < 0 || oldIndex >= list.length) return;
+    var to = newIndex;
+    if (to < 0) to = 0;
+    if (to > list.length - 1) to = list.length - 1;
+    if (to == oldIndex) return;
+    final item = list.removeAt(oldIndex);
+    list.insert(to, item);
+    bookmarks.value = list;
+    await _db.reorderBookmarks(list.map((b) => b.id).toList());
+  }
+}

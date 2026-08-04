@@ -1,0 +1,619 @@
+part of '../waydir_shell.dart';
+
+mixin _WaydirActionsMixin on State<WaydirShell>, _WaydirStateBase {
+  Future<bool> _confirmTransfer(TaskType type, List<String> sources) async {
+    final isCopy = type == TaskType.copy;
+    final enabled = isCopy
+        ? SettingsStore.instance.confirmCopy.value
+        : SettingsStore.instance.confirmMove.value;
+    if (!enabled) return true;
+    if (sources.isEmpty) return true;
+    if (!mounted) return true;
+
+    final count = sources.length;
+    final single = count == 1;
+    final name = PlatformPaths.fileName(sources.first);
+    final String title;
+    final String message;
+    final String actionLabel;
+    if (isCopy) {
+      title = t.dialog.confirmCopyTitle;
+      message = single
+          ? t.dialog.confirmCopySingle(name: name)
+          : t.dialog.confirmCopyMultiple(count: count);
+      actionLabel = t.dialog.copy;
+    } else {
+      title = t.dialog.confirmMoveTitle;
+      message = single
+          ? t.dialog.confirmMoveSingle(name: name)
+          : t.dialog.confirmMoveMultiple(count: count);
+      actionLabel = t.dialog.move;
+    }
+
+    final result = await showCustomDialog<String>(
+      context: context,
+      title: title,
+      icon: isCopy
+          ? WaydirIconsRegular.copy
+          : WaydirIconsRegular.arrowsLeftRight,
+      iconColor: AppColors.accent,
+      body: Text(message, style: context.txt.body.copyWith(height: 1.4)),
+      actions: [
+        DialogAction(label: t.dialog.cancel, color: AppColors.fgMuted),
+        DialogAction(label: actionLabel, color: AppColors.accent),
+      ],
+    );
+
+    return result == actionLabel;
+  }
+
+  Future<void> _confirmAndDelete({
+    bool forcePermanent = false,
+    bool forceTrash = false,
+  }) async {
+    final entries = _active.selectedEntries;
+    if (entries.isEmpty) return;
+    if (_active.isTrashView) {
+      _active.deletePermanentlySelectedFromTrash();
+
+      return;
+    }
+    final hasNetworkPath = entries.any(
+      (entry) => PlatformPaths.isNetworkPath(entry.realPath),
+    );
+    final useTrash = forceTrash && !forcePermanent && !hasNetworkPath;
+    if (!SettingsStore.instance.confirmDelete.value) {
+      _active.deleteSelected(toTrash: useTrash);
+
+      return;
+    }
+    final count = entries.length;
+    final single = count == 1;
+    final String message;
+    if (useTrash) {
+      message = single
+          ? t.dialog.confirmTrashSingle(name: entries.first.name)
+          : t.dialog.confirmTrashMultiple(count: count);
+    } else {
+      message = single
+          ? t.dialog.confirmDeleteSingle(name: entries.first.name)
+          : t.dialog.confirmDeleteMultiple(count: count);
+    }
+    final actionLabel = useTrash ? t.dialog.moveToTrash : t.dialog.delete;
+    final result = await showCustomDialog<String>(
+      context: context,
+      title: useTrash
+          ? t.dialog.confirmTrashTitle
+          : t.dialog.confirmDeleteTitle,
+      icon: useTrash
+          ? WaydirIconsRegular.trashSimple
+          : WaydirIconsRegular.trash,
+      iconColor: AppColors.danger,
+      body: Text(message, style: context.txt.body.copyWith(height: 1.4)),
+      actions: [
+        DialogAction(label: t.dialog.cancel, color: AppColors.fgMuted),
+        DialogAction(label: actionLabel, color: AppColors.danger),
+      ],
+    );
+    if (result == actionLabel) {
+      _active.deleteSelected(toTrash: useTrash);
+    }
+  }
+
+  void _openPropertiesFromMenu(NavigationStore store) {
+    final entries = store.selectedEntries;
+    if (entries.isEmpty) {
+      _openFolderProperties(store.currentPath.value);
+
+      return;
+    }
+    if (entries.length == 1) {
+      showQuickLook(
+        context: context,
+        store: store,
+        explicitEntry: entries.first,
+      ).then((_) => _restoreFocus());
+
+      return;
+    }
+    showQuickLook(context: context, store: store).then((_) => _restoreFocus());
+  }
+
+  void _openFolderProperties(String path) {
+    if (path.isEmpty) return;
+    final dir = Directory(path);
+    if (!dir.existsSync()) return;
+    final stat = dir.statSync();
+    final entry = FileEntry(
+      name: PlatformPaths.fileName(path).isEmpty
+          ? path
+          : PlatformPaths.fileName(path),
+      path: path,
+      type: FileItemType.folder,
+      size: 0,
+      modified: stat.modified,
+    );
+    showQuickLook(
+      context: context,
+      store: _active,
+      explicitEntry: entry,
+    ).then((_) => _restoreFocus());
+  }
+
+  List<String> _compressSources() {
+    return _active.selectedEntries
+        .where((e) => !FileSystemService.isInsideArchive(e.realPath))
+        .map((e) => e.realPath)
+        .toList();
+  }
+
+  String _compressBaseName() {
+    final store = _active;
+    final entries = store.selectedEntries;
+    if (entries.length == 1) {
+      final e = entries.first;
+
+      return e.type == FileItemType.folder
+          ? e.name
+          : p.basenameWithoutExtension(e.name);
+    }
+
+    return _sanitizeArchiveBase(
+      p.basename(store.currentPath.value),
+      store.currentPath.value,
+    );
+  }
+
+  String _sanitizeArchiveBase(String name, String fullPath) {
+    final cleaned = name.replaceAll(RegExp(r'[\\/:]'), '').trim();
+    if (cleaned.isNotEmpty) return cleaned;
+    final drive = RegExp(r'^([A-Za-z]):').firstMatch(fullPath);
+    if (drive != null) return drive.group(1)!;
+
+    return 'archive';
+  }
+
+  void _quickCompress(ArchiveFormat format) async {
+    final store = _active;
+    final sources = _compressSources();
+    if (sources.isEmpty) return;
+    final dir = await store.resolveForOperation(store.currentPath.value);
+    if (dir == null) return;
+    final dest = FileSystemService.uniquePath(
+      p.join(dir, '${_compressBaseName()}.${format.extension}'),
+    );
+    store.operationStore.enqueueCompress(
+      sources,
+      dest,
+      format: format.name,
+      level: CompressionLevel.normal.name,
+    );
+  }
+
+  Future<void> _compressWithOptions() async {
+    final store = _active;
+    final sources = _compressSources();
+    if (sources.isEmpty) return;
+    final dir = store.currentPath.value;
+    final req = await showCompressDialog(
+      context: context,
+      defaultBaseName: _compressBaseName(),
+      destinationDir: dir,
+    );
+    if (req == null) return;
+    final physicalDir = await store.resolveForOperation(dir);
+    if (physicalDir == null) return;
+    final dest = FileSystemService.uniquePath(
+      p.join(physicalDir, req.fileName),
+    );
+    store.operationStore.enqueueCompress(
+      sources,
+      dest,
+      format: req.format.name,
+      level: req.level.name,
+    );
+  }
+
+  void _multiRename(NavigationStore store) async {
+    final entries = store.selectedEntries;
+    if (entries.isEmpty) return;
+    if (store.isTrashView) {
+      showToast(context: context, message: t.toast.multiRenameTrashBlocked);
+
+      return;
+    }
+    final result = await showMultiRenameDialog(
+      context: context,
+      entries: entries,
+    );
+    if (result == null || result.renames.isEmpty) {
+      _restoreFocus();
+
+      return;
+    }
+    var cancelled = false;
+    final task = store.operationStore.beginPluginTask(
+      title: t.multiRename.title,
+      totalFiles: result.renames.length,
+      onCancel: () => cancelled = true,
+    );
+    store.operationStore.updatePluginTask(
+      task.id,
+      progress: 0,
+      processedFiles: 0,
+      totalFiles: result.renames.length,
+      currentFile: t.tasks.status.scanning,
+    );
+    try {
+      final outcome = await store.multiRename(
+        result.renames
+            .map((r) => (path: r.oldPath, newName: r.newName))
+            .toList(),
+        isCancelled: () => cancelled,
+        onProgress: (processed, total, currentName) {
+          store.operationStore.updatePluginTask(
+            task.id,
+            progress: total == 0 ? 0 : processed / total,
+            processedFiles: processed,
+            totalFiles: total,
+            currentFile: currentName,
+          );
+        },
+      );
+      store.operationStore.finishPluginTask(
+        task.id,
+        success: true,
+        cancelled: cancelled,
+        error: outcome.failed == 0 ? '' : _multiRenameDetails(outcome),
+      );
+      if (mounted && !cancelled) _showMultiRenameToast(outcome);
+    } catch (e) {
+      store.operationStore.finishPluginTask(
+        task.id,
+        success: false,
+        cancelled: cancelled,
+        error: e.toString(),
+      );
+      if (mounted && !cancelled) {
+        showToast(
+          context: context,
+          message: t.toast.renameError(message: e),
+        );
+      }
+    } finally {
+      _restoreFocus();
+    }
+  }
+
+  void _showMultiRenameToast(MultiRenameOutcome outcome) {
+    if (outcome.blocked) {
+      showToast(context: context, message: t.toast.multiRenameTrashBlocked);
+
+      return;
+    }
+    if (outcome.failed == 0) {
+      showToast(
+        context: context,
+        message: t.toast.multiRenameSuccess(count: outcome.succeeded),
+      );
+
+      return;
+    }
+    final details = _multiRenameDetails(outcome);
+    showToast(
+      context: context,
+      message: t.toast.multiRenamePartial(
+        succeeded: outcome.succeeded,
+        total: outcome.total,
+        details: details,
+      ),
+    );
+  }
+
+  String _multiRenameDetails(MultiRenameOutcome outcome) {
+    final parts = <String>[];
+    if (outcome.collision > 0) {
+      parts.add(t.toast.multiRenameCollisions(count: outcome.collision));
+    }
+    if (outcome.invalid > 0) {
+      parts.add(t.toast.multiRenameInvalid(count: outcome.invalid));
+    }
+    if (outcome.other > 0) {
+      parts.add(t.toast.multiRenameOtherErrors(count: outcome.other));
+    }
+
+    return parts.join(', ');
+  }
+
+  void _extractSelected({required bool toOwnFolder}) async {
+    final store = _active;
+    final base = await store.resolveForOperation(store.currentPath.value);
+    if (base == null) return;
+    final archives = store.selectedEntries
+        .where(
+          (e) =>
+              e.type == FileItemType.file &&
+              ArchivePath.isArchiveName(e.name) &&
+              !FileSystemService.isInsideArchive(e.realPath),
+        )
+        .toList();
+    if (archives.isEmpty) return;
+
+    if (toOwnFolder) {
+      for (final entry in archives) {
+        final dest = FileSystemService.uniquePath(
+          p.join(base, FileSystemService.archiveBaseName(entry.name)),
+        );
+        store.operationStore.enqueueExtract([entry.realPath], dest);
+      }
+    } else {
+      store.operationStore.enqueueExtract(
+        archives.map((e) => e.realPath).toList(),
+        base,
+      );
+    }
+  }
+
+  void _openPreferences() {
+    showPreferencesDialog(context).then((_) {
+      if (!mounted) return;
+      _restoreFocus();
+    });
+  }
+
+  void _openHelp() {
+    showHelpDialog(context).then((_) {
+      if (!mounted) return;
+      _restoreFocus();
+    });
+  }
+
+  void _openQuickLook() {
+    if (_isModalRouteOnTop()) return;
+    showQuickLook(
+      context: context,
+      store: _active,
+    ).then((_) => _restoreFocus());
+  }
+
+  void _openSelectPattern() {
+    if (_isModalRouteOnTop()) return;
+    final store = _active;
+    showSelectPatternDialog(context).then((pattern) {
+      if (!mounted) return;
+      _restoreFocus();
+      if (pattern == null) return;
+      store.selectByPattern(pattern);
+    });
+  }
+
+  Future<void> _saveSelectionToFile() async {
+    if (_isModalRouteOnTop()) return;
+    final store = _active;
+    final names = store.selectedNamesForFile();
+    if (names.isEmpty) return;
+    try {
+      final path = await FilePicker.saveFile(
+        dialogTitle: t.selectionFile.saveTitle,
+        fileName: 'selection.txt',
+        initialDirectory: store.currentPath.value,
+        type: FileType.custom,
+        allowedExtensions: const ['txt'],
+        lockParentWindow: true,
+      );
+      if (!mounted) return;
+      _restoreFocus();
+      if (path == null) return;
+      await File(path).writeAsString('${names.join('\n')}\n');
+      if (!mounted) return;
+      showToast(
+        context: context,
+        message: t.toast.selectionSaved(count: names.length, path: path),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showToast(
+        context: context,
+        message: t.toast.selectionFileError(message: e.toString()),
+      );
+    }
+  }
+
+  Future<void> _loadSelectionFromFile() async {
+    if (_isModalRouteOnTop()) return;
+    final store = _active;
+    if (store.visibleFiles.value.isEmpty) return;
+    try {
+      final result = await FilePicker.pickFiles(
+        dialogTitle: t.selectionFile.loadTitle,
+        initialDirectory: store.currentPath.value,
+        type: FileType.custom,
+        allowedExtensions: const ['txt'],
+        lockParentWindow: true,
+      );
+      if (!mounted) return;
+      _restoreFocus();
+      final path = result?.files.single.path;
+      if (path == null) return;
+      final lines = await File(path).readAsLines();
+      final count = store.selectNamesFromFile(lines);
+      if (!mounted) return;
+      showToast(
+        context: context,
+        message: count == 0
+            ? t.toast.selectionLoadEmpty
+            : t.toast.selectionLoaded(count: count),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showToast(
+        context: context,
+        message: t.toast.selectionFileError(message: e.toString()),
+      );
+    }
+  }
+
+  Future<void> _dualPaneTransfer(
+    NavigationStore store, {
+    required bool move,
+  }) async {
+    final activeIdx = _shell.activePaneIndex.value;
+    final otherStore =
+        _shell.panes.value[1 - activeIdx].tabs.activeTab.value.store;
+    final otherPath = otherStore.currentPath.value;
+    if (isTagPath(otherPath)) {
+      final id = tagIdFromPath(otherPath);
+      final paths = _dualPaneEntries(store).map((e) => e.path).toList();
+      if (id != null && paths.isNotEmpty) await otherStore.addTag(paths, id);
+
+      return;
+    }
+    final sources = _dualPaneSources(store);
+    if (sources.isEmpty) return;
+    final dest = await otherStore.resolveForOperation(otherPath);
+    if (dest == null) return;
+    if (move) {
+      _operationStore.enqueueMove(sources, dest);
+    } else {
+      _operationStore.enqueueCopy(sources, dest);
+    }
+  }
+
+  List<FileEntry> _dualPaneEntries(NavigationStore store) {
+    final entries = store.selectedEntries;
+    if (entries.isNotEmpty) return entries;
+    final idx = store.cursorIndex.value;
+    final files = store.visibleFiles.value;
+    if (idx >= 0 && idx < files.length) return [files[idx]];
+
+    return const [];
+  }
+
+  List<String> _dualPaneSources(NavigationStore store) =>
+      _dualPaneEntries(store).map((e) => e.realPath).toList();
+
+  void _copySelectedWithToast(NavigationStore store) {
+    store.copySelected();
+    final count = store.selectedPaths.value.length;
+    if (count > 0) {
+      showToast(
+        context: context,
+        message: t.toast.copiedItems(count: count),
+      );
+    }
+  }
+
+  void _cutSelectedWithToast(NavigationStore store) {
+    store.cutSelected();
+    final count = store.selectedPaths.value.length;
+    if (count > 0) {
+      showToast(
+        context: context,
+        message: t.toast.cutItems(count: count),
+      );
+    }
+  }
+
+  Future<void> _duplicateSelected(NavigationStore store) async {
+    if (store.isTrashView) return;
+    final entries = _dualPaneEntries(store);
+    if (entries.isEmpty) return;
+    final dest = await store.resolveForOperation(store.currentPath.value);
+    if (dest == null) return;
+    final sources = entries.map((e) => e.realPath).toList();
+    _operationStore.enqueueDuplicate(sources, dest);
+    if (!mounted) return;
+    showToast(
+      context: context,
+      message: t.toast.duplicatedItems(count: entries.length),
+    );
+  }
+
+  void _toggleViewMode() {
+    final mode = SettingsStore.instance.fileViewMode;
+    mode.value = switch (mode.value) {
+      'list' => 'tree',
+      'tree' => 'grid',
+      _ => 'list',
+    };
+  }
+
+  void _toggleSidebarCollapsed() {
+    final s = SettingsStore.instance.sidebarCollapsed;
+    s.value = !s.value;
+  }
+
+  void _newTabHere() {
+    _shell.activePane.value!.tabs.addTab(_active.currentPath.value);
+  }
+
+  void _closeActiveTab() {
+    final tabsStore = _shell.activePane.value!.tabs;
+    if (tabsStore.tabs.value.length > 1) {
+      tabsStore.closeTab(tabsStore.activeTab.value.id);
+
+      return;
+    }
+    final totalTabs = _shell.panes.value.fold<int>(
+      0,
+      (total, pane) => total + pane.tabs.tabs.value.length,
+    );
+    if (totalTabs <= 1) appWindow.close();
+  }
+
+  void _selectNextTab() {
+    final tabsStore = _shell.activePane.value!.tabs;
+    final count = tabsStore.tabs.value.length;
+    tabsStore.selectTab((tabsStore.activeIndex.value + 1) % count);
+  }
+
+  void _handleShortcutAction(String action) {
+    final store = _active;
+    switch (action) {
+      case 'go_back':
+        store.goBack();
+      case 'go_forward':
+        store.goForward();
+      case 'go_up':
+        store.goUp();
+      case 'refresh':
+        store.refresh();
+      case 'new_folder':
+        store.startCreate();
+      case 'copy':
+        store.copySelected();
+      case 'cut':
+        store.cutSelected();
+      case 'paste':
+        store.paste();
+      case 'trash':
+        _confirmAndDelete(forceTrash: true);
+      case 'properties':
+        _openFolderProperties(store.currentPath.value);
+      case 'toggle_view':
+        final mode = SettingsStore.instance.fileViewMode.value;
+        final next = switch (mode) {
+          'list' => 'tree',
+          'tree' => 'grid',
+          _ => 'list',
+        };
+        SettingsStore.instance.fileViewMode.value = next;
+      case 'search':
+        store.openSearch();
+    }
+  }
+
+  void _selectPrevTab() {
+    final tabsStore = _shell.activePane.value!.tabs;
+    final count = tabsStore.tabs.value.length;
+    tabsStore.selectTab((tabsStore.activeIndex.value - 1 + count) % count);
+  }
+
+  void _renameOrMultiRename(NavigationStore store) {
+    if (store.selectedCount.value >= 2) {
+      _multiRename(store);
+    } else {
+      store.startRename();
+    }
+  }
+}
