@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
@@ -5,6 +7,7 @@ import 'package:signals/signals_flutter.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../i18n/strings.g.dart';
 import '../../features/navigation/shortcut_bar_store.dart';
+import '../../features/navigation/tc_bar_parser.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_text_styles.dart';
 import '../widgets/app_modal.dart';
@@ -43,7 +46,10 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
   final _store = ShortcutBarStore.instance;
   final _labelController = TextEditingController();
   final _targetController = TextEditingController();
+  final _iconController = TextEditingController();
   bool _busy = false;
+  bool _importing = false;
+  String? _importMessage;
 
   @override
   void initState() {
@@ -55,6 +61,7 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
   void dispose() {
     _labelController.dispose();
     _targetController.dispose();
+    _iconController.dispose();
     super.dispose();
   }
 
@@ -76,10 +83,86 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
     final target = _targetController.text.trim();
     if (label.isEmpty || target.isEmpty || _busy) return;
     setState(() => _busy = true);
-    await _store.add(label, target);
+    final icon = _iconController.text.trim();
+    await _store.add(label, target, icon: icon.isEmpty ? null : icon);
     _labelController.clear();
     _targetController.clear();
+    _iconController.clear();
     if (mounted) setState(() => _busy = false);
+  }
+
+  /// Imports a Total Commander button bar (`.bar`) file, appending its
+  /// buttons to the shortcut bar. GBK- and UTF-8-encoded files are both
+  /// accepted; empty buttons become separators.
+  Future<void> _importTcBar() async {
+    if (_importing) return;
+    setState(() {
+      _importing = true;
+      _importMessage = null;
+    });
+    try {
+      final result = await FilePicker.pickFiles(
+        dialogTitle: t.preferences.shortcutBar.importTcBar,
+        lockParentWindow: true,
+      );
+      final path = result?.files.single.path;
+      if (path == null || path.isEmpty) return;
+
+      final bytes = await File(path).readAsBytes();
+      final entries = parseTcBar(decodeBarBytes(bytes));
+      if (entries.isEmpty) {
+        if (mounted) {
+          setState(
+            () => _importMessage = t.preferences.shortcutBar.importFailed,
+          );
+        }
+
+        return;
+      }
+      final specs = <({String label, String target, String? icon})>[];
+      for (final entry in entries) {
+        if (entry.isEmpty) {
+          specs.add((label: '', target: '', icon: null));
+          continue;
+        }
+        specs.add((
+          label: entry.menu.isNotEmpty
+              ? entry.menu
+              : _labelForCommand(entry.cmd),
+          target: entry.commandLine,
+          icon: entry.icon.isEmpty ? null : entry.icon,
+        ));
+      }
+      await _store.addAll(specs);
+      if (mounted) {
+        setState(
+          () => _importMessage = t.preferences.shortcutBar.imported(
+            count: specs.length,
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _importMessage = t.preferences.shortcutBar.importFailed);
+      }
+    } finally {
+      if (mounted) setState(() => _importing = false);
+    }
+  }
+
+  /// Derives a label from a command when the bar file has no menu text.
+  String _labelForCommand(String cmd) {
+    final trimmed = cmd.trim();
+    if (trimmed.isEmpty) return '';
+    final cdMatch = RegExp(
+      r'^cd\s+(.+)$',
+      caseSensitive: false,
+    ).firstMatch(trimmed);
+    if (cdMatch != null) {
+      return PlatformPaths.fileName(cdMatch.group(1)!.trim());
+    }
+
+    return PlatformPaths.fileName(trimmed);
   }
 
   Future<void> _remove(int id) async {
@@ -118,8 +201,19 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
             ],
           ),
           const SizedBox(height: 8),
+          AppTextField(
+            controller: _iconController,
+            hintText: t.preferences.shortcutBar.iconHint,
+          ),
+          const SizedBox(height: 8),
           Row(
             children: [
+              _ActionButton(
+                label: t.preferences.shortcutBar.importTcBar,
+                busy: _importing,
+                onTap: _importTcBar,
+              ),
+              const SizedBox(width: 8),
               _ActionButton(
                 label: t.preferences.shortcutBar.pickFile,
                 onTap: _pickFile,
@@ -133,6 +227,15 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
               ),
             ],
           ),
+          if (_importMessage != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              _importMessage!,
+              style: context.txt.captionSmall.copyWith(
+                color: AppColors.fgMuted,
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           Container(height: 1, color: AppColors.bgDivider),
           const SizedBox(height: 12),

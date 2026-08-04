@@ -365,8 +365,12 @@
       "title": "快捷栏",
       "labelHint": "名称",
       "targetHint": "文件夹、文件路径或命令",
+      "iconHint": "图标：文件路径或 路径,索引",
       "pickFile": "文件",
-      "add": "添加"
+      "add": "添加",
+      "importTcBar": "导入 Total Commander 按钮栏…",
+      "imported": "已导入 $count 个按钮",
+      "importFailed": "导入按钮栏失败"
     },
     "diagnostics": {
       "title": "诊断",

@@ -611,65 +611,18 @@ mixin _WaydirActionsMixin on State<WaydirShell>, _WaydirStateBase {
 
   void _openCustomShortcut(int id) {
     final items = ShortcutBarStore.instance.items.value;
-    ShortcutBarItem? item;
-    for (final i in items) {
-      if (i.id == id) {
-        item = i;
-        break;
-      }
-    }
-    if (item == null) return;
-    final target = item.target.trim();
-    if (target.isEmpty) return;
-    if (FileSystemEntity.typeSync(target, followLinks: true) ==
-        FileSystemEntityType.directory) {
-      _shell.activePane.value!.tabs.addTab(target);
+    for (final item in items) {
+      if (item.id != id) continue;
+      runShortcutItem(
+        item,
+        navigateTo: (path) async {
+          _shell.activePane.value!.tabs.addTab(path);
+        },
+        openFile: OpenService.openDefault,
+      );
 
       return;
     }
-    if (FileSystemEntity.typeSync(target, followLinks: true) ==
-        FileSystemEntityType.file) {
-      OpenService.openDefault(target);
-
-      return;
-    }
-    // Not a filesystem path: treat as a command line to launch.
-    final parts = _tokenizeCommand(target);
-    if (parts.isEmpty) return;
-    Process.start(
-      parts.first,
-      parts.sublist(1),
-      mode: ProcessStartMode.detached,
-      runInShell: true,
-    );
-  }
-
-  List<String> _tokenizeCommand(String input) {
-    final tokens = <String>[];
-    final buf = StringBuffer();
-    String? quote;
-    for (var i = 0; i < input.length; i++) {
-      final c = input[i];
-      if (quote != null) {
-        if (c == quote) {
-          quote = null;
-        } else {
-          buf.write(c);
-        }
-      } else if (c == '"' || c == "'") {
-        quote = c;
-      } else if (c == ' ' || c == '\t') {
-        if (buf.isNotEmpty) {
-          tokens.add(buf.toString());
-          buf.clear();
-        }
-      } else {
-        buf.write(c);
-      }
-    }
-    if (buf.isNotEmpty) tokens.add(buf.toString());
-
-    return tokens;
   }
 
   void _selectPrevTab() {

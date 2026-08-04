@@ -2948,11 +2948,23 @@ class Translations$preferences$shortcutBar$en {
 	/// en: 'Folder, file path or command'
 	String get targetHint => 'Folder, file path or command';
 
+	/// en: 'Icon: file path or path,index'
+	String get iconHint => 'Icon: file path or path,index';
+
 	/// en: 'File'
 	String get pickFile => 'File';
 
 	/// en: 'Add'
 	String get add => 'Add';
+
+	/// en: 'Import Total Commander bar…'
+	String get importTcBar => 'Import Total Commander bar…';
+
+	/// en: 'Imported $count buttons'
+	String imported({required Object count}) => 'Imported ${count} buttons';
+
+	/// en: 'Could not import bar file'
+	String get importFailed => 'Could not import bar file';
 }
 
 // Path: preferences.diagnostics
@@ -4350,8 +4362,12 @@ extension on Translations {
 			'preferences.shortcutBar.title' => 'Shortcut Bar',
 			'preferences.shortcutBar.labelHint' => 'Name',
 			'preferences.shortcutBar.targetHint' => 'Folder, file path or command',
+			'preferences.shortcutBar.iconHint' => 'Icon: file path or path,index',
 			'preferences.shortcutBar.pickFile' => 'File',
 			'preferences.shortcutBar.add' => 'Add',
+			'preferences.shortcutBar.importTcBar' => 'Import Total Commander bar…',
+			'preferences.shortcutBar.imported' => ({required Object count}) => 'Imported ${count} buttons',
+			'preferences.shortcutBar.importFailed' => 'Could not import bar file',
 			'preferences.diagnostics.title' => 'Diagnostics',
 			'preferences.diagnostics.subtitle' => 'Recent warnings and errors. Logs are written to disk for bug reports.',
 			'preferences.diagnostics.empty' => 'No warnings or errors logged this session.',
@@ -4534,12 +4550,12 @@ extension on Translations {
 			'keybindings.quickLookPrevFile' => 'Previous file',
 			'keybindings.quickLookNextFile' => 'Next file',
 			'keybindings.quickLookPrevFileEdit' => 'Previous file while editing',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.quickLookNextFileEdit' => 'Next file while editing',
 			'keybindings.quickLookSave' => 'Save changes',
 			'keybindings.cursorUp' => 'Move up',
 			'keybindings.cursorDown' => 'Move down',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.pageUp' => 'Move up one page',
 			'keybindings.pageDown' => 'Move down one page',
 			'keybindings.home' => 'Jump to start',

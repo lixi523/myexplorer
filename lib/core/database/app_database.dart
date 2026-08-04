@@ -853,8 +853,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<ShortcutBarItem> addShortcutBarItem(
     String label,
-    String target,
-  ) async {
+    String target, {
+    String? icon,
+  }) async {
     final maxOrder = shortcutBarItems.orderIndex.max();
     final row = await (selectOnly(
       shortcutBarItems,
@@ -866,8 +867,36 @@ class AppDatabase extends _$AppDatabase {
         orderIndex: nextOrder,
         label: label,
         target: target,
+        icon: Value(icon),
       ),
     );
+  }
+
+  /// Inserts a batch of shortcut bar items (e.g. imported from a Total
+  /// Commander button bar) in a single transaction.
+  Future<void> addShortcutBarItems(
+    List<({String label, String target, String? icon})> specs,
+  ) async {
+    if (specs.isEmpty) return;
+    final maxOrder = shortcutBarItems.orderIndex.max();
+    final row = await (selectOnly(
+      shortcutBarItems,
+    )..addColumns([maxOrder])).getSingleOrNull();
+    var nextOrder = (row?.read(maxOrder) ?? -1) + 1;
+
+    await batch((b) {
+      for (final spec in specs) {
+        b.insert(
+          shortcutBarItems,
+          ShortcutBarItemsCompanion.insert(
+            orderIndex: nextOrder++,
+            label: spec.label,
+            target: spec.target,
+            icon: Value(spec.icon),
+          ),
+        );
+      }
+    });
   }
 
   Future<void> deleteShortcutBarItem(int id) {

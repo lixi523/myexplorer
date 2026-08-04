@@ -365,8 +365,12 @@
       "title": "Shortcut Bar",
       "labelHint": "Name",
       "targetHint": "Folder, file path or command",
+      "iconHint": "Icon: file path or path,index",
       "pickFile": "File",
-      "add": "Add"
+      "add": "Add",
+      "importTcBar": "Import Total Commander bar…",
+      "imported": "Imported $count buttons",
+      "importFailed": "Could not import bar file"
     },
     "diagnostics": {
       "title": "Diagnostics",

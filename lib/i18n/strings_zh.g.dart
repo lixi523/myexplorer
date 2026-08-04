@@ -1307,8 +1307,12 @@ class _Translations$preferences$shortcutBar$zh extends Translations$preferences$
 	@override String get title => '快捷栏';
 	@override String get labelHint => '名称';
 	@override String get targetHint => '文件夹、文件路径或命令';
+	@override String get iconHint => '图标：文件路径或 路径,索引';
 	@override String get pickFile => '文件';
 	@override String get add => '添加';
+	@override String get importTcBar => '导入 Total Commander 按钮栏…';
+	@override String imported({required Object count}) => '已导入 ${count} 个按钮';
+	@override String get importFailed => '导入按钮栏失败';
 }
 
 // Path: preferences.diagnostics
@@ -2359,8 +2363,12 @@ extension on TranslationsZh {
 			'preferences.shortcutBar.title' => '快捷栏',
 			'preferences.shortcutBar.labelHint' => '名称',
 			'preferences.shortcutBar.targetHint' => '文件夹、文件路径或命令',
+			'preferences.shortcutBar.iconHint' => '图标：文件路径或 路径,索引',
 			'preferences.shortcutBar.pickFile' => '文件',
 			'preferences.shortcutBar.add' => '添加',
+			'preferences.shortcutBar.importTcBar' => '导入 Total Commander 按钮栏…',
+			'preferences.shortcutBar.imported' => ({required Object count}) => '已导入 ${count} 个按钮',
+			'preferences.shortcutBar.importFailed' => '导入按钮栏失败',
 			'preferences.diagnostics.title' => '诊断',
 			'preferences.diagnostics.subtitle' => '最近的警告和错误。日志会写入磁盘用于错误报告。',
 			'preferences.diagnostics.empty' => '本次会话没有记录警告或错误。',
@@ -2543,12 +2551,12 @@ extension on TranslationsZh {
 			'keybindings.quickLookPrevFile' => '上一个文件',
 			'keybindings.quickLookNextFile' => '下一个文件',
 			'keybindings.quickLookPrevFileEdit' => '编辑时上一个文件',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.quickLookNextFileEdit' => '编辑时下一个文件',
 			'keybindings.quickLookSave' => '保存更改',
 			'keybindings.cursorUp' => '上移',
 			'keybindings.cursorDown' => '下移',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.pageUp' => '上翻一页',
 			'keybindings.pageDown' => '下翻一页',
 			'keybindings.home' => '跳到开头',

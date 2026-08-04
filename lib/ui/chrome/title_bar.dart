@@ -1,10 +1,11 @@
-import 'dart:io' show Process, ProcessStartMode;
+import 'dart:io' show File, Process, ProcessStartMode;
 
 import 'package:signals/signals_flutter.dart';
 import '../window/move_window.dart';
 import '../window/window_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:waydir/ui/icons/waydir_icons.dart';
 
 import '../../app/app_info.dart';
@@ -15,6 +16,7 @@ import '../../features/command_palette/command_palette_launcher.dart';
 import '../../features/help/changelog_dialog.dart';
 import '../../features/help/help_dialog.dart';
 import '../../features/navigation/shortcut_bar_store.dart';
+import '../../features/navigation/shortcut_icon_loader.dart';
 import '../../features/plugins/plugin_icons.dart';
 import '../../features/plugins/plugin_models.dart';
 import '../../features/settings/keybindings_help_view.dart';
@@ -525,11 +527,23 @@ class _ShortcutBarState extends State<ShortcutBar> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   for (final item in customItems)
-                    _ShortcutButton(
-                      icon: WaydirIconsRegular.folderOpen,
-                      tooltip: item.label,
-                      onTap: () => _openItem(item),
-                    ),
+                    if (item.label.trim().isEmpty && item.target.trim().isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: SizedBox(
+                          width: 1,
+                          height: 20,
+                          child: ColoredBox(color: AppColors.bgDivider),
+                        ),
+                      )
+                    else
+                      _ShortcutItemButton(
+                        item: item,
+                        tooltip: item.label.trim().isEmpty
+                            ? item.target
+                            : item.label,
+                        onTap: () => _openItem(item),
+                      ),
                 ],
               );
             },
@@ -554,6 +568,100 @@ class _ShortcutBarState extends State<ShortcutBar> {
           ),
           const SizedBox(width: 16),
         ],
+      ),
+    );
+  }
+}
+
+class _ShortcutItemButton extends StatefulWidget {
+  final ShortcutBarItem item;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _ShortcutItemButton({
+    required this.item,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  State<_ShortcutItemButton> createState() => _ShortcutItemButtonState();
+}
+
+class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
+  bool _hovered = false;
+  late final bool _isSvg;
+  late final Future<ImageProvider?> _iconFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    final spec = widget.item.icon;
+    _isSvg = isSvgIconSpec(spec);
+    _iconFuture = resolveShortcutIcon(spec);
+  }
+
+  Widget _glyph() {
+    return Icon(
+      WaydirIconsRegular.folderOpen,
+      size: 16,
+      color: _hovered ? AppColors.fg : AppColors.fgMuted,
+    );
+  }
+
+  Widget _icon() {
+    if (_isSvg) {
+      final path = svgIconPath(widget.item.icon);
+      if (path != null) {
+        return SvgPicture.file(
+          File(path),
+          width: 16,
+          height: 16,
+          fit: BoxFit.contain,
+        );
+      }
+    }
+
+    return FutureBuilder<ImageProvider?>(
+      future: _iconFuture,
+      builder: (context, snapshot) {
+        final provider = snapshot.data;
+        if (provider != null) {
+          return Image(
+            image: provider,
+            width: 16,
+            height: 16,
+            fit: BoxFit.contain,
+            errorBuilder: (_, _, _) => _glyph(),
+          );
+        }
+
+        return _glyph();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: widget.tooltip,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: Container(
+            width: 28,
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: _hovered ? AppColors.bgHover : Colors.transparent,
+            ),
+            child: _icon(),
+          ),
+        ),
       ),
     );
   }
