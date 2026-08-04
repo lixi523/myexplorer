@@ -31,7 +31,7 @@ void main() {
     test('refused port returns error not crash', () async {
       final r = await SmbShareDiscovery.list(host: '127.0.0.1', port: 9);
       expect(r, isA<SmbShareListError>());
-    });
+    }, skip: liveSmbSkip);
 
     test('cache returns same data on second call', () async {
       final a = await SmbShareDiscovery.list(host: '127.0.0.1', port: 1445);

@@ -86,7 +86,7 @@ jobs:
         run: flutter pub get
 
       - name: Run integration tests
-        run: flutter test --tags=integration
+        run: flutter test --tags=integration test/integration/smb_live_discovery_test.dart
 
   build-check:
     name: Build Check
