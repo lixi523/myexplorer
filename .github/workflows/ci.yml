@@ -5,10 +5,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze & Format
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -17,6 +22,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.38.x'
           cache: true
 
       - name: Get dependencies
@@ -29,7 +35,8 @@ jobs:
         run: flutter analyze --fatal-infos --fatal-warnings
 
   unit-tests:
-    name: Unit tests
+    name: Unit Tests
+    needs: analyze
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -38,6 +45,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.38.x'
           cache: true
 
       - name: Get dependencies
@@ -47,14 +55,15 @@ jobs:
         run: flutter test --exclude-tags=integration --coverage
 
       - name: Upload coverage
-        if: success()
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: coverage/lcov.info
 
   integration-tests:
-    name: Integration tests
+    name: Integration Tests
+    needs: analyze
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -63,12 +72,13 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.38.x'
           cache: true
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build waydir_core
+      - name: Build and vendor waydir_core
         shell: pwsh
         run: scripts\build_waydir_core_windows.ps1
 
@@ -77,3 +87,36 @@ jobs:
 
       - name: Run integration tests
         run: flutter test --tags=integration
+
+  build-check:
+    name: Build Check
+    needs: analyze
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.38.x'
+          cache: true
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build and vendor waydir_core
+        shell: pwsh
+        run: scripts\build_waydir_core_windows.ps1
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-build
+          path: build/windows/x64/runner/Release/
