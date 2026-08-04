@@ -57,6 +57,7 @@ void main() {
         );
         expect(r, anyOf(isA<SmbShareListOk>(), isA<SmbShareListError>()));
       },
+      skip: liveSmbSkip,
     );
   });
 
