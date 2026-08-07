@@ -10,7 +10,11 @@ import '../../ui/widgets/app_text_field.dart';
 
 /// Prompts for a shell-style glob (e.g. `*.jpg`) and returns it, or null if
 /// cancelled / left empty.
-Future<String?> showSelectPatternDialog(BuildContext context) {
+Future<String?> showSelectPatternDialog(
+  BuildContext context, {
+  String? title,
+  String? confirmLabel,
+}) {
   final controller = TextEditingController(text: '*');
   controller.selection = TextSelection(
     baseOffset: 0,
@@ -26,6 +30,8 @@ Future<String?> showSelectPatternDialog(BuildContext context) {
           type: MaterialType.transparency,
           child: _SelectPatternDialog(
             controller: controller,
+            title: title,
+            confirmLabel: confirmLabel,
             onCancel: () => Navigator.of(ctx).pop(),
             onSubmit: (value) => Navigator.of(ctx).pop(value),
           ),
@@ -37,6 +43,8 @@ Future<String?> showSelectPatternDialog(BuildContext context) {
 
 class _SelectPatternDialog extends StatefulWidget {
   final TextEditingController controller;
+  final String? title;
+  final String? confirmLabel;
   final VoidCallback onCancel;
   final ValueChanged<String> onSubmit;
 
@@ -44,6 +52,8 @@ class _SelectPatternDialog extends StatefulWidget {
     required this.controller,
     required this.onCancel,
     required this.onSubmit,
+    this.title,
+    this.confirmLabel,
   });
 
   @override
@@ -79,7 +89,7 @@ class _SelectPatternDialogState extends State<_SelectPatternDialog> {
   Widget build(BuildContext context) {
     return AppModal(
       icon: WaydirIconsRegular.selectionAll,
-      title: t.selectPattern.title,
+      title: widget.title ?? t.selectPattern.title,
       width: 360,
       padding: const EdgeInsets.all(16),
       onClose: widget.onCancel,
@@ -110,7 +120,7 @@ class _SelectPatternDialogState extends State<_SelectPatternDialog> {
                 child: IgnorePointer(
                   ignoring: !_valid,
                   child: DialogButton(
-                    label: t.selectPattern.select,
+                    label: widget.confirmLabel ?? t.selectPattern.select,
                     color: AppColors.accent,
                     onTap: _submit,
                   ),

@@ -126,12 +126,35 @@ class SelectionController {
   }
 
   int selectByPattern(String pattern) {
+    final re = _compilePattern(pattern);
+    if (re == null) return 0;
+    final matched = _vf.where((f) => re.hasMatch(f.name)).toList();
+    selectedPaths.value = Set<String>.from(matched.map((f) => f.path));
+
+    return matched.length;
+  }
+
+  /// Removes all visible files matching [pattern] from the current selection.
+  int deselectByPattern(String pattern) {
+    final re = _compilePattern(pattern);
+    if (re == null) return 0;
+    final matched = _vf.where((f) => re.hasMatch(f.name)).toList();
+    selectedPaths.value = Set<String>.from(
+      selectedPaths.value.difference(
+        matched.map((f) => f.path).toSet(),
+      ),
+    );
+
+    return matched.length;
+  }
+
+  RegExp? _compilePattern(String pattern) {
     final globs = pattern
         .split(',')
         .map((g) => g.trim())
         .where((g) => g.isNotEmpty)
         .toList();
-    if (globs.isEmpty) return 0;
+    if (globs.isEmpty) return null;
     final alternatives = globs.map((glob) {
       final buf = StringBuffer();
       for (final ch in glob.split('')) {
@@ -150,16 +173,11 @@ class SelectionController {
 
       return buf.toString();
     });
-    final RegExp re;
     try {
-      re = RegExp('^(?:${alternatives.join('|')})\$', caseSensitive: false);
+      return RegExp('^(?:${alternatives.join('|')})\$', caseSensitive: false);
     } catch (e) {
-      return 0;
+      return null;
     }
-    final matched = _vf.where((f) => re.hasMatch(f.name)).toList();
-    selectedPaths.value = Set<String>.from(matched.map((f) => f.path));
-
-    return matched.length;
   }
 
   void deselectAll() {

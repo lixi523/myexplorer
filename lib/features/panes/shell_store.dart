@@ -31,7 +31,9 @@ class ShellStore {
   /// preferences dialog) can open a tab without threading the store through.
   static ShellStore? current;
 
-  final isDual = signal(false);
+  /// Always true: the app is permanently in dual-pane mode and can never
+  /// switch back to a single pane.
+  final isDual = signal(true);
   final panes = signal<List<PaneStore>>([]);
   final activePaneIndex = signal(0);
   final splitRatio = signal(0.5);
@@ -101,14 +103,12 @@ class ShellStore {
       log.error('shell.restore', 'Session restore failed', error: e, stack: st);
     }
     if (!ready.value) {
+      final home = PlatformPaths.homePath;
       batch(() {
         panes.value = [
-          PaneStore(
-            operationStore: operationStore,
-            initialPath: PlatformPaths.homePath,
-          ),
+          PaneStore(operationStore: operationStore, initialPath: home),
+          PaneStore(operationStore: operationStore, initialPath: home),
         ];
-        isDual.value = false;
         activePaneIndex.value = 0;
         ready.value = true;
       });
@@ -139,12 +139,11 @@ class ShellStore {
     }
 
     if (savedTabs.isEmpty) {
+      final initial = initialPathFor();
       batch(() {
         panes.value = [
-          PaneStore(
-            operationStore: operationStore,
-            initialPath: initialPathFor(),
-          ),
+          PaneStore(operationStore: operationStore, initialPath: initial),
+          PaneStore(operationStore: operationStore, initialPath: initial),
         ];
         ready.value = true;
       });
@@ -173,18 +172,31 @@ class ShellStore {
         );
       }
 
-      final wantDual = s.sessionIsDual.value && restored.length >= 2;
+      // The app is permanently dual-pane: always restore at least two panes.
       final activeIdx = s.sessionActivePaneIndex.value;
+      final restoredPanes = _withMinimumTwoPanes(restored);
       batch(() {
-        panes.value = restored;
-        isDual.value = wantDual;
+        panes.value = restoredPanes;
         splitRatio.value = s.sessionSplitRatio.value.clamp(0.2, 0.8);
-        activePaneIndex.value = wantDual
-            ? activeIdx.clamp(0, restored.length - 1)
-            : 0;
+        activePaneIndex.value = activeIdx.clamp(0, restoredPanes.length - 1);
         ready.value = true;
       });
     }
+  }
+
+  /// Ensures the pane list has at least two panes (the app never runs in a
+  /// single-pane layout). The second pane mirrors the first pane's active
+  /// path when none was restored.
+  List<PaneStore> _withMinimumTwoPanes(List<PaneStore> panes) {
+    if (panes.length >= 2) return panes;
+    final first = panes.first;
+    final mirrorPath = first.tabs.activeTab.value.store.currentPath.value;
+    final second = PaneStore(
+      operationStore: operationStore,
+      initialPath: mirrorPath,
+    );
+
+    return [first, second];
   }
 
   void _buildLaunchSession(LaunchOptions launch) {
@@ -195,26 +207,28 @@ class ShellStore {
     ];
     if (specs.isEmpty) specs.add(TabSpec(PlatformPaths.homePath));
 
-    final wantDual = launch.split && specs.length >= 2;
+    // Always start in dual-pane mode: split the specs across two panes and
+    // mirror the first folder when there is only one.
+    final List<TabSpec> firstSpecs;
+    final List<TabSpec> secondSpecs;
+    if (specs.length >= 2) {
+      firstSpecs = [specs.first, ...specs.skip(2)];
+      secondSpecs = [specs[1]];
+    } else {
+      firstSpecs = specs;
+      secondSpecs = [specs.first];
+    }
     batch(() {
-      if (wantDual) {
-        panes.value = [
-          PaneStore.fromSpecs(
-            operationStore: operationStore,
-            specs: [specs.first, ...specs.skip(2)],
-          ),
-          PaneStore.fromSpecs(
-            operationStore: operationStore,
-            specs: [specs[1]],
-          ),
-        ];
-        isDual.value = true;
-      } else {
-        panes.value = [
-          PaneStore.fromSpecs(operationStore: operationStore, specs: specs),
-        ];
-        isDual.value = false;
-      }
+      panes.value = [
+        PaneStore.fromSpecs(
+          operationStore: operationStore,
+          specs: firstSpecs,
+        ),
+        PaneStore.fromSpecs(
+          operationStore: operationStore,
+          specs: secondSpecs,
+        ),
+      ];
       activePaneIndex.value = 0;
       ready.value = true;
     });
@@ -269,49 +283,6 @@ class ShellStore {
     } catch (e, st) {
       log.error('shell.persist', 'Session persist failed', error: e, stack: st);
     }
-  }
-
-  void toggleDual() {
-    if (isDual.value) {
-      exitDual();
-    } else {
-      enterDual();
-    }
-  }
-
-  void enterDual() {
-    if (isDual.value) return;
-    final currentPath = activeStore.value!.currentPath.value;
-    final secondPane = PaneStore(
-      operationStore: operationStore,
-      initialPath: currentPath,
-    );
-    final active = TerminalLayout.reassignForDual(activeTerminalId.value, [
-      for (final t in terminals.value) TerminalRef(t.id, t.originPane),
-    ]);
-    batch(() {
-      panes.value = [panes.value.first, secondPane];
-      activePaneIndex.value = 0;
-      activeTerminalId.value = active;
-      isDual.value = true;
-    });
-  }
-
-  void exitDual() {
-    if (!isDual.value) return;
-    final closing = panes.value[1];
-    final visible = terminalVisible.value;
-    final active = TerminalLayout.mergeForSingle(activeTerminalId.value, [
-      for (final t in terminals.value) t.id,
-    ], activePaneIndex.value);
-    batch(() {
-      activePaneIndex.value = 0;
-      panes.value = [panes.value.first];
-      terminalVisible.value = TerminalLayout.mergeVisibilityForSingle(visible);
-      activeTerminalId.value = active;
-      isDual.value = false;
-    });
-    closing.dispose();
   }
 
   void setActivePane(int index) {

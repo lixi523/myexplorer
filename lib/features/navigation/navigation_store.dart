@@ -1977,7 +1977,11 @@ class NavigationStore {
       return;
     }
     try {
-      await FileSystemService.createDirectory(physicalNewPath);
+      if (pending.type == FileItemType.file) {
+        await FileSystemService.createFile(physicalNewPath);
+      } else {
+        await FileSystemService.createDirectory(physicalNewPath);
+      }
     } catch (e) {
       renameError.value = t.toast.renameError(message: e.toString());
       renameAttempt.value = renameAttempt.value + 1;
@@ -2110,6 +2114,9 @@ class NavigationStore {
 
   int selectByPattern(String pattern) =>
       _selectionController.selectByPattern(pattern);
+
+  int deselectByPattern(String pattern) =>
+      _selectionController.deselectByPattern(pattern);
 
   void deselectAll() => _selectionController.deselectAll();
 

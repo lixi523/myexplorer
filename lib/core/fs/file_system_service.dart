@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:typed_data';
 import 'package:path/path.dart' as p;
 import '../archive/archive_path.dart';
 import '../archive/archive_reader.dart';
@@ -16,6 +17,7 @@ import '../settings/settings_store.dart';
 import '../terminal/terminal.dart';
 import '../../i18n/strings.g.dart';
 import 'fs_worker_pool.dart';
+import 'sftp_fs.dart';
 import 'safe_file_replace.dart';
 import 'waydir_core_loader.dart';
 import 'trash_service.dart';
@@ -200,6 +202,15 @@ class FileSystemService {
 
   static Future<void> createDirectory(String path) =>
       FsWorkerPool.instance.createDirectory(path);
+
+  /// Creates an empty file. SFTP paths write an empty payload remotely;
+  /// local / SMB paths use [File.create].
+  static Future<void> createFile(String path) async {
+    if (PlatformPaths.isSftpUri(path)) {
+      return const SftpFs().writeBytes(path, Uint8List(0));
+    }
+    await File(path).create();
+  }
 
   static Future<void> openInTerminal(String directory) =>
       TerminalService.openInDirectory(

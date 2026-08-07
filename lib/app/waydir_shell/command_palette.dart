@@ -118,7 +118,6 @@ mixin _WaydirCommandPaletteMixin
       _cmd('close_tab', _closeActiveTab, enabled: tabCount > 1),
       _cmd('next_tab', _selectNextTab, enabled: tabCount > 1),
       _cmd('prev_tab', _selectPrevTab, enabled: tabCount > 1),
-      _cmd('toggle_dual', _shell.toggleDual),
       _cmd('compare', _shell.compare.toggle, enabled: dual),
       _cmd(
         'dual_copy',

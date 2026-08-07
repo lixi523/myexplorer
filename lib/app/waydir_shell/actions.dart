@@ -376,14 +376,22 @@ mixin _WaydirActionsMixin on State<WaydirShell>, _WaydirStateBase {
     ).then((_) => _restoreFocus());
   }
 
-  void _openSelectPattern() {
+  void _openSelectPattern({bool deselect = false}) {
     if (_isModalRouteOnTop()) return;
     final store = _active;
-    showSelectPatternDialog(context).then((pattern) {
+    showSelectPatternDialog(
+      context,
+      title: deselect ? t.menu.deselectGroup : null,
+      confirmLabel: deselect ? t.menu.deselectGroup : null,
+    ).then((pattern) {
       if (!mounted) return;
       _restoreFocus();
       if (pattern == null) return;
-      store.selectByPattern(pattern);
+      if (deselect) {
+        store.deselectByPattern(pattern);
+      } else {
+        store.selectByPattern(pattern);
+      }
     });
   }
 

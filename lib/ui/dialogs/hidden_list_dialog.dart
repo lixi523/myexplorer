@@ -110,7 +110,6 @@ class _HiddenListDialogState extends State<_HiddenListDialog> {
             children: [
               _ActionButton(
                 label: t.hiddenList.add,
-                primary: true,
                 busy: _busy,
                 onTap: _add,
               ),
@@ -204,27 +203,22 @@ class _PathRow extends StatelessWidget {
 class _ActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
-  final bool primary;
   final bool busy;
 
   const _ActionButton({
     required this.label,
     required this.onTap,
-    this.primary = false,
     this.busy = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final fg = primary ? AppColors.fgAccent : AppColors.fg;
-    final bg = primary ? AppColors.accent : AppColors.bgSidebar;
-
     return GestureDetector(
       onTap: busy ? null : onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: bg,
+          color: AppColors.bgSidebar,
           border: Border.all(color: AppColors.borderColor),
         ),
         child: busy
@@ -233,7 +227,7 @@ class _ActionButton extends StatelessWidget {
                 height: 12,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(label, style: context.txt.row.copyWith(color: fg)),
+            : Text(label, style: context.txt.row.copyWith(color: AppColors.fg)),
       ),
     );
   }

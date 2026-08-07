@@ -86,12 +86,6 @@ mixin _WaydirKeyboardMixin
       }
     }
 
-    if (AppShortcuts.matches('toggle_dual', key)) {
-      _shell.toggleDual();
-
-      return KeyEventResult.handled;
-    }
-
     if (AppShortcuts.matches('compare', key) && _shell.isDual.value) {
       _shell.compare.toggle();
 

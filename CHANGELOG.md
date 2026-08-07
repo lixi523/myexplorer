@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-08-07
+
+### Added
+- Vertical center shortcut bar between the two panes in dual-pane mode (new file, new folder, copy/move to other pane, delete, tree/list/grid view, select/deselect by pattern, invert selection, search, sync, multi rename, toggle hidden, properties).
+- "New File" support: `startCreate` can now create an empty file (local and SFTP).
+- "Deselect by pattern" support for un-selecting a group of files by glob.
+
+### Changed
+- The app is now permanently in dual-pane mode; the single-pane layout and the toggle entry (menu / shortcut / command palette) were removed.
+- Horizontal shortcut bar (title bar) trimmed: removed back/forward/up/refresh/new folder/copy/cut/paste/delete/properties buttons; the center shortcut bar now hosts these actions.
+- Dialog primary buttons (hidden list "Add", shortcut bar "Add") now use the same muted styling as the other buttons.
+
 ## [1.2.0] - 2026-08-07
 
 ### Added

@@ -65,7 +65,11 @@
     "verifyChecksum": "Verify Checksum…",
     "sortBy": "Sort By",
     "sortAscending": "Ascending",
-    "sortDescending": "Descending"
+    "sortDescending": "Descending",
+    "copyToOtherPane": "Copy to Other Pane",
+    "moveToOtherPane": "Move to Other Pane",
+    "selectGroup": "Select Group",
+    "deselectGroup": "Deselect Group"
   },
   "multiRename": {
     "title": "Multi Rename",
@@ -976,7 +980,9 @@
     "listView": "List view",
     "treeView": "Tree view",
     "gridView": "Grid view",
-    "more": "More"
+    "more": "More",
+    "newFile": "New File",
+    "sync": "Sync"
   },
   "notifications": {
     "title": "Notifications",

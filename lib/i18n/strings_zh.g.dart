@@ -160,6 +160,10 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get sortBy => '排序方式';
 	@override String get sortAscending => '升序';
 	@override String get sortDescending => '降序';
+	@override String get copyToOtherPane => '复制到对面窗口';
+	@override String get moveToOtherPane => '移动到对面窗口';
+	@override String get selectGroup => '选一组';
+	@override String get deselectGroup => '不选一组';
 }
 
 // Path: multiRename
@@ -756,6 +760,8 @@ class _Translations$toolbar$zh extends Translations$toolbar$en {
 	@override String get treeView => '树形视图';
 	@override String get gridView => '网格视图';
 	@override String get more => '更多';
+	@override String get newFile => '新建文件';
+	@override String get sync => '同步';
 }
 
 // Path: notifications
@@ -2137,6 +2143,10 @@ extension on TranslationsZh {
 			'menu.sortBy' => '排序方式',
 			'menu.sortAscending' => '升序',
 			'menu.sortDescending' => '降序',
+			'menu.copyToOtherPane' => '复制到对面窗口',
+			'menu.moveToOtherPane' => '移动到对面窗口',
+			'menu.selectGroup' => '选一组',
+			'menu.deselectGroup' => '不选一组',
 			'multiRename.title' => '批量重命名',
 			'multiRename.subtitle' => ({required Object count}) => '已选择 ${count} 个项目',
 			'multiRename.modeTemplate' => '模板',
@@ -2588,12 +2598,12 @@ extension on TranslationsZh {
 			'keybindings.conflict' => ({required Object action}) => '已被 ${action} 使用',
 			'keybindings.dualHint' => '双栏',
 			'keybindings.openItem' => '打开',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.goUp' => '返回上级',
 			'keybindings.goBack' => '后退',
 			'keybindings.goForward' => '前进',
 			'keybindings.refresh' => '刷新',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.focusPath' => '聚焦路径栏',
 			'keybindings.quickLook' => '打开快速预览',
 			'keybindings.quickLookClose' => '关闭快速预览',
@@ -2858,6 +2868,8 @@ extension on TranslationsZh {
 			'toolbar.treeView' => '树形视图',
 			'toolbar.gridView' => '网格视图',
 			'toolbar.more' => '更多',
+			'toolbar.newFile' => '新建文件',
+			'toolbar.sync' => '同步',
 			'notifications.title' => '通知',
 			'notifications.empty' => '暂无通知',
 			'notifications.clear' => '清除',

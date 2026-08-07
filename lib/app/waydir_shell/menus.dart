@@ -1375,14 +1375,6 @@ mixin _WaydirMenuMixin
               label: t.menu.view,
               items: [
                 ContextMenuItem(
-                  icon: WaydirIconsRegular.columns,
-                  label: t.menu.dualPaneMode,
-                  action: 'toggle_dual',
-                  isToggle: true,
-                  toggleSignal: _shell.isDual,
-                ),
-                ContextMenuItem.divider,
-                ContextMenuItem(
                   icon: WaydirIconsRegular.list,
                   label: t.toolbar.listView,
                   action: 'view_list',
@@ -1423,8 +1415,6 @@ mixin _WaydirMenuMixin
               ],
               onSelect: (action) {
                 switch (action) {
-                  case 'toggle_dual':
-                    _shell.toggleDual();
                   case 'view_list':
                     SettingsStore.instance.fileViewMode.value = 'list';
                   case 'view_tree':

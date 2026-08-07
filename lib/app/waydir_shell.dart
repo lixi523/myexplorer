@@ -45,6 +45,7 @@ import '../features/navigation/status_bar.dart';
 import '../features/operations/operation_store.dart';
 import '../features/panes/pane_view.dart';
 import '../features/panes/pane_divider.dart';
+import '../features/panes/center_shortcut_bar.dart';
 import '../features/panes/shell_store.dart';
 import '../features/panes/terminal_tab.dart';
 import '../features/plugins/plugin_bar.dart';
@@ -279,20 +280,12 @@ class _WaydirShellState extends State<WaydirShell>
       builder: (context, constraints) {
         return SignalBuilder(
           builder: (_) {
-            final dual = _shell.isDual.value;
             final activeIdx = _shell.activePaneIndex.value;
-
-            if (!dual) {
-              return _buildPane(
-                0,
-                isActive: true,
-                onActivate: _restoreFocus,
-                isSingleMode: true,
-              );
-            }
 
             final ratio = _shell.splitRatio.value;
             final leftWidth = constraints.maxWidth * ratio;
+            final barWidth = CenterShortcutBar.barWidth;
+            final leftPaneWidth = leftWidth - barWidth / 2;
 
             return Stack(
               children: [
@@ -300,7 +293,7 @@ class _WaydirShellState extends State<WaydirShell>
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  width: leftWidth,
+                  width: leftPaneWidth,
                   child: _buildPane(
                     0,
                     isActive: activeIdx == 0,
@@ -309,7 +302,7 @@ class _WaydirShellState extends State<WaydirShell>
                   ),
                 ),
                 Positioned(
-                  left: leftWidth,
+                  left: leftWidth + barWidth / 2,
                   top: 0,
                   right: 0,
                   bottom: 0,
@@ -321,7 +314,16 @@ class _WaydirShellState extends State<WaydirShell>
                   ),
                 ),
                 Positioned(
-                  left: leftWidth - PaneDivider.hitWidth / 2,
+                  left: leftWidth - barWidth / 2,
+                  top: 0,
+                  bottom: 0,
+                  width: barWidth,
+                  child: CenterShortcutBar(
+                    buttons: _buildCenterShortcutButtons(),
+                  ),
+                ),
+                Positioned(
+                  left: leftWidth + barWidth / 2 - PaneDivider.hitWidth / 2,
                   top: 0,
                   bottom: 0,
                   child: PaneDivider(
@@ -335,6 +337,114 @@ class _WaydirShellState extends State<WaydirShell>
         );
       },
     );
+  }
+
+  List<CenterShortcutButton> _buildCenterShortcutButtons() {
+    final store = _active;
+    final viewMode = SettingsStore.instance.fileViewMode;
+
+    return [
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.file,
+        tooltip: t.toolbar.newFile,
+        onTap: () => store.startCreate(type: FileItemType.file),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.folderPlus,
+        tooltip: t.toolbar.newFolder,
+        onTap: store.startCreate,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.copy,
+        tooltip: t.menu.copyToOtherPane,
+        onTap: () => _dualPaneTransfer(store, move: false),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.arrowRight,
+        tooltip: t.menu.moveToOtherPane,
+        onTap: () => _dualPaneTransfer(store, move: true),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.trash,
+        tooltip: t.menu.delete,
+        onTap: _confirmAndDelete,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.treeStructure,
+        tooltip: t.toolbar.treeView,
+        isActive: () => viewMode.value == 'tree',
+        onTap: _setTreeView,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.list,
+        tooltip: t.toolbar.listView,
+        isActive: () => viewMode.value == 'list',
+        onTap: _setListView,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.squaresFour,
+        tooltip: t.toolbar.gridView,
+        isActive: () => viewMode.value == 'grid',
+        onTap: _setGridView,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.selectionAll,
+        tooltip: t.menu.selectGroup,
+        onTap: () => _openSelectPattern(),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.prohibit,
+        tooltip: t.menu.deselectGroup,
+        onTap: () => _openSelectPattern(deselect: true),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.arrowsLeftRight,
+        tooltip: t.menu.invertSelection,
+        onTap: store.invertSelection,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.magnifyingGlass,
+        tooltip: t.toolbar.search,
+        isActive: () => store.searchActive.value,
+        onTap: () => store.searchActive.value
+            ? store.closeSearch()
+            : store.openSearch(),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.arrowsClockwise,
+        tooltip: t.toolbar.sync,
+        isActive: () => _shell.compare.active.value,
+        onTap: () => _shell.compare.toggle(),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.pencilSimple,
+        tooltip: t.menu.multiRename,
+        onTap: () => _multiRename(store),
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.eye,
+        tooltip: t.menu.showHidden,
+        isActive: () => SettingsStore.instance.showHiddenDefault.value,
+        onTap: _toggleShowHiddenGlobal,
+      ),
+      CenterShortcutButton(
+        icon: WaydirIconsRegular.info,
+        tooltip: t.menu.properties,
+        onTap: () => _openPropertiesFromMenu(store),
+      ),
+    ];
+  }
+
+  void _setTreeView() {
+    SettingsStore.instance.fileViewMode.value = 'tree';
+  }
+
+  void _setListView() {
+    SettingsStore.instance.fileViewMode.value = 'list';
+  }
+
+  void _setGridView() {
+    SettingsStore.instance.fileViewMode.value = 'grid';
   }
 
   Map<String, dynamic> _pluginBarContext(

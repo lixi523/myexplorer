@@ -275,6 +275,18 @@ class Translations$menu$en {
 
 	/// en: 'Descending'
 	String get sortDescending => 'Descending';
+
+	/// en: 'Copy to Other Pane'
+	String get copyToOtherPane => 'Copy to Other Pane';
+
+	/// en: 'Move to Other Pane'
+	String get moveToOtherPane => 'Move to Other Pane';
+
+	/// en: 'Select Group'
+	String get selectGroup => 'Select Group';
+
+	/// en: 'Deselect Group'
+	String get deselectGroup => 'Deselect Group';
 }
 
 // Path: multiRename
@@ -1638,6 +1650,12 @@ class Translations$toolbar$en {
 
 	/// en: 'More'
 	String get more => 'More';
+
+	/// en: 'New File'
+	String get newFile => 'New File';
+
+	/// en: 'Sync'
+	String get sync => 'Sync';
 }
 
 // Path: notifications
@@ -4158,6 +4176,10 @@ extension on Translations {
 			'menu.sortBy' => 'Sort By',
 			'menu.sortAscending' => 'Ascending',
 			'menu.sortDescending' => 'Descending',
+			'menu.copyToOtherPane' => 'Copy to Other Pane',
+			'menu.moveToOtherPane' => 'Move to Other Pane',
+			'menu.selectGroup' => 'Select Group',
+			'menu.deselectGroup' => 'Deselect Group',
 			'multiRename.title' => 'Multi Rename',
 			'multiRename.subtitle' => ({required Object count}) => '${count} items selected',
 			'multiRename.modeTemplate' => 'Template',
@@ -4609,12 +4631,12 @@ extension on Translations {
 			'keybindings.conflict' => ({required Object action}) => 'Already used by ${action}',
 			'keybindings.dualHint' => 'dual',
 			'keybindings.openItem' => 'Open',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.goUp' => 'Go up',
 			'keybindings.goBack' => 'Go back',
 			'keybindings.goForward' => 'Go forward',
 			'keybindings.refresh' => 'Refresh',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.focusPath' => 'Focus path bar',
 			'keybindings.quickLook' => 'Open Quick Look',
 			'keybindings.quickLookClose' => 'Close Quick Look',
@@ -4879,6 +4901,8 @@ extension on Translations {
 			'toolbar.treeView' => 'Tree view',
 			'toolbar.gridView' => 'Grid view',
 			'toolbar.more' => 'More',
+			'toolbar.newFile' => 'New File',
+			'toolbar.sync' => 'Sync',
 			'notifications.title' => 'Notifications',
 			'notifications.empty' => 'No notifications yet',
 			'notifications.clear' => 'Clear',

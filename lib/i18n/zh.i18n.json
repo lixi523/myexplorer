@@ -65,7 +65,11 @@
     "verifyChecksum": "校验校验和…",
     "sortBy": "排序方式",
     "sortAscending": "升序",
-    "sortDescending": "降序"
+    "sortDescending": "降序",
+    "copyToOtherPane": "复制到对面窗口",
+    "moveToOtherPane": "移动到对面窗口",
+    "selectGroup": "选一组",
+    "deselectGroup": "不选一组"
   },
   "multiRename": {
     "title": "批量重命名",
@@ -976,7 +980,9 @@
     "listView": "列表视图",
     "treeView": "树形视图",
     "gridView": "网格视图",
-    "more": "更多"
+    "more": "更多",
+    "newFile": "新建文件",
+    "sync": "同步"
   },
   "notifications": {
     "title": "通知",

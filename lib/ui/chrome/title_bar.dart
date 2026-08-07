@@ -463,62 +463,6 @@ class _ShortcutBarState extends State<ShortcutBar> {
       child: Row(
         children: [
           const SizedBox(width: 16),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.arrowLeft,
-            tooltip: t.keybindings.goBack,
-            onTap: () => widget.onAction('go_back'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.arrowRight,
-            tooltip: t.keybindings.goForward,
-            onTap: () => widget.onAction('go_forward'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.arrowUp,
-            tooltip: t.keybindings.goUp,
-            onTap: () => widget.onAction('go_up'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.arrowClockwise,
-            tooltip: t.keybindings.refresh,
-            onTap: () => widget.onAction('refresh'),
-          ),
-          const SizedBox(width: 12),
-          Container(width: 1, color: AppColors.bgDivider),
-          const SizedBox(width: 12),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.folderPlus,
-            tooltip: t.keybindings.newFolder,
-            onTap: () => widget.onAction('new_folder'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.copy,
-            tooltip: t.keybindings.copy,
-            onTap: () => widget.onAction('copy'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.scissors,
-            tooltip: t.keybindings.cut,
-            onTap: () => widget.onAction('cut'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.clipboard,
-            tooltip: t.keybindings.paste,
-            onTap: () => widget.onAction('paste'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.trashSimple,
-            tooltip: t.keybindings.delete,
-            onTap: () => widget.onAction('trash'),
-          ),
-          _ShortcutButton(
-            icon: WaydirIconsRegular.info,
-            tooltip: t.menu.properties,
-            onTap: () => widget.onAction('properties'),
-          ),
-          const SizedBox(width: 12),
-          Container(width: 1, color: AppColors.bgDivider),
-          const SizedBox(width: 12),
           SignalBuilder(
             builder: (context) {
               final customItems = _store.items.value;
