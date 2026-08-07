@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Waydir",
+    "title": "MyExplorer",
     "tagline": "Navigate your files. Your way.",
     "description": "A fast, keyboard-driven desktop file manager built with Flutter."
   },
@@ -30,6 +30,8 @@
     "restoreItems(one)": "Restore 1 Item",
     "restoreItems(other)": "Restore $count Items",
     "showHidden": "Show Hidden Files",
+    "hideSelected": "Add to Hidden List",
+    "hiddenList": "Hidden List…",
     "selectAll": "Select All",
     "selectByPattern": "Select by Pattern…",
     "deselectAll": "Deselect All",
@@ -455,8 +457,8 @@
       "gettingStarted": {
         "title": "Getting Started",
         "welcome": {
-          "title": "Welcome to Waydir",
-          "body": "Waydir is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization.\n\n- Use the tree on the left to jump between topics.\n- Most actions have a keyboard shortcut, shown inline as `Ctrl+C`.\n- Every shortcut can be rebound in **Preferences -> Keyboard**.\n\nPick a topic to get started, or read straight through from the top."
+          "title": "Welcome to MyExplorer",
+          "body": "MyExplorer is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization.\n\n- Use the tree on the left to jump between topics.\n- Most actions have a keyboard shortcut, shown inline as `Ctrl+C`.\n- Every shortcut can be rebound in **Preferences -> Keyboard**.\n\nPick a topic to get started, or read straight through from the top."
         },
         "interface": {
           "title": "The Interface",
@@ -464,14 +466,14 @@
         },
         "keyboardBasics": {
           "title": "Keyboard-First Basics",
-          "body": "Waydir is designed to be driven from the keyboard.\n\n- `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up.\n- Start typing to jump to a matching file (type-ahead).\n- `Ctrl+F` searches, `Space` previews, `F2` renames.\n- Almost nothing requires the mouse - and every binding is customizable."
+          "body": "MyExplorer is designed to be driven from the keyboard.\n\n- `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up.\n- Start typing to jump to a matching file (type-ahead).\n- `Ctrl+F` searches, `Space` previews, `F2` renames.\n- Almost nothing requires the mouse - and every binding is customizable."
         }
       },
       "navigating": {
         "title": "Navigating",
         "moving": {
           "title": "Moving Around",
-          "body": "Browse without reaching for the mouse. Waydir keeps the cursor, selection and history close to the main file list.\n\n- `↑` / `↓` move the cursor through visible files.\n- `Enter` opens the selected item; double-click does the same.\n- `Backspace` goes to the parent folder.\n- `Alt+←` / `Alt+→` step back and forward through folder history.\n- `Ctrl+R` refreshes the current folder."
+          "body": "Browse without reaching for the mouse. MyExplorer keeps the cursor, selection and history close to the main file list.\n\n- `↑` / `↓` move the cursor through visible files.\n- `Enter` opens the selected item; double-click does the same.\n- `Backspace` goes to the parent folder.\n- `Alt+←` / `Alt+→` step back and forward through folder history.\n- `Ctrl+R` refreshes the current folder."
         },
         "breadcrumb": {
           "title": "Breadcrumb Bar",
@@ -541,6 +543,10 @@
         "tags": {
           "title": "Color Tags",
           "body": "Mark files and folders with colored tags to find them again fast. Three tags - **Red**, **Green** and **Blue** - are ready out of the box.\n\n- Assign or remove tags from the **Tags** submenu in the context menu, or drag files onto a tag in the sidebar.\n- Tagged items show a colored dot in the file list, and an item can carry several tags at once.\n- Each tag appears in the **Tags** section of the sidebar; click one to list every file that carries it, wherever it lives.\n- In a tag view, use **Open Location** from the context menu to jump to a file's real folder.\n- Right-click a tag in the sidebar to rename, recolor or delete it; deleting a tag removes it from every file.\n- Tags apply to local files only - not to SFTP, network shares or items inside archives."
+        },
+        "hiddenList": {
+          "title": "Hidden List",
+          "body": "Hide selected files and folders from every list view without touching the files themselves.\n\n- Select one or more items, right-click and choose **Add to Hidden List**.\n- Hidden items disappear from the file list, the tree, the sidebar and recent paths.\n- Entries are stored in `隐藏文件.ini` next to the executable.\n- To show an item again, open **View -> Hidden List...** and remove its entry.\n- Hiding a folder hides that folder itself; its contents remain visible when you open it."
         }
       },
       "previewing": {
@@ -562,7 +568,7 @@
         },
         "function": {
           "title": "Function & Command Search",
-          "body": "Find and run any Waydir action without hunting through menus.\n\n- Open the command search and start typing an action name.\n- Results show the matching command and its current shortcut.\n- Run it straight from the list - handy for actions you use rarely."
+          "body": "Find and run any MyExplorer action without hunting through menus.\n\n- Open the command search and start typing an action name.\n- Results show the matching command and its current shortcut.\n- Run it straight from the list - handy for actions you use rarely."
         }
       },
       "commandPalette": {
@@ -573,7 +579,7 @@
         },
         "files": {
           "title": "Find Files from the Palette",
-          "body": "The palette also works as a quick file jumper for the folder you are viewing.\n\n- Start typing a file or folder name to match visible items.\n- Keep typing for a moment and Waydir searches subfolders too.\n- Recursive file matches show their containing folder as the subtitle.\n- Choosing a file or folder focuses it in the current pane so you can open, preview or act on it."
+          "body": "The palette also works as a quick file jumper for the folder you are viewing.\n\n- Start typing a file or folder name to match visible items.\n- Keep typing for a moment and MyExplorer searches subfolders too.\n- Recursive file matches show their containing folder as the subtitle.\n- Choosing a file or folder focuses it in the current pane so you can open, preview or act on it."
         }
       },
       "remote": {
@@ -584,7 +590,7 @@
         },
         "network": {
           "title": "Network Paths & WSL",
-          "body": "Waydir handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI."
+          "body": "MyExplorer handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI."
         },
         "terminal": {
           "title": "Terminal",
@@ -592,14 +598,14 @@
         },
         "git": {
           "title": "Git Status",
-          "body": "Waydir surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository."
+          "body": "MyExplorer surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository."
         }
       },
       "customization": {
         "title": "Customization",
         "themes": {
           "title": "Themes & Appearance",
-          "body": "Make Waydir look the way you like.\n\n- Pick a built-in theme or add your own in **Preferences -> Appearance**.\n- Choose list, tree or grid view, row density and column layout.\n- Configure date formats, spacing and which columns show.\n- Resizable columns can be turned on for fine control."
+          "body": "Make MyExplorer look the way you like.\n\n- Pick a built-in theme or add your own in **Preferences -> Appearance**.\n- Choose list, tree or grid view, row density and column layout.\n- Configure date formats, spacing and which columns show.\n- Resizable columns can be turned on for fine control."
         },
         "shortcuts": {
           "title": "Keyboard Shortcuts",
@@ -607,14 +613,18 @@
         },
         "plugins": {
           "title": "Plugins",
-          "body": "Extend Waydir with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project's docs to build your own."
+          "body": "Extend MyExplorer with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project's docs to build your own."
+        },
+        "shortcutBar": {
+          "title": "Shortcut Bar",
+          "body": "The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator."
         }
       },
       "resources": {
         "title": "Resources",
         "links": {
           "title": "Links & Resources",
-          "body": "More about Waydir and where to go next.\n\n- **Changelog** - what's new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/Waydir/Waydir).\n- **Plugin guide** - [how to write your own plugins](https://github.com/Waydir/Waydir/blob/main/docs/plugins.md)."
+          "body": "More about MyExplorer and where to go next.\n\n- **Changelog** - what's new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)."
         }
       }
     }
@@ -1242,5 +1252,13 @@
     "setDefaultFailed": "Could not set the default application",
     "unsupportedPlatform": "Unsupported platform",
     "windowsDefaultDialogRequired": "Use the system \"Open with\" dialog to change the default on Windows"
+  },
+  "hiddenList": {
+    "title": "Hidden List",
+    "pathHint": "One full path per line (multi-line paste supported)",
+    "add": "Add",
+    "empty": "No hidden items",
+    "added(one)": "Added 1 item",
+    "added(other)": "Added $count items"
   }
 }

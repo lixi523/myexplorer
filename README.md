@@ -1,33 +1,20 @@
 <div align="center">
 
-# Waydir
+# MyExplorer
 
-Fast, keyboard-first desktop file manager with dual panes, tabs, network drives, Quick Look, plugins and a native Rust core.
+**v1.2.0** · Windows · [MIT License](LICENSE)
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.38+-02569B?logo=flutter&logoColor=white&style=flat-square)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.10+-0175C2?logo=dart&logoColor=white&style=flat-square)](https://dart.dev)
-[![Platform](https://img.shields.io/badge/Windows-informational?style=flat-square)]()
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-
-<p>
-  <a href="https://github.com/lixi523/Waydir/releases"><b>Download</b></a>
-  -
-  <a href="#install"><b>Install</b></a>
-  -
-  <a href="docs/plugins.md"><b>Plugins</b></a>
-  -
-  <a href="CHANGELOG.md"><b>Changelog</b></a>
-</p>
+[Releases](https://github.com/lixi523/Waydir/releases) · [Changelog](CHANGELOG.md) · [Report Bug](https://github.com/lixi523/Waydir/issues)
 
 </div>
 
-<p align="center">
-  <img src="docs/screenshots/hero.png" alt="Waydir" width="860">
-</p>
+> **Renamed from Waydir.** MyExplorer is the same fast, keyboard-first desktop file manager — new name, same project.
 
-## Why Waydir?
+Fast, keyboard-first desktop file manager with dual panes, tabs, network drives, Quick Look, plugins and a native Rust core.
 
-Waydir is a native-feeling desktop file manager focused on speed, direct control and everyday file work.
+## Why MyExplorer?
+
+MyExplorer is a native-feeling desktop file manager focused on speed, direct control and everyday file work.
 
 | What you get | Why it matters |
 |--------------|----------------|
@@ -41,32 +28,9 @@ Waydir is a native-feeling desktop file manager focused on speed, direct control
 
 ## See It Fast
 
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <b>Keyboard-driven navigation</b><br>
-      <img src="docs/gifs/navigating.gif" alt="Keyboard-driven navigation">
-    </td>
-    <td width="50%" align="center">
-      <b>Dual-pane copy</b><br>
-      <img src="docs/gifs/dual_pane_copy.gif" alt="Dual-pane copy">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <b>Quick Look preview</b><br>
-      <img src="docs/gifs/quick_look_images.gif" alt="Quick Look preview">
-    </td>
-    <td width="50%" align="center">
-      <b>Live recursive search</b><br>
-      <img src="docs/gifs/search.gif" alt="Live recursive search">
-    </td>
-  </tr>
-</table>
-
 ## Install
 
-Download the `.exe` installer or portable `.zip` from [Releases](https://github.com/lixi523/Waydir/releases). Run the installer, or unpack the archive and launch `waydir.exe`.
+Download the `.exe` installer or portable `.zip` from [Releases](https://github.com/lixi523/Waydir/releases). Run the installer, or unpack the archive and launch `MyExplorer.exe`.
 
 ## Features
 
@@ -83,6 +47,7 @@ Download the `.exe` installer or portable `.zip` from [Releases](https://github.
 - Copy, move, rename, trash and delete with progress you can cancel.
 - Handles name clashes when copying, and renames many files at once.
 - Open ZIP and TAR archives and browse inside without extracting.
+- Hide selected files and folders from every list view: right-click → “Add to Hidden List”. Entries are stored in `隐藏文件.ini` next to the executable; edit the list from **View → Hidden List…** to show them again.
 
 ### Find and preview
 
@@ -105,10 +70,11 @@ Download the `.exe` installer or portable `.zip` from [Releases](https://github.
 - Total Commander-style shortcut bar: import `.bar` button bars, app icons, separators and `CD` folder jumps.
 - Simplified Chinese UI, selected automatically on Chinese systems.
 - Launch from the command line with a folder to open.
+- Opens maximized by default; only one instance runs at a time (launching again focuses the existing window).
 
 ## Plugins
 
-Plugins let you add small workflow actions without rebuilding Waydir. They are plain Lua folders with a `manifest.json` and an `init.lua`.
+Plugins let you add small workflow actions without rebuilding MyExplorer. They are plain Lua folders with a `manifest.json` and an `init.lua`.
 
 Drop a plugin into the plugins folder, reload from Preferences -> Plugins and it can add:
 
@@ -131,7 +97,7 @@ Example plugin ideas already covered in the repository include opening the curre
 
 ## Architecture
 
-Waydir uses three layers so heavy work does not block the UI:
+MyExplorer uses three layers so heavy work does not block the UI:
 
 | Layer | Responsibility |
 |-------|----------------|
@@ -142,51 +108,6 @@ Waydir uses three layers so heavy work does not block the UI:
 Persistent state uses `drift` and `sqlite3`. Reactive UI state uses `signals`. The UI thread does no filesystem-heavy work.
 
 The native Rust library is required. There is no Dart fallback for the Rust core.
-
-## Feature Gallery
-
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <b>Browse remote files over SFTP</b><br>
-      <img src="docs/gifs/sftp.gif" alt="SFTP browsing">
-    </td>
-    <td width="50%" align="center">
-      <b>Archive browsing</b><br>
-      <img src="docs/gifs/archive_browsing.gif" alt="Archive browsing">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <b>Built-in terminal per pane</b><br>
-      <img src="docs/gifs/terminal.gif" alt="Built-in terminal">
-    </td>
-    <td width="50%" align="center">
-      <b>Tabs per pane</b><br>
-      <img src="docs/gifs/tabs.gif" alt="Tabs per pane">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <b>Filter search</b><br>
-      <img src="docs/gifs/function_search.gif" alt="Filter search">
-    </td>
-    <td width="50%" align="center">
-      <b>Customization</b><br>
-      <img src="docs/gifs/customization.gif" alt="Customization">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <b>Selection workflow</b><br>
-      <img src="docs/gifs/selection.gif" alt="Selection workflow">
-    </td>
-    <td width="50%" align="center">
-      <b>Multi-rename</b><br>
-      <img src="docs/gifs/multi_rename.gif" alt="Multi-rename">
-    </td>
-  </tr>
-</table>
 
 ## Build From Source
 
@@ -245,6 +166,8 @@ dart run build_runner build --delete-conflicting-outputs
 ```
 
 ## Project Status
+
+Current version: **1.2.0** — see [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 Windows is the main development and testing target.
 

@@ -75,6 +75,7 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tasks$zh tasks = _Translations$tasks$zh._(_root);
 	@override late final _Translations$git$zh git = _Translations$git$zh._(_root);
 	@override late final _Translations$openWith$zh openWith = _Translations$openWith$zh._(_root);
+	@override late final _Translations$hiddenList$zh hiddenList = _Translations$hiddenList$zh._(_root);
 }
 
 // Path: app
@@ -84,7 +85,7 @@ class _Translations$app$zh extends Translations$app$en {
 	final TranslationsZh _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Waydir';
+	@override String get title => 'MyExplorer';
 	@override String get tagline => '随心浏览你的文件。';
 	@override String get description => '一款基于 Flutter 构建的快速、键盘优先的桌面文件管理器。';
 }
@@ -123,6 +124,8 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get restore => '还原';
 	@override String restoreItems({required Object count}) => '还原 ${count} 个项目';
 	@override String get showHidden => '显示隐藏文件';
+	@override String get hideSelected => '加入隐藏列表';
+	@override String get hiddenList => '隐藏列表…';
 	@override String get selectAll => '全选';
 	@override String get selectByPattern => '按模式选择…';
 	@override String get deselectAll => '取消全选';
@@ -1052,6 +1055,20 @@ class _Translations$openWith$zh extends Translations$openWith$en {
 	@override String get windowsDefaultDialogRequired => '使用系统“打开方式”对话框更改 Windows 上的默认应用';
 }
 
+// Path: hiddenList
+class _Translations$hiddenList$zh extends Translations$hiddenList$en {
+	_Translations$hiddenList$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '隐藏列表';
+	@override String get pathHint => '每行一个完整路径（支持粘贴多行）';
+	@override String get add => '添加';
+	@override String get empty => '暂无隐藏条目';
+	@override String added({required Object count}) => '已添加 ${count} 个条目';
+}
+
 // Path: preferences.categories
 class _Translations$preferences$categories$zh extends Translations$preferences$categories$en {
 	_Translations$preferences$categories$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -1592,6 +1609,7 @@ class _Translations$help$groups$files$zh extends Translations$help$groups$files$
 	@override late final _Translations$help$groups$files$archives$zh archives = _Translations$help$groups$files$archives$zh._(_root);
 	@override late final _Translations$help$groups$files$openWith$zh openWith = _Translations$help$groups$files$openWith$zh._(_root);
 	@override late final _Translations$help$groups$files$tags$zh tags = _Translations$help$groups$files$tags$zh._(_root);
+	@override late final _Translations$help$groups$files$hiddenList$zh hiddenList = _Translations$help$groups$files$hiddenList$zh._(_root);
 }
 
 // Path: help.groups.previewing
@@ -1655,6 +1673,7 @@ class _Translations$help$groups$customization$zh extends Translations$help$group
 	@override late final _Translations$help$groups$customization$themes$zh themes = _Translations$help$groups$customization$themes$zh._(_root);
 	@override late final _Translations$help$groups$customization$shortcuts$zh shortcuts = _Translations$help$groups$customization$shortcuts$zh._(_root);
 	@override late final _Translations$help$groups$customization$plugins$zh plugins = _Translations$help$groups$customization$plugins$zh._(_root);
+	@override late final _Translations$help$groups$customization$shortcutBar$zh shortcutBar = _Translations$help$groups$customization$shortcutBar$zh._(_root);
 }
 
 // Path: help.groups.resources
@@ -1675,8 +1694,8 @@ class _Translations$help$groups$gettingStarted$welcome$zh extends Translations$h
 	final TranslationsZh _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => '欢迎使用 Waydir';
-	@override String get body => 'Waydir 是一款快速、键盘驱动的文件管理器。本指南将带你了解从基本导航到远程服务器、终端和自定义的方方面面。\n\n- 使用左侧的树在主题之间跳转。\n- 大多数操作都有快捷键，以 `Ctrl+C` 的形式内联显示。\n- 所有快捷键都可以在 **设置 -> 键盘** 中重新绑定。\n\n选择一个主题开始，或从头到尾通读。';
+	@override String get title => '欢迎使用 MyExplorer';
+	@override String get body => 'MyExplorer 是一款快速、键盘驱动的文件管理器。本指南将带你了解从基本导航到远程服务器、终端和自定义的方方面面。\n\n- 使用左侧的树在主题之间跳转。\n- 大多数操作都有快捷键，以 `Ctrl+C` 的形式内联显示。\n- 所有快捷键都可以在 **设置 -> 键盘** 中重新绑定。\n\n选择一个主题开始，或从头到尾通读。';
 }
 
 // Path: help.groups.gettingStarted.interface
@@ -1698,7 +1717,7 @@ class _Translations$help$groups$gettingStarted$keyboardBasics$zh extends Transla
 
 	// Translations
 	@override String get title => '键盘优先基础';
-	@override String get body => 'Waydir 设计为完全通过键盘驱动。\n\n- `↑` / `↓` 移动光标；`Enter` 打开；`Backspace` 返回上级。\n- 直接输入字符可跳转到匹配文件（键入跳转）。\n- `Ctrl+F` 搜索，`Space` 预览，`F2` 重命名。\n- 几乎所有操作都不需要鼠标 - 而且每个按键绑定都可以自定义。';
+	@override String get body => 'MyExplorer 设计为完全通过键盘驱动。\n\n- `↑` / `↓` 移动光标；`Enter` 打开；`Backspace` 返回上级。\n- 直接输入字符可跳转到匹配文件（键入跳转）。\n- `Ctrl+F` 搜索，`Space` 预览，`F2` 重命名。\n- 几乎所有操作都不需要鼠标 - 而且每个按键绑定都可以自定义。';
 }
 
 // Path: help.groups.navigating.moving
@@ -1709,7 +1728,7 @@ class _Translations$help$groups$navigating$moving$zh extends Translations$help$g
 
 	// Translations
 	@override String get title => '四处移动';
-	@override String get body => '无需鼠标即可浏览。Waydir 将光标、选择和历史记录保持在主文件列表附近。\n\n- `↑` / `↓` 在可见文件中移动光标。\n- `Enter` 打开选中项；双击效果相同。\n- `Backspace` 返回上级文件夹。\n- `Alt+←` / `Alt+→` 在文件夹历史中后退和前进。\n- `Ctrl+R` 刷新当前文件夹。';
+	@override String get body => '无需鼠标即可浏览。MyExplorer 将光标、选择和历史记录保持在主文件列表附近。\n\n- `↑` / `↓` 在可见文件中移动光标。\n- `Enter` 打开选中项；双击效果相同。\n- `Backspace` 返回上级文件夹。\n- `Alt+←` / `Alt+→` 在文件夹历史中后退和前进。\n- `Ctrl+R` 刷新当前文件夹。';
 }
 
 // Path: help.groups.navigating.breadcrumb
@@ -1877,6 +1896,17 @@ class _Translations$help$groups$files$tags$zh extends Translations$help$groups$f
 	@override String get body => '用彩色标签标记文件和文件夹，方便快速找到它们。开箱即用提供三个标签 - **红**、**绿** 和 **蓝**。\n\n- 从右键菜单的 **标签** 子菜单分配或移除标签，或将文件拖到侧边栏的标签上。\n- 标记的项目在文件列表中显示彩色圆点，一个项目可以带多个标签。\n- 每个标签显示在侧边栏的 **标签** 分区中；点击即可列出所有带该标签的文件，无论它们在哪里。\n- 在标签视图中，使用右键菜单的 **打开位置** 跳转到文件的真实文件夹。\n- 右键点击侧边栏中的标签可重命名、更改颜色或删除；删除标签会从所有文件中移除。\n- 标签仅适用于本地文件 - 不适用于 SFTP、网络共享或压缩包内的项目。';
 }
 
+// Path: help.groups.files.hiddenList
+class _Translations$help$groups$files$hiddenList$zh extends Translations$help$groups$files$hiddenList$en {
+	_Translations$help$groups$files$hiddenList$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '隐藏列表';
+	@override String get body => '无需改动文件本身，即可从所有列表视图中隐藏选中的文件和文件夹。\n\n- 选中一个或多个项目，右键并选择**加入隐藏列表**。\n- 隐藏的项目会从文件列表、树形视图、侧边栏和最近访问中消失。\n- 条目存储在可执行文件旁的 `隐藏文件.ini` 中。\n- 要重新显示某个项目，请打开**视图 -> 隐藏列表...** 并删除其条目。\n- 隐藏文件夹只隐藏该文件夹本身；打开它时其内容仍然可见。';
+}
+
 // Path: help.groups.previewing.quickLook
 class _Translations$help$groups$previewing$quickLook$zh extends Translations$help$groups$previewing$quickLook$en {
 	_Translations$help$groups$previewing$quickLook$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -1918,7 +1948,7 @@ class _Translations$help$groups$searching$function$zh extends Translations$help$
 
 	// Translations
 	@override String get title => '功能与命令搜索';
-	@override String get body => '无需在菜单中翻找即可查找并运行任何 Waydir 操作。\n\n- 打开命令搜索并输入操作名称。\n- 结果显示匹配的命令及其当前快捷键。\n- 直接从列表中运行 - 适合不常用的操作。';
+	@override String get body => '无需在菜单中翻找即可查找并运行任何 MyExplorer 操作。\n\n- 打开命令搜索并输入操作名称。\n- 结果显示匹配的命令及其当前快捷键。\n- 直接从列表中运行 - 适合不常用的操作。';
 }
 
 // Path: help.groups.commandPalette.basics
@@ -1940,7 +1970,7 @@ class _Translations$help$groups$commandPalette$files$zh extends Translations$hel
 
 	// Translations
 	@override String get title => '从面板查找文件';
-	@override String get body => '面板还可以作为当前文件夹的快速文件跳转器。\n\n- 输入文件或文件夹名称匹配可见项目。\n- 继续输入片刻，Waydir 也会搜索子文件夹。\n- 递归文件匹配会显示其所在文件夹作为副标题。\n- 选择文件或文件夹会在当前面板中聚焦它，以便打开、预览或操作。';
+	@override String get body => '面板还可以作为当前文件夹的快速文件跳转器。\n\n- 输入文件或文件夹名称匹配可见项目。\n- 继续输入片刻，MyExplorer 也会搜索子文件夹。\n- 递归文件匹配会显示其所在文件夹作为副标题。\n- 选择文件或文件夹会在当前面板中聚焦它，以便打开、预览或操作。';
 }
 
 // Path: help.groups.remote.sftp
@@ -1962,7 +1992,7 @@ class _Translations$help$groups$remote$network$zh extends Translations$help$grou
 
 	// Translations
 	@override String get title => '网络路径与 WSL';
-	@override String get body => 'Waydir 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。';
+	@override String get body => 'MyExplorer 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。';
 }
 
 // Path: help.groups.remote.terminal
@@ -1984,7 +2014,7 @@ class _Translations$help$groups$remote$git$zh extends Translations$help$groups$r
 
 	// Translations
 	@override String get title => 'Git 状态';
-	@override String get body => 'Waydir 为版本控制下的文件夹显示 Git 信息。\n\n- 列表中标记已更改、已暂存和未跟踪的文件。\n- 显示文件夹的当前分支。\n- 在仓库中工作时状态实时更新。';
+	@override String get body => 'MyExplorer 为版本控制下的文件夹显示 Git 信息。\n\n- 列表中标记已更改、已暂存和未跟踪的文件。\n- 显示文件夹的当前分支。\n- 在仓库中工作时状态实时更新。';
 }
 
 // Path: help.groups.customization.themes
@@ -1995,7 +2025,7 @@ class _Translations$help$groups$customization$themes$zh extends Translations$hel
 
 	// Translations
 	@override String get title => '主题与外观';
-	@override String get body => '让 Waydir 看起来符合你的喜好。\n\n- 在 **设置 -> 外观** 中选择内置主题或添加自己的主题。\n- 选择列表、树或网格视图、行密度和列布局。\n- 配置日期格式、间距和显示哪些列。\n- 可开启可调整列宽进行精细控制。';
+	@override String get body => '让 MyExplorer 看起来符合你的喜好。\n\n- 在 **设置 -> 外观** 中选择内置主题或添加自己的主题。\n- 选择列表、树或网格视图、行密度和列布局。\n- 配置日期格式、间距和显示哪些列。\n- 可开启可调整列宽进行精细控制。';
 }
 
 // Path: help.groups.customization.shortcuts
@@ -2017,7 +2047,18 @@ class _Translations$help$groups$customization$plugins$zh extends Translations$he
 
 	// Translations
 	@override String get title => '插件';
-	@override String get body => '使用 Lua 编写的插件扩展 Waydir。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。';
+	@override String get body => '使用 Lua 编写的插件扩展 MyExplorer。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。';
+}
+
+// Path: help.groups.customization.shortcutBar
+class _Translations$help$groups$customization$shortcutBar$zh extends Translations$help$groups$customization$shortcutBar$en {
+	_Translations$help$groups$customization$shortcutBar$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '快捷方式栏';
+	@override String get body => '标题栏下方的快捷方式栏可一键启动文件夹、文件或命令，遵循 Total Commander 的惯例。\n\n- 右键按钮可编辑或删除；`+` 区域用于添加新按钮。\n- 按钮可以打开文件夹或文件、运行命令行，或使用 `CD <路径>` 跳转。\n- 支持内置命令，如 `cm_OpenDesktop`、`cm_OpenDrives` 和 `cm_OpenRecycled`。\n- 图标可来自文件（`icon.png`）、exe/dll（`app.exe,0`）或系统库中的索引（`shell32.dll,34`）。\n- 使用**导入 Total Commander 按钮栏...** 加载 `.bar` 文件（UTF-8 或 GBK）。\n- 留空条目可创建分隔符。';
 }
 
 // Path: help.groups.resources.links
@@ -2028,7 +2069,7 @@ class _Translations$help$groups$resources$links$zh extends Translations$help$gro
 
 	// Translations
 	@override String get title => '链接与资源';
-	@override String get body => '更多关于 Waydir 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/Waydir/Waydir)。\n- **插件指南** - [如何编写自己的插件](https://github.com/Waydir/Waydir/blob/main/docs/plugins.md)。';
+	@override String get body => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/MyExplorer/MyExplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)。';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -2039,7 +2080,7 @@ class _Translations$help$groups$resources$links$zh extends Translations$help$gro
 extension on TranslationsZh {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
-			'app.title' => 'Waydir',
+			'app.title' => 'MyExplorer',
 			'app.tagline' => '随心浏览你的文件。',
 			'app.description' => '一款基于 Flutter 构建的快速、键盘优先的桌面文件管理器。',
 			'terminal.title' => '终端',
@@ -2060,6 +2101,8 @@ extension on TranslationsZh {
 			'menu.restore' => '还原',
 			'menu.restoreItems' => ({required Object count}) => '还原 ${count} 个项目',
 			'menu.showHidden' => '显示隐藏文件',
+			'menu.hideSelected' => '加入隐藏列表',
+			'menu.hiddenList' => '隐藏列表…',
 			'menu.selectAll' => '全选',
 			'menu.selectByPattern' => '按模式选择…',
 			'menu.deselectAll' => '取消全选',
@@ -2437,15 +2480,15 @@ extension on TranslationsZh {
 			'help.title' => '应用内教程',
 			'help.menuLabel' => '应用内教程',
 			'help.groups.gettingStarted.title' => '快速上手',
-			'help.groups.gettingStarted.welcome.title' => '欢迎使用 Waydir',
-			'help.groups.gettingStarted.welcome.body' => 'Waydir 是一款快速、键盘驱动的文件管理器。本指南将带你了解从基本导航到远程服务器、终端和自定义的方方面面。\n\n- 使用左侧的树在主题之间跳转。\n- 大多数操作都有快捷键，以 `Ctrl+C` 的形式内联显示。\n- 所有快捷键都可以在 **设置 -> 键盘** 中重新绑定。\n\n选择一个主题开始，或从头到尾通读。',
+			'help.groups.gettingStarted.welcome.title' => '欢迎使用 MyExplorer',
+			'help.groups.gettingStarted.welcome.body' => 'MyExplorer 是一款快速、键盘驱动的文件管理器。本指南将带你了解从基本导航到远程服务器、终端和自定义的方方面面。\n\n- 使用左侧的树在主题之间跳转。\n- 大多数操作都有快捷键，以 `Ctrl+C` 的形式内联显示。\n- 所有快捷键都可以在 **设置 -> 键盘** 中重新绑定。\n\n选择一个主题开始，或从头到尾通读。',
 			'help.groups.gettingStarted.interface.title' => '界面',
 			'help.groups.gettingStarted.interface.body' => '窗口由几个简单的部分构成。\n\n- **侧边栏** - 书签、驱动器和远程位置。使用 `Ctrl+B` 切换。\n- **标签栏** - 每个打开的文件夹一个标签。\n- **面包屑栏** - 当前路径；点击任意片段即可跳转。\n- **文件列表** - 主视图，支持列表、树或网格模式。\n- **状态栏** - 项目数量、选中大小和操作进度。',
 			'help.groups.gettingStarted.keyboardBasics.title' => '键盘优先基础',
-			'help.groups.gettingStarted.keyboardBasics.body' => 'Waydir 设计为完全通过键盘驱动。\n\n- `↑` / `↓` 移动光标；`Enter` 打开；`Backspace` 返回上级。\n- 直接输入字符可跳转到匹配文件（键入跳转）。\n- `Ctrl+F` 搜索，`Space` 预览，`F2` 重命名。\n- 几乎所有操作都不需要鼠标 - 而且每个按键绑定都可以自定义。',
+			'help.groups.gettingStarted.keyboardBasics.body' => 'MyExplorer 设计为完全通过键盘驱动。\n\n- `↑` / `↓` 移动光标；`Enter` 打开；`Backspace` 返回上级。\n- 直接输入字符可跳转到匹配文件（键入跳转）。\n- `Ctrl+F` 搜索，`Space` 预览，`F2` 重命名。\n- 几乎所有操作都不需要鼠标 - 而且每个按键绑定都可以自定义。',
 			'help.groups.navigating.title' => '导航',
 			'help.groups.navigating.moving.title' => '四处移动',
-			'help.groups.navigating.moving.body' => '无需鼠标即可浏览。Waydir 将光标、选择和历史记录保持在主文件列表附近。\n\n- `↑` / `↓` 在可见文件中移动光标。\n- `Enter` 打开选中项；双击效果相同。\n- `Backspace` 返回上级文件夹。\n- `Alt+←` / `Alt+→` 在文件夹历史中后退和前进。\n- `Ctrl+R` 刷新当前文件夹。',
+			'help.groups.navigating.moving.body' => '无需鼠标即可浏览。MyExplorer 将光标、选择和历史记录保持在主文件列表附近。\n\n- `↑` / `↓` 在可见文件中移动光标。\n- `Enter` 打开选中项；双击效果相同。\n- `Backspace` 返回上级文件夹。\n- `Alt+←` / `Alt+→` 在文件夹历史中后退和前进。\n- `Ctrl+R` 刷新当前文件夹。',
 			'help.groups.navigating.breadcrumb.title' => '面包屑栏',
 			'help.groups.navigating.breadcrumb.body' => '面包屑栏显示你所在的位置，让你快速移动。\n\n- 点击任意片段直接跳转到该文件夹。\n- 导航时路径保持同步。\n- 直接输入路径可前往特定位置。',
 			'help.groups.navigating.bookmarks.title' => '书签与侧边栏',
@@ -2479,6 +2522,8 @@ extension on TranslationsZh {
 			'help.groups.files.openWith.body' => '在任何已安装的应用中打开文件，而不只是系统默认应用。\n\n- 右键菜单中的 **打开方式** 列出可用应用。\n- 为每种文件类型设置默认应用，以后直接打开。\n- 最近使用的应用显示在顶部，方便快速访问。',
 			'help.groups.files.tags.title' => '颜色标签',
 			'help.groups.files.tags.body' => '用彩色标签标记文件和文件夹，方便快速找到它们。开箱即用提供三个标签 - **红**、**绿** 和 **蓝**。\n\n- 从右键菜单的 **标签** 子菜单分配或移除标签，或将文件拖到侧边栏的标签上。\n- 标记的项目在文件列表中显示彩色圆点，一个项目可以带多个标签。\n- 每个标签显示在侧边栏的 **标签** 分区中；点击即可列出所有带该标签的文件，无论它们在哪里。\n- 在标签视图中，使用右键菜单的 **打开位置** 跳转到文件的真实文件夹。\n- 右键点击侧边栏中的标签可重命名、更改颜色或删除；删除标签会从所有文件中移除。\n- 标签仅适用于本地文件 - 不适用于 SFTP、网络共享或压缩包内的项目。',
+			'help.groups.files.hiddenList.title' => '隐藏列表',
+			'help.groups.files.hiddenList.body' => '无需改动文件本身，即可从所有列表视图中隐藏选中的文件和文件夹。\n\n- 选中一个或多个项目，右键并选择**加入隐藏列表**。\n- 隐藏的项目会从文件列表、树形视图、侧边栏和最近访问中消失。\n- 条目存储在可执行文件旁的 `隐藏文件.ini` 中。\n- 要重新显示某个项目，请打开**视图 -> 隐藏列表...** 并删除其条目。\n- 隐藏文件夹只隐藏该文件夹本身；打开它时其内容仍然可见。',
 			'help.groups.previewing.title' => '预览',
 			'help.groups.previewing.quickLook.title' => '快速预览',
 			'help.groups.previewing.quickLook.body' => '无需打开其他应用即可检查文件。快速预览支持图片、文本、代码、Markdown 和其他类型。\n\n- `Space` 为当前选择打开快速预览。\n- `↑` / `↓` 在不离开预览的情况下切换到上一个或下一个文件。\n- `Esc` 关闭预览。\n- 信息面板显示大小、日期和权限。',
@@ -2488,31 +2533,33 @@ extension on TranslationsZh {
 			'help.groups.searching.folder.title' => '在文件夹中搜索',
 			'help.groups.searching.folder.body' => '筛选当前文件夹或扫描其下的所有内容。\n\n- `Ctrl+F` 输入时按名称筛选当前文件夹。\n- `Ctrl+Shift+F` 将搜索扩展到所有子文件夹。\n- 打开 **内容** 可在文件内容中搜索（仅限本地文件夹 - 不支持 SFTP）。\n- 在 **子串**、**通配符** 和 **正则** 匹配之间切换。\n- `Esc` 关闭搜索并恢复完整列表。',
 			'help.groups.searching.function.title' => '功能与命令搜索',
-			'help.groups.searching.function.body' => '无需在菜单中翻找即可查找并运行任何 Waydir 操作。\n\n- 打开命令搜索并输入操作名称。\n- 结果显示匹配的命令及其当前快捷键。\n- 直接从列表中运行 - 适合不常用的操作。',
+			'help.groups.searching.function.body' => '无需在菜单中翻找即可查找并运行任何 MyExplorer 操作。\n\n- 打开命令搜索并输入操作名称。\n- 结果显示匹配的命令及其当前快捷键。\n- 直接从列表中运行 - 适合不常用的操作。',
 			'help.groups.commandPalette.title' => '命令面板',
 			'help.groups.commandPalette.basics.title' => '运行命令',
 			'help.groups.commandPalette.basics.body' => '命令面板是无需离开键盘触发操作的最快方式。\n\n- 按 `Ctrl+P` 打开。\n- 输入操作、设置、书签、驱动器、最近路径或插件命令。\n- 结果包含已分配的快捷键。\n- 不适用的操作以弱化状态保持可见。\n- 按 `Enter` 运行高亮命令，或按 `Esc` 关闭面板。',
 			'help.groups.commandPalette.files.title' => '从面板查找文件',
-			'help.groups.commandPalette.files.body' => '面板还可以作为当前文件夹的快速文件跳转器。\n\n- 输入文件或文件夹名称匹配可见项目。\n- 继续输入片刻，Waydir 也会搜索子文件夹。\n- 递归文件匹配会显示其所在文件夹作为副标题。\n- 选择文件或文件夹会在当前面板中聚焦它，以便打开、预览或操作。',
+			'help.groups.commandPalette.files.body' => '面板还可以作为当前文件夹的快速文件跳转器。\n\n- 输入文件或文件夹名称匹配可见项目。\n- 继续输入片刻，MyExplorer 也会搜索子文件夹。\n- 递归文件匹配会显示其所在文件夹作为副标题。\n- 选择文件或文件夹会在当前面板中聚焦它，以便打开、预览或操作。',
 			'help.groups.remote.title' => '远程与集成',
 			'help.groups.remote.sftp.title' => 'SFTP 与远程服务器',
 			'help.groups.remote.sftp.body' => '直接在本地文件夹旁边使用 SFTP 服务器。\n\n- 从侧边栏使用 **连接到服务器** 添加远程位置。\n- 连接后，浏览远程文件夹与本地完全相同。\n- 常访问的文件夹添加书签，一键可达。\n- 选择、右键菜单和文件操作与本地一致 - 只有内容搜索在 SFTP 上不可用。',
 			'help.groups.remote.network.title' => '网络路径与 WSL',
-			'help.groups.remote.network.body' => 'Waydir 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。',
+			'help.groups.remote.network.body' => 'MyExplorer 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。',
 			'help.groups.remote.terminal.title' => '终端',
 			'help.groups.remote.terminal.body' => '每个面板都有自己的内置终端，在你查看的文件夹中打开。\n\n- `Ctrl` + 反引号打开或聚焦终端。\n- `Ctrl+Shift` + 反引号显示或隐藏终端面板。\n- `Ctrl+Shift+T` 新建终端标签页；`Ctrl+Shift+W` 关闭一个。\n- `Ctrl++` / `Ctrl+-` 调整字号，`Ctrl+0` 重置。\n- 更喜欢外部终端？在 **设置 -> 终端** 中选择一个。',
 			'help.groups.remote.git.title' => 'Git 状态',
-			'help.groups.remote.git.body' => 'Waydir 为版本控制下的文件夹显示 Git 信息。\n\n- 列表中标记已更改、已暂存和未跟踪的文件。\n- 显示文件夹的当前分支。\n- 在仓库中工作时状态实时更新。',
+			'help.groups.remote.git.body' => 'MyExplorer 为版本控制下的文件夹显示 Git 信息。\n\n- 列表中标记已更改、已暂存和未跟踪的文件。\n- 显示文件夹的当前分支。\n- 在仓库中工作时状态实时更新。',
 			'help.groups.customization.title' => '自定义',
 			'help.groups.customization.themes.title' => '主题与外观',
-			'help.groups.customization.themes.body' => '让 Waydir 看起来符合你的喜好。\n\n- 在 **设置 -> 外观** 中选择内置主题或添加自己的主题。\n- 选择列表、树或网格视图、行密度和列布局。\n- 配置日期格式、间距和显示哪些列。\n- 可开启可调整列宽进行精细控制。',
+			'help.groups.customization.themes.body' => '让 MyExplorer 看起来符合你的喜好。\n\n- 在 **设置 -> 外观** 中选择内置主题或添加自己的主题。\n- 选择列表、树或网格视图、行密度和列布局。\n- 配置日期格式、间距和显示哪些列。\n- 可开启可调整列宽进行精细控制。',
 			'help.groups.customization.shortcuts.title' => '键盘快捷键',
 			'help.groups.customization.shortcuts.body' => '几乎所有操作都可以重新绑定为你选择的按键。\n\n- 打开 **设置 -> 键盘** 查看和编辑所有快捷键。\n- 冲突会被标记，两个操作不会争抢同一个按键。\n- 随时将单个绑定或全部绑定重置为默认值。',
 			'help.groups.customization.plugins.title' => '插件',
-			'help.groups.customization.plugins.body' => '使用 Lua 编写的插件扩展 Waydir。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。',
+			'help.groups.customization.plugins.body' => '使用 Lua 编写的插件扩展 MyExplorer。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。',
+			'help.groups.customization.shortcutBar.title' => '快捷方式栏',
+			'help.groups.customization.shortcutBar.body' => '标题栏下方的快捷方式栏可一键启动文件夹、文件或命令，遵循 Total Commander 的惯例。\n\n- 右键按钮可编辑或删除；`+` 区域用于添加新按钮。\n- 按钮可以打开文件夹或文件、运行命令行，或使用 `CD <路径>` 跳转。\n- 支持内置命令，如 `cm_OpenDesktop`、`cm_OpenDrives` 和 `cm_OpenRecycled`。\n- 图标可来自文件（`icon.png`）、exe/dll（`app.exe,0`）或系统库中的索引（`shell32.dll,34`）。\n- 使用**导入 Total Commander 按钮栏...** 加载 `.bar` 文件（UTF-8 或 GBK）。\n- 留空条目可创建分隔符。',
 			'help.groups.resources.title' => '资源',
 			'help.groups.resources.links.title' => '链接与资源',
-			'help.groups.resources.links.body' => '更多关于 Waydir 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/Waydir/Waydir)。\n- **插件指南** - [如何编写自己的插件](https://github.com/Waydir/Waydir/blob/main/docs/plugins.md)。',
+			'help.groups.resources.links.body' => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/MyExplorer/MyExplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)。',
 			'tags.menuLabel' => '标签',
 			'tags.newTag' => '新建标签',
 			'tags.newTagDots' => '新建标签…',
@@ -2545,14 +2592,14 @@ extension on TranslationsZh {
 			'keybindings.goBack' => '后退',
 			'keybindings.goForward' => '前进',
 			'keybindings.refresh' => '刷新',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.focusPath' => '聚焦路径栏',
 			'keybindings.quickLook' => '打开快速预览',
 			'keybindings.quickLookClose' => '关闭快速预览',
 			'keybindings.quickLookPrevFile' => '上一个文件',
 			'keybindings.quickLookNextFile' => '下一个文件',
 			'keybindings.quickLookPrevFileEdit' => '编辑时上一个文件',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.quickLookNextFileEdit' => '编辑时下一个文件',
 			'keybindings.quickLookSave' => '保存更改',
 			'keybindings.cursorUp' => '上移',
@@ -3031,6 +3078,11 @@ extension on TranslationsZh {
 			'openWith.setDefaultFailed' => '无法设置默认应用',
 			'openWith.unsupportedPlatform' => '不支持的平台',
 			'openWith.windowsDefaultDialogRequired' => '使用系统“打开方式”对话框更改 Windows 上的默认应用',
+			'hiddenList.title' => '隐藏列表',
+			'hiddenList.pathHint' => '每行一个完整路径（支持粘贴多行）',
+			'hiddenList.add' => '添加',
+			'hiddenList.empty' => '暂无隐藏条目',
+			'hiddenList.added' => ({required Object count}) => '已添加 ${count} 个条目',
 			_ => null,
 		};
 	}

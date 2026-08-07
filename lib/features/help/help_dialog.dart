@@ -151,6 +151,10 @@ final _groups = <_HelpGroup>[
         title: () => t.help.groups.files.tags.title,
         body: () => t.help.groups.files.tags.body,
       ),
+      _HelpPage(
+        title: () => t.help.groups.files.hiddenList.title,
+        body: () => t.help.groups.files.hiddenList.body,
+      ),
     ],
   ),
   _HelpGroup(
@@ -238,6 +242,10 @@ final _groups = <_HelpGroup>[
       _HelpPage(
         title: () => t.help.groups.customization.plugins.title,
         body: () => t.help.groups.customization.plugins.body,
+      ),
+      _HelpPage(
+        title: () => t.help.groups.customization.shortcutBar.title,
+        body: () => t.help.groups.customization.shortcutBar.body,
       ),
     ],
   ),

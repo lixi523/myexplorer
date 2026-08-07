@@ -11,6 +11,7 @@ import '../../core/logging/app_logger.dart';
 import 'bookmark_store.dart';
 import 'navigation_store.dart';
 import 'sidebar_store.dart';
+import '../hidden/hidden_list_store.dart';
 import '../drives/drive_store.dart';
 import '../drives/drive_model.dart';
 import '../containers/container_store.dart';
@@ -772,7 +773,11 @@ class _SidebarState extends State<Sidebar> {
   }
 
   List<_SidebarEntry> _favoriteEntries(String currentPath) {
-    final entries = _favorites.map((item) {
+    HiddenListStore.instance.paths.value; // reactive dependency
+    final visible = _favorites
+        .where((item) => !HiddenListStore.instance.isHidden(item.path))
+        .toList();
+    final entries = visible.map((item) {
       final isRecycleBin = isTrashPath(item.path);
 
       return _SidebarEntry(
@@ -949,7 +954,12 @@ class _SidebarState extends State<Sidebar> {
     List<Bookmark> bookmarks,
     String currentPath,
   ) {
-    return bookmarks.map((bookmark) {
+    HiddenListStore.instance.paths.value; // reactive dependency
+    final visible = bookmarks
+        .where((b) => !HiddenListStore.instance.isHidden(b.path))
+        .toList();
+
+    return visible.map((bookmark) {
       final uri = LocationUri.parse(bookmark.path);
       final icon = uri.isNetwork
           ? WaydirIconsRegular.treeStructure

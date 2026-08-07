@@ -15,6 +15,7 @@ import 'core/logging/app_logger.dart';
 import 'core/settings/settings_store.dart';
 import 'core/update/update_store.dart';
 import 'features/navigation/sidebar_store.dart';
+import 'features/hidden/hidden_list_store.dart';
 import 'features/plugins/plugin_settings_store.dart';
 import 'features/plugins/plugin_store.dart';
 import 'features/tags/tag_store.dart';
@@ -61,12 +62,13 @@ void main(List<String> args) async {
       unawaited(FsWorkerPool.instance.ensureStarted());
       await AppThemeRegistry.instance.load();
       await SettingsStore.instance.load();
+      await HiddenListStore.instance.load();
       await SidebarStore.instance.load();
       await PluginSettingsStore.instance.load(SettingsStore.instance.db);
       await TagStore.instance.load(SettingsStore.instance.db);
       await AppInfo.init();
       if (LaunchArgs.options.showVersion) {
-        stdout.writeln('Waydir ${AppInfo.version.value}');
+        stdout.writeln('MyExplorer ${AppInfo.version.value}');
         exit(0);
       }
       const fakeVersion = String.fromEnvironment('WAYDIR_FAKE_VERSION');
@@ -85,6 +87,8 @@ void main(List<String> args) async {
         appWindow.alignment = Alignment.center;
         appWindow.title = t.app.title;
         appWindow.show();
+        // Open maximized by default; the user can still restore or resize.
+        appWindow.maximize();
       }
     },
     (error, stack) {

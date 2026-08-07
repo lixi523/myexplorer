@@ -151,6 +151,14 @@ mixin _WaydirMenuMixin
           !PlatformPaths.isNetworkPath(e.path) &&
           !FileSystemService.isInsideArchive(e.realPath),
     );
+    final canHide =
+        entries.isNotEmpty &&
+        entries.every(
+          (e) =>
+              !PlatformPaths.isRemoteUri(e.path) &&
+              !PlatformPaths.isNetworkPath(e.path) &&
+              !FileSystemService.isInsideArchive(e.realPath),
+        );
 
     final openWithItems = isSingleFile
         ? _openWithItemsFor(entries.first)
@@ -328,6 +336,13 @@ mixin _WaydirMenuMixin
           action: 'verify_checksum',
         ),
       if (count >= 1 && canTag) _tagsSubmenu(entries),
+      if (canHide) ...[
+        ContextMenuItem(
+          icon: WaydirIconsRegular.prohibit,
+          label: t.menu.hideSelected,
+          action: 'hide_selected',
+        ),
+      ],
       ContextMenuItem.divider,
       if (count == 1)
         ContextMenuItem(
@@ -1308,6 +1323,8 @@ mixin _WaydirMenuMixin
         _confirmAndDelete(forcePermanent: true);
       case 'restore':
         store.restoreSelectedFromTrash();
+      case 'hide_selected':
+        _hideSelectedFromList();
       case 'delete_permanent_bin':
         store.deletePermanentlySelectedFromTrash();
       case 'open_in_terminal':
@@ -1330,6 +1347,17 @@ mixin _WaydirMenuMixin
       default:
         if (action.startsWith('plugin:')) _runPluginAction(action);
     }
+  }
+
+  void _hideSelectedFromList() {
+    final store = _active;
+    final paths = [for (final e in store.selectedEntries) e.realPath];
+    if (paths.isEmpty) return;
+    unawaited(() async {
+      await HiddenListStore.instance.addPaths(paths);
+      await store.refresh();
+      if (mounted) _restoreFocus();
+    }());
   }
 
   Widget _buildViewMenu() {
@@ -1386,6 +1414,12 @@ mixin _WaydirMenuMixin
                   isToggle: true,
                   toggleSignal: SettingsStore.instance.showHiddenDefault,
                 ),
+                ContextMenuItem.divider,
+                ContextMenuItem(
+                  icon: WaydirIconsRegular.prohibit,
+                  label: t.menu.hiddenList,
+                  action: 'open_hidden_list',
+                ),
               ],
               onSelect: (action) {
                 switch (action) {
@@ -1399,6 +1433,8 @@ mixin _WaydirMenuMixin
                     SettingsStore.instance.fileViewMode.value = 'grid';
                   case 'toggle_hidden':
                     _toggleShowHiddenGlobal();
+                  case 'open_hidden_list':
+                    showHiddenListDialog(context);
                 }
               },
             ),

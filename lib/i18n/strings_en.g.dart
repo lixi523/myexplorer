@@ -76,6 +76,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$tasks$en tasks = Translations$tasks$en.internal(_root);
 	late final Translations$git$en git = Translations$git$en.internal(_root);
 	late final Translations$openWith$en openWith = Translations$openWith$en.internal(_root);
+	late final Translations$hiddenList$en hiddenList = Translations$hiddenList$en.internal(_root);
 }
 
 // Path: app
@@ -86,8 +87,8 @@ class Translations$app$en {
 
 	// Translations
 
-	/// en: 'Waydir'
-	String get title => 'Waydir';
+	/// en: 'MyExplorer'
+	String get title => 'MyExplorer';
 
 	/// en: 'Navigate your files. Your way.'
 	String get tagline => 'Navigate your files. Your way.';
@@ -166,6 +167,12 @@ class Translations$menu$en {
 
 	/// en: 'Show Hidden Files'
 	String get showHidden => 'Show Hidden Files';
+
+	/// en: 'Add to Hidden List'
+	String get hideSelected => 'Add to Hidden List';
+
+	/// en: 'Hidden List…'
+	String get hiddenList => 'Hidden List…';
 
 	/// en: 'Select All'
 	String get selectAll => 'Select All';
@@ -2322,6 +2329,30 @@ class Translations$openWith$en {
 	String get windowsDefaultDialogRequired => 'Use the system "Open with" dialog to change the default on Windows';
 }
 
+// Path: hiddenList
+class Translations$hiddenList$en {
+	Translations$hiddenList$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Hidden List'
+	String get title => 'Hidden List';
+
+	/// en: 'One full path per line (multi-line paste supported)'
+	String get pathHint => 'One full path per line (multi-line paste supported)';
+
+	/// en: 'Add'
+	String get add => 'Add';
+
+	/// en: 'No hidden items'
+	String get empty => 'No hidden items';
+
+	/// en: 'Added $count items'
+	String added({required Object count}) => 'Added ${count} items';
+}
+
 // Path: preferences.categories
 class Translations$preferences$categories$en {
 	Translations$preferences$categories$en.internal(this._root);
@@ -3441,6 +3472,7 @@ class Translations$help$groups$files$en {
 	late final Translations$help$groups$files$archives$en archives = Translations$help$groups$files$archives$en.internal(_root);
 	late final Translations$help$groups$files$openWith$en openWith = Translations$help$groups$files$openWith$en.internal(_root);
 	late final Translations$help$groups$files$tags$en tags = Translations$help$groups$files$tags$en.internal(_root);
+	late final Translations$help$groups$files$hiddenList$en hiddenList = Translations$help$groups$files$hiddenList$en.internal(_root);
 }
 
 // Path: help.groups.previewing
@@ -3519,6 +3551,7 @@ class Translations$help$groups$customization$en {
 	late final Translations$help$groups$customization$themes$en themes = Translations$help$groups$customization$themes$en.internal(_root);
 	late final Translations$help$groups$customization$shortcuts$en shortcuts = Translations$help$groups$customization$shortcuts$en.internal(_root);
 	late final Translations$help$groups$customization$plugins$en plugins = Translations$help$groups$customization$plugins$en.internal(_root);
+	late final Translations$help$groups$customization$shortcutBar$en shortcutBar = Translations$help$groups$customization$shortcutBar$en.internal(_root);
 }
 
 // Path: help.groups.resources
@@ -3543,11 +3576,11 @@ class Translations$help$groups$gettingStarted$welcome$en {
 
 	// Translations
 
-	/// en: 'Welcome to Waydir'
-	String get title => 'Welcome to Waydir';
+	/// en: 'Welcome to MyExplorer'
+	String get title => 'Welcome to MyExplorer';
 
-	/// en: 'Waydir is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization. - Use the tree on the left to jump between topics. - Most actions have a keyboard shortcut, shown inline as `Ctrl+C`. - Every shortcut can be rebound in **Preferences -> Keyboard**. Pick a topic to get started, or read straight through from the top.'
-	String get body => 'Waydir is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization.\n\n- Use the tree on the left to jump between topics.\n- Most actions have a keyboard shortcut, shown inline as `Ctrl+C`.\n- Every shortcut can be rebound in **Preferences -> Keyboard**.\n\nPick a topic to get started, or read straight through from the top.';
+	/// en: 'MyExplorer is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization. - Use the tree on the left to jump between topics. - Most actions have a keyboard shortcut, shown inline as `Ctrl+C`. - Every shortcut can be rebound in **Preferences -> Keyboard**. Pick a topic to get started, or read straight through from the top.'
+	String get body => 'MyExplorer is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization.\n\n- Use the tree on the left to jump between topics.\n- Most actions have a keyboard shortcut, shown inline as `Ctrl+C`.\n- Every shortcut can be rebound in **Preferences -> Keyboard**.\n\nPick a topic to get started, or read straight through from the top.';
 }
 
 // Path: help.groups.gettingStarted.interface
@@ -3576,8 +3609,8 @@ class Translations$help$groups$gettingStarted$keyboardBasics$en {
 	/// en: 'Keyboard-First Basics'
 	String get title => 'Keyboard-First Basics';
 
-	/// en: 'Waydir is designed to be driven from the keyboard. - `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up. - Start typing to jump to a matching file (type-ahead). - `Ctrl+F` searches, `Space` previews, `F2` renames. - Almost nothing requires the mouse - and every binding is customizable.'
-	String get body => 'Waydir is designed to be driven from the keyboard.\n\n- `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up.\n- Start typing to jump to a matching file (type-ahead).\n- `Ctrl+F` searches, `Space` previews, `F2` renames.\n- Almost nothing requires the mouse - and every binding is customizable.';
+	/// en: 'MyExplorer is designed to be driven from the keyboard. - `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up. - Start typing to jump to a matching file (type-ahead). - `Ctrl+F` searches, `Space` previews, `F2` renames. - Almost nothing requires the mouse - and every binding is customizable.'
+	String get body => 'MyExplorer is designed to be driven from the keyboard.\n\n- `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up.\n- Start typing to jump to a matching file (type-ahead).\n- `Ctrl+F` searches, `Space` previews, `F2` renames.\n- Almost nothing requires the mouse - and every binding is customizable.';
 }
 
 // Path: help.groups.navigating.moving
@@ -3591,8 +3624,8 @@ class Translations$help$groups$navigating$moving$en {
 	/// en: 'Moving Around'
 	String get title => 'Moving Around';
 
-	/// en: 'Browse without reaching for the mouse. Waydir keeps the cursor, selection and history close to the main file list. - `↑` / `↓` move the cursor through visible files. - `Enter` opens the selected item; double-click does the same. - `Backspace` goes to the parent folder. - `Alt+←` / `Alt+→` step back and forward through folder history. - `Ctrl+R` refreshes the current folder.'
-	String get body => 'Browse without reaching for the mouse. Waydir keeps the cursor, selection and history close to the main file list.\n\n- `↑` / `↓` move the cursor through visible files.\n- `Enter` opens the selected item; double-click does the same.\n- `Backspace` goes to the parent folder.\n- `Alt+←` / `Alt+→` step back and forward through folder history.\n- `Ctrl+R` refreshes the current folder.';
+	/// en: 'Browse without reaching for the mouse. MyExplorer keeps the cursor, selection and history close to the main file list. - `↑` / `↓` move the cursor through visible files. - `Enter` opens the selected item; double-click does the same. - `Backspace` goes to the parent folder. - `Alt+←` / `Alt+→` step back and forward through folder history. - `Ctrl+R` refreshes the current folder.'
+	String get body => 'Browse without reaching for the mouse. MyExplorer keeps the cursor, selection and history close to the main file list.\n\n- `↑` / `↓` move the cursor through visible files.\n- `Enter` opens the selected item; double-click does the same.\n- `Backspace` goes to the parent folder.\n- `Alt+←` / `Alt+→` step back and forward through folder history.\n- `Ctrl+R` refreshes the current folder.';
 }
 
 // Path: help.groups.navigating.breadcrumb
@@ -3820,6 +3853,21 @@ class Translations$help$groups$files$tags$en {
 	String get body => 'Mark files and folders with colored tags to find them again fast. Three tags - **Red**, **Green** and **Blue** - are ready out of the box.\n\n- Assign or remove tags from the **Tags** submenu in the context menu, or drag files onto a tag in the sidebar.\n- Tagged items show a colored dot in the file list, and an item can carry several tags at once.\n- Each tag appears in the **Tags** section of the sidebar; click one to list every file that carries it, wherever it lives.\n- In a tag view, use **Open Location** from the context menu to jump to a file\'s real folder.\n- Right-click a tag in the sidebar to rename, recolor or delete it; deleting a tag removes it from every file.\n- Tags apply to local files only - not to SFTP, network shares or items inside archives.';
 }
 
+// Path: help.groups.files.hiddenList
+class Translations$help$groups$files$hiddenList$en {
+	Translations$help$groups$files$hiddenList$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Hidden List'
+	String get title => 'Hidden List';
+
+	/// en: 'Hide selected files and folders from every list view without touching the files themselves. - Select one or more items, right-click and choose **Add to Hidden List**. - Hidden items disappear from the file list, the tree, the sidebar and recent paths. - Entries are stored in `隐藏文件.ini` next to the executable. - To show an item again, open **View -> Hidden List...** and remove its entry. - Hiding a folder hides that folder itself; its contents remain visible when you open it.'
+	String get body => 'Hide selected files and folders from every list view without touching the files themselves.\n\n- Select one or more items, right-click and choose **Add to Hidden List**.\n- Hidden items disappear from the file list, the tree, the sidebar and recent paths.\n- Entries are stored in `隐藏文件.ini` next to the executable.\n- To show an item again, open **View -> Hidden List...** and remove its entry.\n- Hiding a folder hides that folder itself; its contents remain visible when you open it.';
+}
+
 // Path: help.groups.previewing.quickLook
 class Translations$help$groups$previewing$quickLook$en {
 	Translations$help$groups$previewing$quickLook$en.internal(this._root);
@@ -3876,8 +3924,8 @@ class Translations$help$groups$searching$function$en {
 	/// en: 'Function & Command Search'
 	String get title => 'Function & Command Search';
 
-	/// en: 'Find and run any Waydir action without hunting through menus. - Open the command search and start typing an action name. - Results show the matching command and its current shortcut. - Run it straight from the list - handy for actions you use rarely.'
-	String get body => 'Find and run any Waydir action without hunting through menus.\n\n- Open the command search and start typing an action name.\n- Results show the matching command and its current shortcut.\n- Run it straight from the list - handy for actions you use rarely.';
+	/// en: 'Find and run any MyExplorer action without hunting through menus. - Open the command search and start typing an action name. - Results show the matching command and its current shortcut. - Run it straight from the list - handy for actions you use rarely.'
+	String get body => 'Find and run any MyExplorer action without hunting through menus.\n\n- Open the command search and start typing an action name.\n- Results show the matching command and its current shortcut.\n- Run it straight from the list - handy for actions you use rarely.';
 }
 
 // Path: help.groups.commandPalette.basics
@@ -3906,8 +3954,8 @@ class Translations$help$groups$commandPalette$files$en {
 	/// en: 'Find Files from the Palette'
 	String get title => 'Find Files from the Palette';
 
-	/// en: 'The palette also works as a quick file jumper for the folder you are viewing. - Start typing a file or folder name to match visible items. - Keep typing for a moment and Waydir searches subfolders too. - Recursive file matches show their containing folder as the subtitle. - Choosing a file or folder focuses it in the current pane so you can open, preview or act on it.'
-	String get body => 'The palette also works as a quick file jumper for the folder you are viewing.\n\n- Start typing a file or folder name to match visible items.\n- Keep typing for a moment and Waydir searches subfolders too.\n- Recursive file matches show their containing folder as the subtitle.\n- Choosing a file or folder focuses it in the current pane so you can open, preview or act on it.';
+	/// en: 'The palette also works as a quick file jumper for the folder you are viewing. - Start typing a file or folder name to match visible items. - Keep typing for a moment and MyExplorer searches subfolders too. - Recursive file matches show their containing folder as the subtitle. - Choosing a file or folder focuses it in the current pane so you can open, preview or act on it.'
+	String get body => 'The palette also works as a quick file jumper for the folder you are viewing.\n\n- Start typing a file or folder name to match visible items.\n- Keep typing for a moment and MyExplorer searches subfolders too.\n- Recursive file matches show their containing folder as the subtitle.\n- Choosing a file or folder focuses it in the current pane so you can open, preview or act on it.';
 }
 
 // Path: help.groups.remote.sftp
@@ -3936,8 +3984,8 @@ class Translations$help$groups$remote$network$en {
 	/// en: 'Network Paths & WSL'
 	String get title => 'Network Paths & WSL';
 
-	/// en: 'Waydir handles network shares and Windows Subsystem for Linux paths. - Browse mounted SMB / network shares like local folders. - On Windows, WSL distribution paths are recognised and openable. - Network locations are guarded so a slow share never freezes the UI.'
-	String get body => 'Waydir handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI.';
+	/// en: 'MyExplorer handles network shares and Windows Subsystem for Linux paths. - Browse mounted SMB / network shares like local folders. - On Windows, WSL distribution paths are recognised and openable. - Network locations are guarded so a slow share never freezes the UI.'
+	String get body => 'MyExplorer handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI.';
 }
 
 // Path: help.groups.remote.terminal
@@ -3966,8 +4014,8 @@ class Translations$help$groups$remote$git$en {
 	/// en: 'Git Status'
 	String get title => 'Git Status';
 
-	/// en: 'Waydir surfaces Git information for folders under version control. - Changed, staged and untracked files are marked in the list. - The current branch is shown for the folder. - Status updates as you work in the repository.'
-	String get body => 'Waydir surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository.';
+	/// en: 'MyExplorer surfaces Git information for folders under version control. - Changed, staged and untracked files are marked in the list. - The current branch is shown for the folder. - Status updates as you work in the repository.'
+	String get body => 'MyExplorer surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository.';
 }
 
 // Path: help.groups.customization.themes
@@ -3981,8 +4029,8 @@ class Translations$help$groups$customization$themes$en {
 	/// en: 'Themes & Appearance'
 	String get title => 'Themes & Appearance';
 
-	/// en: 'Make Waydir look the way you like. - Pick a built-in theme or add your own in **Preferences -> Appearance**. - Choose list, tree or grid view, row density and column layout. - Configure date formats, spacing and which columns show. - Resizable columns can be turned on for fine control.'
-	String get body => 'Make Waydir look the way you like.\n\n- Pick a built-in theme or add your own in **Preferences -> Appearance**.\n- Choose list, tree or grid view, row density and column layout.\n- Configure date formats, spacing and which columns show.\n- Resizable columns can be turned on for fine control.';
+	/// en: 'Make MyExplorer look the way you like. - Pick a built-in theme or add your own in **Preferences -> Appearance**. - Choose list, tree or grid view, row density and column layout. - Configure date formats, spacing and which columns show. - Resizable columns can be turned on for fine control.'
+	String get body => 'Make MyExplorer look the way you like.\n\n- Pick a built-in theme or add your own in **Preferences -> Appearance**.\n- Choose list, tree or grid view, row density and column layout.\n- Configure date formats, spacing and which columns show.\n- Resizable columns can be turned on for fine control.';
 }
 
 // Path: help.groups.customization.shortcuts
@@ -4011,8 +4059,23 @@ class Translations$help$groups$customization$plugins$en {
 	/// en: 'Plugins'
 	String get title => 'Plugins';
 
-	/// en: 'Extend Waydir with plugins written in Lua. - Plugins run through the native core and can add new actions. - Enable or disable installed plugins in **Preferences -> Plugins**. - See the plugin authoring guide in the project's docs to build your own.'
-	String get body => 'Extend Waydir with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.';
+	/// en: 'Extend MyExplorer with plugins written in Lua. - Plugins run through the native core and can add new actions. - Enable or disable installed plugins in **Preferences -> Plugins**. - See the plugin authoring guide in the project's docs to build your own.'
+	String get body => 'Extend MyExplorer with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.';
+}
+
+// Path: help.groups.customization.shortcutBar
+class Translations$help$groups$customization$shortcutBar$en {
+	Translations$help$groups$customization$shortcutBar$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Shortcut Bar'
+	String get title => 'Shortcut Bar';
+
+	/// en: 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions. - Right-click a button to edit or remove it; the `+` area adds a new one. - A button can open a folder or file, run a command line, or jump with `CD <path>`. - Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available. - Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`). - Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK). - Leave an entry empty to create a separator.'
+	String get body => 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator.';
 }
 
 // Path: help.groups.resources.links
@@ -4026,8 +4089,8 @@ class Translations$help$groups$resources$links$en {
 	/// en: 'Links & Resources'
 	String get title => 'Links & Resources';
 
-	/// en: 'More about Waydir and where to go next. - **Changelog** - what's new in each release (in the menu). - **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**. - **GitHub** - [source code, issues and releases](https://github.com/Waydir/Waydir). - **Plugin guide** - [how to write your own plugins](https://github.com/Waydir/Waydir/blob/main/docs/plugins.md).'
-	String get body => 'More about Waydir and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/Waydir/Waydir).\n- **Plugin guide** - [how to write your own plugins](https://github.com/Waydir/Waydir/blob/main/docs/plugins.md).';
+	/// en: 'More about MyExplorer and where to go next. - **Changelog** - what's new in each release (in the menu). - **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**. - **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer). - **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md).'
+	String get body => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md).';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -4038,7 +4101,7 @@ class Translations$help$groups$resources$links$en {
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
-			'app.title' => 'Waydir',
+			'app.title' => 'MyExplorer',
 			'app.tagline' => 'Navigate your files. Your way.',
 			'app.description' => 'A fast, keyboard-driven desktop file manager built with Flutter.',
 			'terminal.title' => 'Terminal',
@@ -4059,6 +4122,8 @@ extension on Translations {
 			'menu.restore' => 'Restore',
 			'menu.restoreItems' => ({required Object count}) => 'Restore ${count} Items',
 			'menu.showHidden' => 'Show Hidden Files',
+			'menu.hideSelected' => 'Add to Hidden List',
+			'menu.hiddenList' => 'Hidden List…',
 			'menu.selectAll' => 'Select All',
 			'menu.selectByPattern' => 'Select by Pattern…',
 			'menu.deselectAll' => 'Deselect All',
@@ -4436,15 +4501,15 @@ extension on Translations {
 			'help.title' => 'In-app tutorial',
 			'help.menuLabel' => 'In-app tutorial',
 			'help.groups.gettingStarted.title' => 'Getting Started',
-			'help.groups.gettingStarted.welcome.title' => 'Welcome to Waydir',
-			'help.groups.gettingStarted.welcome.body' => 'Waydir is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization.\n\n- Use the tree on the left to jump between topics.\n- Most actions have a keyboard shortcut, shown inline as `Ctrl+C`.\n- Every shortcut can be rebound in **Preferences -> Keyboard**.\n\nPick a topic to get started, or read straight through from the top.',
+			'help.groups.gettingStarted.welcome.title' => 'Welcome to MyExplorer',
+			'help.groups.gettingStarted.welcome.body' => 'MyExplorer is a fast, keyboard-driven file manager. This guide walks through everything from basic navigation to remote servers, the terminal and customization.\n\n- Use the tree on the left to jump between topics.\n- Most actions have a keyboard shortcut, shown inline as `Ctrl+C`.\n- Every shortcut can be rebound in **Preferences -> Keyboard**.\n\nPick a topic to get started, or read straight through from the top.',
 			'help.groups.gettingStarted.interface.title' => 'The Interface',
 			'help.groups.gettingStarted.interface.body' => 'The window is built from a few simple parts.\n\n- **Sidebar** - bookmarks, drives and remote locations. Toggle it with `Ctrl+B`.\n- **Tab strip** - one tab per open folder.\n- **Breadcrumb bar** - the current path; click any segment to jump there.\n- **File list** - the main view, in list, tree or grid mode.\n- **Status bar** - item counts, selection size and operation progress.',
 			'help.groups.gettingStarted.keyboardBasics.title' => 'Keyboard-First Basics',
-			'help.groups.gettingStarted.keyboardBasics.body' => 'Waydir is designed to be driven from the keyboard.\n\n- `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up.\n- Start typing to jump to a matching file (type-ahead).\n- `Ctrl+F` searches, `Space` previews, `F2` renames.\n- Almost nothing requires the mouse - and every binding is customizable.',
+			'help.groups.gettingStarted.keyboardBasics.body' => 'MyExplorer is designed to be driven from the keyboard.\n\n- `↑` / `↓` move the cursor; `Enter` opens; `Backspace` goes up.\n- Start typing to jump to a matching file (type-ahead).\n- `Ctrl+F` searches, `Space` previews, `F2` renames.\n- Almost nothing requires the mouse - and every binding is customizable.',
 			'help.groups.navigating.title' => 'Navigating',
 			'help.groups.navigating.moving.title' => 'Moving Around',
-			'help.groups.navigating.moving.body' => 'Browse without reaching for the mouse. Waydir keeps the cursor, selection and history close to the main file list.\n\n- `↑` / `↓` move the cursor through visible files.\n- `Enter` opens the selected item; double-click does the same.\n- `Backspace` goes to the parent folder.\n- `Alt+←` / `Alt+→` step back and forward through folder history.\n- `Ctrl+R` refreshes the current folder.',
+			'help.groups.navigating.moving.body' => 'Browse without reaching for the mouse. MyExplorer keeps the cursor, selection and history close to the main file list.\n\n- `↑` / `↓` move the cursor through visible files.\n- `Enter` opens the selected item; double-click does the same.\n- `Backspace` goes to the parent folder.\n- `Alt+←` / `Alt+→` step back and forward through folder history.\n- `Ctrl+R` refreshes the current folder.',
 			'help.groups.navigating.breadcrumb.title' => 'Breadcrumb Bar',
 			'help.groups.navigating.breadcrumb.body' => 'The breadcrumb bar shows where you are and lets you move quickly.\n\n- Click any segment to jump straight to that folder.\n- The path stays in sync as you navigate.\n- Type a path directly to go somewhere specific.',
 			'help.groups.navigating.bookmarks.title' => 'Bookmarks & Sidebar',
@@ -4478,6 +4543,8 @@ extension on Translations {
 			'help.groups.files.openWith.body' => 'Open a file in any installed application, not just the system default.\n\n- **Open With** from the context menu lists available apps.\n- Set a default app per file type so future opens go straight there.\n- Recently used apps appear at the top for quick access.',
 			'help.groups.files.tags.title' => 'Color Tags',
 			'help.groups.files.tags.body' => 'Mark files and folders with colored tags to find them again fast. Three tags - **Red**, **Green** and **Blue** - are ready out of the box.\n\n- Assign or remove tags from the **Tags** submenu in the context menu, or drag files onto a tag in the sidebar.\n- Tagged items show a colored dot in the file list, and an item can carry several tags at once.\n- Each tag appears in the **Tags** section of the sidebar; click one to list every file that carries it, wherever it lives.\n- In a tag view, use **Open Location** from the context menu to jump to a file\'s real folder.\n- Right-click a tag in the sidebar to rename, recolor or delete it; deleting a tag removes it from every file.\n- Tags apply to local files only - not to SFTP, network shares or items inside archives.',
+			'help.groups.files.hiddenList.title' => 'Hidden List',
+			'help.groups.files.hiddenList.body' => 'Hide selected files and folders from every list view without touching the files themselves.\n\n- Select one or more items, right-click and choose **Add to Hidden List**.\n- Hidden items disappear from the file list, the tree, the sidebar and recent paths.\n- Entries are stored in `隐藏文件.ini` next to the executable.\n- To show an item again, open **View -> Hidden List...** and remove its entry.\n- Hiding a folder hides that folder itself; its contents remain visible when you open it.',
 			'help.groups.previewing.title' => 'Previewing',
 			'help.groups.previewing.quickLook.title' => 'Quick Look',
 			'help.groups.previewing.quickLook.body' => 'Inspect a file without opening another app. Quick Look handles images, text, code, Markdown and other supported types.\n\n- `Space` opens Quick Look for the current selection.\n- `↑` / `↓` step to the previous or next file without leaving the preview.\n- `Esc` closes the preview.\n- The info panel shows size, dates and permissions alongside the preview.',
@@ -4487,31 +4554,33 @@ extension on Translations {
 			'help.groups.searching.folder.title' => 'Search in a Folder',
 			'help.groups.searching.folder.body' => 'Filter the current folder or sweep through everything beneath it.\n\n- `Ctrl+F` filters the current folder by name as you type.\n- `Ctrl+Shift+F` extends the search into all subfolders.\n- Turn on **Content** to search inside file contents (local folders only - not over SFTP).\n- Switch between **Substring**, **Glob** and **Regex** matching.\n- `Esc` closes the search and restores the full list.',
 			'help.groups.searching.function.title' => 'Function & Command Search',
-			'help.groups.searching.function.body' => 'Find and run any Waydir action without hunting through menus.\n\n- Open the command search and start typing an action name.\n- Results show the matching command and its current shortcut.\n- Run it straight from the list - handy for actions you use rarely.',
+			'help.groups.searching.function.body' => 'Find and run any MyExplorer action without hunting through menus.\n\n- Open the command search and start typing an action name.\n- Results show the matching command and its current shortcut.\n- Run it straight from the list - handy for actions you use rarely.',
 			'help.groups.commandPalette.title' => 'Command Palette',
 			'help.groups.commandPalette.basics.title' => 'Run Commands',
 			'help.groups.commandPalette.basics.body' => 'The command palette is the fastest way to trigger actions without leaving the keyboard.\n\n- Press `Ctrl+P` to open it.\n- Type an action, setting, bookmark, drive, recent path or plugin command.\n- Results include the current shortcut when one is assigned.\n- Disabled actions stay visible with a muted state when they do not apply to the current selection.\n- Press `Enter` to run the highlighted command or `Esc` to close the palette.',
 			'help.groups.commandPalette.files.title' => 'Find Files from the Palette',
-			'help.groups.commandPalette.files.body' => 'The palette also works as a quick file jumper for the folder you are viewing.\n\n- Start typing a file or folder name to match visible items.\n- Keep typing for a moment and Waydir searches subfolders too.\n- Recursive file matches show their containing folder as the subtitle.\n- Choosing a file or folder focuses it in the current pane so you can open, preview or act on it.',
+			'help.groups.commandPalette.files.body' => 'The palette also works as a quick file jumper for the folder you are viewing.\n\n- Start typing a file or folder name to match visible items.\n- Keep typing for a moment and MyExplorer searches subfolders too.\n- Recursive file matches show their containing folder as the subtitle.\n- Choosing a file or folder focuses it in the current pane so you can open, preview or act on it.',
 			'help.groups.remote.title' => 'Remote & Integrations',
 			'help.groups.remote.sftp.title' => 'SFTP & Remote Servers',
 			'help.groups.remote.sftp.body' => 'Work with SFTP servers right next to your local folders.\n\n- Use **Connect to Server** from the sidebar to add a remote location.\n- Once connected, open and browse remote folders exactly like local ones.\n- Bookmark folders you visit often so they stay one click away.\n- Selection, the context menu and file operations all behave the same as locally - only content search is unavailable over SFTP.',
 			'help.groups.remote.network.title' => 'Network Paths & WSL',
-			'help.groups.remote.network.body' => 'Waydir handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI.',
+			'help.groups.remote.network.body' => 'MyExplorer handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI.',
 			'help.groups.remote.terminal.title' => 'Terminal',
 			'help.groups.remote.terminal.body' => 'Each pane has its own embedded terminal that opens in the folder you are viewing.\n\n- `Ctrl` + backtick opens or focuses the terminal.\n- `Ctrl+Shift` + backtick shows or hides the terminal panel.\n- `Ctrl+Shift+T` opens a new terminal tab; `Ctrl+Shift+W` closes one.\n- `Ctrl++` / `Ctrl+-` adjust the font size and `Ctrl+0` resets it.\n- Prefer an external terminal? Choose one in **Preferences -> Terminal**.',
 			'help.groups.remote.git.title' => 'Git Status',
-			'help.groups.remote.git.body' => 'Waydir surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository.',
+			'help.groups.remote.git.body' => 'MyExplorer surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository.',
 			'help.groups.customization.title' => 'Customization',
 			'help.groups.customization.themes.title' => 'Themes & Appearance',
-			'help.groups.customization.themes.body' => 'Make Waydir look the way you like.\n\n- Pick a built-in theme or add your own in **Preferences -> Appearance**.\n- Choose list, tree or grid view, row density and column layout.\n- Configure date formats, spacing and which columns show.\n- Resizable columns can be turned on for fine control.',
+			'help.groups.customization.themes.body' => 'Make MyExplorer look the way you like.\n\n- Pick a built-in theme or add your own in **Preferences -> Appearance**.\n- Choose list, tree or grid view, row density and column layout.\n- Configure date formats, spacing and which columns show.\n- Resizable columns can be turned on for fine control.',
 			'help.groups.customization.shortcuts.title' => 'Keyboard Shortcuts',
 			'help.groups.customization.shortcuts.body' => 'Almost every action can be rebound to a key of your choosing.\n\n- Open **Preferences -> Keyboard** to see and edit all shortcuts.\n- Conflicts are flagged so two actions never fight over a key.\n- Reset a single binding, or all of them, back to the defaults at any time.',
 			'help.groups.customization.plugins.title' => 'Plugins',
-			'help.groups.customization.plugins.body' => 'Extend Waydir with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.',
+			'help.groups.customization.plugins.body' => 'Extend MyExplorer with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.',
+			'help.groups.customization.shortcutBar.title' => 'Shortcut Bar',
+			'help.groups.customization.shortcutBar.body' => 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator.',
 			'help.groups.resources.title' => 'Resources',
 			'help.groups.resources.links.title' => 'Links & Resources',
-			'help.groups.resources.links.body' => 'More about Waydir and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/Waydir/Waydir).\n- **Plugin guide** - [how to write your own plugins](https://github.com/Waydir/Waydir/blob/main/docs/plugins.md).',
+			'help.groups.resources.links.body' => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md).',
 			'tags.menuLabel' => 'Tags',
 			'tags.newTag' => 'New Tag',
 			'tags.newTagDots' => 'New tag…',
@@ -4544,14 +4613,14 @@ extension on Translations {
 			'keybindings.goBack' => 'Go back',
 			'keybindings.goForward' => 'Go forward',
 			'keybindings.refresh' => 'Refresh',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.focusPath' => 'Focus path bar',
 			'keybindings.quickLook' => 'Open Quick Look',
 			'keybindings.quickLookClose' => 'Close Quick Look',
 			'keybindings.quickLookPrevFile' => 'Previous file',
 			'keybindings.quickLookNextFile' => 'Next file',
 			'keybindings.quickLookPrevFileEdit' => 'Previous file while editing',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.quickLookNextFileEdit' => 'Next file while editing',
 			'keybindings.quickLookSave' => 'Save changes',
 			'keybindings.cursorUp' => 'Move up',
@@ -5030,6 +5099,11 @@ extension on Translations {
 			'openWith.setDefaultFailed' => 'Could not set the default application',
 			'openWith.unsupportedPlatform' => 'Unsupported platform',
 			'openWith.windowsDefaultDialogRequired' => 'Use the system "Open with" dialog to change the default on Windows',
+			'hiddenList.title' => 'Hidden List',
+			'hiddenList.pathHint' => 'One full path per line (multi-line paste supported)',
+			'hiddenList.add' => 'Add',
+			'hiddenList.empty' => 'No hidden items',
+			'hiddenList.added' => ({required Object count}) => 'Added ${count} items',
 			_ => null,
 		};
 	}

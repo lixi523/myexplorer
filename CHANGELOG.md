@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-07
+
+### Added
+- Hidden list (`隐藏文件.ini`): hide selected files and folders from every list view via the right-click menu, with an editable hidden list dialog under the View menu.
+- Single-instance enforcement: launching the app again focuses the existing window instead of starting a second copy.
+- Open maximized by default on startup.
+
+### Changed
+- Renamed the application to **MyExplorer** (window title, executable name, installer and product metadata).
+
 ## [0.50.0] - 2026-08-04
 
 ### Added

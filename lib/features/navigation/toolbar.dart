@@ -16,6 +16,7 @@ import 'bookmark_store.dart';
 import 'breadcrumbs/breadcrumb_bar.dart';
 import 'breadcrumbs/crumb.dart';
 import 'navigation_store.dart';
+import '../hidden/hidden_list_store.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/widgets/app_icon.dart';
@@ -550,14 +551,16 @@ class _PathBarState extends State<_PathBar> {
     if (!settings.isLoaded) return const [];
     try {
       final paths = await settings.db.getRecentEnteredPaths();
+      HiddenListStore.instance.paths.value; // reactive dependency
 
       return [
         for (final path in paths)
-          _PathSuggestion(
-            path: path,
-            label: path,
-            icon: WaydirIconsRegular.clockClockwise,
-          ),
+          if (!HiddenListStore.instance.isHidden(path))
+            _PathSuggestion(
+              path: path,
+              label: path,
+              icon: WaydirIconsRegular.clockClockwise,
+            ),
       ];
     } catch (e, st) {
       log.warn(

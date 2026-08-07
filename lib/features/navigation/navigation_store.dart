@@ -21,6 +21,7 @@ import '../../core/settings/settings_store.dart';
 import '../../i18n/strings.g.dart';
 import '../files/row_decorations.dart';
 import '../git/git_status_store.dart';
+import '../hidden/hidden_list_store.dart';
 import '../operations/operation_store.dart';
 import '../tags/tag_path.dart';
 import '../tags/tag_store.dart';
@@ -187,6 +188,12 @@ class NavigationStore {
     var list = showHidden.value
         ? files.value
         : files.value.where((f) => !f.isHidden).toList();
+    HiddenListStore.instance.paths.value; // reactive dependency
+    if (HiddenListStore.instance.isLoaded) {
+      list = list
+          .where((f) => !HiddenListStore.instance.isHidden(f.realPath))
+          .toList();
+    }
     final q = searchQuery.value.trim();
     if (searchActive.value && q.isNotEmpty) {
       if (SettingsStore.instance.searchMode.value == filterSearchMode) {
@@ -244,9 +251,15 @@ class NavigationStore {
       );
       if (!isExpanded) return;
       final rawChildren = children[path] ?? const <FileEntry>[];
-      final visibleChildren = showHidden.value
+      var visibleChildren = showHidden.value
           ? rawChildren
           : rawChildren.where((f) => !f.isHidden).toList();
+      HiddenListStore.instance.paths.value; // reactive dependency
+      if (HiddenListStore.instance.isLoaded) {
+        visibleChildren = visibleChildren
+            .where((f) => !HiddenListStore.instance.isHidden(f.realPath))
+            .toList();
+      }
       final sortedChildren = sortCurrent(visibleChildren);
       for (final child in sortedChildren) {
         append(child, depth + 1);

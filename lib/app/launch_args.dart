@@ -27,9 +27,9 @@ class LaunchArgs {
   static LaunchOptions options = const LaunchOptions();
 
   static const String helpText = '''
-Waydir - desktop file manager
+MyExplorer - desktop file manager
 
-Usage: waydir [options] [path...]
+Usage: MyExplorer [options] [path...]
 
 Arguments:
   path...               One or more folders to open, each in its own tab.
