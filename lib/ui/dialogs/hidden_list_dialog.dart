@@ -108,11 +108,7 @@ class _HiddenListDialogState extends State<_HiddenListDialog> {
           const SizedBox(height: 8),
           Row(
             children: [
-              _ActionButton(
-                label: t.hiddenList.add,
-                busy: _busy,
-                onTap: _add,
-              ),
+              _ActionButton(label: t.hiddenList.add, busy: _busy, onTap: _add),
             ],
           ),
           if (_message != null) ...[

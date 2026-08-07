@@ -220,14 +220,8 @@ class ShellStore {
     }
     batch(() {
       panes.value = [
-        PaneStore.fromSpecs(
-          operationStore: operationStore,
-          specs: firstSpecs,
-        ),
-        PaneStore.fromSpecs(
-          operationStore: operationStore,
-          specs: secondSpecs,
-        ),
+        PaneStore.fromSpecs(operationStore: operationStore, specs: firstSpecs),
+        PaneStore.fromSpecs(operationStore: operationStore, specs: secondSpecs),
       ];
       activePaneIndex.value = 0;
       ready.value = true;

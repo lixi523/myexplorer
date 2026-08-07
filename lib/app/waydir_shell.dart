@@ -406,9 +406,8 @@ class _WaydirShellState extends State<WaydirShell>
         icon: WaydirIconsRegular.magnifyingGlass,
         tooltip: t.toolbar.search,
         isActive: () => store.searchActive.value,
-        onTap: () => store.searchActive.value
-            ? store.closeSearch()
-            : store.openSearch(),
+        onTap: () =>
+            store.searchActive.value ? store.closeSearch() : store.openSearch(),
       ),
       CenterShortcutButton(
         icon: WaydirIconsRegular.arrowsClockwise,

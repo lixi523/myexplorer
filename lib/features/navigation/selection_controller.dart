@@ -140,9 +140,7 @@ class SelectionController {
     if (re == null) return 0;
     final matched = _vf.where((f) => re.hasMatch(f.name)).toList();
     selectedPaths.value = Set<String>.from(
-      selectedPaths.value.difference(
-        matched.map((f) => f.path).toSet(),
-      ),
+      selectedPaths.value.difference(matched.map((f) => f.path).toSet()),
     );
 
     return matched.length;

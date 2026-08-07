@@ -343,10 +343,7 @@ class _ActionButton extends StatelessWidget {
                 height: 12,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(
-                label,
-                style: context.txt.row.copyWith(color: AppColors.fg),
-              ),
+            : Text(label, style: context.txt.row.copyWith(color: AppColors.fg)),
       ),
     );
   }
