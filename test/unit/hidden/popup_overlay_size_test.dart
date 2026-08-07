@@ -4,7 +4,8 @@ import 'package:waydir/ui/overlays/popup_overlay.dart';
 import 'package:waydir/ui/theme/app_theme.dart';
 
 void main() {
-  Widget wrap(Widget child) => MaterialApp(theme: AppTheme.build(), home: child);
+  Widget wrap(Widget child) =>
+      MaterialApp(theme: AppTheme.build(), home: child);
 
   testWidgets('popup overlay backdrop covers the whole screen', (tester) async {
     await tester.pumpWidget(
@@ -37,13 +38,17 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    final popup = tester.renderObject<RenderBox>(
-      find.byType(PopupOverlay),
-    );
+    final popup = tester.renderObject<RenderBox>(find.byType(PopupOverlay));
     // The PopupOverlay's Stack must be full-screen so the auto-dismiss
     // backdrop receives taps anywhere outside the menu.
-    expect(popup.size.width, tester.view.physicalSize.width / tester.view.devicePixelRatio);
-    expect(popup.size.height, tester.view.physicalSize.height / tester.view.devicePixelRatio);
+    expect(
+      popup.size.width,
+      tester.view.physicalSize.width / tester.view.devicePixelRatio,
+    );
+    expect(
+      popup.size.height,
+      tester.view.physicalSize.height / tester.view.devicePixelRatio,
+    );
 
     // Tapping the very corner should dismiss.
     await tester.tapAt(const Offset(5, 5));

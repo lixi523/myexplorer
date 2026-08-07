@@ -4,7 +4,8 @@ import 'package:waydir/ui/overlays/context_menu.dart';
 import 'package:waydir/ui/theme/app_theme.dart';
 
 void main() {
-  Widget wrap(Widget child) => MaterialApp(theme: AppTheme.build(), home: child);
+  Widget wrap(Widget child) =>
+      MaterialApp(theme: AppTheme.build(), home: child);
 
   Future<void> openMenu(WidgetTester tester) async {
     await tester.pumpWidget(
@@ -78,7 +79,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Work'), findsNothing, reason: 'submenu should dismiss');
-    expect(find.text('Tags'), findsNothing, reason: 'parent menu should dismiss');
+    expect(
+      find.text('Tags'),
+      findsNothing,
+      reason: 'parent menu should dismiss',
+    );
   });
 
   testWidgets('tapping outside with submenu open dismisses everything', (

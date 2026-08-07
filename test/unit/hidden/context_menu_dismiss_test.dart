@@ -4,7 +4,8 @@ import 'package:waydir/ui/overlays/context_menu.dart';
 import 'package:waydir/ui/theme/app_theme.dart';
 
 void main() {
-  Widget wrap(Widget child) => MaterialApp(theme: AppTheme.build(), home: child);
+  Widget wrap(Widget child) =>
+      MaterialApp(theme: AppTheme.build(), home: child);
 
   testWidgets('context menu closes when tapping outside', (tester) async {
     var selected = 'none';
