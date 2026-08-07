@@ -280,8 +280,10 @@ class _WaydirShellState extends State<WaydirShell>
       builder: (context, constraints) {
         return SignalBuilder(
           builder: (_) {
+            // Establish reactive dependency on view mode so the center
+            // shortcut bar's tree/list/grid active indicators update.
+            SettingsStore.instance.fileViewMode.value;
             final activeIdx = _shell.activePaneIndex.value;
-
             final ratio = _shell.splitRatio.value;
             final leftWidth = constraints.maxWidth * ratio;
             final barWidth = CenterShortcutBar.barWidth;

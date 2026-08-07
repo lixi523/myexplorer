@@ -159,11 +159,14 @@ class SelectionController {
         switch (ch) {
           case '*':
             buf.write('.*');
+            break;
           case '?':
             buf.write('.');
+            break;
           case '[':
           case ']':
             buf.write(ch);
+            break;
           default:
             buf.write(RegExp.escape(ch));
         }

@@ -49,6 +49,43 @@ String _iconCacheDir() {
   return _cacheDir!;
 }
 
+const int _cacheMaxFiles = 200;
+bool _cacheCleanupScheduled = false;
+
+void _scheduleCacheCleanup() {
+  if (_cacheCleanupScheduled) return;
+  _cacheCleanupScheduled = true;
+  Future.microtask(() {
+    _cacheCleanupScheduled = false;
+    _trimCacheDir();
+  });
+}
+
+/// Keeps the icon PNG cache under [_cacheMaxFiles] entries by deleting
+/// the oldest files. Also clears the in-memory extraction cache so stale
+/// paths are never returned — the next request re-extracts if the file
+/// is still on disk, or re-writes it.
+void _trimCacheDir() {
+  try {
+    final dir = Directory(_iconCacheDir());
+    if (!dir.existsSync()) return;
+    final files = dir
+        .listSync()
+        .whereType<File>()
+        .where((f) => f.path.endsWith('.png'))
+        .toList();
+    if (files.length <= _cacheMaxFiles) return;
+    files.sort((a, b) => a.lastModifiedSync().compareTo(b.lastModifiedSync()));
+    final toRemove = files.sublist(0, files.length - _cacheMaxFiles);
+    for (final f in toRemove) {
+      try {
+        f.deleteSync();
+      } catch (_) {}
+    }
+    _extractCache.clear();
+  } catch (_) {}
+}
+
 /// Splits `path,index` into its file part and icon index. Quoted specs and
 /// environment variables are normalized first.
 (String, int) parseIconSpec(String? iconSpec) {
@@ -377,6 +414,7 @@ Future<String?> _doExtractIconPng(
             final dir = Directory(_iconCacheDir());
             await dir.create(recursive: true);
             await cached.writeAsBytes(png, flush: true);
+            _scheduleCacheCleanup();
 
             return cached.path;
           } finally {

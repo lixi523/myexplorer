@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:signals/signals_flutter.dart';
 
 import '../../ui/theme/app_theme.dart';
 
@@ -41,21 +40,17 @@ class CenterShortcutBar extends StatelessWidget {
           vertical: BorderSide(color: AppColors.bgDivider),
         ),
       ),
-      child: SignalBuilder(
-        builder: (context) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final button in buttons) ...[
-                  _CenterShortcutButtonWidget(button: button),
-                  const SizedBox(height: 2),
-                ],
-              ],
-            ),
-          );
-        },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final button in buttons) ...[
+              _CenterShortcutButtonWidget(button: button),
+              const SizedBox(height: 2),
+            ],
+          ],
+        ),
       ),
     );
   }
