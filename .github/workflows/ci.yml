@@ -1,4 +1,4 @@
-name: CI
+name: CI & Release
 
 on:
   push:
@@ -10,6 +10,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   analyze:
@@ -88,9 +91,9 @@ jobs:
       - name: Run integration tests
         run: flutter test --tags=integration test/integration/smb_live_discovery_test.dart
 
-  build-check:
-    name: Build Check
-    needs: analyze
+  build:
+    name: Build & Package
+    needs: [analyze, unit-tests, integration-tests]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -112,11 +115,95 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Install fastforge
+        run: dart pub global activate fastforge
+
+      - name: Read version
+        id: version
+        shell: bash
+        run: echo "version=$(grep '^version:' pubspec.yaml | sed -E 's/version:\s*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')" >> $GITHUB_OUTPUT
+
       - name: Build Windows release
         run: flutter build windows --release
 
-      - name: Upload build artifacts
+      - name: Package exe + zip via fastforge
+        shell: pwsh
+        run: |
+          $env:Path += ";$env:LOCALAPPDATA\Pub\Cache\bin;C:\Program Files (x86)\Inno Setup 6"
+          fastforge package --platform windows --targets exe,zip
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: windows-build
-          path: build/windows/x64/runner/Release/
+          name: windows-artifacts
+          path: dist/**/*
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Read version
+        id: version
+        shell: bash
+        run: echo "version=$(grep '^version:' pubspec.yaml | sed -E 's/version:\s*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')" >> $GITHUB_OUTPUT
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release-files
+          find artifacts -type f \( \
+            -name "*.exe" -o -name "*.zip" \
+          \) -exec cp {} release-files/ \;
+          ls -la release-files/
+
+      - name: Extract changelog section
+        id: changelog
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          awk -v ver="$version" '
+            /^## \[/ {
+              if (found) exit
+              if ($0 ~ "\\[" ver "\\]") { found=1; next }
+            }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "Release $version" > release-notes.md
+          fi
+
+      - name: Check if release already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.version.outputs.version }}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.version.outputs.version }}" \
+            release-files/* \
+            --repo "${{ github.repository }}" \
+            --title "MyExplorer v${{ steps.version.outputs.version }}" \
+            --notes-file release-notes.md
+
+      - name: Release already exists
+        if: steps.check.outputs.exists == 'true'
+        run: echo "Release v${{ steps.version.outputs.version }} already exists; skipping publish."
