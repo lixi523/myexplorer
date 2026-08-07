@@ -135,6 +135,15 @@ jobs:
           $env:Path += ";$env:LOCALAPPDATA\Pub\Cache\bin;C:\Program Files (x86)\Inno Setup 6"
           fastforge package --platform windows --targets exe,zip
 
+      - name: Rename artifacts to MyExplorer prefix
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path dist -Recurse -Filter "waydir-*" | ForEach-Object {
+            $newName = $_.Name -replace '^waydir-', 'MyExplorer-'
+            Rename-Item -Path $_.FullName -NewName $newName
+            Write-Host "Renamed: $($_.Name) -> $newName"
+          }
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
