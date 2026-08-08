@@ -678,6 +678,7 @@
     "quickLookPrevFileEdit": "编辑时上一个文件",
     "quickLookNextFileEdit": "编辑时下一个文件",
     "quickLookSave": "保存更改",
+    "quickViewPanel": "切换快速查看面板",
     "cursorUp": "上移",
     "cursorDown": "下移",
     "pageUp": "上翻一页",

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Center shortcut bar: new "Quick Look" button (first position, fileTxt icon) that opens the quick preview for the selected file, completing the TC F3-equivalent action set in the bar.
+- TC-style quick view panel (Ctrl+Q): a persistent preview strip at the bottom of the opposite pane that follows the cursor in the active pane, reusing the Quick Look renderers (image / pdf / markdown / code / properties).
 
 ## [1.5.0] - 2026-08-07
 

@@ -376,6 +376,15 @@ mixin _WaydirActionsMixin on State<WaydirShell>, _WaydirStateBase {
     ).then((_) => _restoreFocus());
   }
 
+  /// Toggles the TC-style quick view panel (Ctrl+Q) on the pane opposite the
+  /// currently active one, previewing this pane's cursor entry.
+  void _toggleQuickView() {
+    if (_isModalRouteOnTop()) return;
+    final activeIdx = _shell.activePaneIndex.value;
+    if (_shell.panes.value.length < 2) return;
+    _shell.toggleQuickView(activeIdx ^ 1);
+  }
+
   void _openSelectPattern({bool deselect = false}) {
     if (_isModalRouteOnTop()) return;
     final store = _active;

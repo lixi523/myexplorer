@@ -448,6 +448,13 @@ class AppShortcuts {
       ctrl: true,
     ),
     ShortcutDef(
+      id: 'quick_view_panel',
+      label: () => '',
+      group: ShortcutGroup.view,
+      key: LogicalKeyboardKey.keyQ,
+      ctrl: true,
+    ),
+    ShortcutDef(
       id: 'toggle_view',
       label: () => '',
       group: ShortcutGroup.view,

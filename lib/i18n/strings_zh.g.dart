@@ -448,6 +448,7 @@ class _Translations$keybindings$zh extends Translations$keybindings$en {
 	@override String get quickLookPrevFileEdit => '编辑时上一个文件';
 	@override String get quickLookNextFileEdit => '编辑时下一个文件';
 	@override String get quickLookSave => '保存更改';
+	@override String get quickViewPanel => '切换快速查看面板';
 	@override String get cursorUp => '上移';
 	@override String get cursorDown => '下移';
 	@override String get pageUp => '上翻一页';
@@ -2612,6 +2613,7 @@ extension on TranslationsZh {
 			'keybindings.quickLookPrevFileEdit' => '编辑时上一个文件',
 			'keybindings.quickLookNextFileEdit' => '编辑时下一个文件',
 			'keybindings.quickLookSave' => '保存更改',
+			'keybindings.quickViewPanel' => '切换快速查看面板',
 			'keybindings.cursorUp' => '上移',
 			'keybindings.cursorDown' => '下移',
 			'keybindings.pageUp' => '上翻一页',

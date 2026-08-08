@@ -41,6 +41,10 @@ class ShellStore {
   final activeTerminalId = signal<Map<int, int>>({});
   final terminalVisible = signal<List<bool>>([false, false]);
   final terminalHeight = signal<List<double>>([260, 260]);
+
+  /// Whether each pane shows the TC-style quick view panel (Ctrl+Q) at its
+  /// bottom, previewing the *other* pane's cursor entry.
+  final quickViewVisible = signal<List<bool>>([false, false]);
   final OperationStore operationStore;
   final NotificationStore notificationStore;
   late final CompareController compare;
@@ -425,6 +429,14 @@ class ShellStore {
     final next = [...terminalVisible.value];
     next[slot] = visible;
     terminalVisible.value = next;
+  }
+
+  /// Toggles the quick view panel of the pane at [slot]. The panel previews
+  /// the other pane's cursor entry and lives at the bottom of the pane.
+  void toggleQuickView(int slot) {
+    final next = [...quickViewVisible.value];
+    next[slot] = !next[slot];
+    quickViewVisible.value = next;
   }
 
   void setTerminalHeight(int slot, double height) {

@@ -71,6 +71,7 @@ import '../ui/overlays/notification_overlay.dart';
 import '../ui/widgets/app_text_field.dart';
 import '../features/navigation/select_pattern_dialog.dart';
 import '../features/quick_look/quick_look.dart';
+import '../features/quick_look/quick_view_panel.dart';
 import '../ui/overlays/notification_store.dart';
 import '../ui/overlays/toast.dart';
 import '../ui/theme/app_theme.dart';
@@ -275,6 +276,56 @@ class _WaydirShellState extends State<WaydirShell>
     );
   }
 
+  /// Wraps a pane with its optional quick view panel (Ctrl+Q). The panel
+  /// previews the *other* pane's cursor entry and sits at the bottom of this
+  /// pane; the file view keeps the top portion.
+  Widget _buildPaneWithQuickView(
+    int slot, {
+    required bool isActive,
+    required VoidCallback onActivate,
+  }) {
+    final showQuickView = _shell.quickViewVisible.value[slot];
+    if (!showQuickView) {
+      return _buildPane(
+        slot,
+        isActive: isActive,
+        onActivate: onActivate,
+        isSingleMode: false,
+      );
+    }
+    final otherSlot = slot ^ 1;
+    final panes = _shell.panes.value;
+    if (otherSlot >= panes.length) {
+      return _buildPane(
+        slot,
+        isActive: isActive,
+        onActivate: onActivate,
+        isSingleMode: false,
+      );
+    }
+    final source = panes[otherSlot].tabs.activeTab.value.store;
+
+    return Column(
+      children: [
+        Expanded(
+          child: _buildPane(
+            slot,
+            isActive: isActive,
+            onActivate: onActivate,
+            isSingleMode: false,
+          ),
+        ),
+        SizedBox(
+          height: 240,
+          child: QuickViewPanel(
+            source: source,
+            onClose: () => _shell.toggleQuickView(slot),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildPaneArea() {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -296,11 +347,10 @@ class _WaydirShellState extends State<WaydirShell>
                   top: 0,
                   bottom: 0,
                   width: leftPaneWidth,
-                  child: _buildPane(
+                  child: _buildPaneWithQuickView(
                     0,
                     isActive: activeIdx == 0,
                     onActivate: _activatePane(0),
-                    isSingleMode: false,
                   ),
                 ),
                 Positioned(
@@ -308,11 +358,10 @@ class _WaydirShellState extends State<WaydirShell>
                   top: 0,
                   right: 0,
                   bottom: 0,
-                  child: _buildPane(
+                  child: _buildPaneWithQuickView(
                     1,
                     isActive: activeIdx == 1,
                     onActivate: _activatePane(1),
-                    isSingleMode: false,
                   ),
                 ),
                 Positioned(

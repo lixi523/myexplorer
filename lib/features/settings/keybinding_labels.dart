@@ -68,6 +68,7 @@ String shortcutLabel(ShortcutDef s) => switch (s.id) {
   'quick_look_prev_file_edit' => t.keybindings.quickLookPrevFileEdit,
   'quick_look_next_file_edit' => t.keybindings.quickLookNextFileEdit,
   'quick_look_save' => t.keybindings.quickLookSave,
+  'quick_view_panel' => t.keybindings.quickViewPanel,
   'cursor_up' => t.keybindings.cursorUp,
   'cursor_down' => t.keybindings.cursorDown,
   'page_up' => t.keybindings.pageUp,

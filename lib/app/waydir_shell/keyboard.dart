@@ -128,6 +128,12 @@ mixin _WaydirKeyboardMixin
       return KeyEventResult.handled;
     }
 
+    if (AppShortcuts.matches('quick_view_panel', key)) {
+      _toggleQuickView();
+
+      return KeyEventResult.handled;
+    }
+
     if (AppShortcuts.matches('focus_path', key)) {
       _active.focusPathBar();
 

@@ -903,6 +903,9 @@ class Translations$keybindings$en {
 	/// en: 'Save changes'
 	String get quickLookSave => 'Save changes';
 
+	/// en: 'Toggle quick view panel'
+	String get quickViewPanel => 'Toggle quick view panel';
+
 	/// en: 'Move up'
 	String get cursorUp => 'Move up';
 
@@ -4645,6 +4648,7 @@ extension on Translations {
 			'keybindings.quickLookPrevFileEdit' => 'Previous file while editing',
 			'keybindings.quickLookNextFileEdit' => 'Next file while editing',
 			'keybindings.quickLookSave' => 'Save changes',
+			'keybindings.quickViewPanel' => 'Toggle quick view panel',
 			'keybindings.cursorUp' => 'Move up',
 			'keybindings.cursorDown' => 'Move down',
 			'keybindings.pageUp' => 'Move up one page',
