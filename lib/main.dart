@@ -86,9 +86,12 @@ void main(List<String> args) async {
         appWindow.size = const Size(1100, 700);
         appWindow.alignment = Alignment.center;
         appWindow.title = t.app.title;
-        appWindow.show();
-        // Open maximized by default; the user can still restore or resize.
-        appWindow.maximize();
+        // Show the window after the first frame is rendered, so the user
+        // never sees a blank native window before Flutter paints its content.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          appWindow.show();
+          appWindow.maximize();
+        });
       }
     },
     (error, stack) {
