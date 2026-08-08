@@ -899,6 +899,8 @@ class _Translations$operations$zh extends Translations$operations$en {
 	@override String get title => '操作';
 	@override String get clear => '清除';
 	@override String get noActive => '没有正在进行的操作';
+	@override String get pause => '暂停';
+	@override String get resume => '继续';
 	@override String get resolveConflicts => '解决冲突';
 	@override String errorsCount({required Object count}) => '${count} 个错误';
 	@override String get compressing => '正在压缩…';
@@ -2959,6 +2961,8 @@ extension on TranslationsZh {
 			'operations.title' => '操作',
 			'operations.clear' => '清除',
 			'operations.noActive' => '没有正在进行的操作',
+			'operations.pause' => '暂停',
+			'operations.resume' => '继续',
 			'operations.resolveConflicts' => '解决冲突',
 			'operations.errorsCount' => ({required Object count}) => '${count} 个错误',
 			'operations.compressing' => '正在压缩…',

@@ -1939,6 +1939,12 @@ class Translations$operations$en {
 	/// en: 'No active operations'
 	String get noActive => 'No active operations';
 
+	/// en: 'Pause'
+	String get pause => 'Pause';
+
+	/// en: 'Resume'
+	String get resume => 'Resume';
+
 	/// en: 'Resolve Conflicts'
 	String get resolveConflicts => 'Resolve Conflicts';
 
@@ -4994,6 +5000,8 @@ extension on Translations {
 			'operations.title' => 'Operations',
 			'operations.clear' => 'Clear',
 			'operations.noActive' => 'No active operations',
+			'operations.pause' => 'Pause',
+			'operations.resume' => 'Resume',
 			'operations.resolveConflicts' => 'Resolve Conflicts',
 			'operations.errorsCount' => ({required Object count}) => '${count} errors',
 			'operations.compressing' => 'Compressing…',

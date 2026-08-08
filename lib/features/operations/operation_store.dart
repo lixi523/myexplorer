@@ -462,6 +462,26 @@ class OperationStore {
     _scheduleCleanup(task);
   }
 
+  /// Pauses a queued task: it stays in the queue but is skipped by the
+  /// processing loop until [resumeTask] is called.
+  void pauseTask(String id) {
+    final task = tasks.value.firstWhereOrNull((t) => t.id == id);
+    if (task == null) return;
+    if (task.status != TaskStatus.queued) return;
+    task.status = TaskStatus.paused;
+    _updateTask(task);
+  }
+
+  /// Resumes a paused task, re-queueing it for execution.
+  void resumeTask(String id) {
+    final task = tasks.value.firstWhereOrNull((t) => t.id == id);
+    if (task == null) return;
+    if (task.status != TaskStatus.paused) return;
+    task.status = TaskStatus.queued;
+    _updateTask(task);
+    _processQueue();
+  }
+
   void cancelTask(String id) {
     final task = tasks.value.firstWhereOrNull((t) => t.id == id);
     if (task == null) return;
@@ -662,10 +682,18 @@ class OperationStore {
 
   Future<void> _processQueue() async {
     if (_processing) return;
-    if (_queue.isEmpty) return;
+
+    // Skip paused tasks and pick the next executable one.
+    FileTask? task;
+    for (var i = 0; i < _queue.length; i++) {
+      final candidate = _queue[i];
+      if (candidate.status == TaskStatus.paused) continue;
+      task = _queue.removeAt(i);
+      break;
+    }
+    if (task == null) return;
 
     _processing = true;
-    final task = _queue.removeAt(0);
 
     await _executeTask(task);
 

@@ -1099,6 +1099,8 @@
     "title": "Operations",
     "clear": "Clear",
     "noActive": "No active operations",
+    "pause": "Pause",
+    "resume": "Resume",
     "resolveConflicts": "Resolve Conflicts",
     "errorsCount(one)": "1 error",
     "errorsCount(other)": "$count errors",

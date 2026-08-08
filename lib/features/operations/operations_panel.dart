@@ -203,6 +203,24 @@ class _TaskTile extends StatelessWidget {
                 const SizedBox(width: 6),
                 _CancelBtn(onTap: () => operationStore.cancelTask(task.id)),
               ],
+              if (task.status == TaskStatus.queued) ...[
+                const SizedBox(width: 6),
+                _IconBtn(
+                  icon: WaydirIconsRegular.pause,
+                  tooltip: t.operations.pause,
+                  color: AppColors.warning,
+                  onTap: () => operationStore.pauseTask(task.id),
+                ),
+              ],
+              if (task.status == TaskStatus.paused) ...[
+                const SizedBox(width: 6),
+                _IconBtn(
+                  icon: WaydirIconsRegular.caretRight,
+                  tooltip: t.operations.resume,
+                  color: AppColors.success,
+                  onTap: () => operationStore.resumeTask(task.id),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 4),
@@ -337,6 +355,56 @@ class _CancelBtnState extends State<_CancelBtn> {
               WaydirIconsRegular.x,
               size: 12,
               color: _hovered ? AppColors.danger : AppColors.fgMuted,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IconBtn extends StatefulWidget {
+  final IconData icon;
+  final String tooltip;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _IconBtn({
+    required this.icon,
+    required this.tooltip,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  State<_IconBtn> createState() => _IconBtnState();
+}
+
+class _IconBtnState extends State<_IconBtn> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: widget.tooltip,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              color: _hovered
+                  ? widget.color.withValues(alpha: 0.15)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.zero,
+            ),
+            child: Icon(
+              widget.icon,
+              size: 12,
+              color: _hovered ? widget.color : AppColors.fgMuted,
             ),
           ),
         ),

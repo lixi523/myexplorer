@@ -1099,6 +1099,8 @@
     "title": "操作",
     "clear": "清除",
     "noActive": "没有正在进行的操作",
+    "pause": "暂停",
+    "resume": "继续",
     "resolveConflicts": "解决冲突",
     "errorsCount(one)": "1 个错误",
     "errorsCount(other)": "$count 个错误",
