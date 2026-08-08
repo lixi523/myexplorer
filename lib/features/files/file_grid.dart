@@ -209,12 +209,19 @@ class _FileGridState extends State<FileGrid> {
 
     final columns = _lastColumns;
     final index = _indexAt(event.localPosition, columns);
-    if (index >= 0 && index != _secondaryDragLastIndex) {
-      _secondaryDragLastIndex = index;
+    if (index < 0) return;
+    // Sweep-select the whole span between the last handled tile and the
+    // current one so fast drags never skip tiles in between.
+    final from = _secondaryDragLastIndex >= 0 ? _secondaryDragLastIndex : index;
+    final lo = math.min(from, index);
+    final hi = math.max(from, index);
+    for (var i = lo; i <= hi; i++) {
+      if (i < 0 || i >= widget.files.length) continue;
       widget.onSecondarySelect?.call(
-        FileSelectionEvent(entry: widget.files[index], index: index),
+        FileSelectionEvent(entry: widget.files[i], index: i),
       );
     }
+    _secondaryDragLastIndex = index;
     _autoScrollForSecondaryDrag(event);
   }
 

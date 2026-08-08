@@ -575,12 +575,19 @@ class _FileListState extends State<FileList> {
     if (!_secondaryDragged) return;
 
     final index = _rowAt(event.localPosition);
-    if (index >= 0 && index != _secondaryDragLastIndex) {
-      _secondaryDragLastIndex = index;
+    if (index < 0) return;
+    // Sweep-select the whole span between the last handled row and the
+    // current row so fast drags never skip rows in between.
+    final from = _secondaryDragLastIndex >= 0 ? _secondaryDragLastIndex : index;
+    final lo = math.min(from, index);
+    final hi = math.max(from, index);
+    for (var i = lo; i <= hi; i++) {
+      if (i < 0 || i >= _displayFiles.length) continue;
       widget.onSecondarySelect?.call(
-        FileSelectionEvent(entry: _displayFiles[index], index: index),
+        FileSelectionEvent(entry: _displayFiles[i], index: i),
       );
     }
+    _secondaryDragLastIndex = index;
     _autoScrollForSecondaryDrag(event);
   }
 
