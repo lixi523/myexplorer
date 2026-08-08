@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Center shortcut bar: new "Quick Look" button (first position, fileTxt icon) that opens the quick preview for the selected file, completing the TC F3-equivalent action set in the bar.
+
 ## [1.5.0] - 2026-08-07
 
 ### Added

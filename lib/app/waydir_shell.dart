@@ -347,6 +347,11 @@ class _WaydirShellState extends State<WaydirShell>
 
     return [
       CenterShortcutButton(
+        icon: WaydirIconsRegular.fileTxt,
+        tooltip: t.quickLook.title,
+        onTap: _openQuickLook,
+      ),
+      CenterShortcutButton(
         icon: WaydirIconsRegular.file,
         tooltip: t.toolbar.newFile,
         onTap: () => store.startCreate(type: FileItemType.file),
