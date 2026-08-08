@@ -708,13 +708,6 @@ class _GridTileState extends State<_GridTile> {
     );
   }
 
-  void _handleSecondaryTap(TapUpDetails details) {
-    widget.onContextMenu?.call(
-      FileSelectionEvent(entry: widget.entry, index: widget.index),
-      details.globalPosition,
-    );
-  }
-
   List<String> _pathsToDrag() {
     final selectedPaths = widget.selectedPaths.toList();
     if (widget.selected && selectedPaths.isNotEmpty) return selectedPaths;
@@ -845,7 +838,6 @@ class _GridTileState extends State<_GridTile> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: _handleTap,
-        onSecondaryTapUp: _handleSecondaryTap,
         child: Opacity(
           opacity: widget.isCut ? 0.45 : (_dragging ? 0.45 : 1),
           child: Container(
