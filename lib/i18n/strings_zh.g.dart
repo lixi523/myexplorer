@@ -1181,6 +1181,10 @@ class _Translations$preferences$general$zh extends Translations$preferences$gene
 	@override String get confirmCopyHint => '复制文件或文件夹前显示对话框。';
 	@override String get confirmMove => '移动前确认';
 	@override String get confirmMoveHint => '移动文件或文件夹前显示对话框。';
+	@override String get autoOverwriteOlder => '自动覆盖较旧文件';
+	@override String get autoOverwriteOlderHint => '复制时若源文件较新则自动覆盖已存在的文件；若较旧则跳过。';
+	@override String get autoSkipSameSize => '自动跳过大小相同的文件';
+	@override String get autoSkipSameSizeHint => '复制时若目标文件与源文件大小相同则自动跳过。';
 	@override String get dragMovesByDefault => '拖拽时移动而非复制文件';
 	@override String get dragMovesByDefaultHint => '开启时，拖拽文件为移动，按住 Alt 为复制。关闭时，拖拽为复制，按住 Alt 为移动。';
 	@override String get rememberFolderState => '记住每个文件夹的选择状态';
@@ -2322,6 +2326,10 @@ extension on TranslationsZh {
 			'preferences.general.confirmCopyHint' => '复制文件或文件夹前显示对话框。',
 			'preferences.general.confirmMove' => '移动前确认',
 			'preferences.general.confirmMoveHint' => '移动文件或文件夹前显示对话框。',
+			'preferences.general.autoOverwriteOlder' => '自动覆盖较旧文件',
+			'preferences.general.autoOverwriteOlderHint' => '复制时若源文件较新则自动覆盖已存在的文件；若较旧则跳过。',
+			'preferences.general.autoSkipSameSize' => '自动跳过大小相同的文件',
+			'preferences.general.autoSkipSameSizeHint' => '复制时若目标文件与源文件大小相同则自动跳过。',
 			'preferences.general.dragMovesByDefault' => '拖拽时移动而非复制文件',
 			'preferences.general.dragMovesByDefaultHint' => '开启时，拖拽文件为移动，按住 Alt 为复制。关闭时，拖拽为复制，按住 Alt 为移动。',
 			'preferences.general.rememberFolderState' => '记住每个文件夹的选择状态',
@@ -2628,12 +2636,12 @@ extension on TranslationsZh {
 			'keybindings.categories.view' => '视图',
 			'keybindings.categories.tabs' => '标签页',
 			'keybindings.categories.panes' => '面板',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.categories.terminal' => '终端',
 			'keybindings.categories.fileOps' => '文件操作',
 			'keybindings.categories.selection' => '选择',
 			'keybindings.categories.search' => '搜索',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.categories.general' => '常规',
 			'keybindings.or' => '或',
 			'keybindings.fixed' => '固定快捷键',
@@ -3142,12 +3150,12 @@ extension on TranslationsZh {
 			'openWith.noApps' => '未找到可打开此文件类型的应用。',
 			'openWith.setDefault' => '始终使用此应用打开此文件类型',
 			'openWith.setDefaultUnavailable' => '此平台无法更改默认应用',
+			_ => null,
+		} ?? switch (path) {
 			'openWith.moreApps' => '更多应用…',
 			'openWith.open' => '打开',
 			'openWith.failed' => ({required Object app}) => '无法使用 ${app} 打开文件',
 			'openWith.setDefaultFailed' => '无法设置默认应用',
-			_ => null,
-		} ?? switch (path) {
 			'openWith.unsupportedPlatform' => '不支持的平台',
 			'openWith.windowsDefaultDialogRequired' => '使用系统“打开方式”对话框更改 Windows 上的默认应用',
 			'hiddenList.title' => '隐藏列表',

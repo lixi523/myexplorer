@@ -32,6 +32,11 @@ class SettingsStore {
   final confirmDelete = signal<bool>(true);
   final confirmCopy = signal<bool>(false);
   final confirmMove = signal<bool>(true);
+  final autoOverwriteOlder = signal<bool>(false);
+  final autoSkipSameSize = signal<bool>(false);
+  // NOTE: the two signals above are runtime-only for now (not persisted to
+  // the DB) because build_runner cannot regenerate app_database.g.dart in the
+  // local toolchain. Persist them once codegen is available.
   final showHiddenDefault = signal<bool>(false);
   final dragMovesByDefault = signal<bool>(false);
   final rowDensity = signal<String>('comfortable');

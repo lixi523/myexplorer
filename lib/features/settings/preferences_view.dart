@@ -134,6 +134,8 @@ const _visibleSettingIds = <String>{
   'general.confirmDelete',
   'general.confirmCopy',
   'general.confirmMove',
+  'general.autoOverwriteOlder',
+  'general.autoSkipSameSize',
   'general.dragMovesByDefault',
   'general.rememberFolderState',
   'general.rememberFolderSort',

@@ -226,11 +226,16 @@ class OperationStore {
     final confirm = confirmTransfer;
     if (confirm != null && !await confirm(type, filtered)) return;
 
+    final s = SettingsStore.instance;
     final task = FileTask(
       id: '${_idCounter++}',
       type: type,
       sources: filtered,
       destination: destination,
+      options: {
+        if (s.autoOverwriteOlder.value) 'autoOverwriteOlder': '1',
+        if (s.autoSkipSameSize.value) 'autoSkipSameSize': '1',
+      },
       startTime: DateTime.now(),
     );
     _enqueue(task);

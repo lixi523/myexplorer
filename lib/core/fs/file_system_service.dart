@@ -250,6 +250,8 @@ class FileSystemService {
     final reportClock = Stopwatch()..start();
     var lastReportMs = 0;
     var isDuplicate = false;
+    var autoOverwriteOlder = false;
+    var autoSkipSameSize = false;
     final duplicateRootDest = <String, String>{};
 
     String rootTargetPath(String src, String dest) {
@@ -419,10 +421,25 @@ class FileSystemService {
               sourceModified: sourceStat.modified,
               targetModified: targetStat.modified,
             );
-            pendingConflicts[srcPath] = info;
-            emitPrompt(info);
 
-            return false;
+            // Automatic conflict policies (TC parity): resolve without
+            // prompting when the user enabled them.
+            if (autoSkipSameSize && size == targetStat.size) {
+              return true; // skip silently
+            }
+            if (autoOverwriteOlder) {
+              if (sourceStat.modified.isAfter(targetStat.modified) ||
+                  sourceStat.modified == targetStat.modified) {
+                // fall through to overwrite
+              } else {
+                return true; // source is older → skip
+              }
+            } else {
+              pendingConflicts[srcPath] = info;
+              emitPrompt(info);
+
+              return false;
+            }
           }
 
           final dstDir = dstPath.substring(
@@ -586,6 +603,8 @@ class FileSystemService {
         if (msg is StartCommand) {
           destination = msg.destination;
           isDuplicate = msg.options['duplicate'] == '1';
+          autoOverwriteOlder = msg.options['autoOverwriteOlder'] == '1';
+          autoSkipSameSize = msg.options['autoSkipSameSize'] == '1';
           for (final src in msg.sources) {
             if (cancelled) break;
             sourceRoots.add(src);

@@ -2620,6 +2620,18 @@ class Translations$preferences$general$en {
 	/// en: 'Show a dialog before moving files or folders.'
 	String get confirmMoveHint => 'Show a dialog before moving files or folders.';
 
+	/// en: 'Auto-overwrite older files'
+	String get autoOverwriteOlder => 'Auto-overwrite older files';
+
+	/// en: 'When copying, replace an existing file automatically if the source is newer; skip if the source is older.'
+	String get autoOverwriteOlderHint => 'When copying, replace an existing file automatically if the source is newer; skip if the source is older.';
+
+	/// en: 'Auto-skip files with the same size'
+	String get autoSkipSameSize => 'Auto-skip files with the same size';
+
+	/// en: 'When copying, skip an existing file automatically when its size matches the source.'
+	String get autoSkipSameSizeHint => 'When copying, skip an existing file automatically when its size matches the source.';
+
 	/// en: 'Drag moves files instead of copying'
 	String get dragMovesByDefault => 'Drag moves files instead of copying';
 
@@ -4403,6 +4415,10 @@ extension on Translations {
 			'preferences.general.confirmCopyHint' => 'Show a dialog before copying files or folders.',
 			'preferences.general.confirmMove' => 'Confirm before move',
 			'preferences.general.confirmMoveHint' => 'Show a dialog before moving files or folders.',
+			'preferences.general.autoOverwriteOlder' => 'Auto-overwrite older files',
+			'preferences.general.autoOverwriteOlderHint' => 'When copying, replace an existing file automatically if the source is newer; skip if the source is older.',
+			'preferences.general.autoSkipSameSize' => 'Auto-skip files with the same size',
+			'preferences.general.autoSkipSameSizeHint' => 'When copying, skip an existing file automatically when its size matches the source.',
 			'preferences.general.dragMovesByDefault' => 'Drag moves files instead of copying',
 			'preferences.general.dragMovesByDefaultHint' => 'When on, dragging files moves them and holding Alt copies instead. When off, dragging copies and Alt moves.',
 			'preferences.general.rememberFolderState' => 'Remember selection per folder',
@@ -4709,12 +4725,12 @@ extension on Translations {
 			'keybindings.categories.view' => 'View',
 			'keybindings.categories.tabs' => 'Tabs',
 			'keybindings.categories.panes' => 'Panes',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.categories.terminal' => 'Terminal',
 			'keybindings.categories.fileOps' => 'File Operations',
 			'keybindings.categories.selection' => 'Selection',
 			'keybindings.categories.search' => 'Search',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.categories.general' => 'General',
 			'keybindings.or' => 'or',
 			'keybindings.fixed' => 'Fixed shortcut',
@@ -5223,12 +5239,12 @@ extension on Translations {
 			'openWith.noApps' => 'No applications found for this file type.',
 			'openWith.setDefault' => 'Always use for this file type',
 			'openWith.setDefaultUnavailable' => 'Default cannot be changed on this platform',
+			_ => null,
+		} ?? switch (path) {
 			'openWith.moreApps' => 'More applications…',
 			'openWith.open' => 'Open',
 			'openWith.failed' => ({required Object app}) => 'Could not open the file with ${app}',
 			'openWith.setDefaultFailed' => 'Could not set the default application',
-			_ => null,
-		} ?? switch (path) {
 			'openWith.unsupportedPlatform' => 'Unsupported platform',
 			'openWith.windowsDefaultDialogRequired' => 'Use the system "Open with" dialog to change the default on Windows',
 			'hiddenList.title' => 'Hidden List',
