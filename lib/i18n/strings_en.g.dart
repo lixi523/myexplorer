@@ -267,6 +267,12 @@ class Translations$menu$en {
 	/// en: 'Verify Checksum…'
 	String get verifyChecksum => 'Verify Checksum…';
 
+	/// en: 'Verify Checksum File…'
+	String get verifyChecksumManifest => 'Verify Checksum File…';
+
+	/// en: 'Create Checksum File…'
+	String get createChecksumManifest => 'Create Checksum File…';
+
 	/// en: 'Sort By'
 	String get sortBy => 'Sort By';
 
@@ -464,6 +470,24 @@ class Translations$checksum$en {
 
 	/// en: 'Could not read file'
 	String get readError => 'Could not read file';
+
+	/// en: 'Create checksum file'
+	String get createManifest => 'Create checksum file';
+
+	/// en: 'Will create a checksum file for $count file(s)'
+	String createManifestFiles({required Object count}) => 'Will create a checksum file for ${count} file(s)';
+
+	/// en: 'Create'
+	String get create => 'Create';
+
+	/// en: 'Verify checksum file'
+	String get verifyManifest => 'Verify checksum file';
+
+	/// en: '$ok of $total files verified'
+	String verifySummary({required Object ok, required Object total}) => '${ok} of ${total} files verified';
+
+	/// en: 'The checksum file contains no valid entries'
+	String get manifestEmpty => 'The checksum file contains no valid entries';
 }
 
 // Path: compare
@@ -4182,6 +4206,8 @@ extension on Translations {
 			'menu.compressOptions' => 'Add to Archive…',
 			'menu.multiRename' => 'Multi Rename…',
 			'menu.verifyChecksum' => 'Verify Checksum…',
+			'menu.verifyChecksumManifest' => 'Verify Checksum File…',
+			'menu.createChecksumManifest' => 'Create Checksum File…',
 			'menu.sortBy' => 'Sort By',
 			'menu.sortAscending' => 'Ascending',
 			'menu.sortDescending' => 'Descending',
@@ -4239,6 +4265,12 @@ extension on Translations {
 			'checksum.copied' => 'Copied',
 			'checksum.invalidExpected' => ({required Object algorithm, required Object length}) => '${algorithm} checksum must be ${length} hexadecimal characters',
 			'checksum.readError' => 'Could not read file',
+			'checksum.createManifest' => 'Create checksum file',
+			'checksum.createManifestFiles' => ({required Object count}) => 'Will create a checksum file for ${count} file(s)',
+			'checksum.create' => 'Create',
+			'checksum.verifyManifest' => 'Verify checksum file',
+			'checksum.verifySummary' => ({required Object ok, required Object total}) => '${ok} of ${total} files verified',
+			'checksum.manifestEmpty' => 'The checksum file contains no valid entries',
 			'compare.toolbarTooltip' => 'Compare folders',
 			'compare.unique' => 'Only here',
 			'compare.newer' => 'Newer',
@@ -4632,6 +4664,8 @@ extension on Translations {
 			'keybindings.categories.search' => 'Search',
 			'keybindings.categories.general' => 'General',
 			'keybindings.or' => 'or',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.fixed' => 'Fixed shortcut',
 			'keybindings.change' => 'Change shortcut',
 			'keybindings.reset' => 'Reset shortcut',
@@ -4640,8 +4674,6 @@ extension on Translations {
 			'keybindings.conflict' => ({required Object action}) => 'Already used by ${action}',
 			'keybindings.dualHint' => 'dual',
 			'keybindings.openItem' => 'Open',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.goUp' => 'Go up',
 			'keybindings.goBack' => 'Go back',
 			'keybindings.goForward' => 'Go forward',

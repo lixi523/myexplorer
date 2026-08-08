@@ -28,6 +28,7 @@ import '../core/terminal/terminal_launch.dart';
 import '../features/containers/container_store.dart';
 import '../features/containers/wsl_path.dart';
 import '../features/checksum/checksum_dialog.dart';
+import '../features/checksum/checksum_manifest_dialog.dart';
 import '../features/command_palette/app_command.dart';
 import '../features/command_palette/command_palette_launcher.dart';
 import '../features/command_palette/command_palette_view.dart';

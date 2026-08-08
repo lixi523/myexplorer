@@ -144,6 +144,17 @@ mixin _WaydirMenuMixin
         isSingleFile &&
         !PlatformPaths.isRemoteUri(entries.first.realPath) &&
         !FileSystemService.isInsideArchive(entries.first.realPath);
+    final canCreateManifest =
+        entries.isNotEmpty &&
+        entries.every(
+          (e) =>
+              e.type == FileItemType.file &&
+              !PlatformPaths.isRemoteUri(e.realPath) &&
+              !PlatformPaths.isNetworkPath(e.realPath) &&
+              !FileSystemService.isInsideArchive(e.realPath),
+        );
+    final canVerifyManifest =
+        isSingleFile && isChecksumManifestPath(entries.first.realPath);
     final isRecursive = store.searchActive.value && store.searchRecursive.value;
     final canTag = entries.every(
       (e) =>
@@ -334,6 +345,18 @@ mixin _WaydirMenuMixin
           icon: WaydirIconsRegular.checkSquare,
           label: t.menu.verifyChecksum,
           action: 'verify_checksum',
+        ),
+      if (canVerifyManifest)
+        ContextMenuItem(
+          icon: WaydirIconsRegular.checkSquare,
+          label: t.menu.verifyChecksumManifest,
+          action: 'verify_checksum_manifest',
+        ),
+      if (canCreateManifest)
+        ContextMenuItem(
+          icon: WaydirIconsRegular.pencilSimple,
+          label: t.menu.createChecksumManifest,
+          action: 'create_checksum_manifest',
         ),
       if (count >= 1 && canTag) _tagsSubmenu(entries),
       if (canHide) ...[
@@ -1313,6 +1336,20 @@ mixin _WaydirMenuMixin
             entry: entries.first,
           ).then((_) => _restoreFocus());
         }
+      case 'verify_checksum_manifest':
+        final entries = store.selectedEntries;
+        if (entries.length == 1 && entries.first.type == FileItemType.file) {
+          showVerifyChecksumManifestDialog(
+            context: context,
+            manifestPath: entries.first.realPath,
+          ).then((_) => _restoreFocus());
+        }
+      case 'create_checksum_manifest':
+        final entries = store.selectedEntries;
+        showCreateChecksumManifestDialog(
+          context: context,
+          entries: entries,
+        ).then((_) => _restoreFocus());
       case 'rename':
         store.startRename();
       case 'multi_rename':

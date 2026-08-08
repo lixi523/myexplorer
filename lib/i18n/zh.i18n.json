@@ -63,6 +63,8 @@
     "compressOptions": "添加到压缩包…",
     "multiRename": "批量重命名…",
     "verifyChecksum": "校验校验和…",
+    "verifyChecksumManifest": "验证校验文件…",
+    "createChecksumManifest": "生成校验文件…",
     "sortBy": "排序方式",
     "sortAscending": "升序",
     "sortDescending": "降序",
@@ -128,7 +130,13 @@
     "copy": "复制",
     "copied": "已复制",
     "invalidExpected": "$algorithm 校验和必须为 $length 位十六进制字符",
-    "readError": "无法读取文件"
+    "readError": "无法读取文件",
+    "createManifest": "生成校验文件",
+    "createManifestFiles": "将为 $count 个文件生成校验文件",
+    "create": "生成",
+    "verifyManifest": "验证校验文件",
+    "verifySummary": "$ok 个文件验证通过，共 $total 个",
+    "manifestEmpty": "校验文件中没有有效条目"
   },
   "compare": {
     "toolbarTooltip": "比较文件夹",

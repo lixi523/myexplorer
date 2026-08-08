@@ -157,6 +157,8 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get compressOptions => '添加到压缩包…';
 	@override String get multiRename => '批量重命名…';
 	@override String get verifyChecksum => '校验校验和…';
+	@override String get verifyChecksumManifest => '验证校验文件…';
+	@override String get createChecksumManifest => '生成校验文件…';
 	@override String get sortBy => '排序方式';
 	@override String get sortAscending => '升序';
 	@override String get sortDescending => '降序';
@@ -241,6 +243,12 @@ class _Translations$checksum$zh extends Translations$checksum$en {
 	@override String get copied => '已复制';
 	@override String invalidExpected({required Object algorithm, required Object length}) => '${algorithm} 校验和必须为 ${length} 位十六进制字符';
 	@override String get readError => '无法读取文件';
+	@override String get createManifest => '生成校验文件';
+	@override String createManifestFiles({required Object count}) => '将为 ${count} 个文件生成校验文件';
+	@override String get create => '生成';
+	@override String get verifyManifest => '验证校验文件';
+	@override String verifySummary({required Object ok, required Object total}) => '${ok} 个文件验证通过，共 ${total} 个';
+	@override String get manifestEmpty => '校验文件中没有有效条目';
 }
 
 // Path: compare
@@ -2143,6 +2151,8 @@ extension on TranslationsZh {
 			'menu.compressOptions' => '添加到压缩包…',
 			'menu.multiRename' => '批量重命名…',
 			'menu.verifyChecksum' => '校验校验和…',
+			'menu.verifyChecksumManifest' => '验证校验文件…',
+			'menu.createChecksumManifest' => '生成校验文件…',
 			'menu.sortBy' => '排序方式',
 			'menu.sortAscending' => '升序',
 			'menu.sortDescending' => '降序',
@@ -2200,6 +2210,12 @@ extension on TranslationsZh {
 			'checksum.copied' => '已复制',
 			'checksum.invalidExpected' => ({required Object algorithm, required Object length}) => '${algorithm} 校验和必须为 ${length} 位十六进制字符',
 			'checksum.readError' => '无法读取文件',
+			'checksum.createManifest' => '生成校验文件',
+			'checksum.createManifestFiles' => ({required Object count}) => '将为 ${count} 个文件生成校验文件',
+			'checksum.create' => '生成',
+			'checksum.verifyManifest' => '验证校验文件',
+			'checksum.verifySummary' => ({required Object ok, required Object total}) => '${ok} 个文件验证通过，共 ${total} 个',
+			'checksum.manifestEmpty' => '校验文件中没有有效条目',
 			'compare.toolbarTooltip' => '比较文件夹',
 			'compare.unique' => '仅在此处',
 			'compare.newer' => '较新',
@@ -2593,6 +2609,8 @@ extension on TranslationsZh {
 			'keybindings.categories.search' => '搜索',
 			'keybindings.categories.general' => '常规',
 			'keybindings.or' => '或',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.fixed' => '固定快捷键',
 			'keybindings.change' => '更改快捷键',
 			'keybindings.reset' => '重置快捷键',
@@ -2601,8 +2619,6 @@ extension on TranslationsZh {
 			'keybindings.conflict' => ({required Object action}) => '已被 ${action} 使用',
 			'keybindings.dualHint' => '双栏',
 			'keybindings.openItem' => '打开',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.goUp' => '返回上级',
 			'keybindings.goBack' => '后退',
 			'keybindings.goForward' => '前进',

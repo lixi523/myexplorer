@@ -63,6 +63,8 @@
     "compressOptions": "Add to Archive…",
     "multiRename": "Multi Rename…",
     "verifyChecksum": "Verify Checksum…",
+  "verifyChecksumManifest": "Verify Checksum File…",
+  "createChecksumManifest": "Create Checksum File…",
     "sortBy": "Sort By",
     "sortAscending": "Ascending",
     "sortDescending": "Descending",
@@ -128,7 +130,13 @@
     "copy": "Copy",
     "copied": "Copied",
     "invalidExpected": "$algorithm checksum must be $length hexadecimal characters",
-    "readError": "Could not read file"
+    "readError": "Could not read file",
+    "createManifest": "Create checksum file",
+    "createManifestFiles": "Will create a checksum file for $count file(s)",
+    "create": "Create",
+    "verifyManifest": "Verify checksum file",
+    "verifySummary": "$ok of $total files verified",
+    "manifestEmpty": "The checksum file contains no valid entries"
   },
   "compare": {
     "toolbarTooltip": "Compare folders",
