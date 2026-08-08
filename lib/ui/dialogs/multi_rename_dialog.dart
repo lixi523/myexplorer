@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart' as p;
 
 import '../../core/models/file_entry.dart';
 import '../../core/platform/platform_paths.dart';
@@ -69,8 +70,15 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
     _TokenDef('[EXT]', t.multiRename.tokenExt),
     _TokenDef('[N]', t.multiRename.tokenN),
     _TokenDef('[INDEX]', t.multiRename.tokenIndex),
+    _TokenDef('[C]', t.multiRename.tokenC),
+    _TokenDef('[N1-3]', t.multiRename.tokenSlice),
+    _TokenDef('[P]', t.multiRename.tokenParent),
     _TokenDef('[DATE]', t.multiRename.tokenDate),
   ];
+
+  int _counterStart = 1;
+  int _counterStep = 1;
+  int _counterPad = 0;
 
   @override
   void initState() {
@@ -119,7 +127,7 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
     final stem = _stem(entry);
     final ext = _ext(entry);
 
-    return _expandTokens(template, stem, ext, index);
+    return _expandTokens(template, entry, stem, ext, index);
   }
 
   String _applyFindReplace(
@@ -131,7 +139,7 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
     if (find.isEmpty) return entry.name;
     final stem = _stem(entry);
     final ext = _ext(entry);
-    final expandedReplace = _expandTokens(replace, stem, ext, index);
+    final expandedReplace = _expandTokens(replace, entry, stem, ext, index);
     String newName;
     if (_useRegex) {
       try {
@@ -168,17 +176,65 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
     return buf.toString();
   }
 
-  String _expandTokens(String template, String stem, String ext, int index) {
+  String _expandTokens(
+    String template,
+    FileEntry entry,
+    String stem,
+    String ext,
+    int index,
+  ) {
     final today = DateTime.now();
     final date =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final parent = p.basename(p.dirname(entry.realPath));
 
-    return template
+    var result = template
         .replaceAll('[FILENAME]', stem)
         .replaceAll('[EXT]', ext)
         .replaceAll('[N]', '${index + 1}')
         .replaceAll('[INDEX]', '$index')
+        .replaceAll('[P]', parent)
         .replaceAll('[DATE]', date);
+
+    // [C] counter with configured start/step/pad.
+    final counterValue = (_counterStart + index * _counterStep).toString();
+    result = result.replaceAll(
+      '[C]',
+      _counterPad > 0 ? counterValue.padLeft(_counterPad, '0') : counterValue,
+    );
+
+    // [Nx-y] character slice of the stem (1-based, inclusive).
+    // [N3] → 3rd char; [N1-3] → chars 1-3; [N-2] → last 2 chars.
+    result = result.replaceAllMapped(RegExp(r'\[N(-?\d+)(?:-(\d+))?\]'), (m) {
+      final a = int.tryParse(m.group(1)!);
+      if (a == null) return m.group(0)!;
+      final b = m.group(2) == null ? null : int.tryParse(m.group(2)!);
+      if (b == null) return _sliceStem(stem, a, a);
+      if (b < a) return m.group(0)!;
+
+      return _sliceStem(stem, a, b);
+    });
+
+    return result;
+  }
+
+  /// Slices the stem by 1-based inclusive character positions. Negative
+  /// [from] counts from the end of the string (`-2` = last two chars).
+  String _sliceStem(String stem, int from, int to) {
+    final len = stem.length;
+    if (len == 0) return '';
+    int start;
+    int end;
+    if (from < 0) {
+      start = (len + from).clamp(0, len);
+      end = len;
+    } else {
+      start = (from - 1).clamp(0, len);
+      end = to.clamp(start, len);
+    }
+    if (start >= end) return '';
+
+    return stem.substring(start, end);
   }
 
   String _stem(FileEntry entry) {
@@ -322,6 +378,8 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
             if (_mode == _RenameMode.findReplace) _buildFindReplaceMode(),
             const SizedBox(height: 12),
             _buildTokenChips(),
+            const SizedBox(height: 10),
+            _buildCounterControls(),
             const SizedBox(height: 18),
             _buildPreviewHeader(changed, errors),
             const SizedBox(height: 6),
@@ -444,6 +502,32 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
             tooltip: td.description,
             onTap: () => _insertToken(td.token),
           ),
+      ],
+    );
+  }
+
+  Widget _buildCounterControls() {
+    return Row(
+      children: [
+        Text(t.multiRename.counter, style: context.txt.fieldLabel),
+        const SizedBox(width: 8),
+        _CounterField(
+          label: t.multiRename.counterStart,
+          initialValue: _counterStart,
+          onChanged: (v) => setState(() => _counterStart = v),
+        ),
+        const SizedBox(width: 8),
+        _CounterField(
+          label: t.multiRename.counterStep,
+          initialValue: _counterStep,
+          onChanged: (v) => setState(() => _counterStep = v),
+        ),
+        const SizedBox(width: 8),
+        _CounterField(
+          label: t.multiRename.counterPad,
+          initialValue: _counterPad,
+          onChanged: (v) => setState(() => _counterPad = v),
+        ),
       ],
     );
   }
@@ -741,6 +825,75 @@ class _CheckOption extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CounterField extends StatefulWidget {
+  final String label;
+  final int initialValue;
+  final ValueChanged<int> onChanged;
+
+  const _CounterField({
+    required this.label,
+    required this.initialValue,
+    required this.onChanged,
+  });
+
+  @override
+  State<_CounterField> createState() => _CounterFieldState();
+}
+
+class _CounterFieldState extends State<_CounterField> {
+  late final TextEditingController _ctrl = TextEditingController(
+    text: '${widget.initialValue}',
+  );
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _apply(String raw) {
+    final value = int.tryParse(raw.trim());
+    if (value == null) return;
+    widget.onChanged(value.abs());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 52,
+          child: TextField(
+            controller: _ctrl,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onSubmitted: _apply,
+            onEditingComplete: () {
+              _apply(_ctrl.text);
+              FocusScope.of(context).nextFocus();
+            },
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: '0',
+              hintStyle: context.txt.muted,
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.borderColor),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: AppColors.accent),
+              ),
+            ),
+            style: context.txt.body,
+          ),
+        ),
+        const SizedBox(width: 5),
+        Text(widget.label, style: context.txt.captionSmall),
+      ],
     );
   }
 }

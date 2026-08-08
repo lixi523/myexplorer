@@ -191,6 +191,13 @@ class _Translations$multiRename$zh extends Translations$multiRename$en {
 	@override String get tokenN => '序号（从 1 开始）';
 	@override String get tokenIndex => '序号索引（从 0 开始）';
 	@override String get tokenDate => '今天的日期（YYYY-MM-DD）';
+	@override String get tokenC => '计数器（使用下方起始值/步长/位数）';
+	@override String get tokenSlice => '名称切片：[N1-3] 前 3 个字符，[N-2] 最后 2 个字符';
+	@override String get tokenParent => '上级文件夹名';
+	@override String get counter => '[C] 计数器';
+	@override String get counterStart => '起始值';
+	@override String get counterStep => '步长';
+	@override String get counterPad => '位数';
 	@override String get find => '查找';
 	@override String get replaceWith => '替换为';
 	@override String get useRegex => '正则表达式';
@@ -2220,6 +2227,13 @@ extension on TranslationsZh {
 			'multiRename.tokenN' => '序号（从 1 开始）',
 			'multiRename.tokenIndex' => '序号索引（从 0 开始）',
 			'multiRename.tokenDate' => '今天的日期（YYYY-MM-DD）',
+			'multiRename.tokenC' => '计数器（使用下方起始值/步长/位数）',
+			'multiRename.tokenSlice' => '名称切片：[N1-3] 前 3 个字符，[N-2] 最后 2 个字符',
+			'multiRename.tokenParent' => '上级文件夹名',
+			'multiRename.counter' => '[C] 计数器',
+			'multiRename.counterStart' => '起始值',
+			'multiRename.counterStep' => '步长',
+			'multiRename.counterPad' => '位数',
 			'multiRename.find' => '查找',
 			'multiRename.replaceWith' => '替换为',
 			'multiRename.useRegex' => '正则表达式',
@@ -2648,6 +2662,8 @@ extension on TranslationsZh {
 			'tags.editTag' => '编辑标签',
 			'tags.deleteTag' => '删除标签',
 			'tags.clear' => '清除标签',
+			_ => null,
+		} ?? switch (path) {
 			'tags.save' => '保存',
 			'keybindings.title' => '键盘快捷键',
 			'keybindings.menuLabel' => '快捷键',
@@ -2655,8 +2671,6 @@ extension on TranslationsZh {
 			'keybindings.categories.quickLook' => '快速预览',
 			'keybindings.categories.view' => '视图',
 			'keybindings.categories.tabs' => '标签页',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.categories.panes' => '面板',
 			'keybindings.categories.terminal' => '终端',
 			'keybindings.categories.fileOps' => '文件操作',
@@ -3162,6 +3176,8 @@ extension on TranslationsZh {
 			'git.stashSwitch' => '暂存并切换',
 			'git.stashSwitchFailed' => ({required Object message}) => '暂存并切换失败：${message}',
 			'git.stashEntry' => ({required Object index, required Object message}) => 'stash@{${index}} · ${message}',
+			_ => null,
+		} ?? switch (path) {
 			'git.stashPop' => '弹出（应用并移除）',
 			'git.stashApply' => '应用（保留 stash）',
 			'git.stashDrop' => '丢弃',
@@ -3169,8 +3185,6 @@ extension on TranslationsZh {
 			'git.noRepository' => '不是仓库',
 			'git.gitCheckoutFailed' => 'git checkout 失败',
 			'git.gitStashFailed' => 'git stash 失败',
-			_ => null,
-		} ?? switch (path) {
 			'git.changesStashedSwitchFailed' => ({required Object message}) => '更改已暂存，但切换失败：${message}',
 			'openWith.title' => '打开方式',
 			'openWith.subtitle' => ({required Object name}) => '选择用于打开“${name}”的应用',

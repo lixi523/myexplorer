@@ -344,8 +344,29 @@ class Translations$multiRename$en {
 	/// en: 'Sequence index (starts at 0)'
 	String get tokenIndex => 'Sequence index (starts at 0)';
 
+	/// en: 'Counter (uses start/step/pad below)'
+	String get tokenC => 'Counter (uses start/step/pad below)';
+
+	/// en: 'Slice of the name: [N1-3] first 3 chars, [N-2] last 2 chars'
+	String get tokenSlice => 'Slice of the name: [N1-3] first 3 chars, [N-2] last 2 chars';
+
+	/// en: 'Parent folder name'
+	String get tokenParent => 'Parent folder name';
+
 	/// en: 'Today's date (YYYY-MM-DD)'
 	String get tokenDate => 'Today\'s date (YYYY-MM-DD)';
+
+	/// en: '[C] counter'
+	String get counter => '[C] counter';
+
+	/// en: 'Start'
+	String get counterStart => 'Start';
+
+	/// en: 'Step'
+	String get counterStep => 'Step';
+
+	/// en: 'Digits'
+	String get counterPad => 'Digits';
 
 	/// en: 'Find'
 	String get find => 'Find';
@@ -4326,7 +4347,14 @@ extension on Translations {
 			'multiRename.tokenExt' => 'Original extension (with dot)',
 			'multiRename.tokenN' => 'Sequence number (starts at 1)',
 			'multiRename.tokenIndex' => 'Sequence index (starts at 0)',
+			'multiRename.tokenC' => 'Counter (uses start/step/pad below)',
+			'multiRename.tokenSlice' => 'Slice of the name: [N1-3] first 3 chars, [N-2] last 2 chars',
+			'multiRename.tokenParent' => 'Parent folder name',
 			'multiRename.tokenDate' => 'Today\'s date (YYYY-MM-DD)',
+			'multiRename.counter' => '[C] counter',
+			'multiRename.counterStart' => 'Start',
+			'multiRename.counterStep' => 'Step',
+			'multiRename.counterPad' => 'Digits',
 			'multiRename.find' => 'Find',
 			'multiRename.replaceWith' => 'Replace with',
 			'multiRename.useRegex' => 'Regular expression',
@@ -4755,6 +4783,8 @@ extension on Translations {
 			'tags.editTag' => 'Edit Tag',
 			'tags.deleteTag' => 'Delete Tag',
 			'tags.clear' => 'Clear Tags',
+			_ => null,
+		} ?? switch (path) {
 			'tags.save' => 'Save',
 			'keybindings.title' => 'Keyboard Shortcuts',
 			'keybindings.menuLabel' => 'Shortcuts',
@@ -4762,8 +4792,6 @@ extension on Translations {
 			'keybindings.categories.quickLook' => 'Quick Look',
 			'keybindings.categories.view' => 'View',
 			'keybindings.categories.tabs' => 'Tabs',
-			_ => null,
-		} ?? switch (path) {
 			'keybindings.categories.panes' => 'Panes',
 			'keybindings.categories.terminal' => 'Terminal',
 			'keybindings.categories.fileOps' => 'File Operations',
@@ -5269,6 +5297,8 @@ extension on Translations {
 			'git.stashSwitch' => 'Stash & Switch',
 			'git.stashSwitchFailed' => ({required Object message}) => 'Stash & switch failed: ${message}',
 			'git.stashEntry' => ({required Object index, required Object message}) => 'stash@{${index}} · ${message}',
+			_ => null,
+		} ?? switch (path) {
 			'git.stashPop' => 'Pop (apply & remove)',
 			'git.stashApply' => 'Apply (keep stash)',
 			'git.stashDrop' => 'Drop',
@@ -5276,8 +5306,6 @@ extension on Translations {
 			'git.noRepository' => 'No repository',
 			'git.gitCheckoutFailed' => 'git checkout failed',
 			'git.gitStashFailed' => 'git stash failed',
-			_ => null,
-		} ?? switch (path) {
 			'git.changesStashedSwitchFailed' => ({required Object message}) => 'Changes stashed, but switch failed: ${message}',
 			'openWith.title' => 'Open With',
 			'openWith.subtitle' => ({required Object name}) => 'Choose an application to open "${name}"',
