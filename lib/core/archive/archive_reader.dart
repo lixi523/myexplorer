@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
+import 'package:path/path.dart' as p;
 
 import '../../i18n/strings.g.dart';
+import 'seven_zip_service.dart';
 
 class ArchiveReadException implements Exception {
   final String message;
@@ -125,6 +127,28 @@ class ArchiveReader {
   }
 
   static List<ArchiveEntry> listEntries(String archivePath) {
+    final lower = archivePath.toLowerCase();
+    if (lower.endsWith('.7z')) {
+      final raw = SevenZipService.instance.listEntries(archivePath);
+      if (raw == null) {
+        throw ArchiveReadException(t.errors.archiveReadFailed(error: '7z'));
+      }
+      final modified = FileStat.statSync(archivePath).modified;
+      final entries = <ArchiveEntry>[];
+      for (final e in raw) {
+        entries.add(
+          ArchiveEntry(
+            path: e.path,
+            size: e.size,
+            isDir: e.isDir,
+            mtimeSeconds: modified.millisecondsSinceEpoch ~/ 1000,
+            modified: modified,
+          ),
+        );
+      }
+
+      return entries;
+    }
     final archive = _readArchive(archivePath);
     final entries = <ArchiveEntry>[];
     for (final entry in archive) {
@@ -155,6 +179,19 @@ class ArchiveReader {
     String innerPath,
     String destPath,
   ) {
+    if (archivePath.toLowerCase().endsWith('.7z')) {
+      if (!SevenZipService.instance.extractEntry(
+        archivePath,
+        innerPath,
+        destPath,
+      )) {
+        throw ArchiveReadException(
+          t.errors.archiveEntryNotFound(path: innerPath),
+        );
+      }
+
+      return;
+    }
     final archive = _readArchive(archivePath);
     final target = _normalize(innerPath);
     var found = false;
@@ -183,6 +220,31 @@ class ArchiveReader {
   /// Returns the raw bytes of a single archive entry without touching the
   /// file system (used for in-archive preview and edit).
   static Uint8List readEntryBytes(String archivePath, String innerPath) {
+    if (archivePath.toLowerCase().endsWith('.7z')) {
+      final tmp = File(
+        p.join(
+          Directory.systemTemp.path,
+          'waydir-7z-entry-${DateTime.now().microsecondsSinceEpoch}.bin',
+        ),
+      );
+      try {
+        if (!SevenZipService.instance.extractEntry(
+          archivePath,
+          innerPath,
+          tmp.path,
+        )) {
+          throw ArchiveReadException(
+            t.errors.archiveEntryNotFound(path: innerPath),
+          );
+        }
+
+        return tmp.readAsBytesSync();
+      } finally {
+        try {
+          if (tmp.existsSync()) tmp.deleteSync();
+        } catch (_) {}
+      }
+    }
     final archive = _readArchive(archivePath);
     final target = _normalize(innerPath);
     for (final entry in archive) {
@@ -202,6 +264,42 @@ class ArchiveReader {
     String innerPath,
     String stagingDir,
   ) {
+    if (archivePath.toLowerCase().endsWith('.7z')) {
+      // Extract the whole archive to a sub-staging dir, then move the
+      // requested subtree out.
+      final work = Directory(
+        p.join(stagingDir, 'work-${DateTime.now().microsecondsSinceEpoch}'),
+      )..createSync(recursive: true);
+      try {
+        if (!SevenZipService.instance.extractAll(archivePath, work.path)) {
+          throw ArchiveReadException(t.errors.archiveReadFailed(error: '7z'));
+        }
+        final target = _normalize(innerPath);
+        final baseName = target.contains('/')
+            ? target.substring(target.lastIndexOf('/') + 1)
+            : target;
+        final stagedRoot = '$stagingDir/$baseName';
+        final src = p.joinAll([work.path, ...target.split('/')]);
+        final type = FileSystemEntity.typeSync(src);
+        if (type == FileSystemEntityType.directory) {
+          Directory(src).renameSync(stagedRoot);
+        } else if (type == FileSystemEntityType.file) {
+          final f = File(src);
+          f.parent.createSync(recursive: true);
+          f.copySync(stagedRoot);
+        } else {
+          throw ArchiveReadException(
+            t.errors.archiveEntryNotFound(path: innerPath),
+          );
+        }
+
+        return stagedRoot;
+      } finally {
+        try {
+          work.deleteSync(recursive: true);
+        } catch (_) {}
+      }
+    }
     final archive = _readArchive(archivePath);
     final target = _normalize(innerPath);
     final baseName = target.contains('/')
@@ -267,6 +365,16 @@ class ArchiveReader {
     void Function(String name)? onEntry,
     bool Function()? isCancelled,
   }) {
+    if (archivePath.toLowerCase().endsWith('.7z')) {
+      _extractSevenZipResolved(
+        archivePath,
+        resolveDest,
+        onEntry: onEntry,
+        isCancelled: isCancelled,
+      );
+
+      return;
+    }
     final archive = _readArchive(archivePath);
 
     for (final entry in archive) {
@@ -293,6 +401,60 @@ class ArchiveReader {
       final data = entry.content as List<int>;
       file.writeAsBytesSync(data);
       _applyModified(file, modified);
+    }
+  }
+
+  /// Extracts a 7z archive into a temp staging dir, then walks the staged
+  /// tree and routes each entry through [resolveDest] (mirroring the native
+  /// branch). Directories are created via resolveDest too.
+  static void _extractSevenZipResolved(
+    String archivePath,
+    String? Function(String epath, bool isDir) resolveDest, {
+    void Function(String name)? onEntry,
+    bool Function()? isCancelled,
+  }) {
+    final staging = Directory(
+      p.join(
+        Directory.systemTemp.path,
+        'waydir-7z-${DateTime.now().microsecondsSinceEpoch}',
+      ),
+    )..createSync(recursive: true);
+    try {
+      if (!SevenZipService.instance.extractAll(archivePath, staging.path)) {
+        throw ArchiveReadException(t.errors.archiveReadFailed(error: '7z'));
+      }
+      _walkStaged(staging, '', resolveDest, onEntry, isCancelled);
+    } finally {
+      try {
+        staging.deleteSync(recursive: true);
+      } catch (_) {}
+    }
+  }
+
+  static void _walkStaged(
+    Directory dir,
+    String prefix,
+    String? Function(String epath, bool isDir) resolveDest,
+    void Function(String name)? onEntry,
+    bool Function()? isCancelled,
+  ) {
+    for (final entity in dir.listSync(followLinks: false)) {
+      if (isCancelled != null && isCancelled()) return;
+      final name = entity.path.split(Platform.pathSeparator).last;
+      final rel = prefix.isEmpty ? name : '$prefix/$name';
+      if (entity is Directory) {
+        onEntry?.call(rel);
+        final dest = resolveDest(rel, true);
+        if (dest != null) Directory(dest).createSync(recursive: true);
+        _walkStaged(entity, rel, resolveDest, onEntry, isCancelled);
+      } else if (entity is File) {
+        onEntry?.call(rel);
+        final dest = resolveDest(rel, false);
+        if (dest == null) continue;
+        final file = File(dest);
+        file.parent.createSync(recursive: true);
+        entity.copySync(dest);
+      }
     }
   }
 }

@@ -18,6 +18,7 @@ class ArchivePath {
 
   static const _extensions = <String>{
     '.zip',
+    '.7z',
     '.tar',
     '.tgz',
     '.tbz',
