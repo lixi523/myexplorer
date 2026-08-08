@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:exif/exif.dart';
 
+import '../../core/archive/archive_path.dart';
+import '../../core/archive/archive_reader.dart';
 import '../../core/fs/sftp_fs.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
@@ -33,9 +35,21 @@ class Probe {
 
 Future<Uint8List> readHead(String path, int maxBytes) async {
   final builder = BytesBuilder(copy: false);
-  final stream = PlatformPaths.isSftpUri(path)
-      ? await const SftpFs().openRead(path, start: 0, end: maxBytes)
-      : File(path).openRead(0, maxBytes);
+  final archiveLoc = ArchivePath.resolve(path);
+  Stream<List<int>> stream;
+  if (archiveLoc != null) {
+    final bytes = ArchiveReader.readEntryBytes(
+      archiveLoc.archivePath,
+      archiveLoc.innerPath,
+    );
+    stream = Stream.value(
+      bytes.length > maxBytes ? bytes.sublist(0, maxBytes) : bytes,
+    );
+  } else if (PlatformPaths.isSftpUri(path)) {
+    stream = await const SftpFs().openRead(path, start: 0, end: maxBytes);
+  } else {
+    stream = File(path).openRead(0, maxBytes);
+  }
   await for (final chunk in stream) {
     builder.add(chunk);
   }
@@ -90,13 +104,27 @@ Future<QlSection?> imageInfo(FileEntry e) async {
 Future<Probe> probeFile(FileEntry entry) async {
   try {
     final builder = BytesBuilder(copy: false);
-    final stream = PlatformPaths.isSftpUri(entry.realPath)
-        ? await const SftpFs().openRead(
-            entry.realPath,
-            start: 0,
-            end: maxTextBytes + 1,
-          )
-        : File(entry.realPath).openRead(0, maxTextBytes + 1);
+    final archiveLoc = ArchivePath.resolve(entry.realPath);
+    Stream<List<int>> stream;
+    if (archiveLoc != null) {
+      final bytes = ArchiveReader.readEntryBytes(
+        archiveLoc.archivePath,
+        archiveLoc.innerPath,
+      );
+      stream = Stream.value(
+        bytes.length > maxTextBytes + 1
+            ? bytes.sublist(0, maxTextBytes + 1)
+            : bytes,
+      );
+    } else if (PlatformPaths.isSftpUri(entry.realPath)) {
+      stream = await const SftpFs().openRead(
+        entry.realPath,
+        start: 0,
+        end: maxTextBytes + 1,
+      );
+    } else {
+      stream = File(entry.realPath).openRead(0, maxTextBytes + 1);
+    }
     await for (final chunk in stream) {
       builder.add(chunk);
       if (builder.length > maxTextBytes) break;

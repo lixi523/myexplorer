@@ -9,6 +9,8 @@ import 'package:re_highlight/styles/atom-one-light.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:waydir/ui/icons/waydir_icons.dart';
 
+import '../../core/archive/archive_path.dart';
+import '../../core/archive/archive_writer.dart';
 import '../../core/fs/sftp_fs.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/platform/platform_paths.dart';
@@ -108,7 +110,27 @@ class _CodeEditorState extends State<CodeEditor> {
     final revision = _ctrl.value.codeLines;
     setState(() => _saving = true);
     try {
-      if (PlatformPaths.isSftpUri(widget.path)) {
+      final archiveLoc = ArchivePath.resolve(widget.path);
+      if (archiveLoc != null) {
+        // In-archive edit: write to a temp file and rebuild the archive
+        // entry via ArchiveWriter.mutate (replace the entry in place).
+        final tmp = File(
+          '${Directory.systemTemp.path}${Platform.pathSeparator}'
+          'waydir_edit_${DateTime.now().microsecondsSinceEpoch}.tmp',
+        );
+        try {
+          await tmp.writeAsString(text, flush: true);
+          ArchiveWriter.mutate(
+            archiveLoc.archivePath,
+            replaceSource: tmp.path,
+            replaceInner: archiveLoc.innerPath,
+          );
+        } finally {
+          try {
+            if (tmp.existsSync()) tmp.deleteSync();
+          } catch (_) {}
+        }
+      } else if (PlatformPaths.isSftpUri(widget.path)) {
         await const SftpFs().writeBytes(
           widget.path,
           Uint8List.fromList(utf8.encode(text)),

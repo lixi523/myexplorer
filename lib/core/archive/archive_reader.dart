@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
 
 import '../../i18n/strings.g.dart';
@@ -97,9 +98,9 @@ class ArchiveReader {
     final lower = archivePath.toLowerCase();
     try {
       if (_isZipLike(archivePath)) {
-        return ZipDecoder().decodeStream(InputFileStream(archivePath));
+        return ZipDecoder().decodeBytes(File(archivePath).readAsBytesSync());
       } else if (lower.endsWith('.tar')) {
-        return TarDecoder().decodeStream(InputFileStream(archivePath));
+        return TarDecoder().decodeBytes(File(archivePath).readAsBytesSync());
       }
       final bytes = File(archivePath).readAsBytesSync();
       if (lower.endsWith('.tar.gz') || lower.endsWith('.tgz')) {
@@ -177,6 +178,23 @@ class ArchiveReader {
         t.errors.archiveEntryNotFound(path: innerPath),
       );
     }
+  }
+
+  /// Returns the raw bytes of a single archive entry without touching the
+  /// file system (used for in-archive preview and edit).
+  static Uint8List readEntryBytes(String archivePath, String innerPath) {
+    final archive = _readArchive(archivePath);
+    final target = _normalize(innerPath);
+    for (final entry in archive) {
+      final raw = entry.name;
+      if (!entry.isFile) continue;
+      if (_normalize(raw) != target) continue;
+      final data = entry.content as List<int>;
+      if (data is Uint8List) return data;
+
+      return Uint8List.fromList(data);
+    }
+    throw ArchiveReadException(t.errors.archiveEntryNotFound(path: innerPath));
   }
 
   static String extractTree(

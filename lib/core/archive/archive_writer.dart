@@ -542,6 +542,8 @@ class ArchiveWriter {
     List<String> deleteInner = const [],
     String? renameFromInner,
     String? renameToName,
+    String? replaceSource,
+    String? replaceInner,
     void Function(String name)? onEntry,
     void Function(String label)? onPhase,
     void Function(String name, int bytes)? onBytes,
@@ -595,6 +597,24 @@ class ArchiveWriter {
         }
       }
 
+      if (replaceSource != null && replaceInner != null) {
+        // Replace a single entry in place: remove the old one, then copy the
+        // source file to the exact inner path.
+        final target = p.join(tree.path, replaceInner);
+        final type = FileSystemEntity.typeSync(target);
+        if (type == FileSystemEntityType.directory) {
+          Directory(target).deleteSync(recursive: true);
+        } else if (type != FileSystemEntityType.notFound) {
+          File(target).deleteSync();
+        }
+        final parent = p.dirname(target);
+        Directory(parent).createSync(recursive: true);
+        if (FileSystemEntity.typeSync(replaceSource) ==
+            FileSystemEntityType.file) {
+          File(replaceSource).copySync(target);
+        }
+      }
+
       final roots = tree
           .listSync(followLinks: false)
           .map((e) => e.path)
@@ -610,9 +630,16 @@ class ArchiveWriter {
         isCancelled: isCancelled,
       );
       if (isCancelled != null && isCancelled()) return;
+      if (File(archivePath).existsSync()) {
+        File(archivePath).deleteSync();
+      }
       try {
         File(tmpArchive).renameSync(archivePath);
       } on FileSystemException {
+        // Some filesystems refuse rename-over-existing; retry via copy.
+        if (File(archivePath).existsSync()) {
+          File(archivePath).deleteSync();
+        }
         File(tmpArchive).copySync(archivePath);
       }
     } finally {

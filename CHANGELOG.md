@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-rename enhancements: `[C]` counter with start/step/digit-padding controls, `[N1-3]` / `[N-2]` name slicing (1-based, negative from end), `[P]` parent folder name.
 - File coloring rules (View menu → File Coloring…): extension → color rules tint matching file rows, with a built-in default palette (executables red, images purple, archives brown, docs blue, media green, text cyan), add/remove/reset UI. Runtime-only for now (persistence deferred until codegen is available).
 - TC parameter macros in shortcut bar: `%P`/`%N`/`%T`/`%M`/`%L`/`%S` (and lowercase raw variants) expand against the active pane's path and selection when running a button, matching Total Commander semantics.
+- In-archive edit (zip/tar): Quick Look can now open and save text files inside archives — `readEntryBytes` reads entries without extracting, and `ArchiveWriter.mutate` gained a `replaceSource`/`replaceInner` in-place replace (with a Windows file-lock fix: decode via bytes instead of an open stream, and delete-before-rename).
 
 ## [1.5.0] - 2026-08-07
 
