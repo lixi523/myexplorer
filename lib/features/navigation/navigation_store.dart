@@ -364,7 +364,7 @@ class NavigationStore {
         // Folders get a fixed name color.
         deco[entry.path] = const RowDecoration(
           tint: Color(0x00000000),
-          nameColor: Color(0xFF3E63DD),
+          nameColor: Color(0xFFE9E9E9),
         );
         continue;
       }

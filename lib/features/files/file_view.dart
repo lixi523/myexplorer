@@ -536,19 +536,21 @@ class _FileListState extends State<FileList> {
   }
 
   void _handleSecondaryPointerDown(PointerDownEvent event) {
-    if (event.buttons & kSecondaryMouseButton == 0) return;
+    // Strictly match a plain secondary-button press (no modifier combos).
+    if (event.buttons != kSecondaryMouseButton) return;
     _secondaryDownPos = event.localPosition;
     _secondaryDragLastIndex = -1;
     _secondaryDragged = false;
     _secondaryLongPressed = false;
     _cancelSecondaryLongPress();
-    // Long-press (2 s, no movement) opens the context menu.
+    // Long-press (1 s, no movement) opens the context menu.
     _secondaryLongPressTimer = Timer(
       const Duration(milliseconds: _kSecondaryLongPressMs),
       () {
+        if (_secondaryDownPos == null) return; // up/cancel already handled
         _secondaryLongPressed = true;
         _secondaryLongPressTimer = null;
-        final index = _rowAt(_secondaryDownPos ?? Offset.zero);
+        final index = _rowAt(_secondaryDownPos!);
         if (index < 0) {
           widget.onBackgroundContextMenu?.call(event.position);
         } else {
@@ -565,10 +567,11 @@ class _FileListState extends State<FileList> {
   /// secondary button is held is added to the selection; near the edges the
   /// list auto-scrolls so the sweep can continue.
   void _handleSecondaryPointerMove(PointerMoveEvent event) {
-    if (event.buttons & kSecondaryMouseButton == 0) return;
-    final down = _secondaryDownPos;
-    if (down != null &&
-        (event.localPosition - down).distance > _kSecondaryDragSlop) {
+    // PointerMoveEvent.buttons is unreliable on Windows (often 0), so gate
+    // on our own interaction state instead.
+    if (_secondaryDownPos == null) return;
+    final down = _secondaryDownPos!;
+    if ((event.localPosition - down).distance > _kSecondaryDragSlop) {
       _secondaryDragged = true;
       _cancelSecondaryLongPress();
     }
@@ -613,6 +616,12 @@ class _FileListState extends State<FileList> {
     if (clamped != _scrollController.offset) {
       _scrollController.jumpTo(clamped);
     }
+  }
+
+  void _handleSecondaryPointerCancel(PointerCancelEvent event) {
+    _cancelSecondaryLongPress();
+    _secondaryDownPos = null;
+    _secondaryDragged = false;
   }
 
   void _handleSecondaryPointerUp(PointerUpEvent event) {
@@ -730,6 +739,7 @@ class _FileListState extends State<FileList> {
 
   @override
   void dispose() {
+    _cancelSecondaryLongPress();
     _scrollController.dispose();
     _hScrollController.dispose();
     super.dispose();
@@ -961,6 +971,8 @@ class _FileListState extends State<FileList> {
                                       onPointerMove:
                                           _handleSecondaryPointerMove,
                                       onPointerUp: _handleSecondaryPointerUp,
+                                      onPointerCancel:
+                                          _handleSecondaryPointerCancel,
                                       child: GestureDetector(
                                         behavior: HitTestBehavior.translucent,
                                         child: MediaQuery.withClampedTextScaling(

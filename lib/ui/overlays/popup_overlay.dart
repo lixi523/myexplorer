@@ -102,6 +102,7 @@ class _PopupOverlayState extends State<PopupOverlay>
                 child: MouseRegion(
                   child: GestureDetector(
                     onTap: _dismiss,
+                    onSecondaryTapUp: (_) => _dismiss(),
                     behavior: HitTestBehavior.opaque,
                     child: const SizedBox.expand(),
                   ),

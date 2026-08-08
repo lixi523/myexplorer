@@ -89,7 +89,7 @@ void showContextMenu({
 
   void dismissFromSoon(int depth) {
     pendingDismiss?.cancel();
-    pendingDismiss = Timer(const Duration(milliseconds: 90), () {
+    pendingDismiss = Timer(const Duration(milliseconds: 180), () {
       pendingDismiss = null;
       dismissFrom(depth);
     });
@@ -117,7 +117,7 @@ void showContextMenu({
         builder: (_) => _ContextMenuBody(
           items: menuItems,
           onEnterMenu: depth == 0 ? () {} : cancelPendingDismiss,
-          onExitMenu: () => dismissFromSoon(depth == 0 ? 1 : depth),
+          onExitMenu: () => dismissFromSoon(depth == 0 ? 0 : depth),
           onCloseSubmenus: () => dismissFromNow(depth + 1),
           onScheduleCloseSubmenus: () => dismissFromSoon(depth + 1),
           onSelect: (action) {
