@@ -526,8 +526,8 @@ class _FileListState extends State<FileList> {
     return p.join('...', parts[parts.length - 2], parts.last);
   }
 
-  /// NC-mode right-button long-press threshold (1 s).
-  static const _kSecondaryLongPressMs = 1000;
+  /// NC-mode right-button long-press threshold (2 s).
+  static const _kSecondaryLongPressMs = 2000;
   static const _kSecondaryDragSlop = 4.0;
 
   void _cancelSecondaryLongPress() {
@@ -536,14 +536,16 @@ class _FileListState extends State<FileList> {
   }
 
   void _handleSecondaryPointerDown(PointerDownEvent event) {
-    // Strictly match a plain secondary-button press (no modifier combos).
-    if (event.buttons != kSecondaryMouseButton) return;
+    // Match any press that includes the secondary button (Windows may report
+    // extra bits; strict equality would miss the right button entirely).
+    if (event.buttons & kSecondaryMouseButton == 0) return;
     _secondaryDownPos = event.localPosition;
     _secondaryDragLastIndex = -1;
     _secondaryDragged = false;
     _secondaryLongPressed = false;
     _cancelSecondaryLongPress();
-    // Long-press (1 s, no movement) opens the context menu.
+    // Long-press (2 s) opens the context menu — on a row it shows the file
+    // menu, on empty space the background menu.
     _secondaryLongPressTimer = Timer(
       const Duration(milliseconds: _kSecondaryLongPressMs),
       () {
@@ -634,14 +636,14 @@ class _FileListState extends State<FileList> {
 
       return;
     }
-    // Quick right-click (no drag, no long-press): add to selection.
+    // Quick right-click (no drag, no long-press): add to selection. Only a
+    // press on a row does that; a press on empty space does nothing — menus
+    // are shown exclusively by the 2 s long-press timer.
     final down = _secondaryDownPos;
     _secondaryDownPos = null;
-    final index = _rowAt(down ?? event.localPosition);
-    if (index < 0) {
-      widget.onBackgroundTap?.call();
-      widget.onBackgroundContextMenu?.call(event.position);
-    } else {
+    if (down == null) return; // no matching down → not our interaction
+    final index = _rowAt(down);
+    if (index >= 0) {
       widget.onSecondarySelect?.call(
         FileSelectionEvent(entry: _displayFiles[index], index: index),
       );
@@ -2175,13 +2177,7 @@ class _ListRowState extends State<_ListRow> {
                                 ? AppColors.fg
                                 : widget.rowDecoration?.nameColor ??
                                       AppColors.fg.withValues(alpha: 0.9),
-                            fontWeight:
-                                widget.selected &&
-                                    !widget.secondarySelectedPaths.contains(
-                                      widget.entry.path,
-                                    )
-                                ? FontWeight.w500
-                                : FontWeight.normal,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ),

@@ -164,7 +164,7 @@ class _FileGridState extends State<FileGrid> {
     super.dispose();
   }
 
-  static const _kSecondaryLongPressMs = 1000;
+  static const _kSecondaryLongPressMs = 2000;
   static const _kSecondaryDragSlop = 4.0;
 
   void _cancelSecondaryLongPress() {
@@ -173,13 +173,16 @@ class _FileGridState extends State<FileGrid> {
   }
 
   void _handleSecondaryPointerDown(PointerDownEvent event) {
-    // Strictly match a plain secondary-button press (no modifier combos).
-    if (event.buttons != kSecondaryMouseButton) return;
+    // Match any press that includes the secondary button (Windows may report
+    // extra bits; strict equality would miss the right button entirely).
+    if (event.buttons & kSecondaryMouseButton == 0) return;
     _secondaryDownPos = event.localPosition;
     _secondaryDragLastIndex = -1;
     _secondaryDragged = false;
     _secondaryLongPressed = false;
     _cancelSecondaryLongPress();
+    // Long-press (2 s) opens the context menu — on a tile it shows the file
+    // menu, on empty space the background menu.
     _secondaryLongPressTimer = Timer(
       const Duration(milliseconds: _kSecondaryLongPressMs),
       () {
@@ -269,12 +272,10 @@ class _FileGridState extends State<FileGrid> {
     }
     final down = _secondaryDownPos;
     _secondaryDownPos = null;
+    if (down == null) return; // no matching down → not our interaction
     final columns = _lastColumns;
-    final index = _indexAt(down ?? event.localPosition, columns);
-    if (index < 0) {
-      widget.onBackgroundTap?.call();
-      widget.onBackgroundContextMenu?.call(event.position);
-    } else {
+    final index = _indexAt(down, columns);
+    if (index >= 0) {
       widget.onSecondarySelect?.call(
         FileSelectionEvent(entry: widget.files[index], index: index),
       );
@@ -805,10 +806,7 @@ class _GridTileState extends State<_GridTile> {
       color: selected
           ? AppColors.fg
           : widget.rowDecoration?.nameColor ?? AppColors.fgMuted,
-      fontWeight:
-          selected && !widget.secondarySelectedPaths.contains(entry.path)
-          ? FontWeight.w600
-          : FontWeight.w400,
+      fontWeight: FontWeight.w400,
       height: 1.25,
     );
     final captionStyle = context.txt.caption.copyWith(
