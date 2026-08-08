@@ -70,6 +70,7 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$dialog$zh dialog = _Translations$dialog$zh._(_root);
 	@override late final _Translations$password$zh password = _Translations$password$zh._(_root);
 	@override late final _Translations$selectPattern$zh selectPattern = _Translations$selectPattern$zh._(_root);
+	@override late final _Translations$split$zh split = _Translations$split$zh._(_root);
 	@override late final _Translations$operations$zh operations = _Translations$operations$zh._(_root);
 	@override late final _Translations$errors$zh errors = _Translations$errors$zh._(_root);
 	@override late final _Translations$tasks$zh tasks = _Translations$tasks$zh._(_root);
@@ -159,6 +160,8 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get verifyChecksum => '校验校验和…';
 	@override String get verifyChecksumManifest => '验证校验文件…';
 	@override String get createChecksumManifest => '生成校验文件…';
+	@override String get splitFile => '分割文件…';
+	@override String get combineParts => '合并分卷…';
 	@override String get sortBy => '排序方式';
 	@override String get sortAscending => '升序';
 	@override String get sortDescending => '降序';
@@ -897,6 +900,21 @@ class _Translations$selectPattern$zh extends Translations$selectPattern$en {
 	@override String get select => '选择';
 }
 
+// Path: split
+class _Translations$split$zh extends Translations$split$en {
+	_Translations$split$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '分割文件';
+	@override String filesCount({required Object count}) => '分割 ${count} 个文件';
+	@override String get partSize => '分卷大小';
+	@override String get custom => '自定义…';
+	@override String get customHint => '大小（字节）';
+	@override String get split => '分割';
+}
+
 // Path: operations
 class _Translations$operations$zh extends Translations$operations$en {
 	_Translations$operations$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -952,6 +970,7 @@ class _Translations$errors$zh extends Translations$errors$en {
 	@override String get notFound => '文件不存在';
 	@override String get sourceNotFound => '源不存在';
 	@override String get pathNotFound => '路径不存在';
+	@override String get invalidPartSize => '无效的分卷大小';
 	@override String get missingSmbHost => 'smb:// URI 中缺少主机';
 	@override String get missingSftpHost => 'sftp:// URI 中缺少主机';
 	@override String get invalidSmbUri => '无效的 smb:// URI';
@@ -1016,6 +1035,10 @@ class _Translations$tasks$zh extends Translations$tasks$en {
 	@override String extractingMultiple({required Object count}) => '正在解压 ${count} 个压缩包';
 	@override String compressingTo({required Object name}) => '正在压缩到 ${name}';
 	@override String get updatingArchive => '正在更新压缩包';
+	@override String splittingSingle({required Object name}) => '正在分割 ${name}';
+	@override String splittingMultiple({required Object count}) => '正在分割 ${count} 个项目';
+	@override String combiningSingle({required Object name}) => '正在合并 ${name}';
+	@override String combiningMultiple({required Object count}) => '正在合并 ${count} 个项目';
 	@override late final _Translations$tasks$status$zh status = _Translations$tasks$status$zh._(_root);
 }
 
@@ -2153,6 +2176,8 @@ extension on TranslationsZh {
 			'menu.verifyChecksum' => '校验校验和…',
 			'menu.verifyChecksumManifest' => '验证校验文件…',
 			'menu.createChecksumManifest' => '生成校验文件…',
+			'menu.splitFile' => '分割文件…',
+			'menu.combineParts' => '合并分卷…',
 			'menu.sortBy' => '排序方式',
 			'menu.sortAscending' => '升序',
 			'menu.sortDescending' => '降序',
@@ -2607,10 +2632,10 @@ extension on TranslationsZh {
 			'keybindings.categories.fileOps' => '文件操作',
 			'keybindings.categories.selection' => '选择',
 			'keybindings.categories.search' => '搜索',
-			'keybindings.categories.general' => '常规',
-			'keybindings.or' => '或',
 			_ => null,
 		} ?? switch (path) {
+			'keybindings.categories.general' => '常规',
+			'keybindings.or' => '或',
 			'keybindings.fixed' => '固定快捷键',
 			'keybindings.change' => '更改快捷键',
 			'keybindings.reset' => '重置快捷键',
@@ -2974,6 +2999,12 @@ extension on TranslationsZh {
 			'selectPattern.hint' => '*.jpg, *.png',
 			'selectPattern.help' => '通配符：*（任意）、?（单个字符）。用逗号分隔多个模式。',
 			'selectPattern.select' => '选择',
+			'split.title' => '分割文件',
+			'split.filesCount' => ({required Object count}) => '分割 ${count} 个文件',
+			'split.partSize' => '分卷大小',
+			'split.custom' => '自定义…',
+			'split.customHint' => '大小（字节）',
+			'split.split' => '分割',
 			'operations.title' => '操作',
 			'operations.clear' => '清除',
 			'operations.noActive' => '没有正在进行的操作',
@@ -3013,6 +3044,7 @@ extension on TranslationsZh {
 			'errors.notFound' => '文件不存在',
 			'errors.sourceNotFound' => '源不存在',
 			'errors.pathNotFound' => '路径不存在',
+			'errors.invalidPartSize' => '无效的分卷大小',
 			'errors.missingSmbHost' => 'smb:// URI 中缺少主机',
 			'errors.missingSftpHost' => 'sftp:// URI 中缺少主机',
 			'errors.invalidSmbUri' => '无效的 smb:// URI',
@@ -3068,6 +3100,10 @@ extension on TranslationsZh {
 			'tasks.extractingMultiple' => ({required Object count}) => '正在解压 ${count} 个压缩包',
 			'tasks.compressingTo' => ({required Object name}) => '正在压缩到 ${name}',
 			'tasks.updatingArchive' => '正在更新压缩包',
+			'tasks.splittingSingle' => ({required Object name}) => '正在分割 ${name}',
+			'tasks.splittingMultiple' => ({required Object count}) => '正在分割 ${count} 个项目',
+			'tasks.combiningSingle' => ({required Object name}) => '正在合并 ${name}',
+			'tasks.combiningMultiple' => ({required Object count}) => '正在合并 ${count} 个项目',
 			'tasks.status.waiting' => '等待中...',
 			'tasks.status.scanning' => '正在扫描文件...',
 			'tasks.status.conflicts' => ({required Object count}) => '${count} 个冲突',
@@ -3110,6 +3146,8 @@ extension on TranslationsZh {
 			'openWith.open' => '打开',
 			'openWith.failed' => ({required Object app}) => '无法使用 ${app} 打开文件',
 			'openWith.setDefaultFailed' => '无法设置默认应用',
+			_ => null,
+		} ?? switch (path) {
 			'openWith.unsupportedPlatform' => '不支持的平台',
 			'openWith.windowsDefaultDialogRequired' => '使用系统“打开方式”对话框更改 Windows 上的默认应用',
 			'hiddenList.title' => '隐藏列表',

@@ -71,6 +71,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$dialog$en dialog = Translations$dialog$en.internal(_root);
 	late final Translations$password$en password = Translations$password$en.internal(_root);
 	late final Translations$selectPattern$en selectPattern = Translations$selectPattern$en.internal(_root);
+	late final Translations$split$en split = Translations$split$en.internal(_root);
 	late final Translations$operations$en operations = Translations$operations$en.internal(_root);
 	late final Translations$errors$en errors = Translations$errors$en.internal(_root);
 	late final Translations$tasks$en tasks = Translations$tasks$en.internal(_root);
@@ -272,6 +273,12 @@ class Translations$menu$en {
 
 	/// en: 'Create Checksum File…'
 	String get createChecksumManifest => 'Create Checksum File…';
+
+	/// en: 'Split File…'
+	String get splitFile => 'Split File…';
+
+	/// en: 'Combine Parts…'
+	String get combineParts => 'Combine Parts…';
 
 	/// en: 'Sort By'
 	String get sortBy => 'Sort By';
@@ -1946,6 +1953,33 @@ class Translations$selectPattern$en {
 	String get select => 'Select';
 }
 
+// Path: split
+class Translations$split$en {
+	Translations$split$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Split File'
+	String get title => 'Split File';
+
+	/// en: 'Split $count files'
+	String filesCount({required Object count}) => 'Split ${count} files';
+
+	/// en: 'Part size'
+	String get partSize => 'Part size';
+
+	/// en: 'Custom…'
+	String get custom => 'Custom…';
+
+	/// en: 'Size in bytes'
+	String get customHint => 'Size in bytes';
+
+	/// en: 'Split'
+	String get split => 'Split';
+}
+
 // Path: operations
 class Translations$operations$en {
 	Translations$operations$en.internal(this._root);
@@ -2079,6 +2113,9 @@ class Translations$errors$en {
 
 	/// en: 'Path not found'
 	String get pathNotFound => 'Path not found';
+
+	/// en: 'Invalid part size'
+	String get invalidPartSize => 'Invalid part size';
 
 	/// en: 'Missing host in smb:// URI'
 	String get missingSmbHost => 'Missing host in smb:// URI';
@@ -2253,6 +2290,18 @@ class Translations$tasks$en {
 
 	/// en: 'Updating archive'
 	String get updatingArchive => 'Updating archive';
+
+	/// en: 'Splitting $name'
+	String splittingSingle({required Object name}) => 'Splitting ${name}';
+
+	/// en: 'Splitting $count items'
+	String splittingMultiple({required Object count}) => 'Splitting ${count} items';
+
+	/// en: 'Combining $name'
+	String combiningSingle({required Object name}) => 'Combining ${name}';
+
+	/// en: 'Combining $count items'
+	String combiningMultiple({required Object count}) => 'Combining ${count} items';
 
 	late final Translations$tasks$status$en status = Translations$tasks$status$en.internal(_root);
 }
@@ -4208,6 +4257,8 @@ extension on Translations {
 			'menu.verifyChecksum' => 'Verify Checksum…',
 			'menu.verifyChecksumManifest' => 'Verify Checksum File…',
 			'menu.createChecksumManifest' => 'Create Checksum File…',
+			'menu.splitFile' => 'Split File…',
+			'menu.combineParts' => 'Combine Parts…',
 			'menu.sortBy' => 'Sort By',
 			'menu.sortAscending' => 'Ascending',
 			'menu.sortDescending' => 'Descending',
@@ -4662,10 +4713,10 @@ extension on Translations {
 			'keybindings.categories.fileOps' => 'File Operations',
 			'keybindings.categories.selection' => 'Selection',
 			'keybindings.categories.search' => 'Search',
-			'keybindings.categories.general' => 'General',
-			'keybindings.or' => 'or',
 			_ => null,
 		} ?? switch (path) {
+			'keybindings.categories.general' => 'General',
+			'keybindings.or' => 'or',
 			'keybindings.fixed' => 'Fixed shortcut',
 			'keybindings.change' => 'Change shortcut',
 			'keybindings.reset' => 'Reset shortcut',
@@ -5029,6 +5080,12 @@ extension on Translations {
 			'selectPattern.hint' => '*.jpg, *.png',
 			'selectPattern.help' => 'Wildcards: * (any), ? (one char). Separate patterns with commas.',
 			'selectPattern.select' => 'Select',
+			'split.title' => 'Split File',
+			'split.filesCount' => ({required Object count}) => 'Split ${count} files',
+			'split.partSize' => 'Part size',
+			'split.custom' => 'Custom…',
+			'split.customHint' => 'Size in bytes',
+			'split.split' => 'Split',
 			'operations.title' => 'Operations',
 			'operations.clear' => 'Clear',
 			'operations.noActive' => 'No active operations',
@@ -5068,6 +5125,7 @@ extension on Translations {
 			'errors.notFound' => 'File not found',
 			'errors.sourceNotFound' => 'Source not found',
 			'errors.pathNotFound' => 'Path not found',
+			'errors.invalidPartSize' => 'Invalid part size',
 			'errors.missingSmbHost' => 'Missing host in smb:// URI',
 			'errors.missingSftpHost' => 'Missing host in sftp:// URI',
 			'errors.invalidSmbUri' => 'Invalid smb:// URI',
@@ -5123,6 +5181,10 @@ extension on Translations {
 			'tasks.extractingMultiple' => ({required Object count}) => 'Extracting ${count} archives',
 			'tasks.compressingTo' => ({required Object name}) => 'Compressing to ${name}',
 			'tasks.updatingArchive' => 'Updating archive',
+			'tasks.splittingSingle' => ({required Object name}) => 'Splitting ${name}',
+			'tasks.splittingMultiple' => ({required Object count}) => 'Splitting ${count} items',
+			'tasks.combiningSingle' => ({required Object name}) => 'Combining ${name}',
+			'tasks.combiningMultiple' => ({required Object count}) => 'Combining ${count} items',
 			'tasks.status.waiting' => 'Waiting...',
 			'tasks.status.scanning' => 'Scanning files...',
 			'tasks.status.conflicts' => ({required Object count}) => '${count} conflicts',
@@ -5165,6 +5227,8 @@ extension on Translations {
 			'openWith.open' => 'Open',
 			'openWith.failed' => ({required Object app}) => 'Could not open the file with ${app}',
 			'openWith.setDefaultFailed' => 'Could not set the default application',
+			_ => null,
+		} ?? switch (path) {
 			'openWith.unsupportedPlatform' => 'Unsupported platform',
 			'openWith.windowsDefaultDialogRequired' => 'Use the system "Open with" dialog to change the default on Windows',
 			'hiddenList.title' => 'Hidden List',

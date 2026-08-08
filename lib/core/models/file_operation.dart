@@ -12,6 +12,8 @@ enum TaskType {
   extract,
   compress,
   archiveEdit,
+  split,
+  combine,
   plugin,
 }
 
@@ -143,6 +145,14 @@ class TaskLabel {
         name: p.basename(task.destination ?? ''),
       ),
       TaskType.archiveEdit => t.tasks.updatingArchive,
+      TaskType.split when count == 1 => t.tasks.splittingSingle(
+        name: p.basename(task.sources.first),
+      ),
+      TaskType.split => t.tasks.splittingMultiple(count: count),
+      TaskType.combine when count == 1 => t.tasks.combiningSingle(
+        name: p.basename(task.sources.first),
+      ),
+      TaskType.combine => t.tasks.combiningMultiple(count: count),
       TaskType.plugin => task.options['title'] ?? task.sources.first,
     };
   }

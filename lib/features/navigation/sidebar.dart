@@ -1884,6 +1884,8 @@ class _SidebarOperationsButtonState extends State<_SidebarOperationsButton> {
       TaskType.extract => WaydirIconsRegular.archive,
       TaskType.compress => WaydirIconsRegular.fileZip,
       TaskType.archiveEdit => WaydirIconsRegular.archive,
+      TaskType.split => WaydirIconsRegular.scissors,
+      TaskType.combine => WaydirIconsRegular.copy,
       TaskType.plugin => WaydirIconsRegular.gearSix,
     };
   }

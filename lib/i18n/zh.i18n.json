@@ -65,6 +65,8 @@
     "verifyChecksum": "校验校验和…",
     "verifyChecksumManifest": "验证校验文件…",
     "createChecksumManifest": "生成校验文件…",
+    "splitFile": "分割文件…",
+    "combineParts": "合并分卷…",
     "sortBy": "排序方式",
     "sortAscending": "升序",
     "sortDescending": "降序",
@@ -1103,6 +1105,15 @@
     "help": "通配符：*（任意）、?（单个字符）。用逗号分隔多个模式。",
     "select": "选择"
   },
+  "split": {
+    "title": "分割文件",
+    "filesCount(one)": "分割 1 个文件",
+    "filesCount(other)": "分割 $count 个文件",
+    "partSize": "分卷大小",
+    "custom": "自定义…",
+    "customHint": "大小（字节）",
+    "split": "分割"
+  },
   "operations": {
     "title": "操作",
     "clear": "清除",
@@ -1153,6 +1164,7 @@
     "notFound": "文件不存在",
     "sourceNotFound": "源不存在",
     "pathNotFound": "路径不存在",
+    "invalidPartSize": "无效的分卷大小",
     "missingSmbHost": "smb:// URI 中缺少主机",
     "missingSftpHost": "sftp:// URI 中缺少主机",
     "invalidSmbUri": "无效的 smb:// URI",
@@ -1217,6 +1229,12 @@
     "extractingMultiple(other)": "正在解压 $count 个压缩包",
     "compressingTo": "正在压缩到 $name",
     "updatingArchive": "正在更新压缩包",
+    "splittingSingle": "正在分割 $name",
+    "splittingMultiple(one)": "正在分割 1 个项目",
+    "splittingMultiple(other)": "正在分割 $count 个项目",
+    "combiningSingle": "正在合并 $name",
+    "combiningMultiple(one)": "正在合并 1 个项目",
+    "combiningMultiple(other)": "正在合并 $count 个项目",
     "status": {
       "waiting": "等待中...",
       "scanning": "正在扫描文件...",

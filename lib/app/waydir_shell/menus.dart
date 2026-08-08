@@ -155,6 +155,16 @@ mixin _WaydirMenuMixin
         );
     final canVerifyManifest =
         isSingleFile && isChecksumManifestPath(entries.first.realPath);
+    final canSplit =
+        entries.isNotEmpty &&
+        entries.every(
+          (e) =>
+              e.type == FileItemType.file &&
+              !PlatformPaths.isRemoteUri(e.realPath) &&
+              !PlatformPaths.isNetworkPath(e.realPath) &&
+              !FileSystemService.isInsideArchive(e.realPath),
+        );
+    final canCombine = isSingleFile && isSplitPartPath(entries.first.realPath);
     final isRecursive = store.searchActive.value && store.searchRecursive.value;
     final canTag = entries.every(
       (e) =>
@@ -357,6 +367,18 @@ mixin _WaydirMenuMixin
           icon: WaydirIconsRegular.pencilSimple,
           label: t.menu.createChecksumManifest,
           action: 'create_checksum_manifest',
+        ),
+      if (canSplit)
+        ContextMenuItem(
+          icon: WaydirIconsRegular.scissors,
+          label: t.menu.splitFile,
+          action: 'split_file',
+        ),
+      if (canCombine)
+        ContextMenuItem(
+          icon: WaydirIconsRegular.copy,
+          label: t.menu.combineParts,
+          action: 'combine_parts',
         ),
       if (count >= 1 && canTag) _tagsSubmenu(entries),
       if (canHide) ...[
@@ -1350,6 +1372,21 @@ mixin _WaydirMenuMixin
           context: context,
           entries: entries,
         ).then((_) => _restoreFocus());
+      case 'split_file':
+        final entries = store.selectedEntries;
+        showSplitDialog(
+          context: context,
+          operationStore: _operationStore,
+          entries: entries,
+        ).then((_) => _restoreFocus());
+      case 'combine_parts':
+        final entries = store.selectedEntries;
+        if (entries.length == 1 && entries.first.type == FileItemType.file) {
+          final parts = siblingParts(entries.first.realPath);
+          if (parts.length >= 2) {
+            _operationStore.enqueueCombine(parts);
+          }
+        }
       case 'rename':
         store.startRename();
       case 'multi_rename':

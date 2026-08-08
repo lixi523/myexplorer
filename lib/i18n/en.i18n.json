@@ -65,6 +65,8 @@
     "verifyChecksum": "Verify Checksum…",
   "verifyChecksumManifest": "Verify Checksum File…",
   "createChecksumManifest": "Create Checksum File…",
+  "splitFile": "Split File…",
+  "combineParts": "Combine Parts…",
     "sortBy": "Sort By",
     "sortAscending": "Ascending",
     "sortDescending": "Descending",
@@ -1103,6 +1105,15 @@
     "help": "Wildcards: * (any), ? (one char). Separate patterns with commas.",
     "select": "Select"
   },
+  "split": {
+    "title": "Split File",
+    "filesCount(one)": "Split 1 file",
+    "filesCount(other)": "Split $count files",
+    "partSize": "Part size",
+    "custom": "Custom…",
+    "customHint": "Size in bytes",
+    "split": "Split"
+  },
   "operations": {
     "title": "Operations",
     "clear": "Clear",
@@ -1153,6 +1164,7 @@
     "notFound": "File not found",
     "sourceNotFound": "Source not found",
     "pathNotFound": "Path not found",
+    "invalidPartSize": "Invalid part size",
     "missingSmbHost": "Missing host in smb:// URI",
     "missingSftpHost": "Missing host in sftp:// URI",
     "invalidSmbUri": "Invalid smb:// URI",
@@ -1217,6 +1229,12 @@
     "extractingMultiple(other)": "Extracting $count archives",
     "compressingTo": "Compressing to $name",
     "updatingArchive": "Updating archive",
+    "splittingSingle": "Splitting $name",
+    "splittingMultiple(one)": "Splitting 1 item",
+    "splittingMultiple(other)": "Splitting $count items",
+    "combiningSingle": "Combining $name",
+    "combiningMultiple(one)": "Combining 1 item",
+    "combiningMultiple(other)": "Combining $count items",
     "status": {
       "waiting": "Waiting...",
       "scanning": "Scanning files...",

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
+import 'package:collection/collection.dart';
+import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import '../archive/archive_path.dart';
 import '../archive/archive_reader.dart';
@@ -2290,4 +2292,352 @@ class FileSystemService {
         lower.contains('errno = 1') ||
         lower.contains('errno = 13');
   }
+
+  /// Splits a single file into numbered parts (`name.001`, `name.002`, …)
+  /// plus a `name.crc` manifest. Requires [StartCommand] options:
+  /// `partSize` (bytes). Destination is the output directory.
+  static void splitFileWorker(List<dynamic> args) {
+    final mainSendPort = args.first as SendPort;
+    final workerReceivePort = ReceivePort();
+    mainSendPort.send(workerReceivePort.sendPort);
+
+    bool cancelled = false;
+    List<String> sources = const [];
+    String? destination;
+    int partSize = 0;
+    int totalBytes = 0;
+    int processedFiles = 0;
+    int processedBytes = 0;
+    final errors = <TaskError>[];
+    final reportClock = Stopwatch()..start();
+    var lastReportMs = 0;
+
+    void maybeReport(String currentFile) {
+      if (reportClock.elapsedMilliseconds - lastReportMs >=
+          _progressReportIntervalMs) {
+        mainSendPort.send(
+          ProgressMessage(
+            processedFiles: processedFiles,
+            processedBytes: processedBytes,
+            currentFile: currentFile,
+          ),
+        );
+        lastReportMs = reportClock.elapsedMilliseconds;
+      }
+    }
+
+    void reportFinal() {
+      mainSendPort.send(
+        ProgressMessage(
+          processedFiles: processedFiles,
+          processedBytes: processedBytes,
+          currentFile: '',
+        ),
+      );
+    }
+
+    Future<void> executeSplit() async {
+      try {
+        for (final src in sources) {
+          if (cancelled) break;
+          final name = src.split(Platform.pathSeparator).last;
+          final base = destination ?? p.dirname(src);
+          final partPaths = <String>[];
+          final buffer = <int>[];
+          var partIndex = 1;
+          File partFile = File(
+            p.join(base, '$name.${partIndex.toString().padLeft(3, '0')}'),
+          );
+          IOSink partSink = partFile.openWrite();
+          final subscription = File(src).openRead().listen(null);
+          try {
+            await for (final bytes in File(src).openRead()) {
+              if (cancelled) break;
+              buffer.addAll(bytes);
+              processedBytes += bytes.length;
+              while (buffer.length >= partSize) {
+                final head = buffer.sublist(0, partSize);
+                buffer.removeRange(0, partSize);
+                partSink.add(head);
+                await partSink.flush();
+                partSink.close();
+                await partSink.done;
+                partPaths.add(partFile.path);
+                partIndex++;
+                partFile = File(
+                  p.join(base, '$name.${partIndex.toString().padLeft(3, '0')}'),
+                );
+                partSink = partFile.openWrite();
+              }
+              maybeReport(name);
+            }
+            if (buffer.isNotEmpty) {
+              partSink.add(buffer);
+            }
+            partSink.close();
+            await partSink.done;
+            partPaths.add(partFile.path);
+            processedFiles++;
+          } finally {
+            await subscription.cancel();
+          }
+
+          if (cancelled) {
+            for (final partPath in partPaths) {
+              try {
+                if (File(partPath).existsSync()) File(partPath).deleteSync();
+              } catch (_) {}
+            }
+          } else {
+            // Write .crc manifest (md5 per part, GNU coreutils format).
+            final crc = StringBuffer();
+            for (final partPath in partPaths) {
+              final digest = await _md5OfFile(partPath);
+              crc.writeln(
+                '$digest  ${partPath.split(Platform.pathSeparator).last}',
+              );
+            }
+            await File(
+              p.join(base, '$name.crc'),
+            ).writeAsString(crc.toString(), flush: true);
+          }
+        }
+      } catch (e) {
+        final message = _friendlyError(e);
+        errors.add(TaskError(path: destination ?? '', message: message));
+        mainSendPort.send(
+          ErrorMessage(path: destination ?? '', message: message),
+        );
+      }
+      reportFinal();
+      mainSendPort.send(TaskDoneMessage(cancelled: cancelled, errors: errors));
+      workerReceivePort.close();
+    }
+
+    workerReceivePort.listen((msg) {
+      try {
+        if (msg is StartCommand) {
+          sources = msg.sources;
+          destination = msg.destination;
+          partSize = int.tryParse(msg.options['partSize'] ?? '') ?? 0;
+          if (partSize <= 0) {
+            final err = TaskError(
+              path: sources.firstOrNull ?? '',
+              message: t.errors.invalidPartSize,
+            );
+            errors.add(err);
+            mainSendPort.send(
+              ErrorMessage(path: err.path, message: err.message),
+            );
+            reportFinal();
+            mainSendPort.send(
+              TaskDoneMessage(cancelled: cancelled, errors: errors),
+            );
+            workerReceivePort.close();
+
+            return;
+          }
+          totalBytes = 0;
+          for (final s in sources) {
+            try {
+              totalBytes += File(s).lengthSync();
+            } catch (_) {}
+          }
+          mainSendPort.send(
+            PreScanResultMessage(
+              totalFiles: sources.length,
+              totalBytes: totalBytes,
+              allPaths: sources,
+              conflicts: const [],
+            ),
+          );
+        } else if (msg is ExecuteCommand) {
+          executeSplit().catchError((e, st) {
+            mainSendPort.send(
+              TaskDoneMessage(
+                cancelled: cancelled,
+                errors: [
+                  ...errors,
+                  TaskError(path: '', message: _friendlyError(e)),
+                ],
+              ),
+            );
+            workerReceivePort.close();
+          });
+        } else if (msg is CancelCommand) {
+          cancelled = true;
+        }
+      } catch (e) {
+        mainSendPort.send(
+          TaskDoneMessage(
+            cancelled: cancelled,
+            errors: [
+              ...errors,
+              TaskError(path: '', message: _friendlyError(e)),
+            ],
+          ),
+        );
+        workerReceivePort.close();
+      }
+    });
+  }
+
+  /// Combines numbered parts (`name.001`, …) back into the original file.
+  /// The first source must be `name.001`; the output is written next to it.
+  static void combineFileWorker(List<dynamic> args) {
+    final mainSendPort = args.first as SendPort;
+    final workerReceivePort = ReceivePort();
+    mainSendPort.send(workerReceivePort.sendPort);
+
+    bool cancelled = false;
+    List<String> sources = const [];
+    String? destination;
+    int totalBytes = 0;
+    int processedFiles = 0;
+    int processedBytes = 0;
+    final errors = <TaskError>[];
+    final reportClock = Stopwatch()..start();
+    var lastReportMs = 0;
+
+    void maybeReport(String currentFile) {
+      if (reportClock.elapsedMilliseconds - lastReportMs >=
+          _progressReportIntervalMs) {
+        mainSendPort.send(
+          ProgressMessage(
+            processedFiles: processedFiles,
+            processedBytes: processedBytes,
+            currentFile: currentFile,
+          ),
+        );
+        lastReportMs = reportClock.elapsedMilliseconds;
+      }
+    }
+
+    void reportFinal() {
+      mainSendPort.send(
+        ProgressMessage(
+          processedFiles: processedFiles,
+          processedBytes: processedBytes,
+          currentFile: '',
+        ),
+      );
+    }
+
+    Future<void> executeCombine() async {
+      try {
+        if (sources.isEmpty) throw StateError('no sources');
+        final first = sources.first;
+        final name = first.substring(
+          0,
+          first.length - 4, // strip .001
+        );
+        final outPath = p.join(
+          destination ?? p.dirname(first),
+          p.basename(name),
+        );
+        final output = File(outPath).openWrite();
+        try {
+          for (final src in sources) {
+            if (cancelled) break;
+            final bytes = await File(src).readAsBytes();
+            output.add(bytes);
+            processedBytes += bytes.length;
+            processedFiles++;
+            maybeReport(p.basename(src));
+          }
+        } finally {
+          await output.close();
+        }
+        if (cancelled) {
+          try {
+            if (File(outPath).existsSync()) File(outPath).deleteSync();
+          } catch (_) {}
+        }
+      } catch (e) {
+        final message = _friendlyError(e);
+        errors.add(TaskError(path: destination ?? '', message: message));
+        mainSendPort.send(
+          ErrorMessage(path: destination ?? '', message: message),
+        );
+      }
+      reportFinal();
+      mainSendPort.send(TaskDoneMessage(cancelled: cancelled, errors: errors));
+      workerReceivePort.close();
+    }
+
+    workerReceivePort.listen((msg) {
+      try {
+        if (msg is StartCommand) {
+          sources = msg.sources;
+          destination = msg.destination;
+          totalBytes = 0;
+          for (final s in sources) {
+            try {
+              totalBytes += File(s).lengthSync();
+            } catch (_) {}
+          }
+          mainSendPort.send(
+            PreScanResultMessage(
+              totalFiles: sources.length,
+              totalBytes: totalBytes,
+              allPaths: sources,
+              conflicts: const [],
+            ),
+          );
+        } else if (msg is ExecuteCommand) {
+          executeCombine().catchError((e, st) {
+            mainSendPort.send(
+              TaskDoneMessage(
+                cancelled: cancelled,
+                errors: [
+                  ...errors,
+                  TaskError(path: '', message: _friendlyError(e)),
+                ],
+              ),
+            );
+            workerReceivePort.close();
+          });
+        } else if (msg is CancelCommand) {
+          cancelled = true;
+        }
+      } catch (e) {
+        mainSendPort.send(
+          TaskDoneMessage(
+            cancelled: cancelled,
+            errors: [
+              ...errors,
+              TaskError(path: '', message: _friendlyError(e)),
+            ],
+          ),
+        );
+        workerReceivePort.close();
+      }
+    });
+  }
+}
+
+/// Computes the lowercase MD5 hex digest of a file.
+Future<String> _md5OfFile(String path) async {
+  final output = _Md5Sink();
+  final input = md5.startChunkedConversion(output);
+  await for (final chunk in File(path).openRead()) {
+    input.add(chunk);
+  }
+  input.close();
+
+  return output.value.toString();
+}
+
+class _Md5Sink implements Sink<Digest> {
+  Digest? _value;
+
+  Digest get value => _value!;
+
+  @override
+  void add(Digest data) {
+    _value = data;
+  }
+
+  @override
+  void close() {}
 }

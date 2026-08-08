@@ -264,6 +264,43 @@ class OperationStore {
     _enqueue(task);
   }
 
+  /// Splits each source file into numbered parts plus a `.crc` manifest.
+  /// [partSize] is the per-part byte size; parts are written next to the
+  /// source file (or into [destination] when provided).
+  void enqueueSplit(List<String> sources, int partSize, {String? destination}) {
+    if (sources.isEmpty || partSize <= 0) return;
+    final safe = _rejectSmbUris(sources);
+    if (safe.isEmpty) return;
+
+    final task = FileTask(
+      id: '${_idCounter++}',
+      type: TaskType.split,
+      sources: safe,
+      destination: destination,
+      options: {'partSize': '$partSize'},
+      startTime: DateTime.now(),
+    );
+    _enqueue(task);
+  }
+
+  /// Combines numbered parts back into the original file. [sources] must be
+  /// the part files in order (`name.001`, `name.002`, …); the output is
+  /// written next to the first part (or into [destination] when provided).
+  void enqueueCombine(List<String> sources, {String? destination}) {
+    if (sources.isEmpty) return;
+    final safe = _rejectSmbUris(sources);
+    if (safe.isEmpty) return;
+
+    final task = FileTask(
+      id: '${_idCounter++}',
+      type: TaskType.combine,
+      sources: safe,
+      destination: destination,
+      startTime: DateTime.now(),
+    );
+    _enqueue(task);
+  }
+
   List<String> _rejectSmbUris(List<String> sources) {
     final out = <String>[];
     for (final s in sources) {
@@ -740,6 +777,10 @@ class OperationStore {
         entryPoint = FileSystemService.compressWorker;
       case TaskType.archiveEdit:
         entryPoint = FileSystemService.archiveEditWorker;
+      case TaskType.split:
+        entryPoint = FileSystemService.splitFileWorker;
+      case TaskType.combine:
+        entryPoint = FileSystemService.combineFileWorker;
       case TaskType.plugin:
         throw StateError('plugin tasks are executed by the plugin runner');
     }
@@ -1191,6 +1232,10 @@ class OperationStore {
         return WaydirIconsRegular.fileZip;
       case TaskType.archiveEdit:
         return WaydirIconsRegular.archive;
+      case TaskType.split:
+        return WaydirIconsRegular.scissors;
+      case TaskType.combine:
+        return WaydirIconsRegular.copy;
       case TaskType.plugin:
         return WaydirIconsRegular.gearSix;
     }

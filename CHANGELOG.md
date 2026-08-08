@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TC-style quick view panel (Ctrl+Q): a persistent preview strip at the bottom of the opposite pane that follows the cursor in the active pane, reusing the Quick Look renderers (image / pdf / markdown / code / properties).
 - Pause/resume for queued file operations (TC queue parity): queued tasks can be paused and resumed from the operations panel.
 - Checksum manifest files: create `.md5` / `.sha256` manifests for selected files (GNU coreutils format, one per folder), and verify an existing manifest in batch with a per-file result list.
+- Split/combine files (TC parity): split a file into numbered parts (`.001`, `.002`, …) with a `.crc` MD5 manifest, and combine parts back via the context menu. Preset sizes (floppy / 100 MB / CD / DVD) plus custom byte size.
 
 ## [1.5.0] - 2026-08-07
 
