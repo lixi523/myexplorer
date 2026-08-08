@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
@@ -74,6 +76,8 @@ class FileGrid extends StatefulWidget {
   final List<FileEntry> files;
   final String currentPath;
   final FileSelectCallback onSelect;
+  final FileSelectCallback? onSecondarySelect;
+  final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
   final BackgroundContextMenuCallback? onBackgroundContextMenu;
   final FileContextMenuCallback? onContextMenu;
@@ -99,6 +103,8 @@ class FileGrid extends StatefulWidget {
     required this.files,
     required this.currentPath,
     required this.onSelect,
+    this.onSecondarySelect,
+    this.secondarySelectedPaths = const {},
     required this.onOpen,
     this.onBackgroundContextMenu,
     this.onContextMenu,
@@ -131,6 +137,11 @@ class _FileGridState extends State<FileGrid> {
   bool _isDragOver = false;
   int _lastColumns = 0;
   int _lastRows = 0;
+  int _secondaryDragLastIndex = -1;
+  Offset? _secondaryDownPos;
+  bool _secondaryDragged = false;
+  bool _secondaryLongPressed = false;
+  Timer? _secondaryLongPressTimer;
   double _tileHeight = _kGridBaseThumb;
   double _tileWidth = _kGridBaseTileWidth;
   double _crossAxisGap = _kGridGap;
@@ -150,6 +161,105 @@ class _FileGridState extends State<FileGrid> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  static const _kSecondaryLongPressMs = 1000;
+  static const _kSecondaryDragSlop = 4.0;
+
+  void _cancelSecondaryLongPress() {
+    _secondaryLongPressTimer?.cancel();
+    _secondaryLongPressTimer = null;
+  }
+
+  void _handleSecondaryPointerDown(PointerDownEvent event) {
+    if (event.buttons & kSecondaryMouseButton == 0) return;
+    _secondaryDownPos = event.localPosition;
+    _secondaryDragLastIndex = -1;
+    _secondaryDragged = false;
+    _secondaryLongPressed = false;
+    _cancelSecondaryLongPress();
+    _secondaryLongPressTimer = Timer(
+      const Duration(milliseconds: _kSecondaryLongPressMs),
+      () {
+        _secondaryLongPressed = true;
+        _secondaryLongPressTimer = null;
+        final columns = _lastColumns;
+        final index = _indexAt(_secondaryDownPos ?? Offset.zero, columns);
+        if (index < 0) {
+          widget.onBackgroundContextMenu?.call(event.position);
+        } else {
+          widget.onContextMenu?.call(
+            FileSelectionEvent(entry: widget.files[index], index: index),
+            event.position,
+          );
+        }
+      },
+    );
+  }
+
+  void _handleSecondaryPointerMove(PointerMoveEvent event) {
+    if (event.buttons & kSecondaryMouseButton == 0) return;
+    final down = _secondaryDownPos;
+    if (down != null &&
+        (event.localPosition - down).distance > _kSecondaryDragSlop) {
+      _secondaryDragged = true;
+      _cancelSecondaryLongPress();
+    }
+    if (!_secondaryDragged) return;
+
+    final columns = _lastColumns;
+    final index = _indexAt(event.localPosition, columns);
+    if (index >= 0 && index != _secondaryDragLastIndex) {
+      _secondaryDragLastIndex = index;
+      widget.onSecondarySelect?.call(
+        FileSelectionEvent(entry: widget.files[index], index: index),
+      );
+    }
+    _autoScrollForSecondaryDrag(event);
+  }
+
+  void _autoScrollForSecondaryDrag(PointerMoveEvent event) {
+    if (!_scrollController.hasClients) return;
+    const edge = 24.0;
+    const step = 32.0;
+    final viewport = _scrollController.position.viewportDimension;
+    final y = event.localPosition.dy;
+    double? target;
+    if (y < edge) {
+      target = _scrollController.offset - step;
+    } else if (y > viewport - edge) {
+      target = _scrollController.offset + step;
+    }
+    if (target == null) return;
+    final clamped = target.clamp(
+      _scrollController.position.minScrollExtent,
+      _scrollController.position.maxScrollExtent,
+    );
+    if (clamped != _scrollController.offset) {
+      _scrollController.jumpTo(clamped);
+    }
+  }
+
+  void _handleSecondaryPointerUp(PointerUpEvent event) {
+    if (event.buttons & kSecondaryMouseButton != 0) return;
+    _cancelSecondaryLongPress();
+    if (_secondaryDragged || _secondaryLongPressed) {
+      _secondaryDownPos = null;
+
+      return;
+    }
+    final down = _secondaryDownPos;
+    _secondaryDownPos = null;
+    final columns = _lastColumns;
+    final index = _indexAt(down ?? event.localPosition, columns);
+    if (index < 0) {
+      widget.onBackgroundTap?.call();
+      widget.onBackgroundContextMenu?.call(event.position);
+    } else {
+      widget.onSecondarySelect?.call(
+        FileSelectionEvent(entry: widget.files[index], index: index),
+      );
+    }
   }
 
   int _indexAt(Offset localPosition, int columns) {
@@ -340,58 +450,60 @@ class _FileGridState extends State<FileGrid> {
                     pathsInRect: (rect) => _pathsInRect(rect, columns),
                     onSelectionChanged: widget.onRectSelect,
                     onBackgroundTap: widget.onBackgroundTap,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: widget.onBackgroundTap,
-                      onSecondaryTapUp: (details) {
-                        final index = _indexAt(details.localPosition, columns);
-                        if (index < 0) {
-                          widget.onBackgroundTap?.call();
-                          widget.onBackgroundContextMenu?.call(
-                            details.globalPosition,
-                          );
-                        }
-                      },
-                      child: GridView.builder(
-                        controller: _scrollController,
-                        padding: EdgeInsets.all(gridPadding),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: columns,
-                          mainAxisExtent: tileHeight,
-                          crossAxisSpacing: crossAxisGap,
-                          mainAxisSpacing: mainAxisGap,
-                        ),
-                        itemCount: widget.files.length,
-                        itemBuilder: (context, index) {
-                          final entry = widget.files[index];
+                    child: Listener(
+                      onPointerDown: _handleSecondaryPointerDown,
+                      onPointerMove: _handleSecondaryPointerMove,
+                      onPointerUp: _handleSecondaryPointerUp,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: widget.onBackgroundTap,
+                        child: GridView.builder(
+                          controller: _scrollController,
+                          padding: EdgeInsets.all(gridPadding),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: columns,
+                                mainAxisExtent: tileHeight,
+                                crossAxisSpacing: crossAxisGap,
+                                mainAxisSpacing: mainAxisGap,
+                              ),
+                          itemCount: widget.files.length,
+                          itemBuilder: (context, index) {
+                            final entry = widget.files[index];
 
-                          return _GridTile(
-                            entry: entry,
-                            index: index,
-                            scale: scale,
-                            thumbSize: thumbSize,
-                            tilePadding: _gridTilePadding(scale, compact),
-                            thumbGap: _gridThumbGap(scale, compact),
-                            nameBlock: _gridNameBlock(scale, compact),
-                            captionGap: _gridCaptionGap(scale, compact),
-                            captionBlock: _gridCaptionBlock(scale, compact),
-                            selected: widget.selectedPaths.contains(entry.path),
-                            selectedPaths: widget.selectedPaths,
-                            rowDecoration:
-                                widget.rowDecorations[entry.path] ??
-                                widget.rowDecorations[entry.realPath],
-                            isCut: widget.cutPaths.contains(entry.path),
-                            isFolderDragOver: _hoveredFolderPath == entry.path,
-                            isRenaming: widget.renamingPath == entry.path,
-                            renameAttempt: widget.renameAttempt,
-                            onRenameSubmit: widget.onRenameSubmit,
-                            onRenameCancel: widget.onRenameCancel,
-                            onSelect: widget.onSelect,
-                            onOpen: widget.onOpen,
-                            onContextMenu: widget.onContextMenu,
-                            onOpenInNewTab: widget.onOpenInNewTab,
-                          );
-                        },
+                            return _GridTile(
+                              entry: entry,
+                              index: index,
+                              scale: scale,
+                              thumbSize: thumbSize,
+                              tilePadding: _gridTilePadding(scale, compact),
+                              thumbGap: _gridThumbGap(scale, compact),
+                              nameBlock: _gridNameBlock(scale, compact),
+                              captionGap: _gridCaptionGap(scale, compact),
+                              captionBlock: _gridCaptionBlock(scale, compact),
+                              selected: widget.selectedPaths.contains(
+                                entry.path,
+                              ),
+                              selectedPaths: widget.selectedPaths,
+                              rowDecoration:
+                                  widget.rowDecorations[entry.path] ??
+                                  widget.rowDecorations[entry.realPath],
+                              isCut: widget.cutPaths.contains(entry.path),
+                              isFolderDragOver:
+                                  _hoveredFolderPath == entry.path,
+                              isRenaming: widget.renamingPath == entry.path,
+                              renameAttempt: widget.renameAttempt,
+                              onRenameSubmit: widget.onRenameSubmit,
+                              onRenameCancel: widget.onRenameCancel,
+                              onSelect: widget.onSelect,
+                              secondarySelectedPaths:
+                                  widget.secondarySelectedPaths,
+                              onOpen: widget.onOpen,
+                              onContextMenu: widget.onContextMenu,
+                              onOpenInNewTab: widget.onOpenInNewTab,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -450,6 +562,7 @@ class _GridTile extends StatefulWidget {
   final RenameSubmitCallback? onRenameSubmit;
   final RenameCancelCallback? onRenameCancel;
   final FileSelectCallback onSelect;
+  final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
   final FileContextMenuCallback? onContextMenu;
   final OpenInNewTabCallback? onOpenInNewTab;
@@ -474,6 +587,7 @@ class _GridTile extends StatefulWidget {
     this.onRenameSubmit,
     this.onRenameCancel,
     required this.onSelect,
+    this.secondarySelectedPaths = const {},
     required this.onOpen,
     this.onContextMenu,
     this.onOpenInNewTab,
@@ -675,8 +789,13 @@ class _GridTileState extends State<_GridTile> {
     final thumbSize = widget.thumbSize;
     final nameStyle = context.txt.row.copyWith(
       fontSize: (context.txt.row.fontSize ?? 13) * scale,
-      color: selected ? AppColors.fg : AppColors.fgMuted,
-      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+      color: selected
+          ? AppColors.fg
+          : widget.rowDecoration?.nameColor ?? AppColors.fgMuted,
+      fontWeight:
+          selected && !widget.secondarySelectedPaths.contains(entry.path)
+          ? FontWeight.w600
+          : FontWeight.w400,
       height: 1.25,
     );
     final captionStyle = context.txt.caption.copyWith(

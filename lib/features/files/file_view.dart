@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:waydir/ui/icons/waydir_icons.dart' show WaydirIconsRegular;
 import 'package:signals/signals_flutter.dart';
@@ -231,6 +233,8 @@ class FileList extends StatefulWidget {
   final List<FileEntry> files;
   final String currentPath;
   final FileSelectCallback onSelect;
+  final FileSelectCallback? onSecondarySelect;
+  final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
   final BackgroundTapCallback? onBackgroundTap;
   final BackgroundContextMenuCallback? onBackgroundContextMenu;
@@ -266,6 +270,8 @@ class FileList extends StatefulWidget {
     this.treeRows,
     this.onToggleTreeFolder,
     required this.onSelect,
+    this.onSecondarySelect,
+    this.secondarySelectedPaths = const {},
     required this.onOpen,
     this.sortColumn = SortKey.name,
     this.sortAscending = true,
@@ -297,6 +303,8 @@ class FileTree extends StatelessWidget {
   final List<FileTreeRow> rows;
   final String currentPath;
   final FileSelectCallback onSelect;
+  final FileSelectCallback? onSecondarySelect;
+  final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
   final BackgroundTapCallback? onBackgroundTap;
   final BackgroundContextMenuCallback? onBackgroundContextMenu;
@@ -326,6 +334,8 @@ class FileTree extends StatelessWidget {
     required this.rows,
     required this.currentPath,
     required this.onSelect,
+    this.onSecondarySelect,
+    this.secondarySelectedPaths = const {},
     required this.onOpen,
     required this.onToggleFolder,
     this.folderSizes = const {},
@@ -358,6 +368,8 @@ class FileTree extends StatelessWidget {
       treeRows: rows,
       currentPath: currentPath,
       onSelect: onSelect,
+      onSecondarySelect: onSecondarySelect,
+      secondarySelectedPaths: secondarySelectedPaths,
       onOpen: onOpen,
       onToggleTreeFolder: onToggleFolder,
       onBackgroundTap: onBackgroundTap,
@@ -388,6 +400,11 @@ class FileTree extends StatelessWidget {
 class _FileListState extends State<FileList> {
   final _scrollController = ScrollController();
   final _hScrollController = ScrollController();
+  int _secondaryDragLastIndex = -1;
+  Offset? _secondaryDownPos;
+  bool _secondaryDragged = false;
+  bool _secondaryLongPressed = false;
+  Timer? _secondaryLongPressTimer;
   double _contentWidth = 0;
   bool _isDragOver = false;
   String? _hoveredFolderPath;
@@ -507,6 +524,110 @@ class _FileListState extends State<FileList> {
     if (parts.length <= 2) return rel;
 
     return p.join('...', parts[parts.length - 2], parts.last);
+  }
+
+  /// NC-mode right-button long-press threshold (1 s).
+  static const _kSecondaryLongPressMs = 1000;
+  static const _kSecondaryDragSlop = 4.0;
+
+  void _cancelSecondaryLongPress() {
+    _secondaryLongPressTimer?.cancel();
+    _secondaryLongPressTimer = null;
+  }
+
+  void _handleSecondaryPointerDown(PointerDownEvent event) {
+    if (event.buttons & kSecondaryMouseButton == 0) return;
+    _secondaryDownPos = event.localPosition;
+    _secondaryDragLastIndex = -1;
+    _secondaryDragged = false;
+    _secondaryLongPressed = false;
+    _cancelSecondaryLongPress();
+    // Long-press (2 s, no movement) opens the context menu.
+    _secondaryLongPressTimer = Timer(
+      const Duration(milliseconds: _kSecondaryLongPressMs),
+      () {
+        _secondaryLongPressed = true;
+        _secondaryLongPressTimer = null;
+        final index = _rowAt(_secondaryDownPos ?? Offset.zero);
+        if (index < 0) {
+          widget.onBackgroundContextMenu?.call(event.position);
+        } else {
+          widget.onContextMenu?.call(
+            FileSelectionEvent(entry: _displayFiles[index], index: index),
+            event.position,
+          );
+        }
+      },
+    );
+  }
+
+  /// NC-mode right-button drag: every row the pointer passes over while the
+  /// secondary button is held is added to the selection; near the edges the
+  /// list auto-scrolls so the sweep can continue.
+  void _handleSecondaryPointerMove(PointerMoveEvent event) {
+    if (event.buttons & kSecondaryMouseButton == 0) return;
+    final down = _secondaryDownPos;
+    if (down != null &&
+        (event.localPosition - down).distance > _kSecondaryDragSlop) {
+      _secondaryDragged = true;
+      _cancelSecondaryLongPress();
+    }
+    if (!_secondaryDragged) return;
+
+    final index = _rowAt(event.localPosition);
+    if (index >= 0 && index != _secondaryDragLastIndex) {
+      _secondaryDragLastIndex = index;
+      widget.onSecondarySelect?.call(
+        FileSelectionEvent(entry: _displayFiles[index], index: index),
+      );
+    }
+    _autoScrollForSecondaryDrag(event);
+  }
+
+  /// Scrolls the list while the pointer is near the top/bottom edge during a
+  /// right-button drag sweep.
+  void _autoScrollForSecondaryDrag(PointerMoveEvent event) {
+    if (!_scrollController.hasClients) return;
+    const edge = 24.0;
+    const step = 32.0;
+    final viewport = _scrollController.position.viewportDimension;
+    final y = event.localPosition.dy;
+    double? target;
+    if (y < edge) {
+      target = _scrollController.offset - step;
+    } else if (y > viewport - edge) {
+      target = _scrollController.offset + step;
+    }
+    if (target == null) return;
+    final clamped = target.clamp(
+      _scrollController.position.minScrollExtent,
+      _scrollController.position.maxScrollExtent,
+    );
+    if (clamped != _scrollController.offset) {
+      _scrollController.jumpTo(clamped);
+    }
+  }
+
+  void _handleSecondaryPointerUp(PointerUpEvent event) {
+    if (event.buttons & kSecondaryMouseButton != 0) return;
+    _cancelSecondaryLongPress();
+    if (_secondaryDragged || _secondaryLongPressed) {
+      _secondaryDownPos = null;
+
+      return;
+    }
+    // Quick right-click (no drag, no long-press): add to selection.
+    final down = _secondaryDownPos;
+    _secondaryDownPos = null;
+    final index = _rowAt(down ?? event.localPosition);
+    if (index < 0) {
+      widget.onBackgroundTap?.call();
+      widget.onBackgroundContextMenu?.call(event.position);
+    } else {
+      widget.onSecondarySelect?.call(
+        FileSelectionEvent(entry: _displayFiles[index], index: index),
+      );
+    }
   }
 
   int _rowAt(Offset localPosition) {
@@ -825,125 +946,130 @@ class _FileListState extends State<FileList> {
                                     behavior: ScrollConfiguration.of(
                                       context,
                                     ).copyWith(scrollbars: false),
-                                    child: GestureDetector(
-                                      onSecondaryTapUp: (d) {
-                                        final index = _rowAt(d.localPosition);
-                                        if (index < 0) {
-                                          widget.onBackgroundTap?.call();
-                                          widget.onBackgroundContextMenu?.call(
-                                            d.globalPosition,
-                                          );
-                                        }
-                                      },
-                                      behavior: HitTestBehavior.translucent,
-                                      child: MediaQuery.withClampedTextScaling(
-                                        minScaleFactor: _scale,
-                                        maxScaleFactor: _scale,
-                                        child: ListView.builder(
-                                          controller: _scrollController,
-                                          padding: EdgeInsets.only(
-                                            left: _listHorizontalPadding,
-                                            top: _listTopPadding,
-                                            right:
-                                                _listHorizontalPadding +
-                                                _kScrollbarGutterWidth,
-                                          ),
-                                          itemCount: displayFiles.length,
-                                          itemExtent: _itemExt,
-                                          addAutomaticKeepAlives: false,
-                                          addRepaintBoundaries: false,
-                                          addSemanticIndexes: false,
-                                          itemBuilder: (context, i) => RepaintBoundary(
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                bottom: _rowG,
-                                              ),
-                                              child: _ListRow(
-                                                rowHeight: _rowH,
-                                                iconSize: 16 * _scale,
-                                                dateFmt: _dateFmt,
-                                                recentDatesRelative:
-                                                    _recentDatesRelative,
-                                                entry: displayFiles[i],
-                                                folderSize:
-                                                    widget
-                                                        .folderSizes[displayFiles[i]
-                                                        .realPath],
-                                                rowDecoration:
-                                                    widget
-                                                        .rowDecorations[displayFiles[i]
-                                                        .path] ??
-                                                    widget
-                                                        .rowDecorations[displayFiles[i]
-                                                        .realPath],
-                                                index: i,
-                                                nameWidth: nameWidth,
-                                                locationWidth: locationWidth,
-                                                selected: widget.selectedPaths
-                                                    .contains(
-                                                      displayFiles[i].path,
-                                                    ),
-                                                selectedPaths:
-                                                    widget.selectedPaths,
-                                                isCut: widget.cutPaths.contains(
-                                                  displayFiles[i].path,
+                                    child: Listener(
+                                      onPointerDown:
+                                          _handleSecondaryPointerDown,
+                                      onPointerMove:
+                                          _handleSecondaryPointerMove,
+                                      onPointerUp: _handleSecondaryPointerUp,
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        child: MediaQuery.withClampedTextScaling(
+                                          minScaleFactor: _scale,
+                                          maxScaleFactor: _scale,
+                                          child: ListView.builder(
+                                            controller: _scrollController,
+                                            padding: EdgeInsets.only(
+                                              left: _listHorizontalPadding,
+                                              top: _listTopPadding,
+                                              right:
+                                                  _listHorizontalPadding +
+                                                  _kScrollbarGutterWidth,
+                                            ),
+                                            itemCount: displayFiles.length,
+                                            itemExtent: _itemExt,
+                                            addAutomaticKeepAlives: false,
+                                            addRepaintBoundaries: false,
+                                            addSemanticIndexes: false,
+                                            itemBuilder: (context, i) => RepaintBoundary(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                  bottom: _rowG,
                                                 ),
-                                                isDraggingSelected: widget
-                                                    .selectedPaths
-                                                    .isNotEmpty,
-                                                isFolderDragOver:
-                                                    _hoveredFolderPath ==
-                                                    displayFiles[i].path,
-                                                isRenaming:
-                                                    widget.renamingPath ==
-                                                    displayFiles[i].path,
-                                                renameAttempt:
-                                                    widget.renameAttempt,
-                                                onRenameSubmit:
-                                                    widget.onRenameSubmit,
-                                                onRenameCancel:
-                                                    widget.onRenameCancel,
-                                                onSelect: widget.onSelect,
-                                                onOpen: widget.onOpen,
-                                                onContextMenu:
-                                                    widget.onContextMenu,
-                                                onMenuAction:
-                                                    widget.onMenuAction,
-                                                recursive: recursive,
-                                                treeMode:
-                                                    widget.treeRows != null,
-                                                treeDepth:
-                                                    widget.treeRows?[i].depth ??
-                                                    0,
-                                                treeExpanded:
-                                                    widget
-                                                        .treeRows?[i]
-                                                        .expanded ??
-                                                    false,
-                                                treeLoading:
-                                                    widget
-                                                        .treeRows?[i]
-                                                        .loading ??
-                                                    false,
-                                                onToggleTree:
-                                                    widget.onToggleTreeFolder ==
-                                                        null
-                                                    ? null
-                                                    : () =>
-                                                          widget
-                                                              .onToggleTreeFolder!(
-                                                            displayFiles[i],
-                                                          ),
-                                                columns: columns,
-                                                columnWidths: columnWidths,
-                                                location: recursive
-                                                    ? _compactLocation(
+                                                child: _ListRow(
+                                                  rowHeight: _rowH,
+                                                  iconSize: 16 * _scale,
+                                                  dateFmt: _dateFmt,
+                                                  recentDatesRelative:
+                                                      _recentDatesRelative,
+                                                  entry: displayFiles[i],
+                                                  folderSize:
+                                                      widget
+                                                          .folderSizes[displayFiles[i]
+                                                          .realPath],
+                                                  rowDecoration:
+                                                      widget
+                                                          .rowDecorations[displayFiles[i]
+                                                          .path] ??
+                                                      widget
+                                                          .rowDecorations[displayFiles[i]
+                                                          .realPath],
+                                                  index: i,
+                                                  nameWidth: nameWidth,
+                                                  locationWidth: locationWidth,
+                                                  selected: widget.selectedPaths
+                                                      .contains(
                                                         displayFiles[i].path,
-                                                        widget.currentPath,
-                                                      )
-                                                    : null,
-                                                onOpenInNewTab:
-                                                    widget.onOpenInNewTab,
+                                                      ),
+                                                  selectedPaths:
+                                                      widget.selectedPaths,
+                                                  isCut: widget.cutPaths
+                                                      .contains(
+                                                        displayFiles[i].path,
+                                                      ),
+                                                  isDraggingSelected: widget
+                                                      .selectedPaths
+                                                      .isNotEmpty,
+                                                  isFolderDragOver:
+                                                      _hoveredFolderPath ==
+                                                      displayFiles[i].path,
+                                                  isRenaming:
+                                                      widget.renamingPath ==
+                                                      displayFiles[i].path,
+                                                  renameAttempt:
+                                                      widget.renameAttempt,
+                                                  onRenameSubmit:
+                                                      widget.onRenameSubmit,
+                                                  onRenameCancel:
+                                                      widget.onRenameCancel,
+                                                  onSelect: widget.onSelect,
+                                                  onSecondarySelect:
+                                                      widget.onSecondarySelect,
+                                                  secondarySelectedPaths: widget
+                                                      .secondarySelectedPaths,
+                                                  onOpen: widget.onOpen,
+                                                  onContextMenu:
+                                                      widget.onContextMenu,
+                                                  onMenuAction:
+                                                      widget.onMenuAction,
+                                                  recursive: recursive,
+                                                  treeMode:
+                                                      widget.treeRows != null,
+                                                  treeDepth:
+                                                      widget
+                                                          .treeRows?[i]
+                                                          .depth ??
+                                                      0,
+                                                  treeExpanded:
+                                                      widget
+                                                          .treeRows?[i]
+                                                          .expanded ??
+                                                      false,
+                                                  treeLoading:
+                                                      widget
+                                                          .treeRows?[i]
+                                                          .loading ??
+                                                      false,
+                                                  onToggleTree:
+                                                      widget.onToggleTreeFolder ==
+                                                          null
+                                                      ? null
+                                                      : () =>
+                                                            widget
+                                                                .onToggleTreeFolder!(
+                                                              displayFiles[i],
+                                                            ),
+                                                  columns: columns,
+                                                  columnWidths: columnWidths,
+                                                  location: recursive
+                                                      ? _compactLocation(
+                                                          displayFiles[i].path,
+                                                          widget.currentPath,
+                                                        )
+                                                      : null,
+                                                  onOpenInNewTab:
+                                                      widget.onOpenInNewTab,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -1409,6 +1535,8 @@ class _ListRow extends StatefulWidget {
   final RenameSubmitCallback? onRenameSubmit;
   final RenameCancelCallback? onRenameCancel;
   final FileSelectCallback onSelect;
+  final FileSelectCallback? onSecondarySelect;
+  final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
   final FileContextMenuCallback? onContextMenu;
   final FileMenuActionCallback? onMenuAction;
@@ -1446,6 +1574,8 @@ class _ListRow extends StatefulWidget {
     this.onRenameSubmit,
     this.onRenameCancel,
     required this.onSelect,
+    this.onSecondarySelect,
+    this.secondarySelectedPaths = const {},
     required this.onOpen,
     this.onContextMenu,
     this.onMenuAction,
@@ -1747,13 +1877,6 @@ class _ListRowState extends State<_ListRow> {
     );
   }
 
-  void _handleSecondaryTap(TapUpDetails details) {
-    widget.onContextMenu?.call(
-      FileSelectionEvent(entry: widget.entry, index: widget.index),
-      details.globalPosition,
-    );
-  }
-
   Widget _buildDragImage(BuildContext context, Widget child) {
     final dragCount = widget.selected ? widget.selectedPaths.length : 1;
 
@@ -1995,7 +2118,6 @@ class _ListRowState extends State<_ListRow> {
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         onTap: _handleTap,
-        onSecondaryTapUp: _handleSecondaryTap,
         onTertiaryTapUp: (_) {
           if (widget.entry.type == FileItemType.folder) {
             widget.onOpenInNewTab?.call(widget.entry.path);
@@ -2030,8 +2152,13 @@ class _ListRowState extends State<_ListRow> {
                           style: context.txt.body.copyWith(
                             color: widget.selected
                                 ? AppColors.fg
-                                : AppColors.fg.withValues(alpha: 0.9),
-                            fontWeight: widget.selected
+                                : widget.rowDecoration?.nameColor ??
+                                      AppColors.fg.withValues(alpha: 0.9),
+                            fontWeight:
+                                widget.selected &&
+                                    !widget.secondarySelectedPaths.contains(
+                                      widget.entry.path,
+                                    )
                                 ? FontWeight.w500
                                 : FontWeight.normal,
                           ),

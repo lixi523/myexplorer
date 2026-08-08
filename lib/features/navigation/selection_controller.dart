@@ -24,6 +24,18 @@ class SelectionController {
 
   List<FileEntry> get _vf => visibleFiles();
 
+  /// Adds [event]'s entry to the current selection without clearing it
+  /// (right-button multi-select). Updates the cursor; the anchor is kept so
+  /// a later shift-click extends from the previous anchor.
+  void addToSelection(FileSelectionEvent event) {
+    batch(() {
+      final paths = Set<String>.from(selectedPaths.value);
+      paths.add(event.entry.path);
+      selectedPaths.value = paths;
+      cursorIndex.value = event.index;
+    });
+  }
+
   void onSelect(FileSelectionEvent event) {
     final ctrl = AppShortcuts.isControl;
     final shift = AppShortcuts.isShift;

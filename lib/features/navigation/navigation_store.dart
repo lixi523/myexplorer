@@ -42,6 +42,10 @@ class NavigationStore {
   final files = signal<List<FileEntry>>([]);
   final showHidden = signal(false);
   final selectedPaths = signal<Set<String>>({});
+
+  /// Paths added to the selection via right-button multi-select (NC mode).
+  /// These render highlighted but not bold, unlike left-click selections.
+  final secondarySelectedPaths = signal<Set<String>>({});
   final cursorIndex = signal(-1);
   final anchorIndex = signal(-1);
   final history = signal<List<String>>([]);
@@ -356,8 +360,21 @@ class NavigationStore {
     final deco = <String, RowDecoration>{};
     final list = visibleFiles.value;
     for (final entry in list) {
+      if (entry.type == FileItemType.folder) {
+        // Folders get a fixed name color.
+        deco[entry.path] = const RowDecoration(
+          tint: Color(0x00000000),
+          nameColor: Color(0xFF3E63DD),
+        );
+        continue;
+      }
       final color = ColorRuleStore.instance.colorFor(entry.extension);
-      if (color != null) deco[entry.path] = RowDecoration(tint: color);
+      if (color != null) {
+        deco[entry.path] = RowDecoration(
+          tint: const Color(0x00000000),
+          nameColor: color,
+        );
+      }
     }
 
     return deco;
@@ -2048,8 +2065,22 @@ class NavigationStore {
 
   List<FileEntry> get _vf => _selectionFiles;
 
-  void onSelect(FileSelectionEvent event) =>
-      _selectionController.onSelect(event);
+  void onSelect(FileSelectionEvent event) {
+    // A left-click selection clears the right-button (secondary) markers.
+    secondarySelectedPaths.value = {};
+    _selectionController.onSelect(event);
+  }
+
+  /// Adds [event]'s entry to the current selection without clearing it
+  /// (right-button multi-select). Marked as secondary so the row renders
+  /// highlighted but not bold.
+  void addToSelection(FileSelectionEvent event) {
+    secondarySelectedPaths.value = {
+      ...secondarySelectedPaths.value,
+      event.entry.path,
+    };
+    _selectionController.addToSelection(event);
+  }
 
   void revealInFolder(String path, {String? enteredPath}) {
     final parent = PlatformPaths.parentOf(path);
