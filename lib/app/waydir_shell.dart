@@ -45,6 +45,7 @@ import '../features/navigation/sidebar.dart';
 import '../features/navigation/status_bar.dart';
 import '../features/operations/operation_store.dart';
 import '../features/operations/split_dialog.dart';
+import '../features/operations/duplicate_dialog.dart';
 import '../features/panes/pane_view.dart';
 import '../features/panes/pane_divider.dart';
 import '../features/panes/center_shortcut_bar.dart';

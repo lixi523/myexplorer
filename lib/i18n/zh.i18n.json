@@ -67,6 +67,7 @@
     "createChecksumManifest": "生成校验文件…",
     "splitFile": "分割文件…",
     "combineParts": "合并分卷…",
+    "findDuplicates": "查找重复文件…",
     "sortBy": "排序方式",
     "sortAscending": "升序",
     "sortDescending": "降序",
@@ -1117,6 +1118,17 @@
     "custom": "自定义…",
     "customHint": "大小（字节）",
     "split": "分割"
+  },
+  "duplicates": {
+    "title": "查找重复文件",
+    "scanning": "正在扫描 $files 个文件… $current",
+    "none": "未找到重复文件",
+    "summary": "$groups 组重复，共 $files 个重复文件，可释放 $bytes",
+    "selectedCount(one)": "已选 1 个",
+    "selectedCount(other)": "已选 $count 个",
+    "selectAllDups": "全选重复项",
+    "trashSelected": "移入回收站",
+    "deleteSelected": "永久删除"
   },
   "operations": {
     "title": "操作",

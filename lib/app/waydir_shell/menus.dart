@@ -1486,6 +1486,11 @@ mixin _WaydirMenuMixin
                   label: t.menu.hiddenList,
                   action: 'open_hidden_list',
                 ),
+                ContextMenuItem(
+                  icon: WaydirIconsRegular.copy,
+                  label: t.menu.findDuplicates,
+                  action: 'find_duplicates',
+                ),
               ],
               onSelect: (action) {
                 switch (action) {
@@ -1499,6 +1504,12 @@ mixin _WaydirMenuMixin
                     _toggleShowHiddenGlobal();
                   case 'open_hidden_list':
                     showHiddenListDialog(context);
+                  case 'find_duplicates':
+                    showDuplicateFinderDialog(
+                      context: context,
+                      root: _active.currentPath.value,
+                      operationStore: _operationStore,
+                    );
                 }
               },
             ),

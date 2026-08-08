@@ -67,6 +67,7 @@
   "createChecksumManifest": "Create Checksum File…",
   "splitFile": "Split File…",
   "combineParts": "Combine Parts…",
+  "findDuplicates": "Find Duplicates…",
     "sortBy": "Sort By",
     "sortAscending": "Ascending",
     "sortDescending": "Descending",
@@ -1117,6 +1118,17 @@
     "custom": "Custom…",
     "customHint": "Size in bytes",
     "split": "Split"
+  },
+  "duplicates": {
+    "title": "Find Duplicates",
+    "scanning": "Scanning $files files… $current",
+    "none": "No duplicate files found",
+    "summary": "$groups group(s), $files duplicate file(s), $bytes recoverable",
+    "selectedCount(one)": "1 selected",
+    "selectedCount(other)": "$count selected",
+    "selectAllDups": "Select all duplicates",
+    "trashSelected": "Trash selected",
+    "deleteSelected": "Delete selected"
   },
   "operations": {
     "title": "Operations",

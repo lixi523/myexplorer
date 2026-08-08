@@ -71,6 +71,7 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$password$zh password = _Translations$password$zh._(_root);
 	@override late final _Translations$selectPattern$zh selectPattern = _Translations$selectPattern$zh._(_root);
 	@override late final _Translations$split$zh split = _Translations$split$zh._(_root);
+	@override late final _Translations$duplicates$zh duplicates = _Translations$duplicates$zh._(_root);
 	@override late final _Translations$operations$zh operations = _Translations$operations$zh._(_root);
 	@override late final _Translations$errors$zh errors = _Translations$errors$zh._(_root);
 	@override late final _Translations$tasks$zh tasks = _Translations$tasks$zh._(_root);
@@ -162,6 +163,7 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get createChecksumManifest => '生成校验文件…';
 	@override String get splitFile => '分割文件…';
 	@override String get combineParts => '合并分卷…';
+	@override String get findDuplicates => '查找重复文件…';
 	@override String get sortBy => '排序方式';
 	@override String get sortAscending => '升序';
 	@override String get sortDescending => '降序';
@@ -913,6 +915,23 @@ class _Translations$split$zh extends Translations$split$en {
 	@override String get custom => '自定义…';
 	@override String get customHint => '大小（字节）';
 	@override String get split => '分割';
+}
+
+// Path: duplicates
+class _Translations$duplicates$zh extends Translations$duplicates$en {
+	_Translations$duplicates$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '查找重复文件';
+	@override String scanning({required Object files, required Object current}) => '正在扫描 ${files} 个文件… ${current}';
+	@override String get none => '未找到重复文件';
+	@override String summary({required Object groups, required Object files, required Object bytes}) => '${groups} 组重复，共 ${files} 个重复文件，可释放 ${bytes}';
+	@override String selectedCount({required Object count}) => '已选 ${count} 个';
+	@override String get selectAllDups => '全选重复项';
+	@override String get trashSelected => '移入回收站';
+	@override String get deleteSelected => '永久删除';
 }
 
 // Path: operations
@@ -2182,6 +2201,7 @@ extension on TranslationsZh {
 			'menu.createChecksumManifest' => '生成校验文件…',
 			'menu.splitFile' => '分割文件…',
 			'menu.combineParts' => '合并分卷…',
+			'menu.findDuplicates' => '查找重复文件…',
 			'menu.sortBy' => '排序方式',
 			'menu.sortAscending' => '升序',
 			'menu.sortDescending' => '降序',
@@ -2635,9 +2655,9 @@ extension on TranslationsZh {
 			'keybindings.categories.quickLook' => '快速预览',
 			'keybindings.categories.view' => '视图',
 			'keybindings.categories.tabs' => '标签页',
-			'keybindings.categories.panes' => '面板',
 			_ => null,
 		} ?? switch (path) {
+			'keybindings.categories.panes' => '面板',
 			'keybindings.categories.terminal' => '终端',
 			'keybindings.categories.fileOps' => '文件操作',
 			'keybindings.categories.selection' => '选择',
@@ -3013,6 +3033,14 @@ extension on TranslationsZh {
 			'split.custom' => '自定义…',
 			'split.customHint' => '大小（字节）',
 			'split.split' => '分割',
+			'duplicates.title' => '查找重复文件',
+			'duplicates.scanning' => ({required Object files, required Object current}) => '正在扫描 ${files} 个文件… ${current}',
+			'duplicates.none' => '未找到重复文件',
+			'duplicates.summary' => ({required Object groups, required Object files, required Object bytes}) => '${groups} 组重复，共 ${files} 个重复文件，可释放 ${bytes}',
+			'duplicates.selectedCount' => ({required Object count}) => '已选 ${count} 个',
+			'duplicates.selectAllDups' => '全选重复项',
+			'duplicates.trashSelected' => '移入回收站',
+			'duplicates.deleteSelected' => '永久删除',
 			'operations.title' => '操作',
 			'operations.clear' => '清除',
 			'operations.noActive' => '没有正在进行的操作',
@@ -3141,6 +3169,8 @@ extension on TranslationsZh {
 			'git.noRepository' => '不是仓库',
 			'git.gitCheckoutFailed' => 'git checkout 失败',
 			'git.gitStashFailed' => 'git stash 失败',
+			_ => null,
+		} ?? switch (path) {
 			'git.changesStashedSwitchFailed' => ({required Object message}) => '更改已暂存，但切换失败：${message}',
 			'openWith.title' => '打开方式',
 			'openWith.subtitle' => ({required Object name}) => '选择用于打开“${name}”的应用',
@@ -3150,8 +3180,6 @@ extension on TranslationsZh {
 			'openWith.noApps' => '未找到可打开此文件类型的应用。',
 			'openWith.setDefault' => '始终使用此应用打开此文件类型',
 			'openWith.setDefaultUnavailable' => '此平台无法更改默认应用',
-			_ => null,
-		} ?? switch (path) {
 			'openWith.moreApps' => '更多应用…',
 			'openWith.open' => '打开',
 			'openWith.failed' => ({required Object app}) => '无法使用 ${app} 打开文件',

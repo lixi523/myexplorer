@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Checksum manifest files: create `.md5` / `.sha256` manifests for selected files (GNU coreutils format, one per folder), and verify an existing manifest in batch with a per-file result list.
 - Split/combine files (TC parity): split a file into numbered parts (`.001`, `.002`, …) with a `.crc` MD5 manifest, and combine parts back via the context menu. Preset sizes (floppy / 100 MB / CD / DVD) plus custom byte size.
 - Automatic conflict policies (TC parity): settings to auto-overwrite when the source is newer (skip when older) and to auto-skip files with identical sizes during copy. Runtime-only for now (DB persistence deferred until codegen is available locally).
+- Duplicate file finder (View menu): recursive size-then-hash scan in a background isolate, grouped results with per-file checkboxes (one copy kept by default), trash/delete selected duplicates, recoverable-bytes summary.
 
 ## [1.5.0] - 2026-08-07
 

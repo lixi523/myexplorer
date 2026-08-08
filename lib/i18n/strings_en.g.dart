@@ -72,6 +72,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$password$en password = Translations$password$en.internal(_root);
 	late final Translations$selectPattern$en selectPattern = Translations$selectPattern$en.internal(_root);
 	late final Translations$split$en split = Translations$split$en.internal(_root);
+	late final Translations$duplicates$en duplicates = Translations$duplicates$en.internal(_root);
 	late final Translations$operations$en operations = Translations$operations$en.internal(_root);
 	late final Translations$errors$en errors = Translations$errors$en.internal(_root);
 	late final Translations$tasks$en tasks = Translations$tasks$en.internal(_root);
@@ -279,6 +280,9 @@ class Translations$menu$en {
 
 	/// en: 'Combine Parts…'
 	String get combineParts => 'Combine Parts…';
+
+	/// en: 'Find Duplicates…'
+	String get findDuplicates => 'Find Duplicates…';
 
 	/// en: 'Sort By'
 	String get sortBy => 'Sort By';
@@ -1978,6 +1982,39 @@ class Translations$split$en {
 
 	/// en: 'Split'
 	String get split => 'Split';
+}
+
+// Path: duplicates
+class Translations$duplicates$en {
+	Translations$duplicates$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Find Duplicates'
+	String get title => 'Find Duplicates';
+
+	/// en: 'Scanning $files files… $current'
+	String scanning({required Object files, required Object current}) => 'Scanning ${files} files… ${current}';
+
+	/// en: 'No duplicate files found'
+	String get none => 'No duplicate files found';
+
+	/// en: '$groups group(s), $files duplicate file(s), $bytes recoverable'
+	String summary({required Object groups, required Object files, required Object bytes}) => '${groups} group(s), ${files} duplicate file(s), ${bytes} recoverable';
+
+	/// en: '$count selected'
+	String selectedCount({required Object count}) => '${count} selected';
+
+	/// en: 'Select all duplicates'
+	String get selectAllDups => 'Select all duplicates';
+
+	/// en: 'Trash selected'
+	String get trashSelected => 'Trash selected';
+
+	/// en: 'Delete selected'
+	String get deleteSelected => 'Delete selected';
 }
 
 // Path: operations
@@ -4271,6 +4308,7 @@ extension on Translations {
 			'menu.createChecksumManifest' => 'Create Checksum File…',
 			'menu.splitFile' => 'Split File…',
 			'menu.combineParts' => 'Combine Parts…',
+			'menu.findDuplicates' => 'Find Duplicates…',
 			'menu.sortBy' => 'Sort By',
 			'menu.sortAscending' => 'Ascending',
 			'menu.sortDescending' => 'Descending',
@@ -4724,9 +4762,9 @@ extension on Translations {
 			'keybindings.categories.quickLook' => 'Quick Look',
 			'keybindings.categories.view' => 'View',
 			'keybindings.categories.tabs' => 'Tabs',
-			'keybindings.categories.panes' => 'Panes',
 			_ => null,
 		} ?? switch (path) {
+			'keybindings.categories.panes' => 'Panes',
 			'keybindings.categories.terminal' => 'Terminal',
 			'keybindings.categories.fileOps' => 'File Operations',
 			'keybindings.categories.selection' => 'Selection',
@@ -5102,6 +5140,14 @@ extension on Translations {
 			'split.custom' => 'Custom…',
 			'split.customHint' => 'Size in bytes',
 			'split.split' => 'Split',
+			'duplicates.title' => 'Find Duplicates',
+			'duplicates.scanning' => ({required Object files, required Object current}) => 'Scanning ${files} files… ${current}',
+			'duplicates.none' => 'No duplicate files found',
+			'duplicates.summary' => ({required Object groups, required Object files, required Object bytes}) => '${groups} group(s), ${files} duplicate file(s), ${bytes} recoverable',
+			'duplicates.selectedCount' => ({required Object count}) => '${count} selected',
+			'duplicates.selectAllDups' => 'Select all duplicates',
+			'duplicates.trashSelected' => 'Trash selected',
+			'duplicates.deleteSelected' => 'Delete selected',
 			'operations.title' => 'Operations',
 			'operations.clear' => 'Clear',
 			'operations.noActive' => 'No active operations',
@@ -5230,6 +5276,8 @@ extension on Translations {
 			'git.noRepository' => 'No repository',
 			'git.gitCheckoutFailed' => 'git checkout failed',
 			'git.gitStashFailed' => 'git stash failed',
+			_ => null,
+		} ?? switch (path) {
 			'git.changesStashedSwitchFailed' => ({required Object message}) => 'Changes stashed, but switch failed: ${message}',
 			'openWith.title' => 'Open With',
 			'openWith.subtitle' => ({required Object name}) => 'Choose an application to open "${name}"',
@@ -5239,8 +5287,6 @@ extension on Translations {
 			'openWith.noApps' => 'No applications found for this file type.',
 			'openWith.setDefault' => 'Always use for this file type',
 			'openWith.setDefaultUnavailable' => 'Default cannot be changed on this platform',
-			_ => null,
-		} ?? switch (path) {
 			'openWith.moreApps' => 'More applications…',
 			'openWith.open' => 'Open',
 			'openWith.failed' => ({required Object app}) => 'Could not open the file with ${app}',
