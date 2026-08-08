@@ -39,6 +39,81 @@ typedef ShortcutNavigate = Future<void> Function(String path);
 typedef ShortcutOpenFile = Future<void> Function(String path);
 typedef ShortcutLaunchCommand = Future<void> Function(String commandLine);
 
+/// Context for Total Commander parameter macros (`%P`, `%N`, `%T`, …).
+class ShortcutRunContext {
+  /// Active pane (source) path.
+  final String sourcePath;
+
+  /// Inactive pane (target) path.
+  final String targetPath;
+
+  /// Selected file names (no paths), in order.
+  final List<String> selectedNames;
+
+  /// Selected file full paths, in order.
+  final List<String> selectedFullPaths;
+
+  /// Name of the file under the cursor (or first selected).
+  final String cursorName;
+
+  /// Full path of the file under the cursor (or first selected).
+  final String cursorFullPath;
+
+  const ShortcutRunContext({
+    required this.sourcePath,
+    required this.targetPath,
+    required this.selectedNames,
+    required this.selectedFullPaths,
+    required this.cursorName,
+    required this.cursorFullPath,
+  });
+
+  static const empty = ShortcutRunContext(
+    sourcePath: '',
+    targetPath: '',
+    selectedNames: [],
+    selectedFullPaths: [],
+    cursorName: '',
+    cursorFullPath: '',
+  );
+}
+
+/// Expands Total Commander parameter macros in [input].
+///
+/// Uppercase macros wrap the value in double quotes; lowercase ones emit the
+/// raw value (for spaces-unsafe use). Supported:
+///
+/// | Macro | Value |
+/// |-------|-------|
+/// | `%P`  | source path |
+/// | `%N`  | file under cursor (name) |
+/// | `%T`  | target path |
+/// | `%M`  | all selected names, space-separated |
+/// | `%L`  | file under cursor (full path) |
+/// | `%S`  | all selected full paths, space-separated |
+String expandShortcutMacros(String input, ShortcutRunContext ctx) {
+  if (!input.contains('%')) return input;
+
+  String quoted(String value) =>
+      value.isEmpty ? value : '"${value.replaceAll('"', '""')}"';
+  String listQuoted(List<String> values) => values.map(quoted).join(' ');
+  String listRaw(List<String> values) => values.join(' ');
+
+  return input
+      .replaceAll('%P', quoted(ctx.sourcePath))
+      .replaceAll('%p', ctx.sourcePath)
+      .replaceAll('%T', quoted(ctx.targetPath))
+      .replaceAll('%t', ctx.targetPath)
+      .replaceAll('%N', quoted(ctx.cursorName))
+      .replaceAll('%n', ctx.cursorName)
+      .replaceAll('%L', quoted(ctx.cursorFullPath))
+      .replaceAll('%l', ctx.cursorFullPath)
+      .replaceAll('%M', listQuoted(ctx.selectedNames))
+      .replaceAll('%m', listRaw(ctx.selectedNames))
+      .replaceAll('%S', listQuoted(ctx.selectedFullPaths))
+      .replaceAll('%s', listRaw(ctx.selectedFullPaths));
+}
+
 /// Classifies a raw shortcut target. Pure and testable: environment variables
 /// are expanded first, then Total Commander conventions (`cm_…`, `CD …`) are
 /// checked before filesystem lookups.
@@ -97,11 +172,15 @@ ShortcutTarget classifyShortcutTarget(String rawTarget) {
 /// 5. Anything else → launch as a command line.
 Future<void> runShortcutItem(
   ShortcutBarItem item, {
+  ShortcutRunContext context = ShortcutRunContext.empty,
   required ShortcutNavigate navigateTo,
   required ShortcutOpenFile openFile,
   ShortcutLaunchCommand? launchCommand,
 }) async {
-  final target = classifyShortcutTarget(item.target);
+  // Expand TC parameter macros in the target (which already contains any
+  // imported arguments, merged at .bar import time).
+  final expandedTarget = expandShortcutMacros(item.target, context);
+  final target = classifyShortcutTarget(expandedTarget);
   switch (target.kind) {
     case ShortcutTargetKind.folder:
       await navigateTo(target.value);

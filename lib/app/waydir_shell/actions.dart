@@ -630,8 +630,29 @@ mixin _WaydirActionsMixin on State<WaydirShell>, _WaydirStateBase {
     final items = ShortcutBarStore.instance.items.value;
     for (final item in items) {
       if (item.id != id) continue;
+      final active = _shell.activePane.value;
+      final panes = _shell.panes.value;
+      final activeIdx = _shell.activePaneIndex.value;
+      final targetStore = panes.length > 1
+          ? panes[activeIdx ^ 1].tabs.activeTab.value.store
+          : null;
+      final store = active?.tabs.activeTab.value.store;
+      final entries = store?.selectedEntries ?? const <FileEntry>[];
+      final cursor = store?.cursorEntry.value;
+      final sourcePath = store?.currentPath.value ?? '';
+      final targetPath = targetStore?.currentPath.value ?? '';
+      final ctx = ShortcutRunContext(
+        sourcePath: sourcePath,
+        targetPath: targetPath,
+        selectedNames: [for (final e in entries) e.name],
+        selectedFullPaths: [for (final e in entries) e.realPath],
+        cursorName: cursor?.name ?? (entries.isEmpty ? '' : entries.first.name),
+        cursorFullPath:
+            cursor?.realPath ?? (entries.isEmpty ? '' : entries.first.realPath),
+      );
       runShortcutItem(
         item,
+        context: ctx,
         navigateTo: (path) async {
           _shell.activePane.value!.tabs.addTab(path);
         },
