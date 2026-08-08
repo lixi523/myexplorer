@@ -73,6 +73,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$selectPattern$en selectPattern = Translations$selectPattern$en.internal(_root);
 	late final Translations$split$en split = Translations$split$en.internal(_root);
 	late final Translations$duplicates$en duplicates = Translations$duplicates$en.internal(_root);
+	late final Translations$colorRules$en colorRules = Translations$colorRules$en.internal(_root);
 	late final Translations$operations$en operations = Translations$operations$en.internal(_root);
 	late final Translations$errors$en errors = Translations$errors$en.internal(_root);
 	late final Translations$tasks$en tasks = Translations$tasks$en.internal(_root);
@@ -283,6 +284,9 @@ class Translations$menu$en {
 
 	/// en: 'Find Duplicates…'
 	String get findDuplicates => 'Find Duplicates…';
+
+	/// en: 'File Coloring…'
+	String get colorRules => 'File Coloring…';
 
 	/// en: 'Sort By'
 	String get sortBy => 'Sort By';
@@ -2036,6 +2040,33 @@ class Translations$duplicates$en {
 
 	/// en: 'Delete selected'
 	String get deleteSelected => 'Delete selected';
+}
+
+// Path: colorRules
+class Translations$colorRules$en {
+	Translations$colorRules$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'File Coloring'
+	String get title => 'File Coloring';
+
+	/// en: 'Files matching an extension are tinted in the list.'
+	String get hint => 'Files matching an extension are tinted in the list.';
+
+	/// en: 'extension, e.g. pdf'
+	String get extensionHint => 'extension, e.g. pdf';
+
+	/// en: 'Add'
+	String get add => 'Add';
+
+	/// en: 'No rules — add one above.'
+	String get empty => 'No rules — add one above.';
+
+	/// en: 'Restore defaults'
+	String get reset => 'Restore defaults';
 }
 
 // Path: operations
@@ -4330,6 +4361,7 @@ extension on Translations {
 			'menu.splitFile' => 'Split File…',
 			'menu.combineParts' => 'Combine Parts…',
 			'menu.findDuplicates' => 'Find Duplicates…',
+			'menu.colorRules' => 'File Coloring…',
 			'menu.sortBy' => 'Sort By',
 			'menu.sortAscending' => 'Ascending',
 			'menu.sortDescending' => 'Descending',
@@ -4782,9 +4814,9 @@ extension on Translations {
 			'tags.newTagDots' => 'New tag…',
 			'tags.editTag' => 'Edit Tag',
 			'tags.deleteTag' => 'Delete Tag',
-			'tags.clear' => 'Clear Tags',
 			_ => null,
 		} ?? switch (path) {
+			'tags.clear' => 'Clear Tags',
 			'tags.save' => 'Save',
 			'keybindings.title' => 'Keyboard Shortcuts',
 			'keybindings.menuLabel' => 'Shortcuts',
@@ -5176,6 +5208,12 @@ extension on Translations {
 			'duplicates.selectAllDups' => 'Select all duplicates',
 			'duplicates.trashSelected' => 'Trash selected',
 			'duplicates.deleteSelected' => 'Delete selected',
+			'colorRules.title' => 'File Coloring',
+			'colorRules.hint' => 'Files matching an extension are tinted in the list.',
+			'colorRules.extensionHint' => 'extension, e.g. pdf',
+			'colorRules.add' => 'Add',
+			'colorRules.empty' => 'No rules — add one above.',
+			'colorRules.reset' => 'Restore defaults',
 			'operations.title' => 'Operations',
 			'operations.clear' => 'Clear',
 			'operations.noActive' => 'No active operations',
@@ -5290,6 +5328,8 @@ extension on Translations {
 			'git.rebasing' => 'REBASING',
 			'git.cherryPicking' => 'CHERRY-PICK',
 			'git.reverting' => 'REVERTING',
+			_ => null,
+		} ?? switch (path) {
 			'git.bisecting' => 'BISECTING',
 			'git.checkoutFailed' => ({required Object message}) => 'Checkout failed: ${message}',
 			'git.uncommittedChanges' => 'Uncommitted changes',
@@ -5297,8 +5337,6 @@ extension on Translations {
 			'git.stashSwitch' => 'Stash & Switch',
 			'git.stashSwitchFailed' => ({required Object message}) => 'Stash & switch failed: ${message}',
 			'git.stashEntry' => ({required Object index, required Object message}) => 'stash@{${index}} · ${message}',
-			_ => null,
-		} ?? switch (path) {
 			'git.stashPop' => 'Pop (apply & remove)',
 			'git.stashApply' => 'Apply (keep stash)',
 			'git.stashDrop' => 'Drop',

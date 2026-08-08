@@ -1491,6 +1491,11 @@ mixin _WaydirMenuMixin
                   label: t.menu.findDuplicates,
                   action: 'find_duplicates',
                 ),
+                ContextMenuItem(
+                  icon: WaydirIconsRegular.palette,
+                  label: t.menu.colorRules,
+                  action: 'color_rules',
+                ),
               ],
               onSelect: (action) {
                 switch (action) {
@@ -1510,6 +1515,8 @@ mixin _WaydirMenuMixin
                       root: _active.currentPath.value,
                       operationStore: _operationStore,
                     );
+                  case 'color_rules':
+                    showColorRulesDialog(context);
                 }
               },
             ),

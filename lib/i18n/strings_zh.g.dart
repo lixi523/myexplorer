@@ -72,6 +72,7 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$selectPattern$zh selectPattern = _Translations$selectPattern$zh._(_root);
 	@override late final _Translations$split$zh split = _Translations$split$zh._(_root);
 	@override late final _Translations$duplicates$zh duplicates = _Translations$duplicates$zh._(_root);
+	@override late final _Translations$colorRules$zh colorRules = _Translations$colorRules$zh._(_root);
 	@override late final _Translations$operations$zh operations = _Translations$operations$zh._(_root);
 	@override late final _Translations$errors$zh errors = _Translations$errors$zh._(_root);
 	@override late final _Translations$tasks$zh tasks = _Translations$tasks$zh._(_root);
@@ -164,6 +165,7 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get splitFile => '分割文件…';
 	@override String get combineParts => '合并分卷…';
 	@override String get findDuplicates => '查找重复文件…';
+	@override String get colorRules => '文件着色…';
 	@override String get sortBy => '排序方式';
 	@override String get sortAscending => '升序';
 	@override String get sortDescending => '降序';
@@ -939,6 +941,21 @@ class _Translations$duplicates$zh extends Translations$duplicates$en {
 	@override String get selectAllDups => '全选重复项';
 	@override String get trashSelected => '移入回收站';
 	@override String get deleteSelected => '永久删除';
+}
+
+// Path: colorRules
+class _Translations$colorRules$zh extends Translations$colorRules$en {
+	_Translations$colorRules$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '文件着色';
+	@override String get hint => '匹配扩展名的文件将在列表中着色显示。';
+	@override String get extensionHint => '扩展名，如 pdf';
+	@override String get add => '添加';
+	@override String get empty => '暂无规则——在上方添加。';
+	@override String get reset => '恢复默认';
 }
 
 // Path: operations
@@ -2209,6 +2226,7 @@ extension on TranslationsZh {
 			'menu.splitFile' => '分割文件…',
 			'menu.combineParts' => '合并分卷…',
 			'menu.findDuplicates' => '查找重复文件…',
+			'menu.colorRules' => '文件着色…',
 			'menu.sortBy' => '排序方式',
 			'menu.sortAscending' => '升序',
 			'menu.sortDescending' => '降序',
@@ -2661,9 +2679,9 @@ extension on TranslationsZh {
 			'tags.newTagDots' => '新建标签…',
 			'tags.editTag' => '编辑标签',
 			'tags.deleteTag' => '删除标签',
-			'tags.clear' => '清除标签',
 			_ => null,
 		} ?? switch (path) {
+			'tags.clear' => '清除标签',
 			'tags.save' => '保存',
 			'keybindings.title' => '键盘快捷键',
 			'keybindings.menuLabel' => '快捷键',
@@ -3055,6 +3073,12 @@ extension on TranslationsZh {
 			'duplicates.selectAllDups' => '全选重复项',
 			'duplicates.trashSelected' => '移入回收站',
 			'duplicates.deleteSelected' => '永久删除',
+			'colorRules.title' => '文件着色',
+			'colorRules.hint' => '匹配扩展名的文件将在列表中着色显示。',
+			'colorRules.extensionHint' => '扩展名，如 pdf',
+			'colorRules.add' => '添加',
+			'colorRules.empty' => '暂无规则——在上方添加。',
+			'colorRules.reset' => '恢复默认',
 			'operations.title' => '操作',
 			'operations.clear' => '清除',
 			'operations.noActive' => '没有正在进行的操作',
@@ -3169,6 +3193,8 @@ extension on TranslationsZh {
 			'git.rebasing' => '变基中',
 			'git.cherryPicking' => '拣选中',
 			'git.reverting' => '还原中',
+			_ => null,
+		} ?? switch (path) {
 			'git.bisecting' => '二分查找中',
 			'git.checkoutFailed' => ({required Object message}) => '切换分支失败：${message}',
 			'git.uncommittedChanges' => '未提交的更改',
@@ -3176,8 +3202,6 @@ extension on TranslationsZh {
 			'git.stashSwitch' => '暂存并切换',
 			'git.stashSwitchFailed' => ({required Object message}) => '暂存并切换失败：${message}',
 			'git.stashEntry' => ({required Object index, required Object message}) => 'stash@{${index}} · ${message}',
-			_ => null,
-		} ?? switch (path) {
 			'git.stashPop' => '弹出（应用并移除）',
 			'git.stashApply' => '应用（保留 stash）',
 			'git.stashDrop' => '丢弃',

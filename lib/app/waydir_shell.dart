@@ -67,6 +67,7 @@ import '../ui/chrome/title_bar.dart';
 import '../ui/dialogs/compress_dialog.dart';
 import '../ui/dialogs/dialog.dart';
 import '../ui/dialogs/hidden_list_dialog.dart';
+import '../ui/dialogs/color_rules_dialog.dart';
 import '../ui/dialogs/multi_rename_dialog.dart';
 import '../ui/dialogs/open_with_dialog.dart';
 import '../ui/overlays/context_menu.dart';

@@ -18,6 +18,7 @@ import '../../core/platform/trash_location.dart';
 import '../locations/location_resolver.dart';
 import '../locations/location_uri.dart';
 import '../../core/settings/settings_store.dart';
+import '../../core/settings/color_rule_store.dart';
 import '../../i18n/strings.g.dart';
 import '../files/row_decorations.dart';
 import '../git/git_status_store.dart';
@@ -326,6 +327,7 @@ class NavigationStore {
     _setupGitStatusEffect();
     _setupTagsEffect();
     _setupFileTagsEffect();
+    _setupColorRuleLayer();
   }
 
   late final _tagDecorations = computed<Map<String, RowDecoration>>(() {
@@ -346,6 +348,23 @@ class NavigationStore {
 
   void _setupTagsEffect() {
     decorations.addReactiveLayer(_tagDecorations);
+  }
+
+  late final _colorRuleDecorations = computed<Map<String, RowDecoration>>(() {
+    final rules = ColorRuleStore.instance.rules.value; // reactive
+    if (rules.isEmpty) return const {};
+    final deco = <String, RowDecoration>{};
+    final list = visibleFiles.value;
+    for (final entry in list) {
+      final color = ColorRuleStore.instance.colorFor(entry.extension);
+      if (color != null) deco[entry.path] = RowDecoration(tint: color);
+    }
+
+    return deco;
+  });
+
+  void _setupColorRuleLayer() {
+    decorations.addReactiveLayer(_colorRuleDecorations);
   }
 
   void _setupFileTagsEffect() {

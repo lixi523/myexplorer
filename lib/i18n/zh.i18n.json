@@ -68,6 +68,7 @@
     "splitFile": "分割文件…",
     "combineParts": "合并分卷…",
     "findDuplicates": "查找重复文件…",
+    "colorRules": "文件着色…",
     "sortBy": "排序方式",
     "sortAscending": "升序",
     "sortDescending": "降序",
@@ -1136,6 +1137,14 @@
     "selectAllDups": "全选重复项",
     "trashSelected": "移入回收站",
     "deleteSelected": "永久删除"
+  },
+  "colorRules": {
+    "title": "文件着色",
+    "hint": "匹配扩展名的文件将在列表中着色显示。",
+    "extensionHint": "扩展名，如 pdf",
+    "add": "添加",
+    "empty": "暂无规则——在上方添加。",
+    "reset": "恢复默认"
   },
   "operations": {
     "title": "操作",

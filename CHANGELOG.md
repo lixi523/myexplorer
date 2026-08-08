@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic conflict policies (TC parity): settings to auto-overwrite when the source is newer (skip when older) and to auto-skip files with identical sizes during copy. Runtime-only for now (DB persistence deferred until codegen is available locally).
 - Duplicate file finder (View menu): recursive size-then-hash scan in a background isolate, grouped results with per-file checkboxes (one copy kept by default), trash/delete selected duplicates, recoverable-bytes summary.
 - Multi-rename enhancements: `[C]` counter with start/step/digit-padding controls, `[N1-3]` / `[N-2]` name slicing (1-based, negative from end), `[P]` parent folder name.
+- File coloring rules (View menu → File Coloring…): extension → color rules tint matching file rows, with a built-in default palette (executables red, images purple, archives brown, docs blue, media green, text cyan), add/remove/reset UI. Runtime-only for now (persistence deferred until codegen is available).
 
 ## [1.5.0] - 2026-08-07
 

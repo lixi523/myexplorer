@@ -68,6 +68,7 @@
   "splitFile": "Split File…",
   "combineParts": "Combine Parts…",
   "findDuplicates": "Find Duplicates…",
+  "colorRules": "File Coloring…",
     "sortBy": "Sort By",
     "sortAscending": "Ascending",
     "sortDescending": "Descending",
@@ -1136,6 +1137,14 @@
     "selectAllDups": "Select all duplicates",
     "trashSelected": "Trash selected",
     "deleteSelected": "Delete selected"
+  },
+  "colorRules": {
+    "title": "File Coloring",
+    "hint": "Files matching an extension are tinted in the list.",
+    "extensionHint": "extension, e.g. pdf",
+    "add": "Add",
+    "empty": "No rules — add one above.",
+    "reset": "Restore defaults"
   },
   "operations": {
     "title": "Operations",
