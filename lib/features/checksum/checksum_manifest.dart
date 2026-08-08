@@ -16,7 +16,10 @@ class ManifestEntry {
   final String relativePath;
   final String expectedDigest;
 
-  const ManifestEntry({required this.relativePath, required this.expectedDigest});
+  const ManifestEntry({
+    required this.relativePath,
+    required this.expectedDigest,
+  });
 }
 
 /// Serializes manifest entries into GNU coreutils format, sorted by path for

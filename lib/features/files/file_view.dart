@@ -616,7 +616,9 @@ class _FileListState extends State<FileList> {
   }
 
   void _handleSecondaryPointerUp(PointerUpEvent event) {
-    if (event.buttons & kSecondaryMouseButton != 0) return;
+    // PointerUpEvent.buttons is unreliable on Windows (may still contain the
+    // released button), so never gate on it here — a pointer-up always ends
+    // the secondary-button interaction and must cancel the long-press timer.
     _cancelSecondaryLongPress();
     if (_secondaryDragged || _secondaryLongPressed) {
       _secondaryDownPos = null;
