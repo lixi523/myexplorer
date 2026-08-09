@@ -5,18 +5,12 @@ import 'package:path/path.dart' as p;
 import 'package:waydir/features/navigation/shortcut_bar_store.dart';
 
 void main() {
-  final appData =
-      Platform.environment['APPDATA'] ?? p.dirname(Platform.resolvedExecutable);
-  final file = File(p.join(appData, 'dev.waydir', 'MyExplorer', '快捷栏.ini'));
-  final legacyFile = File(
-    p.join(p.dirname(Platform.resolvedExecutable), '快捷栏.ini'),
-  );
+  final file = File(p.join(p.dirname(Platform.resolvedExecutable), '快捷栏.ini'));
 
   setUp(() async {
     if (file.existsSync()) file.deleteSync();
     final tmp = File('${file.path}.tmp');
     if (tmp.existsSync()) tmp.deleteSync();
-    if (legacyFile.existsSync()) legacyFile.deleteSync();
     ShortcutBarStore.instance.items.value = const [];
     await ShortcutBarStore.instance.load();
   });
@@ -25,7 +19,6 @@ void main() {
     if (file.existsSync()) file.deleteSync();
     final tmp = File('${file.path}.tmp');
     if (tmp.existsSync()) tmp.deleteSync();
-    if (legacyFile.existsSync()) legacyFile.deleteSync();
   });
 
   group('ShortcutBarStore', () {
@@ -33,25 +26,12 @@ void main() {
       expect(ShortcutBarStore.instance.items.value, isEmpty);
     });
 
-    test('filePath targets the APPDATA config directory', () {
+    test('filePath targets the executable directory', () {
       expect(p.basename(ShortcutBarStore.instance.filePath), '快捷栏.ini');
       expect(
         p.dirname(ShortcutBarStore.instance.filePath),
-        p.join(appData, 'dev.waydir', 'MyExplorer'),
+        p.dirname(Platform.resolvedExecutable),
       );
-    });
-
-    test('load migrates a legacy exe-dir INI file', () async {
-      legacyFile.writeAsStringSync(
-        '[Toolbar]\n'
-        'Home | C:\\Users\\me\n',
-      );
-      await ShortcutBarStore.instance.load();
-      expect(file.existsSync(), isTrue);
-      final items = ShortcutBarStore.instance.items.value;
-      expect(items, hasLength(1));
-      expect(items.single.label, 'Home');
-      expect(items.single.target, r'C:\Users\me');
     });
 
     test('load reads a hand-written INI file', () async {
