@@ -651,7 +651,7 @@
         "title": "资源",
         "links": {
           "title": "链接与资源",
-          "body": "更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/MyExplorer/MyExplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)。"
+          "body": "更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/lixi523/myexplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)。"
         }
       }
     }

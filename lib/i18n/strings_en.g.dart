@@ -4290,8 +4290,8 @@ class Translations$help$groups$resources$links$en {
 	/// en: 'Links & Resources'
 	String get title => 'Links & Resources';
 
-	/// en: 'More about MyExplorer and where to go next. - **Changelog** - what's new in each release (in the menu). - **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**. - **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer). - **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md).'
-	String get body => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md).';
+	/// en: 'More about MyExplorer and where to go next. - **Changelog** - what's new in each release (in the menu). - **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**. - **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer). - **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md).'
+	String get body => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md).';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -4808,7 +4808,7 @@ extension on Translations {
 			'help.groups.customization.shortcutBar.body' => 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator.',
 			'help.groups.resources.title' => 'Resources',
 			'help.groups.resources.links.title' => 'Links & Resources',
-			'help.groups.resources.links.body' => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md).',
+			'help.groups.resources.links.body' => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md).',
 			'tags.menuLabel' => 'Tags',
 			'tags.newTag' => 'New Tag',
 			'tags.newTagDots' => 'New tag…',

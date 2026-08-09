@@ -2156,7 +2156,7 @@ class _Translations$help$groups$resources$links$zh extends Translations$help$gro
 
 	// Translations
 	@override String get title => '链接与资源';
-	@override String get body => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/MyExplorer/MyExplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)。';
+	@override String get body => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/lixi523/myexplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)。';
 }
 
 /// The flat map containing all translations for locale <zh>.
@@ -2673,7 +2673,7 @@ extension on TranslationsZh {
 			'help.groups.customization.shortcutBar.body' => '标题栏下方的快捷方式栏可一键启动文件夹、文件或命令，遵循 Total Commander 的惯例。\n\n- 右键按钮可编辑或删除；`+` 区域用于添加新按钮。\n- 按钮可以打开文件夹或文件、运行命令行，或使用 `CD <路径>` 跳转。\n- 支持内置命令，如 `cm_OpenDesktop`、`cm_OpenDrives` 和 `cm_OpenRecycled`。\n- 图标可来自文件（`icon.png`）、exe/dll（`app.exe,0`）或系统库中的索引（`shell32.dll,34`）。\n- 使用**导入 Total Commander 按钮栏...** 加载 `.bar` 文件（UTF-8 或 GBK）。\n- 留空条目可创建分隔符。',
 			'help.groups.resources.title' => '资源',
 			'help.groups.resources.links.title' => '链接与资源',
-			'help.groups.resources.links.body' => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/MyExplorer/MyExplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)。',
+			'help.groups.resources.links.body' => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/lixi523/myexplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)。',
 			'tags.menuLabel' => '标签',
 			'tags.newTag' => '新建标签',
 			'tags.newTagDots' => '新建标签…',

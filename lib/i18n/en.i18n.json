@@ -651,7 +651,7 @@
         "title": "Resources",
         "links": {
           "title": "Links & Resources",
-          "body": "More about MyExplorer and where to go next.\n\n- **Changelog** - what's new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/MyExplorer/MyExplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/MyExplorer/MyExplorer/blob/main/docs/plugins.md)."
+          "body": "More about MyExplorer and where to go next.\n\n- **Changelog** - what's new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)."
         }
       }
     }

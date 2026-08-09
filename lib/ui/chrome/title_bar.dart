@@ -70,11 +70,11 @@ void _openUrl(String url) {
 }
 
 void _openRepository() {
-  _openUrl('https://github.com/MyExplorer/MyExplorer');
+  _openUrl('https://github.com/lixi523/myexplorer');
 }
 
 void _openIssue() {
-  _openUrl('https://github.com/MyExplorer/MyExplorer/issues/new');
+  _openUrl('https://github.com/lixi523/myexplorer/issues/new');
 }
 
 class TitleBar extends StatelessWidget {
