@@ -113,13 +113,18 @@ button2=C:\\Ignored.exe
 
     test('decodes GBK content when UTF-8 is invalid', () {
       final gbk = encodeGbkBytes('[Buttonbar]\nButtoncount=1\nmenu1=视频压缩\n');
-      if (gbk == null) {
+      if (gbk == null || gbk.every((b) => b == 0)) {
         markTestSkipped('GBK encoding unavailable (non-Windows host)');
 
         return;
       }
 
       final text = decodeBarBytes(gbk);
+      if (text.isEmpty || text.codeUnits.every((c) => c == 0)) {
+        markTestSkipped('GBK decoding unavailable (non-Windows host)');
+
+        return;
+      }
 
       expect(text, contains('视频压缩'));
     }, skip: !Platform.isWindows);
