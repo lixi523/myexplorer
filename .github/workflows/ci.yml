@@ -81,9 +81,9 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build and vendor waydir_core
+      - name: Build and vendor myexplorer_core
         shell: pwsh
-        run: scripts\build_waydir_core_windows.ps1
+        run: scripts\build_myexplorer_core_windows.ps1
 
       - name: Get dependencies
         run: flutter pub get
@@ -108,9 +108,9 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build and vendor waydir_core
+      - name: Build and vendor myexplorer_core
         shell: pwsh
-        run: scripts\build_waydir_core_windows.ps1
+        run: scripts\build_myexplorer_core_windows.ps1
 
       - name: Get dependencies
         run: flutter pub get
@@ -138,8 +138,8 @@ jobs:
       - name: Rename artifacts to MyExplorer prefix
         shell: pwsh
         run: |
-          Get-ChildItem -Path dist -Recurse -Filter "waydir-*" | ForEach-Object {
-            $newName = $_.Name -replace '^waydir-', 'MyExplorer-'
+          Get-ChildItem -Path dist -Recurse -Filter "myexplorer-*" | ForEach-Object {
+            $newName = $_.Name -replace '^myexplorer-', 'MyExplorer-'
             Rename-Item -Path $_.FullName -NewName $newName
             Write-Host "Renamed: $($_.Name) -> $newName"
           }
