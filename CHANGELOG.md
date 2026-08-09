@@ -5,9 +5,10 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.1.0] - 2026-08-09
 
 ### Changed
+- Re-branded from waydir to MyExplorer: package name, native core, CLI, plugin API and environment variables all renamed consistently.
 - File coloring now tints the file name text (by extension rules, folders fixed blue) instead of the row background; the row background stays unchanged.
 - Right-button (NC mode) selection: right-click adds to the selection (multi-select, highlighted but not bold), right-drag sweeps and selects every row passed over (with edge auto-scroll), and a 1 s right-button long-press opens the context menu. Matches Total Commander's extended selection behavior.
 

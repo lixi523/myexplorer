@@ -6,6 +6,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
+> **V2.1**: 品牌统一为 **MyExplorer**（全项目由 waydir 更名，含原生核心、插件 API、发布产物）；文件着色改为文件名着色，新增右键 NC 扩展选择模式。
+>
 > **V2.0**: Total Commander 对标升级完成 —— 双窗格 + 中间竖快捷栏、Ctrl+Q 快速查看、操作队列、校验清单、分割合并、重复文件查找、文件着色、7z 支持、压缩包内编辑等。
 
 ---
