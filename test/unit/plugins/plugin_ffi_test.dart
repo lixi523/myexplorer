@@ -11,7 +11,7 @@ void main() {
 
     test('load never throws and returns a string or null', () async {
       final result = await PluginFfi.load('nonexistent/init.lua');
-      expect(result == null || result is String, isTrue);
+      expect(result, anyOf(isNull, isA<String>()));
     });
 
     test('invoke never throws and returns a string or null', () async {
@@ -20,7 +20,7 @@ void main() {
         actionId: 'run',
         ctxJson: '{}',
       );
-      expect(result == null || result is String, isTrue);
+      expect(result, anyOf(isNull, isA<String>()));
     });
 
     test('barUpdate never throws and returns a string or null', () async {
@@ -29,7 +29,7 @@ void main() {
         barId: 'b',
         ctxJson: '{}',
       );
-      expect(result == null || result is String, isTrue);
+      expect(result, anyOf(isNull, isA<String>()));
     });
 
     test('barClick never throws and returns a string or null', () async {
@@ -39,7 +39,7 @@ void main() {
         itemId: 'i',
         ctxJson: '{}',
       );
-      expect(result == null || result is String, isTrue);
+      expect(result, anyOf(isNull, isA<String>()));
     });
 
     test('columnCompute never throws and returns a string or null', () async {
@@ -48,7 +48,7 @@ void main() {
         columnId: 'c',
         ctxJson: '{}',
       );
-      expect(result == null || result is String, isTrue);
+      expect(result, anyOf(isNull, isA<String>()));
     });
 
     test('worker survives repeated calls and shutdown', () async {
@@ -56,7 +56,7 @@ void main() {
       await PluginFfi.load('b.lua');
       PluginFfi.shutdown();
       final result = await PluginFfi.load('c.lua');
-      expect(result == null || result is String, isTrue);
+      expect(result, anyOf(isNull, isA<String>()));
       PluginFfi.shutdown();
       PluginFfi.shutdown();
     });

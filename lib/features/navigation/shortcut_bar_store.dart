@@ -20,13 +20,39 @@ class ShortcutBarStore {
 
   final items = signal<List<ShortcutBarItem>>([]);
 
-  /// The INI file location: `<exe dir>\快捷栏.ini`.
-  String get filePath =>
+  /// The INI file location. Stored under `%APPDATA%\dev.waydir\MyExplorer`
+  /// so it survives installs into `Program Files` (where the exe directory is
+  /// not writable). Falls back to the exe directory when `APPDATA` is unset.
+  String get filePath => p.join(_configDir(), '快捷栏.ini');
+
+  /// The pre-migration location (`<exe dir>\快捷栏.ini`), checked once on
+  /// first load so existing installs keep their buttons.
+  String get _legacyFilePath =>
       p.join(p.dirname(Platform.resolvedExecutable), '快捷栏.ini');
+
+  String _configDir() {
+    final appData = Platform.environment['APPDATA'];
+    if (appData == null || appData.isEmpty) {
+      return p.dirname(Platform.resolvedExecutable);
+    }
+
+    return p.join(appData, 'dev.waydir', 'MyExplorer');
+  }
 
   /// Loads items from the INI file. Starts with an empty list when missing.
   Future<void> load() async {
     final file = File(filePath);
+    if (!file.existsSync()) {
+      final legacy = File(_legacyFilePath);
+      if (legacy.existsSync()) {
+        try {
+          await Directory(p.dirname(file.path)).create(recursive: true);
+          await legacy.copy(file.path);
+        } catch (_) {
+          // migration is best-effort
+        }
+      }
+    }
     try {
       if (!file.existsSync()) {
         items.value = const [];
@@ -124,6 +150,7 @@ class ShortcutBarStore {
   Future<void> _save() async {
     final file = File(filePath);
     try {
+      await Directory(p.dirname(file.path)).create(recursive: true);
       final specs = items.value.map(
         (e) => (label: e.label, target: e.target, icon: e.icon),
       );

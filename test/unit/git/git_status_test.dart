@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:path/path.dart' as p;
 import 'package:waydir/features/git/git_status_store.dart';
 
 Future<ProcessResult> _git(String cwd, List<String> args) =>
