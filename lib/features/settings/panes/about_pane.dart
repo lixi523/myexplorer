@@ -41,11 +41,7 @@ class AboutPane extends StatelessWidget {
   }
 
   Future<void> _openUrl(String url) async {
-    await Process.start('cmd', [
-      '/c',
-      'start',
-      url,
-    ], mode: ProcessStartMode.detached);
+    await Process.start('explorer', [url], mode: ProcessStartMode.detached);
   }
 
   @override

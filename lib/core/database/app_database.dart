@@ -120,8 +120,9 @@ class Bookmarks extends Table {
 }
 
 /// User-defined items on the shortcut bar below the title bar. [target] is a
-/// folder/file path or a command line; [actionId] is an optional built-in
-/// action id for buttons that mirror keyboard shortcuts.
+/// folder/file path or a command line. The table only exists to generate the
+/// [ShortcutBarItem] data class used by the INI-backed shortcut bar store;
+/// persistence itself lives in `快捷栏.ini`.
 class ShortcutBarItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get orderIndex => integer()();
