@@ -55,7 +55,7 @@ def make_handler(version: str, asset_path: str, public_origin: str, content_type
             parsed = urlparse(self.path)
             path = parsed.path
 
-            if path == "/repos/MyExplorer/MyExplorer/releases":
+            if path == "/repos/lixi523/myexplorer/releases":
                 payload = json.dumps(
                     build_release_json(version, asset_path, download_url)
                 ).encode("utf-8")
@@ -133,7 +133,7 @@ def main() -> int:
 
     print(
         f"[mock] serving v{args.version} from {asset_path}\n"
-        f"[mock] api:      http://{args.host}:{args.port}/repos/MyExplorer/MyExplorer/releases\n"
+        f"[mock] api:      http://{args.host}:{args.port}/repos/lixi523/myexplorer/releases\n"
         f"[mock] download: {public_origin}/download/{os.path.basename(asset_path)}\n"
         f"[mock] run app:  MYEXPLORER_GITHUB_API_BASE=http://{args.host}:{args.port} myexplorer",
         file=sys.stderr,

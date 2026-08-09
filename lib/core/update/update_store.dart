@@ -24,8 +24,8 @@ enum UpdateStatus {
 }
 
 class UpdateStore {
-  static const _owner = 'MyExplorer';
-  static const _repo = 'MyExplorer';
+  static const _owner = 'lixi523';
+  static const _repo = 'myexplorer';
   static const _cacheTtl = Duration(hours: 1);
 
   static UpdateStore? _instance;

@@ -162,7 +162,7 @@ void main() {
     final md = File('${dir.path}/readme.md')
       ..writeAsStringSync(
         '<p>\n'
-        '  <a href="https://github.com/MyExplorer/MyExplorer/releases">'
+        '  <a href="https://github.com/lixi523/myexplorer/releases">'
         '<b>Download</b></a>\n'
         '  -\n'
         '  <a href="#install"><b>Install</b></a>\n'
