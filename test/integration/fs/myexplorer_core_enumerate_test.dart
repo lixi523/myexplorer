@@ -26,7 +26,7 @@ void main() {
       expect(paths.contains('${root.path}${sep}a'), isTrue);
       expect(paths.contains('${root.path}${sep}a${sep}b${sep}c'), isTrue);
       expect(
-        paths.contains('${root.path}${sep}a${sep}b${sep}c${sep}.hidden_deep'),
+        paths.contains('${root.path}${sep}a${sep}b${sep}c$sep.hidden_deep'),
         isTrue,
       );
       expect(paths.contains('${root.path}${sep}a${sep}top.txt'), isTrue);
