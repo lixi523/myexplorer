@@ -47,44 +47,51 @@ List<({String label, String target, String? icon})> parseToolbarIni(
   return items;
 }
 
-/// Splits a line on `|` delimiters, respecting `\`-escaped pipes.
+/// Splits a line on `|` delimiters, respecting `\|` (escaped pipe) and
+/// `\\` (escaped backslash). Any other backslash is kept as-is so Windows
+/// drive paths like `C:\Users\me` survive parsing.
 List<String> _splitLine(String line) {
   final result = <String>[];
   var current = StringBuffer();
-  var inEscape = false;
-  for (var i = 0; i < line.length; i++) {
+  var i = 0;
+  while (i < line.length) {
     final ch = line[i];
-    if (inEscape) {
-      current.write(ch);
-      inEscape = false;
-      continue;
-    }
-    if (ch == '\\') {
-      inEscape = true;
-      continue;
+    if (ch == '\\' && i + 1 < line.length) {
+      final next = line[i + 1];
+      if (next == '|' || next == '\\') {
+        current.write(next);
+        i += 2;
+        continue;
+      }
     }
     if (ch == '|') {
       result.add(current.toString());
       current = StringBuffer();
-      continue;
+    } else {
+      current.write(ch);
     }
-    current.write(ch);
+    i++;
   }
   result.add(current.toString());
   return result;
 }
 
-/// Serializes toolbar items into INI content (without BOM).
+/// Serializes toolbar items into INI content (without BOM). Backslashes and
+/// pipes in fields are escaped so parsing round-trips exactly.
 String serializeToolbarIni(
   Iterable<({String label, String target, String? icon})> items,
 ) {
   final buffer = StringBuffer('[Toolbar]\n');
   for (final item in items) {
-    final parts = [item.label, item.target];
+    final parts = [_escapeField(item.label), _escapeField(item.target)];
     if (item.icon != null && item.icon!.isNotEmpty) {
-      parts.add(item.icon!);
+      parts.add(_escapeField(item.icon!));
     }
     buffer.writeln(parts.join(' | '));
   }
   return buffer.toString();
+}
+
+String _escapeField(String value) {
+  return value.replaceAll('\\', '\\\\').replaceAll('|', '\\|');
 }
