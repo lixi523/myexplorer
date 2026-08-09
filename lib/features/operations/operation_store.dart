@@ -764,28 +764,28 @@ class OperationStore {
     void Function(List<dynamic>) entryPoint;
     switch (task.type) {
       case TaskType.copy:
-        entryPoint = useSftp ? sftpCopyWorker : FileSystemService.copyWorker;
+        entryPoint = useSftp ? sftpCopyWorker : copyWorker;
       case TaskType.move:
-        entryPoint = useSftp ? sftpMoveWorker : FileSystemService.moveWorker;
+        entryPoint = useSftp ? sftpMoveWorker : moveWorker;
       case TaskType.delete:
         entryPoint = useSftp
             ? sftpDeleteWorker
-            : FileSystemService.deleteWorker;
+            : deleteWorker;
       case TaskType.trash:
-        entryPoint = FileSystemService.trashWorker;
+        entryPoint = trashWorker;
       case TaskType.trashRestore:
       case TaskType.trashDelete:
-        entryPoint = FileSystemService.trashEntryWorker;
+        entryPoint = trashEntryWorker;
       case TaskType.extract:
-        entryPoint = FileSystemService.extractWorker;
+        entryPoint = extractWorker;
       case TaskType.compress:
-        entryPoint = FileSystemService.compressWorker;
+        entryPoint = compressWorker;
       case TaskType.archiveEdit:
-        entryPoint = FileSystemService.archiveEditWorker;
+        entryPoint = archiveEditWorker;
       case TaskType.split:
-        entryPoint = FileSystemService.splitFileWorker;
+        entryPoint = splitFileWorker;
       case TaskType.combine:
-        entryPoint = FileSystemService.combineFileWorker;
+        entryPoint = combineFileWorker;
       case TaskType.plugin:
         throw StateError('plugin tasks are executed by the plugin runner');
     }
