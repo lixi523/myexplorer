@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:myexplorer/core/archive/archive_reader.dart';
+import '../../support/ops.dart';
 
 void main() {
   group('ArchiveReader', () {
@@ -23,12 +24,7 @@ void main() {
       File(p.join(src.path, 'b.txt')).writeAsStringSync('world');
       a.setLastModifiedSync(sourceModified);
       zipPath = p.join(tmp.path, 'sample.zip');
-      final r = Process.runSync('zip', [
-        '-qr',
-        zipPath,
-        '.',
-      ], workingDirectory: p.join(tmp.path, 'src'));
-      expect(r.exitCode, 0, reason: r.stderr.toString());
+      createZipFixture(zipPath, p.join(tmp.path, 'src'));
     });
 
     tearDown(() => tmp.deleteSync(recursive: true));
@@ -57,7 +53,7 @@ void main() {
     test('extractTree stages a single file under its basename', () {
       final stage = p.join(tmp.path, 'stage1');
       final staged = ArchiveReader.extractTree(zipPath, 'a.txt', stage);
-      expect(staged, p.join(stage, 'a.txt'));
+      expect(_norm(staged), _norm(p.join(stage, 'a.txt')));
       expect(File(staged).readAsStringSync(), 'hello');
     });
 
@@ -71,8 +67,10 @@ void main() {
     test('extractTree stages a whole directory subtree', () {
       final stage = p.join(tmp.path, 'stage2');
       final staged = ArchiveReader.extractTree(zipPath, 'sub', stage);
-      expect(staged, p.join(stage, 'sub'));
+      expect(_norm(staged), _norm(p.join(stage, 'sub')));
       expect(File(p.join(staged, 'b.txt')).readAsStringSync(), 'world');
     });
   });
 }
+
+String _norm(String path) => p.normalize(path).replaceAll('\\', '/');

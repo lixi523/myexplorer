@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:myexplorer/core/models/file_operation.dart';
 import 'package:myexplorer/features/operations/operation_store.dart';
-
 import '../../support/ops.dart';
 
 void main() {
@@ -114,12 +113,7 @@ void main() {
       File(p.join(tmpDir.path, 'payload', 'a.txt')).writeAsStringSync('hi');
       File(p.join(src.path, 'b.txt')).writeAsStringSync('deep');
       final zip = p.join(tmpDir.path, 'bundle.zip');
-      final z = Process.runSync('zip', [
-        '-qr',
-        zip,
-        '.',
-      ], workingDirectory: p.join(tmpDir.path, 'payload'));
-      expect(z.exitCode, 0, reason: z.stderr.toString());
+      createZipFixture(zip, p.join(tmpDir.path, 'payload'));
 
       final dest = Directory(p.join(tmpDir.path, 'out'))..createSync();
       store.enqueueExtract([zip], dest.path);
@@ -141,12 +135,7 @@ void main() {
     test('extract prompts on conflict and keeps both on rename', () async {
       File(p.join(tmpDir.path, 'a.txt')).writeAsStringSync('fresh');
       final zip = p.join(tmpDir.path, 'one.zip');
-      final z = Process.runSync('zip', [
-        '-qr',
-        zip,
-        'a.txt',
-      ], workingDirectory: tmpDir.path);
-      expect(z.exitCode, 0, reason: z.stderr.toString());
+      createZipFixture(zip, tmpDir.path, only: ['a.txt']);
 
       final dest = Directory(p.join(tmpDir.path, 'out'))..createSync();
       File(p.join(dest.path, 'a.txt')).writeAsStringSync('old');
