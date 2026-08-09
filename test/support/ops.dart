@@ -22,7 +22,7 @@ void createZipFixture(String zipPath, String srcPath, {List<String>? only}) {
     archive.addFile(entry);
   }
   final bytes = ZipEncoder().encode(archive);
-  File(zipPath).writeAsBytesSync(bytes!);
+  File(zipPath).writeAsBytesSync(bytes);
 }
 
 Future<FileTask> waitForTask(
