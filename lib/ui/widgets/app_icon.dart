@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../theme/app_theme.dart';
 
@@ -18,7 +18,7 @@ class AppIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fallback = Icon(
-      WaydirIconsRegular.appWindow,
+      MyExplorerIconsRegular.appWindow,
       size: size * 0.9,
       color: AppColors.fgMuted,
     );

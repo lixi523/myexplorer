@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../core/settings/settings_store.dart';
@@ -285,7 +285,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
               child: Row(
                 children: [
                   Icon(
-                    WaydirIconsRegular.magnifyingGlass,
+                    MyExplorerIconsRegular.magnifyingGlass,
                     size: 16,
                     color: AppColors.fgMuted,
                   ),
@@ -466,7 +466,7 @@ class _RecursiveToggleState extends State<_RecursiveToggle> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      WaydirIconsRegular.treeStructure,
+                      MyExplorerIconsRegular.treeStructure,
                       size: 14,
                       color: active ? AppColors.accent : AppColors.fgMuted,
                     ),
@@ -547,7 +547,7 @@ class _ContentToggleState extends State<_ContentToggle> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(WaydirIconsRegular.fileTxt, size: 14, color: fg),
+                    Icon(MyExplorerIconsRegular.fileTxt, size: 14, color: fg),
                     const SizedBox(width: 4),
                     Text(
                       t.search.content,
@@ -946,7 +946,7 @@ class _CloseButtonState extends State<_CloseButton> {
               borderRadius: BorderRadius.zero,
             ),
             child: Icon(
-              WaydirIconsRegular.x,
+              MyExplorerIconsRegular.x,
               size: 14,
               color: AppColors.fgMuted,
             ),

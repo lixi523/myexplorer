@@ -7,13 +7,13 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
-import 'package:waydir/core/database/app_database.dart' hide Tags;
+import 'package:myexplorer/core/database/app_database.dart' hide Tags;
 
 void main() {
   late Directory tmpDir;
 
   setUp(() {
-    tmpDir = Directory.systemTemp.createTempSync('waydir_db_migration_');
+    tmpDir = Directory.systemTemp.createTempSync('myexplorer_db_migration_');
   });
 
   tearDown(() {

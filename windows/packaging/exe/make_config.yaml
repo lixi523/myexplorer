@@ -3,7 +3,7 @@ display_name: MyExplorer
 executable_name: MyExplorer
 artifact_name: "MyExplorer-{{build_name}}{{#has_build_number}}+{{build_number}}{{/has_build_number}}-{{platform}}{{#is_installer}}-setup{{/is_installer}}{{#ext}}.{{ext}}{{/ext}}"
 publisher_name: mikolajbadyl
-publisher_url: https://github.com/lixi523/Waydir
+publisher_url: https://github.com/lixi523/MyExplorer
 setup_icon_file: windows/runner/resources/app_icon.ico
 create_desktop_icon: false
 script_template: inno_setup.iss

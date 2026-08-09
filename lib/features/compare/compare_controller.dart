@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:signals/signals.dart';
 
 import '../../core/fs/file_system_service.dart';
-import '../../core/fs/waydir_core_loader.dart';
+import '../../core/fs/myexplorer_core_loader.dart';
 import '../../core/models/file_entry.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../ui/theme/app_theme.dart';
@@ -202,7 +202,7 @@ class CompareController {
 
     final native = await Isolate.run(() {
       try {
-        final blob = WaydirCoreLoader.enumerate(root, postorder: false);
+        final blob = MyExplorerCoreLoader.enumerate(root, postorder: false);
         if (blob == null) return null;
 
         return FileEntryCodec.decode(blob);

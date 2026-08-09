@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../theme/app_theme.dart';
 
@@ -34,7 +34,7 @@ class _AppCloseButtonState extends State<AppCloseButton> {
             borderRadius: BorderRadius.zero,
           ),
           child: Icon(
-            WaydirIconsRegular.x,
+            MyExplorerIconsRegular.x,
             size: 14,
             color: _hovered ? AppColors.fg : AppColors.fgMuted,
           ),

@@ -5,7 +5,7 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 
 import '../../core/fs/sftp_session_manager.dart';
-import '../../core/fs/waydir_core_loader.dart';
+import '../../core/fs/myexplorer_core_loader.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
 import '../../core/platform/platform_paths.dart';
@@ -140,7 +140,7 @@ class _FolderSizeRowsState extends State<_FolderSizeRows> {
       return;
     }
     try {
-      _session = WaydirCoreLoader.folderScanStart(widget.path);
+      _session = MyExplorerCoreLoader.folderScanStart(widget.path);
     } catch (e, st) {
       log.warn('quick-look', 'folder scan start failed', error: e, stack: st);
       _session = null;
@@ -182,7 +182,7 @@ class _FolderSizeRowsState extends State<_FolderSizeRows> {
     final session = _session;
     if (session == null) return;
     try {
-      final r = WaydirCoreLoader.folderScanPoll(session);
+      final r = MyExplorerCoreLoader.folderScanPoll(session);
       if (!mounted) return;
       setState(() {
         _stats = FolderStats(r.bytes, r.items, done: r.done);
@@ -204,8 +204,8 @@ class _FolderSizeRowsState extends State<_FolderSizeRows> {
     if (session == null) return;
     _session = null;
     try {
-      if (cancel) WaydirCoreLoader.folderScanCancel(session);
-      WaydirCoreLoader.folderScanFree(session);
+      if (cancel) MyExplorerCoreLoader.folderScanCancel(session);
+      MyExplorerCoreLoader.folderScanFree(session);
     } catch (e, st) {
       log.warn('quick-look', 'folder scan cleanup failed', error: e, stack: st);
     }
@@ -339,7 +339,7 @@ void _runSftpFolderScan(_SftpFolderScanRequest request) {
   }
 
   void walk(String remotePath) {
-    final buf = WaydirCoreLoader.sftpList(request.sessionId, remotePath);
+    final buf = MyExplorerCoreLoader.sftpList(request.sessionId, remotePath);
     if (buf == null) return;
     final entries = FileEntryCodec.decode(buf);
     for (final entry in entries) {
@@ -686,7 +686,7 @@ void _runTypeBreakdownScan(_TypeScanRequest request) {
 
   void walkSftp(_TypeScanSftpRoot root) {
     void walk(String remotePath) {
-      final buf = WaydirCoreLoader.sftpList(root.sessionId, remotePath);
+      final buf = MyExplorerCoreLoader.sftpList(root.sessionId, remotePath);
       if (buf == null) return;
       final entries = FileEntryCodec.decode(buf);
       for (final entry in entries) {
@@ -807,7 +807,7 @@ class _MultiPropertiesState extends State<MultiProperties> {
       }
       int? session;
       try {
-        session = WaydirCoreLoader.folderScanStart(e.realPath);
+        session = MyExplorerCoreLoader.folderScanStart(e.realPath);
       } catch (e, st) {
         log.warn(
           'quick-look',
@@ -871,7 +871,7 @@ class _MultiPropertiesState extends State<MultiProperties> {
         continue;
       }
       try {
-        final r = WaydirCoreLoader.folderScanPoll(session);
+        final r = MyExplorerCoreLoader.folderScanPoll(session);
         j.bytes = r.bytes;
         j.items = r.items;
         j.done = r.done;
@@ -907,7 +907,7 @@ class _MultiPropertiesState extends State<MultiProperties> {
     if (j.freed) return;
     j.freed = true;
     try {
-      WaydirCoreLoader.folderScanFree(session);
+      MyExplorerCoreLoader.folderScanFree(session);
     } catch (e, st) {
       log.warn(
         'quick-look',
@@ -932,7 +932,7 @@ class _MultiPropertiesState extends State<MultiProperties> {
       if (j.freed) continue;
       if (!j.done) {
         try {
-          WaydirCoreLoader.folderScanCancel(session);
+          MyExplorerCoreLoader.folderScanCancel(session);
         } catch (e, st) {
           log.warn(
             'quick-look',

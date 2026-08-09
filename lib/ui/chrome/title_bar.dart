@@ -6,10 +6,10 @@ import '../window/window_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../app/app_info.dart';
-import '../../app/waydir_app.dart';
+import '../../app/myexplorer_app.dart';
 import '../../core/database/app_database.dart';
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../features/command_palette/command_palette_launcher.dart';
@@ -31,38 +31,38 @@ import '../theme/app_theme.dart';
 import '../theme/app_text_styles.dart';
 
 void _openPreferences() {
-  final ctx = waydirNavigatorKey.currentContext;
+  final ctx = myexplorerNavigatorKey.currentContext;
   if (ctx != null) showPreferencesDialog(ctx);
 }
 
 void _openKeybindingsHelp() {
-  final ctx = waydirNavigatorKey.currentContext;
+  final ctx = myexplorerNavigatorKey.currentContext;
   if (ctx != null) showKeybindingsHelp(ctx);
 }
 
 void _openInAppTutorial() {
-  final ctx = waydirNavigatorKey.currentContext;
+  final ctx = myexplorerNavigatorKey.currentContext;
   if (ctx != null) showHelpDialog(ctx);
 }
 
 void _openChangelog() {
-  final ctx = waydirNavigatorKey.currentContext;
+  final ctx = myexplorerNavigatorKey.currentContext;
   if (ctx != null) showChangelogDialog(ctx);
 }
 
 void _openPlugins() {
-  final ctx = waydirNavigatorKey.currentContext;
+  final ctx = myexplorerNavigatorKey.currentContext;
   if (ctx != null) showPluginsDialog(ctx);
 }
 
 void _openDiagnostics() {
-  final ctx = waydirNavigatorKey.currentContext;
+  final ctx = myexplorerNavigatorKey.currentContext;
   if (ctx != null) showDiagnosticsDialog(ctx);
 }
 
 void _openAbout() {
-  final ctx = waydirNavigatorKey.currentContext;
-  if (ctx != null) showWaydirAboutDialog(ctx);
+  final ctx = myexplorerNavigatorKey.currentContext;
+  if (ctx != null) showMyExplorerAboutDialog(ctx);
 }
 
 void _openUrl(String url) {
@@ -70,11 +70,11 @@ void _openUrl(String url) {
 }
 
 void _openRepository() {
-  _openUrl('https://github.com/Waydir/Waydir');
+  _openUrl('https://github.com/MyExplorer/MyExplorer');
 }
 
 void _openIssue() {
-  _openUrl('https://github.com/Waydir/Waydir/issues/new');
+  _openUrl('https://github.com/MyExplorer/MyExplorer/issues/new');
 }
 
 class TitleBar extends StatelessWidget {
@@ -168,23 +168,23 @@ class _MenuBar extends StatelessWidget {
           label: t.app.title,
           items: [
             ContextMenuItem(
-              icon: WaydirIconsRegular.gearSix,
+              icon: MyExplorerIconsRegular.gearSix,
               label: t.preferences.menuLabel,
               action: 'preferences',
             ),
             ContextMenuItem(
-              icon: WaydirIconsRegular.info,
+              icon: MyExplorerIconsRegular.info,
               label: t.preferences.categories.about,
               action: 'about',
             ),
             ContextMenuItem(
-              icon: WaydirIconsRegular.notebook,
+              icon: MyExplorerIconsRegular.notebook,
               label: t.appMenu.changelog,
               action: 'changelog',
             ),
             ContextMenuItem.divider,
             ContextMenuItem(
-              icon: WaydirIconsRegular.signOut,
+              icon: MyExplorerIconsRegular.signOut,
               label: t.appMenu.quit,
               action: 'quit',
             ),
@@ -207,7 +207,7 @@ class _MenuBar extends StatelessWidget {
           label: t.preferences.plugins.title,
           items: [
             ContextMenuItem(
-              icon: WaydirIconsRegular.gearSix,
+              icon: MyExplorerIconsRegular.gearSix,
               label: t.appMenu.managePlugins,
               action: 'manage_plugins',
             ),
@@ -233,29 +233,29 @@ class _MenuBar extends StatelessWidget {
           label: t.appMenu.help,
           items: [
             ContextMenuItem(
-              icon: WaydirIconsRegular.info,
+              icon: MyExplorerIconsRegular.info,
               label: t.help.menuLabel,
               action: 'tutorial',
               shortcut: '?',
             ),
             ContextMenuItem(
-              icon: WaydirIconsRegular.keyboard,
+              icon: MyExplorerIconsRegular.keyboard,
               label: t.keybindings.menuLabel,
               action: 'keybindings',
             ),
             ContextMenuItem(
-              icon: WaydirIconsRegular.bug,
+              icon: MyExplorerIconsRegular.bug,
               label: t.preferences.diagnostics.title,
               action: 'diagnostics',
             ),
             ContextMenuItem.divider,
             ContextMenuItem(
-              icon: WaydirIconsRegular.gitBranch,
+              icon: MyExplorerIconsRegular.gitBranch,
               label: t.appMenu.repository,
               action: 'repository',
             ),
             ContextMenuItem(
-              icon: WaydirIconsRegular.arrowSquareOut,
+              icon: MyExplorerIconsRegular.arrowSquareOut,
               label: t.appMenu.createIssue,
               action: 'issue',
             ),
@@ -377,7 +377,7 @@ class _CommandPaletteButtonState extends State<_CommandPaletteButton> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  WaydirIconsRegular.magnifyingGlass,
+                  MyExplorerIconsRegular.magnifyingGlass,
                   size: 11,
                   color: AppColors.fgSubtle,
                 ),
@@ -448,7 +448,7 @@ class _ShortcutBarState extends State<ShortcutBar> {
   }
 
   void _openConfig() {
-    final ctx = waydirNavigatorKey.currentContext;
+    final ctx = myexplorerNavigatorKey.currentContext;
     if (ctx != null) showShortcutBarConfigDialog(ctx);
   }
 
@@ -494,19 +494,19 @@ class _ShortcutBarState extends State<ShortcutBar> {
           ),
           const Spacer(),
           _ShortcutButton(
-            icon: WaydirIconsRegular.list,
+            icon: MyExplorerIconsRegular.list,
             tooltip: t.toolbar.listView,
             onTap: () => widget.onAction('toggle_view'),
           ),
           const SizedBox(width: 8),
           _ShortcutButton(
-            icon: WaydirIconsRegular.magnifyingGlass,
+            icon: MyExplorerIconsRegular.magnifyingGlass,
             tooltip: t.keybindings.search,
             onTap: () => widget.onAction('search'),
           ),
           const SizedBox(width: 8),
           _ShortcutButton(
-            icon: WaydirIconsRegular.plus,
+            icon: MyExplorerIconsRegular.plus,
             tooltip: t.preferences.shortcutBar.title,
             onTap: _openConfig,
           ),
@@ -547,7 +547,7 @@ class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
 
   Widget _glyph() {
     return Icon(
-      WaydirIconsRegular.folderOpen,
+      MyExplorerIconsRegular.folderOpen,
       size: 16,
       color: _hovered ? AppColors.fg : AppColors.fgMuted,
     );

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/platform/gbk_codec.dart';
-import 'package:waydir/features/navigation/tc_bar_parser.dart';
+import 'package:myexplorer/core/platform/gbk_codec.dart';
+import 'package:myexplorer/features/navigation/tc_bar_parser.dart';
 
 void main() {
   group('parseTcBar', () {

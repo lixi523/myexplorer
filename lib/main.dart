@@ -6,7 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'ui/window/window.dart';
 import 'app/app_info.dart';
 import 'app/launch_args.dart';
-import 'app/waydir_app.dart';
+import 'app/myexplorer_app.dart';
 import 'core/fs/fs_backend.dart';
 import 'core/fs/fs_worker_pool.dart';
 import 'core/fs/local_fs.dart';
@@ -71,7 +71,7 @@ void main(List<String> args) async {
         stdout.writeln('MyExplorer ${AppInfo.version.value}');
         exit(0);
       }
-      const fakeVersion = String.fromEnvironment('WAYDIR_FAKE_VERSION');
+      const fakeVersion = String.fromEnvironment('MYEXPLORER_FAKE_VERSION');
       UpdateStore.init(
         currentVersion: fakeVersion.isNotEmpty
             ? fakeVersion
@@ -79,7 +79,7 @@ void main(List<String> args) async {
       );
       unawaited(UpdateStore.instance.checkOnStartup());
       unawaited(PluginStore.instance.loadAll());
-      runApp(TranslationProvider(child: const WaydirApp()));
+      runApp(TranslationProvider(child: const MyExplorerApp()));
 
       if (isWindowChromeSupported) {
         appWindow.minSize = const Size(700, 450);

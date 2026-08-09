@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:waydir_term/xterm.dart';
+import 'package:myexplorer_term/xterm.dart';
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../core/settings/settings_store.dart';
 import '../../features/files/file_view.dart'
@@ -25,7 +25,7 @@ import '../navigation/toolbar.dart';
 import '../plugins/plugin_bar.dart';
 import '../plugins/plugin_store.dart';
 import '../tabs/tab_strip.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/widgets/app_close_button.dart';
@@ -724,7 +724,7 @@ class _TerminalHeader extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(WaydirIconsRegular.terminal, size: 13, color: fg),
+            Icon(MyExplorerIconsRegular.terminal, size: 13, color: fg),
             const SizedBox(width: 7),
             Expanded(
               child: ReorderableListView.builder(
@@ -756,13 +756,13 @@ class _TerminalHeader extends StatelessWidget {
             const SizedBox(width: 4),
             if (onClose != null)
               _TerminalIconButton(
-                icon: WaydirIconsRegular.plus,
+                icon: MyExplorerIconsRegular.plus,
                 onTap: () => onNewTab?.call(slot),
               ),
             if (onClose != null && onNewTabMenu != null)
               Builder(
                 builder: (context) => _TerminalIconButton(
-                  icon: WaydirIconsRegular.caretDown,
+                  icon: MyExplorerIconsRegular.caretDown,
                   size: 16,
                   onTap: () {
                     final box = context.findRenderObject() as RenderBox?;
@@ -852,7 +852,7 @@ class _TerminalTabChipState extends State<_TerminalTabChip> {
               ),
               const SizedBox(width: 4),
               _TerminalIconButton(
-                icon: WaydirIconsRegular.x,
+                icon: MyExplorerIconsRegular.x,
                 onTap: widget.onClose,
                 size: 18,
                 iconSize: 11,
@@ -965,7 +965,7 @@ class _PermissionNotice extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              WaydirIconsRegular.warningCircle,
+              MyExplorerIconsRegular.warningCircle,
               size: 48,
               color: AppColors.fgSubtle,
             ),
@@ -1059,7 +1059,11 @@ class _PromptButtonState extends State<_PromptButton> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(WaydirIconsRegular.gearSix, size: 15, color: AppColors.bg),
+              Icon(
+                MyExplorerIconsRegular.gearSix,
+                size: 15,
+                color: AppColors.bg,
+              ),
               const SizedBox(width: 7),
               Text(
                 widget.label,

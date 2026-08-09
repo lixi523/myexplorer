@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/archive/archive_path.dart';
+import 'package:myexplorer/core/archive/archive_path.dart';
 
 void main() {
   late Directory tmp;
 
   setUp(() {
-    tmp = Directory.systemTemp.createTempSync('waydir_arcpath');
+    tmp = Directory.systemTemp.createTempSync('myexplorer_arcpath');
     addTearDown(() => tmp.deleteSync(recursive: true));
   });
 

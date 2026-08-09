@@ -2,7 +2,7 @@
   "id": "selection-count",
   "name": "Selection Count",
   "version": "1.0.0",
-  "author": "waydir",
+  "author": "myexplorer",
   "description": "Shows how many items you selected.",
   "api_version": 2
 }

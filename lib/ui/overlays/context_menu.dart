@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_text_styles.dart';
@@ -350,7 +350,7 @@ class _ContextMenuItemTileState extends State<_ContextMenuItemTile> {
               ],
               if (item.hasChildren) ...[
                 const SizedBox(width: 8),
-                Icon(WaydirIconsRegular.caretRight, size: 12, color: fg),
+                Icon(MyExplorerIconsRegular.caretRight, size: 12, color: fg),
               ],
             ],
           ),
@@ -379,7 +379,7 @@ class _Checkbox extends StatelessWidget {
         ),
       ),
       child: value
-          ? Icon(WaydirIconsRegular.check, size: 10, color: Colors.white)
+          ? Icon(MyExplorerIconsRegular.check, size: 10, color: Colors.white)
           : null,
     );
   }

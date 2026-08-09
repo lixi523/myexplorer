@@ -26,7 +26,7 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
-  waydir::SystemScale::Instance().Register(flutter_controller_.get(), GetHandle());
+  myexplorer::SystemScale::Instance().Register(flutter_controller_.get(), GetHandle());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
@@ -68,7 +68,7 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
       flutter_controller_->engine()->ReloadSystemFonts();
       break;
     case WM_DPICHANGED:
-      waydir::SystemScale::Instance().OnDpiChanged();
+      myexplorer::SystemScale::Instance().OnDpiChanged();
       break;
   }
 

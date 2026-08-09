@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../core/fs/file_system_service.dart';
 import '../../core/logging/app_logger.dart';
@@ -43,7 +43,7 @@ class PaneLocationBar extends StatelessWidget {
           children: [
             SignalBuilder(
               builder: (context) => _ToolBtn(
-                WaydirIconsRegular.arrowLeft,
+                MyExplorerIconsRegular.arrowLeft,
                 store.goBack,
                 store.canGoBack.value,
                 t.toolbar.back,
@@ -51,14 +51,14 @@ class PaneLocationBar extends StatelessWidget {
             ),
             SignalBuilder(
               builder: (context) => _ToolBtn(
-                WaydirIconsRegular.arrowRight,
+                MyExplorerIconsRegular.arrowRight,
                 store.goForward,
                 store.canGoForward.value,
                 t.toolbar.forward,
               ),
             ),
             _ToolBtn(
-              WaydirIconsRegular.arrowUp,
+              MyExplorerIconsRegular.arrowUp,
               store.goUp,
               true,
               t.toolbar.up,
@@ -70,7 +70,7 @@ class PaneLocationBar extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 4),
             ),
             _ToolBtn(
-              WaydirIconsRegular.arrowClockwise,
+              MyExplorerIconsRegular.arrowClockwise,
               store.refresh,
               true,
               t.toolbar.refresh,
@@ -119,7 +119,7 @@ class _RightActions extends StatelessWidget {
             final bookmarked = BookmarkStore.instance.containsPath(path);
 
             return _ToolBtn(
-              WaydirIconsRegular.bookmarkSimple,
+              MyExplorerIconsRegular.bookmarkSimple,
               () => unawaited(BookmarkStore.instance.togglePath(path)),
               path.isNotEmpty,
               bookmarked
@@ -131,7 +131,7 @@ class _RightActions extends StatelessWidget {
         ),
         SignalBuilder(
           builder: (context) => _ToolBtn(
-            WaydirIconsRegular.magnifyingGlass,
+            MyExplorerIconsRegular.magnifyingGlass,
             () => store.searchActive.value
                 ? store.closeSearch()
                 : store.openSearch(),
@@ -245,7 +245,7 @@ class _OverflowMenuButtonState extends State<_OverflowMenuButton> {
       position: position,
       items: [
         ContextMenuItem(
-          icon: WaydirIconsRegular.bookmarkSimple,
+          icon: MyExplorerIconsRegular.bookmarkSimple,
           label: bookmarked
               ? t.menu.removeBookmark
               : t.sidebar.connectDialog.addBookmark,
@@ -253,12 +253,12 @@ class _OverflowMenuButtonState extends State<_OverflowMenuButton> {
           enabled: path.isNotEmpty,
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.magnifyingGlass,
+          icon: MyExplorerIconsRegular.magnifyingGlass,
           label: t.toolbar.search,
           action: _actionSearch,
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.folderPlus,
+          icon: MyExplorerIconsRegular.folderPlus,
           label: t.toolbar.newFolder,
           action: _actionNewFolder,
         ),
@@ -308,7 +308,7 @@ class _OverflowMenuButtonState extends State<_OverflowMenuButton> {
               color: _hovered ? AppColors.bgHover : Colors.transparent,
             ),
             child: Icon(
-              WaydirIconsRegular.dotsThreeOutline,
+              MyExplorerIconsRegular.dotsThreeOutline,
               size: 16,
               color: _hovered ? AppColors.fg : AppColors.fgMuted,
             ),
@@ -559,7 +559,7 @@ class _PathBarState extends State<_PathBar> {
             _PathSuggestion(
               path: path,
               label: path,
-              icon: WaydirIconsRegular.clockClockwise,
+              icon: MyExplorerIconsRegular.clockClockwise,
             ),
       ];
     } catch (e, st) {
@@ -610,7 +610,7 @@ class _PathBarState extends State<_PathBar> {
           _PathSuggestion(
             path: path,
             label: path,
-            icon: WaydirIconsRegular.folder,
+            icon: MyExplorerIconsRegular.folder,
           ),
         );
         if (suggestions.length >= _maxSuggestions) break;
@@ -813,7 +813,7 @@ class _PathBarState extends State<_PathBar> {
             child: Padding(
               padding: const EdgeInsets.only(left: 2, right: 2),
               child: Icon(
-                WaydirIconsRegular.check,
+                MyExplorerIconsRegular.check,
                 size: 14,
                 color: AppColors.accent,
               ),
@@ -827,7 +827,7 @@ class _PathBarState extends State<_PathBar> {
             child: Padding(
               padding: const EdgeInsets.only(left: 2, right: 2),
               child: Icon(
-                WaydirIconsRegular.x,
+                MyExplorerIconsRegular.x,
                 size: 14,
                 color: AppColors.fgMuted,
               ),
@@ -1116,7 +1116,7 @@ class _NewFolderButtonState extends State<_NewFolderButton> {
               borderRadius: BorderRadius.zero,
             ),
             child: Icon(
-              WaydirIconsRegular.folderPlus,
+              MyExplorerIconsRegular.folderPlus,
               size: 16,
               color: _hovered ? AppColors.fg : AppColors.fgMuted,
             ),

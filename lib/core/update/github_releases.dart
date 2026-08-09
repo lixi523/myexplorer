@@ -90,9 +90,9 @@ class GithubReleasesClient {
   }) : _http = httpClient ?? http.Client();
 
   static String get _apiOrigin {
-    const compiled = String.fromEnvironment('WAYDIR_GITHUB_API_BASE');
+    const compiled = String.fromEnvironment('MYEXPLORER_GITHUB_API_BASE');
     if (compiled.isNotEmpty) return _stripTrailingSlash(compiled);
-    final env = Platform.environment['WAYDIR_GITHUB_API_BASE'];
+    final env = Platform.environment['MYEXPLORER_GITHUB_API_BASE'];
     if (env != null && env.isNotEmpty) return _stripTrailingSlash(env);
 
     return 'https://api.github.com';
@@ -106,7 +106,7 @@ class GithubReleasesClient {
   Map<String, String> get _headers => const {
     'Accept': 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'waydir-update-checker',
+    'User-Agent': 'myexplorer-update-checker',
   };
 
   Future<GithubRelease?> latestStable() async {

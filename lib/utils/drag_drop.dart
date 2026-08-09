@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 const formatLocalFile = CustomValueFormat<String>(
-  applicationId: 'dev.waydir.local-file',
+  applicationId: 'dev.myexplorer.local-file',
 );
 
 Future<List<String>> pathsFromSession(DropSession session) async {

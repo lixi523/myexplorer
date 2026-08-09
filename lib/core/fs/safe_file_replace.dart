@@ -78,14 +78,15 @@ class SafeFileReplace {
     final timestamp = DateTime.now().microsecondsSinceEpoch;
 
     for (var counter = 0; counter < 10000; counter++) {
-      final tempPath = '$dir$separator.$name.waydir_tmp_${timestamp}_$counter';
+      final tempPath =
+          '$dir$separator.$name.myexplorer_tmp_${timestamp}_$counter';
       if (FileSystemEntity.typeSync(tempPath, followLinks: false) ==
           FileSystemEntityType.notFound) {
         return tempPath;
       }
     }
 
-    return '$dir$separator.$name.waydir_tmp_${DateTime.now().microsecondsSinceEpoch}';
+    return '$dir$separator.$name.myexplorer_tmp_${DateTime.now().microsecondsSinceEpoch}';
   }
 
   static void cleanupLeftovers(String directoryPath) {
@@ -96,7 +97,7 @@ class SafeFileReplace {
       for (final entity in dir.listSync(followLinks: false)) {
         if (entity is! File) continue;
         final name = _fileName(entity.path);
-        if (!name.contains('.waydir_tmp_')) continue;
+        if (!name.contains('.myexplorer_tmp_')) continue;
         try {
           if (entity.statSync().modified.isBefore(cutoff)) {
             entity.deleteSync();

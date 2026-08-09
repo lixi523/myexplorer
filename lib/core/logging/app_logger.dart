@@ -27,7 +27,7 @@ class AppLogger {
     final m = now.month.toString().padLeft(2, '0');
     final d = now.day.toString().padLeft(2, '0');
 
-    return 'waydir-$y$m$d.log';
+    return 'myexplorer-$y$m$d.log';
   }
 
   Future<void> init() async {
@@ -51,7 +51,7 @@ class AppLogger {
       await for (final ent in dir.list()) {
         if (ent is! File) continue;
         final name = p.basename(ent.path);
-        if (!name.startsWith('waydir-') || !name.endsWith('.log')) continue;
+        if (!name.startsWith('myexplorer-') || !name.endsWith('.log')) continue;
         final stat = await ent.stat();
         if (stat.modified.isBefore(cutoff)) {
           await ent.delete();

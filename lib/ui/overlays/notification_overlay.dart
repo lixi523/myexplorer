@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../core/models/app_notification.dart';
 import '../theme/app_theme.dart';
@@ -174,7 +174,7 @@ class _NotificationCardState extends State<_NotificationCard>
                       GestureDetector(
                         onTap: _dismiss,
                         child: Icon(
-                          WaydirIconsRegular.x,
+                          MyExplorerIconsRegular.x,
                           size: 14,
                           color: AppColors.fgMuted,
                         ),
@@ -265,7 +265,7 @@ class _ApplyToAllCheckboxState extends State<_ApplyToAllCheckbox> {
                 ),
                 child: widget.value
                     ? Icon(
-                        WaydirIconsRegular.check,
+                        MyExplorerIconsRegular.check,
                         size: 10,
                         color: Colors.white,
                       )

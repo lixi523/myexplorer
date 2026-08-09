@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../i18n/strings.g.dart';
@@ -269,7 +269,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
       child: Row(
         children: [
           Icon(
-            WaydirIconsRegular.magnifyingGlass,
+            MyExplorerIconsRegular.magnifyingGlass,
             size: 15,
             color: AppColors.fgSubtle,
           ),

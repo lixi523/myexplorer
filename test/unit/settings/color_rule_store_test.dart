@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/settings/color_rule_store.dart';
+import 'package:myexplorer/core/settings/color_rule_store.dart';
 
 void main() {
   group('ColorRuleStore', () {

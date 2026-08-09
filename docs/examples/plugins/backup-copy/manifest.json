@@ -2,7 +2,7 @@
   "id": "backup-copy",
   "name": "Backup Copy",
   "version": "1.0.0",
-  "author": "waydir",
+  "author": "myexplorer",
   "description": "Makes a .bak copy of each selected file.",
   "api_version": 2
 }

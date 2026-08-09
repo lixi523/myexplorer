@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/models/file_entry.dart';
-import 'package:waydir/features/quick_look/markdown_preview.dart';
-import 'package:waydir/ui/theme/app_theme.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
+import 'package:myexplorer/features/quick_look/markdown_preview.dart';
+import 'package:myexplorer/ui/theme/app_theme.dart';
 
 FileEntry _entry(String path) => FileEntry(
   name: path.split(Platform.pathSeparator).last,
@@ -162,7 +162,7 @@ void main() {
     final md = File('${dir.path}/readme.md')
       ..writeAsStringSync(
         '<p>\n'
-        '  <a href="https://github.com/Waydir/Waydir/releases">'
+        '  <a href="https://github.com/MyExplorer/MyExplorer/releases">'
         '<b>Download</b></a>\n'
         '  -\n'
         '  <a href="#install"><b>Install</b></a>\n'
@@ -190,7 +190,7 @@ void main() {
       ..writeAsStringSync(
         '<div align="center">\n'
         '\n'
-        '# Waydir\n'
+        '# MyExplorer\n'
         '\n'
         '![Flutter](${Uri.dataFromString(_shieldsSvg, mimeType: 'image/svg+xml')})\n'
         '\n'
@@ -206,7 +206,7 @@ void main() {
     final title = find.byWidgetPredicate(
       (widget) =>
           widget is SelectableText &&
-          (widget.textSpan?.toPlainText() ?? widget.data ?? '') == 'Waydir',
+          (widget.textSpan?.toPlainText() ?? widget.data ?? '') == 'MyExplorer',
     );
     expect(title, findsOneWidget);
     expect(tester.getCenter(title).dx, closeTo(400, 40));

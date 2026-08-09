@@ -3,8 +3,8 @@ library;
 
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/models/file_entry.dart';
-import 'package:waydir/core/fs/file_system_service.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
+import 'package:myexplorer/core/fs/file_system_service.dart';
 
 void main() {
   group('FileSystemService', () {

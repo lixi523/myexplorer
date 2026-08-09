@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/checksum/checksum_manifest.dart';
+import 'package:myexplorer/features/checksum/checksum_manifest.dart';
 
 // Backslash as a literal character, avoiding raw-string escape pitfalls.
 const _bs = r'\';

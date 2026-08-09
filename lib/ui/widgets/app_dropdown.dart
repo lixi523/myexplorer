@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../overlays/popup_overlay.dart';
 import '../theme/app_theme.dart';
@@ -126,7 +126,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
               ),
               const SizedBox(width: 8),
               Icon(
-                WaydirIconsRegular.caretDown,
+                MyExplorerIconsRegular.caretDown,
                 size: 12,
                 color: AppColors.fgMuted,
               ),
@@ -262,7 +262,7 @@ class _MenuTileState<T> extends State<_MenuTile<T>> {
               if (widget.isSelected) ...[
                 const SizedBox(width: 8),
                 Icon(
-                  WaydirIconsRegular.check,
+                  MyExplorerIconsRegular.check,
                   size: 12,
                   color: AppColors.accent,
                 ),

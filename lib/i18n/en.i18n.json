@@ -202,7 +202,7 @@
     },
     "plugins": {
       "title": "Plugins",
-      "subtitle": "Extend Waydir with Lua plugins. Each plugin is a folder with manifest.json and init.lua.",
+      "subtitle": "Extend MyExplorer with Lua plugins. Each plugin is a folder with manifest.json and init.lua.",
       "installedSection": "Installed",
       "openFolder": "Open plugins folder",
       "reload": "Reload plugins",
@@ -1231,7 +1231,7 @@
     "archiveReadFailed": "Archive error: $error",
     "archiveEntryNotFound": "Archive entry not found: $path",
     "unsupportedArchiveFormat": "Unsupported archive format",
-    "nativeCoreNotFound": "Native waydir_core not found; searched: $paths",
+    "nativeCoreNotFound": "Native myexplorer_core not found; searched: $paths",
     "moveFileExFailed": "MoveFileEx failed with Windows error $error",
     "nativeTrashListFailed": "Native trash list failed",
     "nativeTrashListFailedWithMessage": "Native trash list failed: $message",

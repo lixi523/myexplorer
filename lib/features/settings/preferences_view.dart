@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../core/settings/settings_registry.dart';
@@ -38,22 +38,22 @@ class CategoryMeta {
 final categories = <CategoryMeta>[
   CategoryMeta(
     Category.general,
-    WaydirIconsRegular.slidersHorizontal,
+    MyExplorerIconsRegular.slidersHorizontal,
     () => t.preferences.categories.general,
   ),
   CategoryMeta(
     Category.appearance,
-    WaydirIconsRegular.palette,
+    MyExplorerIconsRegular.palette,
     () => t.preferences.categories.appearance,
   ),
   CategoryMeta(
     Category.terminal,
-    WaydirIconsRegular.terminal,
+    MyExplorerIconsRegular.terminal,
     () => t.preferences.categories.terminal,
   ),
   CategoryMeta(
     Category.quickLook,
-    WaydirIconsRegular.eye,
+    MyExplorerIconsRegular.eye,
     () => t.preferences.categories.quickLook,
   ),
 ];
@@ -489,7 +489,7 @@ class _PreferencesDialogState extends State<_PreferencesDialog> {
     }
 
     return AppModal(
-      icon: WaydirIconsRegular.gearSix,
+      icon: MyExplorerIconsRegular.gearSix,
       title: t.preferences.title,
       width: dialogWidth,
       height: dialogHeight,
@@ -590,7 +590,7 @@ class _PreferencesSearchBar extends StatelessWidget {
                     : _SearchClearButton(onTap: onClear),
               ).copyWith(
                 prefixIcon: Icon(
-                  WaydirIconsRegular.magnifyingGlass,
+                  MyExplorerIconsRegular.magnifyingGlass,
                   size: 14,
                   color: AppColors.fgMuted,
                 ),
@@ -803,7 +803,11 @@ class _SearchClearButtonState extends State<_SearchClearButton> {
           height: 24,
           alignment: Alignment.center,
           color: _hovered ? AppColors.bgHover : Colors.transparent,
-          child: Icon(WaydirIconsRegular.x, size: 13, color: AppColors.fgMuted),
+          child: Icon(
+            MyExplorerIconsRegular.x,
+            size: 13,
+            color: AppColors.fgMuted,
+          ),
         ),
       ),
     );

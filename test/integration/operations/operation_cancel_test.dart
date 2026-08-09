@@ -5,8 +5,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/models/file_operation.dart';
-import 'package:waydir/features/operations/operation_store.dart';
+import 'package:myexplorer/core/models/file_operation.dart';
+import 'package:myexplorer/features/operations/operation_store.dart';
 
 import '../../support/ops.dart';
 
@@ -15,7 +15,7 @@ void main() {
   late OperationStore store;
 
   setUp(() {
-    tmpDir = Directory.systemTemp.createTempSync('waydir_ops_cancel_');
+    tmpDir = Directory.systemTemp.createTempSync('myexplorer_ops_cancel_');
     store = OperationStore();
   });
 
@@ -56,7 +56,8 @@ void main() {
           ? Directory(p.join(dest.path, 'src'))
                 .listSync(followLinks: false)
                 .where(
-                  (entity) => p.basename(entity.path).contains('.waydir_tmp_'),
+                  (entity) =>
+                      p.basename(entity.path).contains('.myexplorer_tmp_'),
                 )
                 .toList()
           : const <FileSystemEntity>[];

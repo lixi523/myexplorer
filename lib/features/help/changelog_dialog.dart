@@ -3,7 +3,7 @@ import 'dart:io' show Process, ProcessStartMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../ui/theme/app_theme.dart';
@@ -55,7 +55,7 @@ class _ChangelogDialog extends StatelessWidget {
     final height = (size.height * 0.86).clamp(480.0, 760.0).toDouble();
 
     return AppModal(
-      icon: WaydirIconsRegular.notebook,
+      icon: MyExplorerIconsRegular.notebook,
       title: t.changelog.title,
       width: width,
       height: height,

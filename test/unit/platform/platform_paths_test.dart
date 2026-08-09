@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/platform/platform_paths.dart';
+import 'package:myexplorer/core/platform/platform_paths.dart';
 
 void main() {
   group('PlatformPaths Windows UNC paths', () {
@@ -153,8 +153,8 @@ void main() {
         'APPDATA': r'C:\Users\tester\AppData\Roaming',
       };
       expect(
-        PlatformPaths.expandEnvVars(r'%appdata%\Waydir'),
-        r'C:\Users\tester\AppData\Roaming\Waydir',
+        PlatformPaths.expandEnvVars(r'%appdata%\MyExplorer'),
+        r'C:\Users\tester\AppData\Roaming\MyExplorer',
       );
       expect(
         PlatformPaths.expandEnvVars('%APPDATA%'),

@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import '../../core/fs/waydir_core_loader.dart';
+import '../../core/fs/myexplorer_core_loader.dart';
 import '../../core/logging/app_logger.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/theme/app_theme.dart';
@@ -17,10 +17,10 @@ const _maxRenderWidth = 2400;
 /// them inside a widget method would drag the surrounding context (Completer,
 /// BuildContext, ...) into the message and make it unsendable.
 Future<List<double>?> _pageAspectsInIsolate(String path) =>
-    Isolate.run(() => WaydirCoreLoader.pdfPageAspects(path));
+    Isolate.run(() => MyExplorerCoreLoader.pdfPageAspects(path));
 
 Future<PdfRenderedPage?> _renderInIsolate(String path, int index, int width) =>
-    Isolate.run(() => WaydirCoreLoader.pdfRenderPage(path, index, width));
+    Isolate.run(() => MyExplorerCoreLoader.pdfRenderPage(path, index, width));
 
 class PdfPreview extends StatefulWidget {
   final String path;

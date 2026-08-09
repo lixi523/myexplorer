@@ -24,7 +24,7 @@ local function run_7z(ctx, name, fmt, level)
   for _, path in ipairs(ctx.paths) do
     args[#args + 1] = path
   end
-  waydir.run_task({
+  myexplorer.run_task({
     title = "7-Zip: " .. name .. "." .. fmt,
     cmd = "7z",
     args = args,
@@ -38,7 +38,7 @@ local function run_targz(ctx, name)
   for _, path in ipairs(ctx.paths) do
     args[#args + 1] = basename(path)
   end
-  waydir.run_task({
+  myexplorer.run_task({
     title = "tar: " .. name .. ".tar.gz",
     cmd = "tar",
     args = args,
@@ -47,7 +47,7 @@ local function run_targz(ctx, name)
   })
 end
 
-waydir.register({
+myexplorer.register({
   id = "zip",
   group = GROUP,
   title = "Compress to .zip",
@@ -59,7 +59,7 @@ waydir.register({
   end,
 })
 
-waydir.register({
+myexplorer.register({
   id = "targz",
   group = GROUP,
   title = "Compress to .tar.gz",
@@ -73,7 +73,7 @@ waydir.register({
 
 -- Custom pass: first invoke opens the modal, the submit re-runs this action
 -- with `ctx.form` populated.
-waydir.register({
+myexplorer.register({
   id = "custom",
   group = GROUP,
   title = "Add to archive…",
@@ -83,7 +83,7 @@ waydir.register({
     if ctx.count == 0 then return end
 
     if not ctx.form then
-      waydir.dialog({
+      myexplorer.dialog({
         title = "Add to archive",
         fields = {
           { id = "name", type = "input", label = "Archive name",
@@ -114,7 +114,7 @@ waydir.register({
 })
 
 -- Extract a selected archive into a folder next to it.
-waydir.register({
+myexplorer.register({
   id = "extract",
   title = "Extract here with 7-Zip",
   icon = "archive",
@@ -122,7 +122,7 @@ waydir.register({
   run = function(ctx)
     for _, path in ipairs(ctx.paths) do
       local dest = ctx.dir .. "/" .. strip_ext(basename(path))
-      waydir.run_task({
+      myexplorer.run_task({
         title = "Extract " .. basename(path),
         cmd = "7z",
         args = { "x", path, "-o" .. dest, "-y" },

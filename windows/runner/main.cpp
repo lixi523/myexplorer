@@ -9,8 +9,8 @@
 namespace {
 struct WindowChromeInit {
   WindowChromeInit() {
-    waydir_window_configure(WAYDIR_WINDOW_CUSTOM_FRAME |
-                            WAYDIR_WINDOW_HIDE_ON_STARTUP);
+    myexplorer_window_configure(MYEXPLORER_WINDOW_CUSTOM_FRAME |
+                            MYEXPLORER_WINDOW_HIDE_ON_STARTUP);
   }
 };
 WindowChromeInit g_window_chrome_init;
@@ -24,11 +24,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     CreateAndAttachConsole();
   }
 
-  // Enforce a single running instance. When another Waydir process is already
+  // Enforce a single running instance. When another MyExplorer process is already
   // running, bring its window to the foreground and exit immediately instead
   // of starting a second copy.
   HANDLE single_instance_mutex = ::CreateMutexW(
-      nullptr, FALSE, L"Local\\Waydir_SingleInstance_Mutex");
+      nullptr, FALSE, L"Local\\MyExplorer_SingleInstance_Mutex");
   if (single_instance_mutex != nullptr &&
       ::GetLastError() == ERROR_ALREADY_EXISTS) {
     HWND existing =

@@ -216,8 +216,8 @@ String _sanitizeHtml(String src) {
   return out.toString();
 }
 
-const _centerStart = '@@WAYDIR_CENTER_START@@';
-const _centerEnd = '@@WAYDIR_CENTER_END@@';
+const _centerStart = '@@MYEXPLORER_CENTER_START@@';
+const _centerEnd = '@@MYEXPLORER_CENTER_END@@';
 
 String _preserveHtmlAlignment(String src) {
   return src.replaceAllMapped(_htmlBlockPair, (m) {

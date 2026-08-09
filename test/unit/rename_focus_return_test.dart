@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/models/file_entry.dart';
-import 'package:waydir/features/files/file_view.dart';
-import 'package:waydir/ui/theme/app_theme.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
+import 'package:myexplorer/features/files/file_view.dart';
+import 'package:myexplorer/ui/theme/app_theme.dart';
 
 void main() {
   testWidgets(

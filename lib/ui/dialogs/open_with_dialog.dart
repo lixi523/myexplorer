@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/models/file_entry.dart';
 import '../../core/logging/app_logger.dart';
@@ -68,7 +68,7 @@ class _OpenWithBodyState extends State<_OpenWithBody> {
         recent: [],
         associated: [],
         defaultApp: null,
-        isWaydirManaged: false,
+        isMyExplorerManaged: false,
       );
     }
     List<AppEntry> all;
@@ -118,7 +118,7 @@ class _OpenWithBodyState extends State<_OpenWithBody> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.appWindow,
+      icon: MyExplorerIconsRegular.appWindow,
       title: t.openWith.title,
       width: 460,
       padding: const EdgeInsets.all(16),

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:path/path.dart' as p;
 import 'package:signals/signals.dart';
 import '../../core/logging/app_logger.dart';
@@ -604,13 +604,19 @@ class OperationStore {
             stack: st,
           );
         }
-        _cleanupArchiveTempDirs(p.dirname(dest), '.waydir-archive-pack-');
+        _cleanupArchiveTempDirs(p.dirname(dest), '.myexplorer-archive-pack-');
       }
     } else if (task.type == TaskType.archiveEdit) {
       final archive = task.sources.isNotEmpty ? task.sources.first : null;
       if (archive != null && archive.isNotEmpty) {
-        _cleanupArchiveTempDirs(p.dirname(archive), '.waydir-archive-edit-');
-        _cleanupArchiveTempDirs(p.dirname(archive), '.waydir-archive-pack-');
+        _cleanupArchiveTempDirs(
+          p.dirname(archive),
+          '.myexplorer-archive-edit-',
+        );
+        _cleanupArchiveTempDirs(
+          p.dirname(archive),
+          '.myexplorer-archive-pack-',
+        );
       }
     }
   }
@@ -768,9 +774,7 @@ class OperationStore {
       case TaskType.move:
         entryPoint = useSftp ? sftpMoveWorker : moveWorker;
       case TaskType.delete:
-        entryPoint = useSftp
-            ? sftpDeleteWorker
-            : deleteWorker;
+        entryPoint = useSftp ? sftpDeleteWorker : deleteWorker;
       case TaskType.trash:
         entryPoint = trashWorker;
       case TaskType.trashRestore:
@@ -982,7 +986,7 @@ class OperationStore {
       if (!dir.existsSync()) return;
       for (final entity in dir.listSync(followLinks: false)) {
         final name = p.basename(entity.path);
-        if (name.contains('.waydir_tmp_')) {
+        if (name.contains('.myexplorer_tmp_')) {
           try {
             if (entity is Directory) {
               entity.deleteSync(recursive: true);
@@ -1054,21 +1058,21 @@ class OperationStore {
       case TaskStatus.completed when task.errors.isNotEmpty:
         message = t.tasks.status.completedWithErrors(count: task.errors.length);
         color = AppColors.danger;
-        icon = WaydirIconsRegular.warning;
+        icon = MyExplorerIconsRegular.warning;
         type = NotificationType.persistent;
       case TaskStatus.completed:
         message = t.tasks.status.completed;
         color = AppColors.success;
-        icon = WaydirIconsRegular.check;
+        icon = MyExplorerIconsRegular.check;
       case TaskStatus.failed:
         message = t.tasks.status.failed;
         color = AppColors.danger;
-        icon = WaydirIconsRegular.x;
+        icon = MyExplorerIconsRegular.x;
         type = NotificationType.persistent;
       case TaskStatus.cancelled:
         message = t.tasks.status.cancelled;
         color = AppColors.fgMuted;
-        icon = WaydirIconsRegular.prohibit;
+        icon = MyExplorerIconsRegular.prohibit;
       default:
         return;
     }
@@ -1116,7 +1120,7 @@ class OperationStore {
             : t.tasks.movingMultiple(count: sources.length),
         message: t.errors.transferIntoSelf,
         type: NotificationType.persistent,
-        icon: WaydirIconsRegular.warning,
+        icon: MyExplorerIconsRegular.warning,
         accentColor: AppColors.danger,
       ),
     );
@@ -1162,7 +1166,7 @@ class OperationStore {
         title: title,
         message: message,
         type: NotificationType.persistent,
-        icon: WaydirIconsRegular.warning,
+        icon: MyExplorerIconsRegular.warning,
         accentColor: AppColors.warning,
         dismissible: false,
         applyToAllLabel: remaining > 0
@@ -1220,29 +1224,29 @@ class OperationStore {
   IconData _iconForType(TaskType type) {
     switch (type) {
       case TaskType.copy:
-        return WaydirIconsRegular.copy;
+        return MyExplorerIconsRegular.copy;
       case TaskType.move:
-        return WaydirIconsRegular.arrowRight;
+        return MyExplorerIconsRegular.arrowRight;
       case TaskType.delete:
-        return WaydirIconsRegular.trash;
+        return MyExplorerIconsRegular.trash;
       case TaskType.trash:
-        return WaydirIconsRegular.trashSimple;
+        return MyExplorerIconsRegular.trashSimple;
       case TaskType.trashRestore:
-        return WaydirIconsRegular.arrowCounterClockwise;
+        return MyExplorerIconsRegular.arrowCounterClockwise;
       case TaskType.trashDelete:
-        return WaydirIconsRegular.trash;
+        return MyExplorerIconsRegular.trash;
       case TaskType.extract:
-        return WaydirIconsRegular.archive;
+        return MyExplorerIconsRegular.archive;
       case TaskType.compress:
-        return WaydirIconsRegular.fileZip;
+        return MyExplorerIconsRegular.fileZip;
       case TaskType.archiveEdit:
-        return WaydirIconsRegular.archive;
+        return MyExplorerIconsRegular.archive;
       case TaskType.split:
-        return WaydirIconsRegular.scissors;
+        return MyExplorerIconsRegular.scissors;
       case TaskType.combine:
-        return WaydirIconsRegular.copy;
+        return MyExplorerIconsRegular.copy;
       case TaskType.plugin:
-        return WaydirIconsRegular.gearSix;
+        return MyExplorerIconsRegular.gearSix;
     }
   }
 

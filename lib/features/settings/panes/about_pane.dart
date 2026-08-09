@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../../app/app_info.dart';
@@ -15,13 +15,13 @@ import '../../../ui/theme/app_text_styles.dart';
 import '../../../ui/widgets/app_modal.dart';
 import '../preferences_view.dart';
 
-Future<void> showWaydirAboutDialog(BuildContext context) {
+Future<void> showMyExplorerAboutDialog(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: true,
     barrierColor: Colors.black.withValues(alpha: 0.55),
     builder: (ctx) => AppModal(
-      icon: WaydirIconsRegular.info,
+      icon: MyExplorerIconsRegular.info,
       title: t.preferences.categories.about,
       width: 540,
       onClose: () => Navigator.of(ctx).pop(),
@@ -161,10 +161,13 @@ class _InfoRow extends StatelessWidget {
           ),
           if (trailing != null) ...[const SizedBox(width: 6), trailing!],
           if (onOpen != null)
-            _SmallIcon(icon: WaydirIconsRegular.arrowSquareOut, onTap: onOpen!),
+            _SmallIcon(
+              icon: MyExplorerIconsRegular.arrowSquareOut,
+              onTap: onOpen!,
+            ),
           if (onCopy != null) ...[
             const SizedBox(width: 4),
-            _SmallIcon(icon: WaydirIconsRegular.copy, onTap: onCopy!),
+            _SmallIcon(icon: MyExplorerIconsRegular.copy, onTap: onCopy!),
           ],
         ],
       ),

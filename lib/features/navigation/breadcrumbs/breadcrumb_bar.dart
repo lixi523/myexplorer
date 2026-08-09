@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/icons/waydir_icons.dart';
+import '../../../ui/icons/myexplorer_icons.dart';
 import '../../../ui/overlays/context_menu.dart';
 import '../../../ui/theme/app_theme.dart';
 import '../../../ui/theme/app_text_styles.dart';
@@ -141,7 +141,7 @@ class _Caret extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 1),
       child: Icon(
-        WaydirIconsRegular.caretRight,
+        MyExplorerIconsRegular.caretRight,
         size: 14,
         color: AppColors.fgSubtle,
       ),
@@ -256,7 +256,7 @@ class _EllipsisMenuState extends State<_EllipsisMenu> {
       items: [
         for (var i = 0; i < widget.hiddenCrumbs.length; i++)
           ContextMenuItem(
-            icon: WaydirIconsRegular.folder,
+            icon: MyExplorerIconsRegular.folder,
             label: widget.hiddenCrumbs[i].label,
             action: '$i',
           ),

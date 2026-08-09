@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 import '../../core/models/file_entry.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../i18n/strings.g.dart';
-import '../icons/waydir_icons.dart';
+import '../icons/myexplorer_icons.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_modal.dart';
@@ -339,7 +339,7 @@ class _MultiRenameBodyState extends State<_MultiRenameBody> {
         return KeyEventResult.ignored;
       },
       child: AppModal(
-        icon: WaydirIconsRegular.pencilSimple,
+        icon: MyExplorerIconsRegular.pencilSimple,
         title: t.multiRename.title,
         width: 640,
         padding: const EdgeInsets.all(20),
@@ -741,7 +741,7 @@ class _TableRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Icon(
-            WaydirIconsRegular.arrowRight,
+            MyExplorerIconsRegular.arrowRight,
             size: 12,
             color: changed
                 ? AppColors.accent.withValues(alpha: 0.7)

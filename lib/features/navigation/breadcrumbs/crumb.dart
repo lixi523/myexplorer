@@ -4,7 +4,7 @@ import '../../../core/platform/platform_paths.dart';
 import '../../../core/platform/trash_location.dart';
 import '../../../i18n/strings.g.dart';
 import '../../../ui/icons/distro_icons.dart';
-import '../../../ui/icons/waydir_icons.dart';
+import '../../../ui/icons/myexplorer_icons.dart';
 import '../../containers/wsl_path.dart';
 import '../../tags/tag_path.dart';
 import '../../tags/tag_store.dart';
@@ -46,7 +46,7 @@ List<Crumb> crumbsFromPath(String path) {
       Crumb(
         label: t.sidebar.trash,
         fullPath: kTrashPath,
-        icon: WaydirIconsRegular.trashSimple,
+        icon: MyExplorerIconsRegular.trashSimple,
       ),
     ];
     if (path != kTrashPath) {

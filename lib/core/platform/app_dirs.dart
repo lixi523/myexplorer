@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-/// Single source of truth for Waydir application directories.
+/// Single source of truth for MyExplorer application directories.
 ///
 /// Each directory is resolved and created at most once (cached future), so
 /// callers never duplicate platform-path logic or `create(recursive:)` calls.

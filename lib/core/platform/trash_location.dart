@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-import '../fs/waydir_core_loader.dart';
+import '../fs/myexplorer_core_loader.dart';
 import '../logging/app_logger.dart';
 import 'platform_paths.dart';
 
@@ -108,7 +108,7 @@ class TrashRepository {
   }
 
   Future<List<TrashEntry>> _listWindowsRoot() async {
-    final items = WaydirCoreLoader.trashList();
+    final items = MyExplorerCoreLoader.trashList();
     final out = <TrashEntry>[];
     for (final e in items) {
       final vpath = '$kTrashPath/${e.id}';
@@ -183,7 +183,7 @@ class TrashRepository {
   Future<void> restore(TrashEntry e) async {
     final id = e.nativeId;
     if (id != null) {
-      final fails = WaydirCoreLoader.trashRestore([id]);
+      final fails = MyExplorerCoreLoader.trashRestore([id]);
       if (fails.isNotEmpty) {
         throw FileSystemException(fails.first.message);
       }
@@ -195,7 +195,7 @@ class TrashRepository {
   Future<void> deletePermanently(TrashEntry e) async {
     final id = e.nativeId;
     if (id != null) {
-      final fails = WaydirCoreLoader.trashPurge([id]);
+      final fails = MyExplorerCoreLoader.trashPurge([id]);
       if (fails.isNotEmpty) {
         throw FileSystemException(fails.first.message);
       }

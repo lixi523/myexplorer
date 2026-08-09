@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/operations/split_dialog.dart';
+import 'package:myexplorer/features/operations/split_dialog.dart';
 
 void main() {
   late Directory tempDir;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('waydir_split_test');
+    tempDir = Directory.systemTemp.createTempSync('myexplorer_split_test');
   });
 
   tearDown(() {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/navigation/shortcut_runner.dart';
+import 'package:myexplorer/features/navigation/shortcut_runner.dart';
 
 void main() {
   const ctx = ShortcutRunContext(

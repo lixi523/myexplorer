@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
@@ -76,7 +76,7 @@ class _TabChipState extends State<TabChip> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      WaydirIconsRegular.folder,
+                      MyExplorerIconsRegular.folder,
                       size: 14,
                       color: isActive ? AppColors.accent : fg,
                     ),
@@ -146,7 +146,7 @@ class _CloseButtonState extends State<_CloseButton> {
             borderRadius: BorderRadius.zero,
           ),
           child: Icon(
-            WaydirIconsRegular.x,
+            MyExplorerIconsRegular.x,
             size: 11,
             color: _hovered ? AppColors.fg : AppColors.fgMuted,
           ),

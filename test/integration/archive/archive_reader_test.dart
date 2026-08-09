@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/archive/archive_reader.dart';
+import 'package:myexplorer/core/archive/archive_reader.dart';
 
 void main() {
   group('ArchiveReader', () {
@@ -14,7 +14,7 @@ void main() {
     late DateTime sourceModified;
 
     setUp(() {
-      tmp = Directory.systemTemp.createTempSync('waydir_arcreader');
+      tmp = Directory.systemTemp.createTempSync('myexplorer_arcreader');
       final src = Directory(p.join(tmp.path, 'src', 'sub'))
         ..createSync(recursive: true);
       sourceModified = DateTime(2021, 3, 4, 5, 6, 8);

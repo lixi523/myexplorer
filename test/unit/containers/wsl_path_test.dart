@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/platform/platform_paths.dart';
-import 'package:waydir/core/terminal/terminal_launch.dart';
-import 'package:waydir/features/containers/wsl_path.dart';
+import 'package:myexplorer/core/platform/platform_paths.dart';
+import 'package:myexplorer/core/terminal/terminal_launch.dart';
+import 'package:myexplorer/features/containers/wsl_path.dart';
 
 void main() {
   group('parseWslPath', () {

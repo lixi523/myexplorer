@@ -2,7 +2,7 @@
   "id": "open-vscode",
   "name": "Open in VS Code",
   "version": "1.0.0",
-  "author": "waydir",
+  "author": "myexplorer",
   "description": "Toolbar button that opens the current folder in VS Code (or any editor command).",
   "api_version": 2
 }

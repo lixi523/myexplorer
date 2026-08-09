@@ -224,7 +224,7 @@ class ArchiveReader {
       final tmp = File(
         p.join(
           Directory.systemTemp.path,
-          'waydir-7z-entry-${DateTime.now().microsecondsSinceEpoch}.bin',
+          'myexplorer-7z-entry-${DateTime.now().microsecondsSinceEpoch}.bin',
         ),
       );
       try {
@@ -416,7 +416,7 @@ class ArchiveReader {
     final staging = Directory(
       p.join(
         Directory.systemTemp.path,
-        'waydir-7z-${DateTime.now().microsecondsSinceEpoch}',
+        'myexplorer-7z-${DateTime.now().microsecondsSinceEpoch}',
       ),
     )..createSync(recursive: true);
     try {

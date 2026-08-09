@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/plugins/plugin_ffi.dart';
+import 'package:myexplorer/features/plugins/plugin_ffi.dart';
 
 void main() {
   tearDown(PluginFfi.shutdown);

@@ -7,7 +7,7 @@ import 'package:signals/signals_flutter.dart';
 import '../../core/update/install_format.dart';
 import '../../core/update/update_store.dart';
 import '../../i18n/strings.g.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/widgets/app_close_button.dart';
@@ -111,7 +111,11 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Icon(WaydirIconsRegular.arrowUp, size: 18, color: AppColors.warning),
+          Icon(
+            MyExplorerIconsRegular.arrowUp,
+            size: 18,
+            color: AppColors.warning,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -309,7 +313,7 @@ class _AssetRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            WaydirIconsRegular.downloadSimple,
+            MyExplorerIconsRegular.downloadSimple,
             size: 14,
             color: AppColors.fgMuted,
           ),

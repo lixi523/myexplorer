@@ -3,24 +3,24 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:waydir/core/update/github_releases.dart';
-import 'package:waydir/core/update/install_format.dart';
-import 'package:waydir/core/update/update_store.dart';
+import 'package:myexplorer/core/update/github_releases.dart';
+import 'package:myexplorer/core/update/install_format.dart';
+import 'package:myexplorer/core/update/update_store.dart';
 
 void main() {
   group('GithubAsset', () {
     test('parses release asset digest', () {
       final asset = GithubAsset.fromJson({
-        'name': 'waydir.zip',
-        'browser_download_url': 'https://example.invalid/waydir.zip',
+        'name': 'myexplorer.zip',
+        'browser_download_url': 'https://example.invalid/myexplorer.zip',
         'size': 7,
         'digest':
-            'sha256:fee49e636dec6a20f3705578d7b0c19ad7baec1e5ea4f18ce17b30cc8b0a0902',
+            'sha256:3380d79b61b857bc5835b505fc7c0b288f5b91a5d917c638b537ac6f6b5bcc4f',
       });
 
       expect(
         asset.digest,
-        'sha256:fee49e636dec6a20f3705578d7b0c19ad7baec1e5ea4f18ce17b30cc8b0a0902',
+        'sha256:3380d79b61b857bc5835b505fc7c0b288f5b91a5d917c638b537ac6f6b5bcc4f',
       );
     });
   });
@@ -29,7 +29,7 @@ void main() {
     late Directory dir;
 
     setUp(() async {
-      dir = await Directory.systemTemp.createTemp('waydir_update_test');
+      dir = await Directory.systemTemp.createTemp('myexplorer_update_test');
     });
 
     tearDown(() async {
@@ -39,9 +39,9 @@ void main() {
     test('accepts a download with matching SHA-256 digest', () async {
       final store = _store(
         dir,
-        responseBody: 'Waydir\n',
+        responseBody: 'MyExplorer\n',
         digest:
-            'sha256:fee49e636dec6a20f3705578d7b0c19ad7baec1e5ea4f18ce17b30cc8b0a0902',
+            'sha256:3380d79b61b857bc5835b505fc7c0b288f5b91a5d917c638b537ac6f6b5bcc4f',
       );
       addTearDown(store.dispose);
 
@@ -50,11 +50,11 @@ void main() {
       expect(store.status.value, UpdateStatus.ready);
       expect(store.errorMessage.value, isNull);
       expect(store.downloadedFile.value, isNotNull);
-      expect(await store.downloadedFile.value!.readAsString(), 'Waydir\n');
+      expect(await store.downloadedFile.value!.readAsString(), 'MyExplorer\n');
     });
 
     test('rejects a download without a valid digest', () async {
-      final store = _store(dir, responseBody: 'Waydir\n', digest: '');
+      final store = _store(dir, responseBody: 'MyExplorer\n', digest: '');
       addTearDown(store.dispose);
 
       await store.download();
@@ -67,9 +67,9 @@ void main() {
     test('rejects launch when the downloaded file is modified', () async {
       final store = _store(
         dir,
-        responseBody: 'Waydir\n',
+        responseBody: 'MyExplorer\n',
         digest:
-            'sha256:fee49e636dec6a20f3705578d7b0c19ad7baec1e5ea4f18ce17b30cc8b0a0902',
+            'sha256:3380d79b61b857bc5835b505fc7c0b288f5b91a5d917c638b537ac6f6b5bcc4f',
       );
       addTearDown(store.dispose);
 
@@ -98,8 +98,8 @@ UpdateStore _store(
         MockClient((request) async => http.Response(responseBody, 200)),
   );
   store.selectedAsset.value = GithubAsset(
-    name: 'waydir.zip',
-    downloadUrl: 'https://example.invalid/waydir.zip',
+    name: 'myexplorer.zip',
+    downloadUrl: 'https://example.invalid/myexplorer.zip',
     sizeBytes: responseBody.length,
     digest: digest,
   );

@@ -216,7 +216,7 @@ Future<void> _runInternal(
     case 'cm_opendesktop':
       await navigateTo(PlatformPaths.desktopPath);
     case 'cm_openrecycled':
-      // Waydir cannot list the virtual recycle-bin folder, so open it with
+      // MyExplorer cannot list the virtual recycle-bin folder, so open it with
       // Explorer, mirroring Total Commander's behaviour.
       await (launchCommand ?? _launchCommandLine)(
         'explorer.exe shell:RecycleBinFolder',

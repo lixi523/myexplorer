@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../core/models/file_operation.dart';
 import '../../ui/overlays/popup_overlay.dart';
@@ -55,7 +55,7 @@ class _OperationsPanelBody extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  WaydirIconsRegular.clockClockwise,
+                  MyExplorerIconsRegular.clockClockwise,
                   size: 16,
                   color: AppColors.fgMuted,
                 ),
@@ -135,15 +135,15 @@ class _TaskTile extends StatelessWidget {
     };
 
     final statusIcon = switch (task.status) {
-      TaskStatus.queued => WaydirIconsRegular.clock,
-      TaskStatus.preparing => WaydirIconsRegular.arrowsClockwise,
-      TaskStatus.waitingConflicts => WaydirIconsRegular.warning,
-      TaskStatus.running => WaydirIconsRegular.arrowsClockwise,
-      TaskStatus.paused => WaydirIconsRegular.pause,
-      TaskStatus.cancelling => WaydirIconsRegular.stop,
-      TaskStatus.completed => WaydirIconsRegular.check,
-      TaskStatus.failed => WaydirIconsRegular.x,
-      TaskStatus.cancelled => WaydirIconsRegular.prohibit,
+      TaskStatus.queued => MyExplorerIconsRegular.clock,
+      TaskStatus.preparing => MyExplorerIconsRegular.arrowsClockwise,
+      TaskStatus.waitingConflicts => MyExplorerIconsRegular.warning,
+      TaskStatus.running => MyExplorerIconsRegular.arrowsClockwise,
+      TaskStatus.paused => MyExplorerIconsRegular.pause,
+      TaskStatus.cancelling => MyExplorerIconsRegular.stop,
+      TaskStatus.completed => MyExplorerIconsRegular.check,
+      TaskStatus.failed => MyExplorerIconsRegular.x,
+      TaskStatus.cancelled => MyExplorerIconsRegular.prohibit,
     };
 
     final isActive =
@@ -206,7 +206,7 @@ class _TaskTile extends StatelessWidget {
               if (task.status == TaskStatus.queued) ...[
                 const SizedBox(width: 6),
                 _IconBtn(
-                  icon: WaydirIconsRegular.pause,
+                  icon: MyExplorerIconsRegular.pause,
                   tooltip: t.operations.pause,
                   color: AppColors.warning,
                   onTap: () => operationStore.pauseTask(task.id),
@@ -215,7 +215,7 @@ class _TaskTile extends StatelessWidget {
               if (task.status == TaskStatus.paused) ...[
                 const SizedBox(width: 6),
                 _IconBtn(
-                  icon: WaydirIconsRegular.caretRight,
+                  icon: MyExplorerIconsRegular.caretRight,
                   tooltip: t.operations.resume,
                   color: AppColors.success,
                   onTap: () => operationStore.resumeTask(task.id),
@@ -352,7 +352,7 @@ class _CancelBtnState extends State<_CancelBtn> {
               borderRadius: BorderRadius.zero,
             ),
             child: Icon(
-              WaydirIconsRegular.x,
+              MyExplorerIconsRegular.x,
               size: 12,
               color: _hovered ? AppColors.danger : AppColors.fgMuted,
             ),

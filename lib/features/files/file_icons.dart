@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import 'material_icons_map.dart';
 
@@ -21,7 +21,7 @@ Widget buildFileIcon({
     }
 
     return Icon(
-      WaydirIconsFill.folder,
+      MyExplorerIconsFill.folder,
       size: size,
       color: AppColors.folderColor,
     );

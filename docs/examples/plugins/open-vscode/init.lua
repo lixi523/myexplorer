@@ -10,7 +10,7 @@ local function editor_command(ctx)
   return cmd
 end
 
-waydir.register({
+myexplorer.register({
   id = "open_vscode",
   title = "Open in VS Code",
   menu = "toolbar",
@@ -22,8 +22,8 @@ waydir.register({
     if not ctx.dir or ctx.dir == "" then
       return
     end
-    waydir.exec(editor_command(ctx), { ctx.dir })
-    waydir.notify({
+    myexplorer.exec(editor_command(ctx), { ctx.dir })
+    myexplorer.notify({
       title = "VS Code",
       message = "Opening " .. ctx.dir,
       level = "info",
@@ -33,7 +33,7 @@ waydir.register({
 
 -- Bonus: also open a selected folder straight from its right-click menu. The
 -- same bundled svg icon works in the context menu, just like the toolbar.
-waydir.register({
+myexplorer.register({
   id = "open_vscode_selection",
   title = "Open in VS Code",
   icon = "icon.svg",
@@ -43,6 +43,6 @@ waydir.register({
     if not target or target == "" then
       return
     end
-    waydir.exec(editor_command(ctx), { target })
+    myexplorer.exec(editor_command(ctx), { target })
   end,
 })

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/distro_icons.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/distro_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import '../../core/database/app_database.dart';
@@ -146,47 +146,52 @@ class _SidebarState extends State<Sidebar> {
     _sftpCredentialsRequester = _requestSftpCredentials;
     final h = PlatformPaths.homePath;
     _favorites = [
-      _SidebarItem(t.sidebar.home, WaydirIconsRegular.house, h, key: 'home'),
+      _SidebarItem(
+        t.sidebar.home,
+        MyExplorerIconsRegular.house,
+        h,
+        key: 'home',
+      ),
       _SidebarItem(
         t.sidebar.desktop,
-        WaydirIconsRegular.desktop,
+        MyExplorerIconsRegular.desktop,
         PlatformPaths.desktopPath,
         key: 'desktop',
       ),
       _SidebarItem(
         t.sidebar.documents,
-        WaydirIconsRegular.notebook,
+        MyExplorerIconsRegular.notebook,
         PlatformPaths.documentsPath,
         key: 'documents',
       ),
       _SidebarItem(
         t.sidebar.downloads,
-        WaydirIconsRegular.downloadSimple,
+        MyExplorerIconsRegular.downloadSimple,
         PlatformPaths.downloadsPath,
         key: 'downloads',
       ),
       _SidebarItem(
         t.sidebar.pictures,
-        WaydirIconsRegular.image,
+        MyExplorerIconsRegular.image,
         PlatformPaths.picturesPath,
         key: 'pictures',
       ),
       _SidebarItem(
         t.sidebar.music,
-        WaydirIconsRegular.musicNote,
+        MyExplorerIconsRegular.musicNote,
         PlatformPaths.musicPath,
         key: 'music',
       ),
       _SidebarItem(
         t.sidebar.videos,
-        WaydirIconsRegular.videoCamera,
+        MyExplorerIconsRegular.videoCamera,
         PlatformPaths.videosPath,
         key: 'videos',
       ),
       if (PlatformPaths.canOpenTrash)
         _SidebarItem(
           t.sidebar.trash,
-          WaydirIconsRegular.trashSimple,
+          MyExplorerIconsRegular.trashSimple,
           kTrashPath,
           key: 'trash',
         ),
@@ -262,7 +267,7 @@ class _SidebarState extends State<Sidebar> {
     final label = await showRenameDialog(
       context,
       title: t.menu.rename,
-      icon: WaydirIconsRegular.pencilSimple,
+      icon: MyExplorerIconsRegular.pencilSimple,
       initialValue: bookmark.label,
     );
     if (label != null && label != bookmark.label) {
@@ -276,23 +281,23 @@ class _SidebarState extends State<Sidebar> {
       position: position,
       items: [
         ContextMenuItem(
-          icon: WaydirIconsRegular.folderOpen,
+          icon: MyExplorerIconsRegular.folderOpen,
           label: t.menu.open,
           action: 'open',
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.arrowSquareOut,
+          icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openInNewTab,
           action: 'open_in_new_tab',
         ),
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.pencilSimple,
+          icon: MyExplorerIconsRegular.pencilSimple,
           label: t.menu.rename,
           action: 'rename',
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.trash,
+          icon: MyExplorerIconsRegular.trash,
           label: t.menu.removeBookmark,
           action: 'remove',
           danger: true,
@@ -342,31 +347,31 @@ class _SidebarState extends State<Sidebar> {
   void _showFolderMenu(String path, Offset position, {required bool isTrash}) {
     final items = <ContextMenuItem>[
       ContextMenuItem(
-        icon: WaydirIconsRegular.folderOpen,
+        icon: MyExplorerIconsRegular.folderOpen,
         label: t.menu.open,
         action: 'open',
       ),
       if (!isTrash && widget.onOpenInNewTab != null)
         ContextMenuItem(
-          icon: WaydirIconsRegular.arrowSquareOut,
+          icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openInNewTab,
           action: 'open_in_new_tab',
         ),
       if (!isTrash) ...[
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.copy,
+          icon: MyExplorerIconsRegular.copy,
           label: t.menu.copyPath,
           action: 'copy_path',
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.bookmarkSimple,
+          icon: MyExplorerIconsRegular.bookmarkSimple,
           label: t.menu.addBookmark,
           action: 'add_bookmark',
         ),
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.info,
+          icon: MyExplorerIconsRegular.info,
           label: t.menu.properties,
           action: 'properties',
         ),
@@ -398,39 +403,39 @@ class _SidebarState extends State<Sidebar> {
     final canUnmount = isMounted && drive.id != '/' && drive.isRemovable;
     final items = <ContextMenuItem>[
       ContextMenuItem(
-        icon: WaydirIconsRegular.folderOpen,
+        icon: MyExplorerIconsRegular.folderOpen,
         label: t.menu.open,
         action: 'open',
       ),
       if (isMounted && widget.onOpenInNewTab != null)
         ContextMenuItem(
-          icon: WaydirIconsRegular.arrowSquareOut,
+          icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openInNewTab,
           action: 'open_in_new_tab',
         ),
       if (isMounted) ...[
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.copy,
+          icon: MyExplorerIconsRegular.copy,
           label: t.menu.copyPath,
           action: 'copy_path',
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.bookmarkSimple,
+          icon: MyExplorerIconsRegular.bookmarkSimple,
           label: t.menu.addBookmark,
           action: 'add_bookmark',
         ),
       ],
       if (canUnmount)
         ContextMenuItem(
-          icon: WaydirIconsRegular.eject,
+          icon: MyExplorerIconsRegular.eject,
           label: t.menu.eject,
           action: 'eject',
         ),
       if (isMounted) ...[
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.info,
+          icon: MyExplorerIconsRegular.info,
           label: t.menu.properties,
           action: 'properties',
         ),
@@ -466,31 +471,31 @@ class _SidebarState extends State<Sidebar> {
   }) {
     final items = <ContextMenuItem>[
       ContextMenuItem(
-        icon: WaydirIconsRegular.folderOpen,
+        icon: MyExplorerIconsRegular.folderOpen,
         label: t.menu.open,
         action: 'open',
       ),
       if (widget.onOpenInNewTab != null)
         ContextMenuItem(
-          icon: WaydirIconsRegular.arrowSquareOut,
+          icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openInNewTab,
           action: 'open_in_new_tab',
         ),
       ContextMenuItem.divider,
       ContextMenuItem(
-        icon: WaydirIconsRegular.copy,
+        icon: MyExplorerIconsRegular.copy,
         label: t.menu.copyPath,
         action: 'copy_path',
       ),
       ContextMenuItem(
-        icon: WaydirIconsRegular.bookmarkSimple,
+        icon: MyExplorerIconsRegular.bookmarkSimple,
         label: t.menu.addBookmark,
         action: 'add_bookmark',
       ),
       if (canDisconnect) ...[
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.eject,
+          icon: MyExplorerIconsRegular.eject,
           label: t.menu.disconnect,
           action: 'disconnect',
           danger: true,
@@ -823,8 +828,8 @@ class _SidebarState extends State<Sidebar> {
         item: _SidebarItem(
           label,
           drive.isRemovable
-              ? WaydirIconsRegular.usb
-              : WaydirIconsRegular.hardDrive,
+              ? MyExplorerIconsRegular.usb
+              : MyExplorerIconsRegular.hardDrive,
           path,
         ),
         isSelected: currentPath == path,
@@ -898,7 +903,7 @@ class _SidebarState extends State<Sidebar> {
           key: 'drive:${drive.id}',
           item: _SidebarItem(
             drive.label,
-            WaydirIconsRegular.treeStructure,
+            MyExplorerIconsRegular.treeStructure,
             path,
           ),
           isSelected: currentPath == path || currentPath.startsWith(path),
@@ -923,7 +928,7 @@ class _SidebarState extends State<Sidebar> {
           key: 'loc:$path',
           item: _SidebarItem(
             uri.displayLabel,
-            WaydirIconsRegular.treeStructure,
+            MyExplorerIconsRegular.treeStructure,
             path,
           ),
           isSelected: currentPath == path || currentPath.startsWith('$path/'),
@@ -962,8 +967,8 @@ class _SidebarState extends State<Sidebar> {
     return visible.map((bookmark) {
       final uri = LocationUri.parse(bookmark.path);
       final icon = uri.isNetwork
-          ? WaydirIconsRegular.treeStructure
-          : WaydirIconsRegular.bookmarkSimple;
+          ? MyExplorerIconsRegular.treeStructure
+          : MyExplorerIconsRegular.bookmarkSimple;
       final isMounted = uri.isLocal
           ? Directory(bookmark.path).existsSync()
           : true;
@@ -992,7 +997,7 @@ class _SidebarState extends State<Sidebar> {
         key: 'tag:${tag.id}',
         item: _SidebarItem(
           tag.name,
-          WaydirIconsRegular.bookmarkSimple,
+          MyExplorerIconsRegular.bookmarkSimple,
           path,
           leading: Container(
             width: 10,
@@ -1020,23 +1025,23 @@ class _SidebarState extends State<Sidebar> {
       position: position,
       items: [
         ContextMenuItem(
-          icon: WaydirIconsRegular.folderOpen,
+          icon: MyExplorerIconsRegular.folderOpen,
           label: t.menu.open,
           action: 'open',
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.arrowSquareOut,
+          icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openInNewTab,
           action: 'open_in_new_tab',
         ),
         ContextMenuItem.divider,
         ContextMenuItem(
-          icon: WaydirIconsRegular.pencilSimple,
+          icon: MyExplorerIconsRegular.pencilSimple,
           label: t.tags.editTag,
           action: 'edit',
         ),
         ContextMenuItem(
-          icon: WaydirIconsRegular.trash,
+          icon: MyExplorerIconsRegular.trash,
           label: t.tags.deleteTag,
           action: 'delete',
           danger: true,
@@ -1219,7 +1224,7 @@ class _ConnectToServerButtonState extends State<_ConnectToServerButton> {
               child: Row(
                 children: [
                   Icon(
-                    WaydirIconsRegular.treeStructure,
+                    MyExplorerIconsRegular.treeStructure,
                     size: _iconSize,
                     color: color,
                   ),
@@ -1258,7 +1263,7 @@ class _ConnectToServerButtonState extends State<_ConnectToServerButton> {
             ),
             alignment: Alignment.center,
             child: Icon(
-              WaydirIconsRegular.treeStructure,
+              MyExplorerIconsRegular.treeStructure,
               size: 15,
               color: color,
             ),
@@ -1472,7 +1477,11 @@ class _DragHandle extends StatelessWidget {
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.grab,
-      child: Icon(WaydirIconsRegular.list, size: 14, color: AppColors.fgSubtle),
+      child: Icon(
+        MyExplorerIconsRegular.list,
+        size: 14,
+        color: AppColors.fgSubtle,
+      ),
     );
   }
 }
@@ -1495,7 +1504,9 @@ class _VisibilityToggle extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(4),
             child: Icon(
-              hidden ? WaydirIconsRegular.prohibit : WaydirIconsRegular.eye,
+              hidden
+                  ? MyExplorerIconsRegular.prohibit
+                  : MyExplorerIconsRegular.eye,
               size: 14,
               color: hidden ? AppColors.fgSubtle : AppColors.fgMuted,
             ),
@@ -1523,8 +1534,8 @@ class _SidebarHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final toggle = _HeaderButton(
       icon: collapsed
-          ? WaydirIconsRegular.sidebarSimple
-          : WaydirIconsRegular.caretLeft,
+          ? MyExplorerIconsRegular.sidebarSimple
+          : MyExplorerIconsRegular.caretLeft,
       tooltip: collapsed ? t.sidebar.expand : t.sidebar.collapse,
       onTap: onToggle,
     );
@@ -1542,8 +1553,8 @@ class _SidebarHeader extends StatelessWidget {
                 if (onToggleEdit != null)
                   _HeaderButton(
                     icon: editing
-                        ? WaydirIconsRegular.check
-                        : WaydirIconsRegular.slidersHorizontal,
+                        ? MyExplorerIconsRegular.check
+                        : MyExplorerIconsRegular.slidersHorizontal,
                     tooltip: editing
                         ? t.sidebar.editDone
                         : t.sidebar.editLayout,
@@ -1809,7 +1820,7 @@ class _SidebarOperationsButtonState extends State<_SidebarOperationsButton> {
               ),
               child: Center(
                 child: Icon(
-                  WaydirIconsRegular.clockClockwise,
+                  MyExplorerIconsRegular.clockClockwise,
                   size: 14,
                   color: color,
                 ),
@@ -1839,7 +1850,7 @@ class _SidebarOperationsButtonState extends State<_SidebarOperationsButton> {
             child: Row(
               children: [
                 Icon(
-                  WaydirIconsRegular.clockClockwise,
+                  MyExplorerIconsRegular.clockClockwise,
                   size: _iconSize,
                   color: color,
                 ),
@@ -1869,24 +1880,24 @@ class _SidebarOperationsButtonState extends State<_SidebarOperationsButton> {
   }
 
   static IconData _operationIcon(FileTask? task) {
-    if (task == null) return WaydirIconsRegular.clockClockwise;
+    if (task == null) return MyExplorerIconsRegular.clockClockwise;
     if (task.status == TaskStatus.waitingConflicts) {
-      return WaydirIconsRegular.warning;
+      return MyExplorerIconsRegular.warning;
     }
 
     return switch (task.type) {
-      TaskType.copy => WaydirIconsRegular.copy,
-      TaskType.move => WaydirIconsRegular.arrowRight,
-      TaskType.delete => WaydirIconsRegular.trash,
-      TaskType.trash => WaydirIconsRegular.trashSimple,
-      TaskType.trashRestore => WaydirIconsRegular.arrowCounterClockwise,
-      TaskType.trashDelete => WaydirIconsRegular.trash,
-      TaskType.extract => WaydirIconsRegular.archive,
-      TaskType.compress => WaydirIconsRegular.fileZip,
-      TaskType.archiveEdit => WaydirIconsRegular.archive,
-      TaskType.split => WaydirIconsRegular.scissors,
-      TaskType.combine => WaydirIconsRegular.copy,
-      TaskType.plugin => WaydirIconsRegular.gearSix,
+      TaskType.copy => MyExplorerIconsRegular.copy,
+      TaskType.move => MyExplorerIconsRegular.arrowRight,
+      TaskType.delete => MyExplorerIconsRegular.trash,
+      TaskType.trash => MyExplorerIconsRegular.trashSimple,
+      TaskType.trashRestore => MyExplorerIconsRegular.arrowCounterClockwise,
+      TaskType.trashDelete => MyExplorerIconsRegular.trash,
+      TaskType.extract => MyExplorerIconsRegular.archive,
+      TaskType.compress => MyExplorerIconsRegular.fileZip,
+      TaskType.archiveEdit => MyExplorerIconsRegular.archive,
+      TaskType.split => MyExplorerIconsRegular.scissors,
+      TaskType.combine => MyExplorerIconsRegular.copy,
+      TaskType.plugin => MyExplorerIconsRegular.gearSix,
     };
   }
 }
@@ -1930,8 +1941,8 @@ class _SectionHeaderState extends State<_SectionHeader> {
               children: [
                 Icon(
                   widget.collapsed
-                      ? WaydirIconsRegular.caretRight
-                      : WaydirIconsRegular.caretDown,
+                      ? MyExplorerIconsRegular.caretRight
+                      : MyExplorerIconsRegular.caretDown,
                   size: 12,
                   color: color,
                 ),
@@ -2117,7 +2128,7 @@ class _ItemRowState extends State<_ItemRow> {
         ),
         if (widget.onUnmount != null)
           _RowIconButton(
-            icon: WaydirIconsRegular.eject,
+            icon: MyExplorerIconsRegular.eject,
             tooltip: t.menu.eject,
             onTap: widget.onUnmount!,
           ),

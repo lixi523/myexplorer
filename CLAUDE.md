@@ -1,4 +1,4 @@
-# Waydir
+# MyExplorer
 
 Desktop file manager built with Flutter/Dart. Fast, minimal, dark theme, keyboard-driven navigation. Target: Windows.
 
@@ -13,8 +13,8 @@ Feature-driven structure:
 - `lib/utils/` - small helpers: `drag_drop`, `format`
 - `lib/i18n/` - translations (slang); currently English only
 - `docs/` - `plugins.md` plugin authoring guide, plus `examples/`, `screenshots/`, `gifs/`
-- `rust/waydir_core/` - native Rust core (cdylib) for path-heavy work (listing, search, trash)
-- `third_party/waydir_core/windows/` - vendored prebuilt native lib loaded at runtime via `lib/core/fs/waydir_core_loader.dart`
+- `rust/myexplorer_core/` - native Rust core (cdylib) for path-heavy work (listing, search, trash)
+- `third_party/myexplorer_core/windows/` - vendored prebuilt native lib loaded at runtime via `lib/core/fs/myexplorer_core_loader.dart`
 - `test/unit/`, `test/integration/`, `test/support/` - tests split by kind, not a strict mirror of `lib/`
 
 Each feature has its own folder with views and store.
@@ -24,7 +24,7 @@ Each feature has its own folder with views and store.
 - **Signals** (`signals` package) - all reactive state via `signal()`, `computed()`, `batch()`
 - **Isolated operations** - copy/move/delete run in separate Isolates, never block UI
 - **FsWorkerPool** - isolate pool for simple FS ops (list, stat, exists, etc.)
-- **Native Rust core** - heavy FS work (recursive list, search, trash) goes through `rust/waydir_core` via FFI, off the UI thread
+- **Native Rust core** - heavy FS work (recursive list, search, trash) goes through `rust/myexplorer_core` via FFI, off the UI thread
 - **drift + sqlite3** - persistent state in `lib/core/database/app_database.dart`; regenerate with build_runner after schema changes
 - **Custom window chrome** - `bitsdojo_window`-based custom title bar in `lib/ui/chrome/` and `lib/ui/window/`
 - **slang** for i18n - translations in `lib/i18n/*.i18n.json`, generated via `slang_build_runner`
@@ -47,7 +47,7 @@ Each feature has its own folder with views and store.
 - `flutter test --tags=integration` - run integration tests only
 - `dart run slang` - regenerate translations after JSON changes
 - `dart run build_runner build --delete-conflicting-outputs` - regenerate drift code after DB schema changes
-- `scripts/build_waydir_core_windows.ps1` - build and vendor the native Rust core
+- `scripts/build_myexplorer_core_windows.ps1` - build and vendor the native Rust core
 - `fastforge package --platform windows --targets exe,zip` - build installable artifacts (config in `distribute_options.yaml` and `windows/packaging/`). The `exe` target requires Inno Setup installed.
 
 ## Git
@@ -71,5 +71,5 @@ Each feature has its own folder with views and store.
 - No unnecessary dependencies
 - Tests split into `unit/` and `integration/` under `test/`
 - Integration tests must start with `@Tags(<String>['integration'])` on line 1 so they pick up the 2x timeout from `dart_test.yaml` and the tag filters
-- Integration tests need the native `waydir_core` library; build it with `scripts/build_waydir_core_windows.ps1` or they fail with "Native waydir_core not found"
+- Integration tests need the native `myexplorer_core` library; build it with `scripts/build_myexplorer_core_windows.ps1` or they fail with "Native myexplorer_core not found"
 - Translation keys in English

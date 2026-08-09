@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir_term/xterm.dart';
+import 'package:myexplorer_term/xterm.dart';
 
 void expectNoHoles(Terminal terminal) {
   final lines = terminal.buffer.lines;

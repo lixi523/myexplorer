@@ -8,7 +8,7 @@ import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/widgets/app_modal.dart';
@@ -150,7 +150,7 @@ class _CreateManifestDialogState extends State<_CreateManifestDialog> {
     final done = _writtenFiles.isNotEmpty;
 
     return AppModal(
-      icon: WaydirIconsRegular.checkSquare,
+      icon: MyExplorerIconsRegular.checkSquare,
       iconColor: AppColors.accent,
       title: t.checksum.createManifest,
       width: 520,
@@ -332,7 +332,7 @@ class _VerifyManifestDialogState extends State<_VerifyManifestDialog> {
         checks?.where((c) => c.status == ManifestCheckStatus.ok).length ?? 0;
 
     return AppModal(
-      icon: WaydirIconsRegular.checkSquare,
+      icon: MyExplorerIconsRegular.checkSquare,
       iconColor: AppColors.accent,
       title: t.checksum.verifyManifest,
       width: 560,
@@ -396,19 +396,19 @@ class _VerifyManifestDialogState extends State<_VerifyManifestDialog> {
                   final (color, icon) = switch (check.status) {
                     ManifestCheckStatus.ok => (
                       AppColors.success,
-                      WaydirIconsRegular.check,
+                      MyExplorerIconsRegular.check,
                     ),
                     ManifestCheckStatus.mismatch => (
                       AppColors.danger,
-                      WaydirIconsRegular.x,
+                      MyExplorerIconsRegular.x,
                     ),
                     ManifestCheckStatus.missing => (
                       AppColors.warning,
-                      WaydirIconsRegular.warning,
+                      MyExplorerIconsRegular.warning,
                     ),
                     ManifestCheckStatus.error => (
                       AppColors.danger,
-                      WaydirIconsRegular.warningCircle,
+                      MyExplorerIconsRegular.warningCircle,
                     ),
                   };
 

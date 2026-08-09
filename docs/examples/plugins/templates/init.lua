@@ -85,7 +85,7 @@ end
 local function create_from_template(ctx)
   local settings = ctx.settings or {}
   if not ctx.form then
-    waydir.dialog({
+    myexplorer.dialog({
       title = "New from template",
       fields = {
         { id = "name", type = "input", label = "File name", default = "untitled" },
@@ -108,17 +108,17 @@ local function create_from_template(ctx)
   local id = ctx.form.template or "markdown"
   local ext = ext_for(id)
   local path = ctx.dir .. "/" .. name .. "." .. ext
-  waydir.write_text(path, body(id, name, settings.author or ""))
-  waydir.notify({
+  myexplorer.write_text(path, body(id, name, settings.author or ""))
+  myexplorer.notify({
     title = "New from Template",
     message = "Created " .. name .. "." .. ext,
     level = "success",
   })
-  waydir.refresh()
+  myexplorer.refresh()
 end
 
 -- Primary entry: background menu + shortcut, and owns the settings schema.
-waydir.register({
+myexplorer.register({
   id = "new_from_template",
   title = "New from template…",
   where = { "background" },
@@ -138,7 +138,7 @@ waydir.register({
 })
 
 -- Toolbar button, next to New Folder. Uses the bundled icon.
-waydir.register({
+myexplorer.register({
   id = "new_from_template_toolbar",
   title = "New from template…",
   menu = "toolbar",
@@ -148,7 +148,7 @@ waydir.register({
 
 -- Top Plugins menubar. `icon` accepts a bundled image (svg/png) just like the
 -- toolbar, or a named builtin glyph (see set_author below).
-waydir.register({
+myexplorer.register({
   id = "new_from_template_menubar",
   title = "New from template…",
   menu = "menubar",
@@ -157,14 +157,14 @@ waydir.register({
 })
 
 -- A second menubar entry that edits this plugin's own setting.
-waydir.register({
+myexplorer.register({
   id = "set_author",
   title = "Set template author…",
   menu = "menubar",
   icon = "pencil",
   run = function(ctx)
     if not ctx.form then
-      waydir.dialog({
+      myexplorer.dialog({
         title = "Template author",
         fields = {
           {
@@ -177,8 +177,8 @@ waydir.register({
       })
       return
     end
-    waydir.set_setting("author", ctx.form.author or "")
-    waydir.notify({
+    myexplorer.set_setting("author", ctx.form.author or "")
+    myexplorer.notify({
       title = "New from Template",
       message = "Author saved",
       level = "success",

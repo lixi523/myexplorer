@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:signals/signals.dart';
 
-import '../../core/fs/waydir_core_loader.dart';
+import '../../core/fs/myexplorer_core_loader.dart';
 import '../../core/logging/app_logger.dart';
 
 class FolderSizeScanner {
@@ -26,7 +26,7 @@ class FolderSizeScanner {
       if (_sessions.containsKey(path)) continue;
       int? session;
       try {
-        session = WaydirCoreLoader.folderScanStart(path);
+        session = MyExplorerCoreLoader.folderScanStart(path);
       } catch (e, st) {
         log.warn(
           'navigation',
@@ -64,7 +64,7 @@ class FolderSizeScanner {
     final finished = <String>[];
     _sessions.forEach((path, session) {
       try {
-        final r = WaydirCoreLoader.folderScanPoll(session);
+        final r = MyExplorerCoreLoader.folderScanPoll(session);
         if (r.done) {
           sizesNext[path] = r.bytes;
           progressNext.remove(path);
@@ -89,7 +89,7 @@ class FolderSizeScanner {
       final session = _sessions.remove(path);
       if (session == null) continue;
       try {
-        WaydirCoreLoader.folderScanFree(session);
+        MyExplorerCoreLoader.folderScanFree(session);
       } catch (e, st) {
         log.warn(
           'navigation',
@@ -112,8 +112,8 @@ class FolderSizeScanner {
     _timer = null;
     for (final session in _sessions.values) {
       try {
-        WaydirCoreLoader.folderScanCancel(session);
-        WaydirCoreLoader.folderScanFree(session);
+        MyExplorerCoreLoader.folderScanCancel(session);
+        MyExplorerCoreLoader.folderScanFree(session);
       } catch (e, st) {
         log.warn(
           'navigation',

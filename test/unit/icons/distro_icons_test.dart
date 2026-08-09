@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/ui/icons/distro_icons.dart';
+import 'package:myexplorer/ui/icons/distro_icons.dart';
 
 void main() {
   group('distroIconFor', () {

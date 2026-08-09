@@ -7,13 +7,13 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/database/app_database.dart' hide Tags;
+import 'package:myexplorer/core/database/app_database.dart' hide Tags;
 
 void main() {
   late Directory tmpDir;
 
   setUp(() {
-    tmpDir = Directory.systemTemp.createTempSync('waydir_db_persist_');
+    tmpDir = Directory.systemTemp.createTempSync('myexplorer_db_persist_');
   });
 
   tearDown(() {
@@ -21,7 +21,7 @@ void main() {
   });
 
   test('persists settings, bookmarks and tabs across reopen', () async {
-    final path = p.join(tmpDir.path, 'waydir.sqlite');
+    final path = p.join(tmpDir.path, 'myexplorer.sqlite');
     var db = AppDatabase(NativeDatabase(File(path)));
 
     await db.getSettings();

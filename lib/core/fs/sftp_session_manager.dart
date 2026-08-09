@@ -1,7 +1,7 @@
 import '../../features/locations/location_resolver.dart'
     show SftpCredentials, SftpAuthMethod;
 import '../../features/locations/location_uri.dart';
-import 'waydir_core_loader.dart';
+import 'myexplorer_core_loader.dart';
 
 enum SftpOpenStatus { ok, authRequired, error }
 
@@ -143,9 +143,9 @@ class SftpSessionManager {
   }
 
   static String defaultRemotePath(int sessionId, String user) {
-    final home = WaydirCoreLoader.sftpRealPath(sessionId, '.');
+    final home = MyExplorerCoreLoader.sftpRealPath(sessionId, '.');
     if (home != null && home.startsWith('/')) {
-      final stat = WaydirCoreLoader.sftpStat(sessionId, home);
+      final stat = MyExplorerCoreLoader.sftpStat(sessionId, home);
       if (stat != null && stat.exists && stat.isDir) {
         return home;
       }
@@ -155,7 +155,7 @@ class SftpSessionManager {
       if (user.isNotEmpty) '/Users/$user',
     ];
     for (final path in candidates) {
-      final stat = WaydirCoreLoader.sftpStat(sessionId, path);
+      final stat = MyExplorerCoreLoader.sftpStat(sessionId, path);
       if (stat != null && stat.exists && stat.isDir) {
         return path;
       }
@@ -205,7 +205,7 @@ class SftpSessionManager {
       }
     }
 
-    final result = WaydirCoreLoader.sftpOpen(
+    final result = MyExplorerCoreLoader.sftpOpen(
       host: host,
       port: port,
       user: user,
@@ -242,7 +242,7 @@ class SftpSessionManager {
   static void closeRoot(String root) {
     final rec = _byRoot.remove(root);
     if (rec != null) {
-      WaydirCoreLoader.sftpClose(rec.sessionId);
+      MyExplorerCoreLoader.sftpClose(rec.sessionId);
     }
   }
 
@@ -261,7 +261,7 @@ class SftpSessionManager {
 
   static void debugReset() {
     for (final rec in _byRoot.values) {
-      WaydirCoreLoader.sftpClose(rec.sessionId);
+      MyExplorerCoreLoader.sftpClose(rec.sessionId);
     }
     _byRoot.clear();
   }

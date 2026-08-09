@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/ui/overlays/popup_overlay.dart';
-import 'package:waydir/ui/theme/app_theme.dart';
+import 'package:myexplorer/ui/overlays/popup_overlay.dart';
+import 'package:myexplorer/ui/theme/app_theme.dart';
 
 void main() {
   Widget wrap(Widget child) =>

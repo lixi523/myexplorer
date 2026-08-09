@@ -1331,7 +1331,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
   static final FileEntry _kTombstone = FileEntry.raw(
     name: '',
-    path: 'waydir-tombstone-sentinel',
+    path: 'myexplorer-tombstone-sentinel',
     type: FileItemType.file,
     size: 0,
     modifiedMs: 0,

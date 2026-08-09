@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/widgets/app_modal.dart';
 import '../../ui/widgets/app_text_field.dart';
@@ -103,7 +103,7 @@ class _TagEditDialogState extends State<_TagEditDialog> {
     return Focus(
       onKeyEvent: _handleKey,
       child: AppModal(
-        icon: WaydirIconsRegular.bookmarkSimple,
+        icon: MyExplorerIconsRegular.bookmarkSimple,
         title: widget.existing == null ? t.tags.newTag : t.tags.editTag,
         width: 360,
         padding: const EdgeInsets.all(16),

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Waydir will be documented in this file.
+All notable changes to MyExplorer will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -59,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Windows-only: Linux and macOS support, directories, CI jobs and platform-specific code removed.
 - CI rebuilt around `windows-latest` runners; the Rust core is built and vendored in the pipeline.
-- Integration tests no longer require a live SMB server (live cases are gated behind the `WAYDIR_LIVE_SMB` compile-time flag and skipped by default).
+- Integration tests no longer require a live SMB server (live cases are gated behind the `MYEXPLORER_LIVE_SMB` compile-time flag and skipped by default).
 - `sqlite3` pinned to 3.1.7 to avoid the native-assets build hook.
 
 ### Fixed
@@ -106,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Plugins: reactive `navigate` and `selection_change` event handlers via the `event` field.
 - Folder compare and sync between panes.
 - Color tags for files, with a sidebar section and filtering.
-- Setting to make dragging move files by default (Alt copies). ([#184](https://github.com/Waydir/Waydir/issues/184))
+- Setting to make dragging move files by default (Alt copies). ([#184](https://github.com/MyExplorer/MyExplorer/issues/184))
 - Menu bar: dedicated Help menu with in-app tutorial, keybindings, diagnostics, repository and bug report links.
 - Preferences: in-dialog search to jump to any setting.
 
@@ -116,7 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Plugins load and status bars refresh on a shared background isolate instead of spawning one per call, keeping startup and panes smooth.
 
 ### Fixed
-- `waydir.exec` is now bounded to 5 seconds, so a hung external command can no longer wedge a plugin.
+- `myexplorer.exec` is now bounded to 5 seconds, so a hung external command can no longer wedge a plugin.
 
 ## [0.19.0] - 2026-06-20
 
@@ -135,7 +135,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.18.0] - 2026-06-16
 
 ### Added
-- macOS: "Date added" column showing when a file appeared in its current folder. ([#173](https://github.com/Waydir/Waydir/issues/173)) ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: "Date added" column showing when a file appeared in its current folder. ([#173](https://github.com/MyExplorer/MyExplorer/issues/173)) ([@fwitkowski17](https://github.com/fwitkowski17))
 - macOS: closing the window now keeps the app in the dock instead of quitting, and reopening it (dock click or Cmd+N) brings the window back. ([@fwitkowski17](https://github.com/fwitkowski17))
 - Windows: WSL support. Browse WSL distributions from the sidebar.
 - Terminal: the new-tab dropdown lets you pick any shell, or a WSL distribution, to launch the next terminal session.
@@ -148,8 +148,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - "Show folders before files" preference now applies; removed the duplicate toggle from the sort menu.
 - Sort by size now treats folders as size 0 and keeps them name-ascending, instead of using the directory inode size.
-- PDF preview crash when rapidly switching between files ([#175](https://github.com/Waydir/Waydir/issues/175)).
-- "Date created" now uses real birth time instead of ctime ([#174](https://github.com/Waydir/Waydir/issues/174)).
+- PDF preview crash when rapidly switching between files ([#175](https://github.com/MyExplorer/MyExplorer/issues/175)).
+- "Date created" now uses real birth time instead of ctime ([#174](https://github.com/MyExplorer/MyExplorer/issues/174)).
 - File operations now report a clean "Permission denied" message (instead of a raw error string) across more cases, including SFTP/SMB transfers and Windows access-denied errors.
 - Quick Look: line numbers now have more room before the editor content.
 - Insert now starts keyboard selection from the current file instead of clearing it on the first press.
@@ -175,8 +175,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quick Look: prompts to save, discard or cancel when closing the editor with unsaved changes.
 - Quick Look: relative line numbers option, showing distance from the current line.
 - Quick Look: option to turn off the statistics panel for multi-selection properties.
-- The path bar now expands environment variables: `%VAR%` on Windows and `$VAR`/`${VAR}` on Linux and macOS. ([#163](https://github.com/Waydir/Waydir/issues/163))
-- Command-line support: launch Waydir with folder paths and options to open straight to a location. Run `waydir --help` for details. ([#164](https://github.com/Waydir/Waydir/issues/164))
+- The path bar now expands environment variables: `%VAR%` on Windows and `$VAR`/`${VAR}` on Linux and macOS. ([#163](https://github.com/MyExplorer/MyExplorer/issues/163))
+- Command-line support: launch MyExplorer with folder paths and options to open straight to a location. Run `myexplorer --help` for details. ([#164](https://github.com/MyExplorer/MyExplorer/issues/164))
 
 ### Changed
 - The file list now shows descriptive Kind labels by default, with the default column order set to Name, Kind, Size, then Date.
@@ -197,16 +197,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.15.0] - 2026-06-11
 
 ### Added
-- Changelog viewer: open it from the Waydir menu to read all release notes rendered as Markdown.
+- Changelog viewer: open it from the MyExplorer menu to read all release notes rendered as Markdown.
 - Quick Look preferences: choose the editor font and line height, show line numbers, toggle line wrapping and enable a basic Vim mode for editing previews.
 - File list columns can be configured: toggle Size, Date modified, Kind, Date created, Permissions and Owner on or off, and drag to reorder them. Every column is sortable.
 - The path bar now expands `~` to the home folder. ([@fwitkowski17](https://github.com/fwitkowski17))
-- macOS: Waydir now prompts for Full Disk Access when needed. ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: MyExplorer now prompts for Full Disk Access when needed. ([@fwitkowski17](https://github.com/fwitkowski17))
 
 ### Fixed
 - Copying, pasting and dragging files into an empty folder now works. ([@fwitkowski17](https://github.com/fwitkowski17))
 - macOS: the Videos location now opens the Movies folder. ([@fwitkowski17](https://github.com/fwitkowski17))
-- macOS: files copied in Finder can now be pasted in Waydir, and Waydir's own copies are recognized by Finder. ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: files copied in Finder can now be pasted in MyExplorer, and MyExplorer's own copies are recognized by Finder. ([@fwitkowski17](https://github.com/fwitkowski17))
 
 ## [0.14.0] - 2026-06-10
 
@@ -226,10 +226,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.13.0] - 2026-06-10
 
 ### Added
-- Debian/Ubuntu and Fedora/RHEL/openSUSE package repositories: install Waydir from an apt or dnf/zypper repository and receive new releases through your regular package manager updates.
+- Debian/Ubuntu and Fedora/RHEL/openSUSE package repositories: install MyExplorer from an apt or dnf/zypper repository and receive new releases through your regular package manager updates.
 
 ### Changed
-- deb and rpm builds no longer install updates from within the app. When Waydir runs from a package, the updater now points you to your package manager (`apt upgrade` / `dnf upgrade`), which the repository keeps up to date.
+- deb and rpm builds no longer install updates from within the app. When MyExplorer runs from a package, the updater now points you to your package manager (`apt upgrade` / `dnf upgrade`), which the repository keeps up to date.
 
 ## [0.12.0] - 2026-06-09
 
@@ -246,26 +246,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.11.0] - 2026-06-09
 
 ### Added
-- Plugins can create and update custom entries in the Operations panel with `waydir.operation_start`, `waydir.operation_update`, and `waydir.operation_finish`.
+- Plugins can create and update custom entries in the Operations panel with `myexplorer.operation_start`, `myexplorer.operation_update`, and `myexplorer.operation_finish`.
 - Plugin `run_task` can show long-running external commands in Operations with optional regex-based progress parsing.
-- Plugins can query local file sizes with `waydir.file_size`.
+- Plugins can query local file sizes with `myexplorer.file_size`.
 
 ## [0.10.1] - 2026-06-08
 
 ### Changed
-- Plugins: `waydir.exec` now returns the command's stdout, stderr, and exit code.
+- Plugins: `myexplorer.exec` now returns the command's stdout, stderr, and exit code.
 
 ## [0.10.0] - 2026-06-08
 
 ### Added
 - Windows: entering a bare server (`\\computername`) now lists its shared folders, the way Explorer does.
 - Confirm button in the editable path bar.
-- Plugin system: extend Waydir with small Lua plugins that add context-menu, menu bar, toolbar, and keyboard-shortcut actions. Manage and configure them in Preferences → Plugins. See [docs/plugins.md](docs/plugins.md) for the guide and example plugins.
+- Plugin system: extend MyExplorer with small Lua plugins that add context-menu, menu bar, toolbar, and keyboard-shortcut actions. Manage and configure them in Preferences → Plugins. See [docs/plugins.md](docs/plugins.md) for the guide and example plugins.
 - Preferences option to sort only files and keep folders in their default order.
 
 ### Fixed
 - SMB: listing a host's shares now prompts for a password when one is required.
-- Restoring a session no longer hangs on startup when the last folder was a network path; on any restore failure Waydir falls back to the home folder and logs the error.
+- Restoring a session no longer hangs on startup when the last folder was a network path; on any restore failure MyExplorer falls back to the home folder and logs the error.
 - Cancel now stops a copy or move immediately during scanning.
 - Sidebar scrollbar no longer overlaps the resize edge, so both are easy to grab.
 - Root path `/` now shows in the path bar.
@@ -354,7 +354,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - File list horizontal and vertical spacing can now be adjusted in Preferences.
 - Properties now shows statistics for selected files and folders.
 - Leave the Share field empty when connecting to SMB to browse the server's shared folders.
-- Waydir now remembers the selection, cursor and sort order for each folder. Both can be toggled off in Preferences.
+- MyExplorer now remembers the selection, cursor and sort order for each folder. Both can be toggled off in Preferences.
 
 ### Changed
 - File list scrollbar is now always visible and reserves space at the right edge.
@@ -496,31 +496,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom dark theme and custom title bar.
 - Settings store with persistent user preferences.
 
-[Unreleased]: https://github.com/Waydir/Waydir/compare/v0.20.0...HEAD
-[0.20.0]: https://github.com/Waydir/Waydir/compare/v0.19.0...v0.20.0
-[0.19.0]: https://github.com/Waydir/Waydir/compare/v0.18.0...v0.19.0
-[0.18.0]: https://github.com/Waydir/Waydir/compare/v0.17.0...v0.18.0
-[0.17.0]: https://github.com/Waydir/Waydir/compare/v0.16.0...v0.17.0
-[0.16.0]: https://github.com/Waydir/Waydir/compare/v0.15.0...v0.16.0
-[0.15.0]: https://github.com/Waydir/Waydir/compare/v0.14.0...v0.15.0
-[0.14.0]: https://github.com/Waydir/Waydir/compare/v0.13.0...v0.14.0
-[0.13.0]: https://github.com/Waydir/Waydir/compare/v0.12.0...v0.13.0
-[0.12.0]: https://github.com/Waydir/Waydir/compare/v0.11.0...v0.12.0
-[0.11.0]: https://github.com/Waydir/Waydir/compare/v0.10.1...v0.11.0
-[0.10.1]: https://github.com/Waydir/Waydir/compare/v0.10.0...v0.10.1
-[0.10.0]: https://github.com/Waydir/Waydir/compare/v0.9.1...v0.10.0
-[0.9.1]: https://github.com/Waydir/Waydir/compare/v0.9.0...v0.9.1
-[0.9.0]: https://github.com/Waydir/Waydir/compare/v0.8.0...v0.9.0
-[0.8.0]: https://github.com/Waydir/Waydir/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/Waydir/Waydir/compare/v0.6.1...v0.7.0
-[0.6.1]: https://github.com/Waydir/Waydir/compare/v0.6.0...v0.6.1
-[0.6.0]: https://github.com/Waydir/Waydir/compare/v0.5.1...v0.6.0
-[0.5.1]: https://github.com/Waydir/Waydir/compare/v0.5.0...v0.5.1
-[0.5.0]: https://github.com/Waydir/Waydir/compare/v0.4.1...v0.5.0
-[0.4.1]: https://github.com/Waydir/Waydir/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/Waydir/Waydir/compare/v0.3.1...v0.4.0
-[0.3.1]: https://github.com/Waydir/Waydir/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/Waydir/Waydir/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/Waydir/Waydir/compare/v0.1.1...v0.2.0
-[0.1.1]: https://github.com/Waydir/Waydir/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/Waydir/Waydir/releases/tag/v0.1.0
+[Unreleased]: https://github.com/MyExplorer/MyExplorer/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.19.0...v0.20.0
+[0.19.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.18.0...v0.19.0
+[0.18.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.16.0...v0.17.0
+[0.16.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.10.1...v0.11.0
+[0.10.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.10.0...v0.10.1
+[0.10.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.5.1...v0.6.0
+[0.5.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.4.1...v0.5.0
+[0.4.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.3.1...v0.4.0
+[0.3.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/MyExplorer/MyExplorer/releases/tag/v0.1.0

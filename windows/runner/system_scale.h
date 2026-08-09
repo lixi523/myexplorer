@@ -4,7 +4,7 @@
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
 
-namespace waydir {
+namespace myexplorer {
 
 class SystemScale {
  public:
@@ -27,6 +27,6 @@ class SystemScale {
   void* event_sink_ = nullptr;       // owned, opaque
 };
 
-}  // namespace waydir
+}  // namespace myexplorer
 
 #endif  // RUNNER_SYSTEM_SCALE_H_

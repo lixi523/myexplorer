@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../ui/dialogs/dialog.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/widgets/app_dropdown.dart';
@@ -117,7 +117,7 @@ class _PluginFormBodyState extends State<_PluginFormBody> {
             children: [
               value
                   ? Icon(
-                      WaydirIconsRegular.checkSquare,
+                      MyExplorerIconsRegular.checkSquare,
                       size: 16,
                       color: AppColors.accent,
                     )
@@ -170,7 +170,7 @@ class _PluginFormBodyState extends State<_PluginFormBody> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.gearSix,
+      icon: MyExplorerIconsRegular.gearSix,
       title: widget.title,
       width: 380,
       padding: const EdgeInsets.all(16),

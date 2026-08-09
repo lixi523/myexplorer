@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/navigation/toolbar_ini.dart';
+import 'package:myexplorer/features/navigation/toolbar_ini.dart';
 
 void main() {
   group('parseToolbarIni', () {

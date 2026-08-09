@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/quick_look/quick_look_common.dart';
+import 'package:myexplorer/features/quick_look/quick_look_common.dart';
 
 void main() {
   group('Quick Look extension sets do not overlap', () {

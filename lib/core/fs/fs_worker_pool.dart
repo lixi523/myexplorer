@@ -9,7 +9,7 @@ import '../logging/app_logger.dart';
 import '../models/file_entry.dart';
 import '../platform/platform_paths.dart';
 import 'sftp_fs.dart';
-import 'waydir_core_loader.dart';
+import 'myexplorer_core_loader.dart';
 
 enum _Op {
   list,
@@ -309,7 +309,7 @@ class FsWorkerPool {
     switch (op) {
       case _Op.list:
         final path = args.first as String;
-        final native = WaydirCoreLoader.listDir(path);
+        final native = MyExplorerCoreLoader.listDir(path);
         if (native == null) {
           throw FileSystemException(t.errors.directoryNotReadable, path);
         }

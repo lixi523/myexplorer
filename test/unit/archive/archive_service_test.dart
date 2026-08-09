@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/archive/archive_reader.dart';
-import 'package:waydir/core/archive/archive_service.dart';
-import 'package:waydir/core/models/file_entry.dart';
+import 'package:myexplorer/core/archive/archive_reader.dart';
+import 'package:myexplorer/core/archive/archive_service.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
 
 void main() {
   final mtime = DateTime(2020, 1, 1);

@@ -6,7 +6,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart' show WaydirIconsRegular;
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart'
+    show MyExplorerIconsRegular;
 import 'package:signals/signals_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import '../../i18n/strings.g.dart';
@@ -1207,8 +1208,8 @@ class _ListHeader extends StatelessWidget {
               const SizedBox(width: 3),
               Icon(
                 ascending
-                    ? WaydirIconsRegular.caretUp
-                    : WaydirIconsRegular.caretDown,
+                    ? MyExplorerIconsRegular.caretUp
+                    : MyExplorerIconsRegular.caretDown,
                 size: 10,
                 color: AppColors.fgAccent,
               ),
@@ -1345,7 +1346,7 @@ class _ConfigureColumnsButtonState extends State<_ConfigureColumnsButton> {
               borderRadius: BorderRadius.circular(3),
             ),
             child: Icon(
-              WaydirIconsRegular.slidersHorizontal,
+              MyExplorerIconsRegular.slidersHorizontal,
               size: 14,
               color: _hovered ? AppColors.fg : AppColors.fgMuted,
             ),
@@ -1494,7 +1495,7 @@ class _ColumnConfigRowState extends State<_ColumnConfigRow> {
                 child: MouseRegion(
                   cursor: SystemMouseCursors.grab,
                   child: Icon(
-                    WaydirIconsRegular.list,
+                    MyExplorerIconsRegular.list,
                     size: 14,
                     color: AppColors.fgSubtle,
                   ),
@@ -1539,7 +1540,7 @@ class _ColumnCheckbox extends StatelessWidget {
         ),
       ),
       child: value
-          ? Icon(WaydirIconsRegular.check, size: 10, color: Colors.white)
+          ? Icon(MyExplorerIconsRegular.check, size: 10, color: Colors.white)
           : null,
     );
   }
@@ -1842,8 +1843,8 @@ class _ListRowState extends State<_ListRow> {
                               )
                             : Icon(
                                 widget.treeExpanded
-                                    ? WaydirIconsRegular.caretDown
-                                    : WaydirIconsRegular.caretRight,
+                                    ? MyExplorerIconsRegular.caretDown
+                                    : MyExplorerIconsRegular.caretRight,
                                 size: 12,
                                 color: _treeDisclosureHovered
                                     ? AppColors.fg
@@ -2238,7 +2239,7 @@ class _EmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              WaydirIconsRegular.folderOpen,
+              MyExplorerIconsRegular.folderOpen,
               size: 48,
               color: AppColors.fgSubtle,
             ),

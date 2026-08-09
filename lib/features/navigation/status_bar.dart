@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import 'navigation_store.dart';
 import '../../app/app_info.dart';
@@ -111,19 +111,19 @@ class _StatusViewModeToggle extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _StatusViewModeButton(
-              icon: WaydirIconsRegular.list,
+              icon: MyExplorerIconsRegular.list,
               tooltip: t.toolbar.listView,
               active: mode == 'list',
               onTap: () => settings.fileViewMode.value = 'list',
             ),
             _StatusViewModeButton(
-              icon: WaydirIconsRegular.treeStructure,
+              icon: MyExplorerIconsRegular.treeStructure,
               tooltip: t.toolbar.treeView,
               active: mode == 'tree',
               onTap: () => settings.fileViewMode.value = 'tree',
             ),
             _StatusViewModeButton(
-              icon: WaydirIconsRegular.squaresFour,
+              icon: MyExplorerIconsRegular.squaresFour,
               tooltip: t.toolbar.gridView,
               active: mode == 'grid',
               onTap: () => settings.fileViewMode.value = 'grid',
@@ -233,7 +233,11 @@ class _StatusSortButtonState extends State<_StatusSortButton> {
               color: _hovered ? AppColors.bgHover : Colors.transparent,
               borderRadius: BorderRadius.zero,
             ),
-            child: Icon(WaydirIconsRegular.caretUpDown, size: 14, color: color),
+            child: Icon(
+              MyExplorerIconsRegular.caretUpDown,
+              size: 14,
+              color: color,
+            ),
           ),
         ),
       ),
@@ -383,7 +387,7 @@ class _StatusVersionState extends State<_StatusVersion> {
             ),
             if (available) ...[
               const SizedBox(width: 4),
-              Icon(WaydirIconsRegular.arrowUp, size: 11, color: color),
+              Icon(MyExplorerIconsRegular.arrowUp, size: 11, color: color),
             ],
           ],
         );
@@ -432,7 +436,7 @@ class _StatusNotificationsButton extends StatelessWidget {
         final count = notificationStore.history.value.length;
 
         return _StatusIconButton(
-          icon: WaydirIconsRegular.bell,
+          icon: MyExplorerIconsRegular.bell,
           tooltip: t.toolbar.notifications,
           badge: count,
           onTap: () => _open(context),

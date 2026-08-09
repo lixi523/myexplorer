@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/hidden/hidden_ini.dart';
-import 'package:waydir/features/hidden/hidden_list_store.dart';
+import 'package:myexplorer/features/hidden/hidden_ini.dart';
+import 'package:myexplorer/features/hidden/hidden_list_store.dart';
 
 void main() {
   group('normalizeHiddenPath', () {
@@ -57,7 +57,7 @@ void main() {
     late HiddenListStore store;
 
     setUp(() {
-      tempDir = Directory.systemTemp.createTempSync('waydir_hidden_test');
+      tempDir = Directory.systemTemp.createTempSync('myexplorer_hidden_test');
       store = HiddenListStore.instance;
       store.directoryOverride = tempDir.path;
     });

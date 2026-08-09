@@ -9,12 +9,12 @@
 
 #include <memory>
 
-namespace waydir {
+namespace myexplorer {
 
 namespace {
 
-constexpr char kMethodChannel[] = "waydir/system_scale";
-constexpr char kEventChannel[] = "waydir/system_scale/events";
+constexpr char kMethodChannel[] = "myexplorer/system_scale";
+constexpr char kEventChannel[] = "myexplorer/system_scale/events";
 
 using MethodChannel = flutter::MethodChannel<flutter::EncodableValue>;
 using EventChannel = flutter::EventChannel<flutter::EncodableValue>;
@@ -102,4 +102,4 @@ void SystemScale::Register(flutter::FlutterViewController* controller,
   events->SetStreamHandler(std::move(handler));
 }
 
-}  // namespace waydir
+}  // namespace myexplorer

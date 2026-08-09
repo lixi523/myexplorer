@@ -4,16 +4,18 @@ library;
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/fs/recursive_search.dart';
-import 'package:waydir/core/fs/waydir_core_loader.dart';
+import 'package:myexplorer/core/fs/recursive_search.dart';
+import 'package:myexplorer/core/fs/myexplorer_core_loader.dart';
 
 void main() {
   test(
     'terminal callback fires exactly once even when cancelled early',
     () async {
-      expect(WaydirCoreLoader.load(), isNotNull);
+      expect(MyExplorerCoreLoader.load(), isNotNull);
 
-      final root = Directory.systemTemp.createTempSync('waydir_search_cancel');
+      final root = Directory.systemTemp.createTempSync(
+        'myexplorer_search_cancel',
+      );
       try {
         for (var i = 0; i < 2000; i++) {
           File('${root.path}/f$i.txt').writeAsStringSync('$i');

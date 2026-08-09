@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/fs/file_system_service.dart';
+import 'package:myexplorer/core/fs/file_system_service.dart';
 
 void main() {
   test('archiveBaseName strips simple and compound extensions', () {
@@ -16,7 +16,7 @@ void main() {
   });
 
   test('uniquePath appends a counter when the target exists', () {
-    final tmp = Directory.systemTemp.createTempSync('waydir_uniq');
+    final tmp = Directory.systemTemp.createTempSync('myexplorer_uniq');
     addTearDown(() => tmp.deleteSync(recursive: true));
     final base = p.join(tmp.path, 'out');
     expect(FileSystemService.uniquePath(base), base);

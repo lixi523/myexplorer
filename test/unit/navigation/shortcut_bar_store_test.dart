@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/features/navigation/shortcut_bar_store.dart';
+import 'package:myexplorer/features/navigation/shortcut_bar_store.dart';
 
 void main() {
   final file = File(p.join(p.dirname(Platform.resolvedExecutable), '快捷栏.ini'));

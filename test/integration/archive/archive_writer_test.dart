@@ -5,8 +5,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/archive/archive_reader.dart';
-import 'package:waydir/core/archive/archive_writer.dart';
+import 'package:myexplorer/core/archive/archive_reader.dart';
+import 'package:myexplorer/core/archive/archive_writer.dart';
 
 void main() {
   group('ArchiveWriter', () {
@@ -15,7 +15,7 @@ void main() {
     late String dirPath;
 
     setUp(() {
-      tmp = Directory.systemTemp.createTempSync('waydir_writer');
+      tmp = Directory.systemTemp.createTempSync('myexplorer_writer');
       filePath = p.join(tmp.path, 'note.txt');
       File(filePath).writeAsStringSync('hello');
       dirPath = p.join(tmp.path, 'folder');

@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../i18n/strings.g.dart';
@@ -10,47 +10,47 @@ final shortcutGroupMeta =
     <ShortcutGroup, ({String Function() title, IconData icon})>{
       ShortcutGroup.navigation: (
         title: () => t.keybindings.categories.navigation,
-        icon: WaydirIconsRegular.compass,
+        icon: MyExplorerIconsRegular.compass,
       ),
       ShortcutGroup.quickLook: (
         title: () => t.keybindings.categories.quickLook,
-        icon: WaydirIconsRegular.eye,
+        icon: MyExplorerIconsRegular.eye,
       ),
       ShortcutGroup.view: (
         title: () => t.keybindings.categories.view,
-        icon: WaydirIconsRegular.eye,
+        icon: MyExplorerIconsRegular.eye,
       ),
       ShortcutGroup.tabs: (
         title: () => t.keybindings.categories.tabs,
-        icon: WaydirIconsRegular.tabs,
+        icon: MyExplorerIconsRegular.tabs,
       ),
       ShortcutGroup.panes: (
         title: () => t.keybindings.categories.panes,
-        icon: WaydirIconsRegular.columns,
+        icon: MyExplorerIconsRegular.columns,
       ),
       ShortcutGroup.terminal: (
         title: () => t.keybindings.categories.terminal,
-        icon: WaydirIconsRegular.terminal,
+        icon: MyExplorerIconsRegular.terminal,
       ),
       ShortcutGroup.fileOps: (
         title: () => t.keybindings.categories.fileOps,
-        icon: WaydirIconsRegular.copy,
+        icon: MyExplorerIconsRegular.copy,
       ),
       ShortcutGroup.selection: (
         title: () => t.keybindings.categories.selection,
-        icon: WaydirIconsRegular.checkSquare,
+        icon: MyExplorerIconsRegular.checkSquare,
       ),
       ShortcutGroup.search: (
         title: () => t.keybindings.categories.search,
-        icon: WaydirIconsRegular.magnifyingGlass,
+        icon: MyExplorerIconsRegular.magnifyingGlass,
       ),
       ShortcutGroup.general: (
         title: () => t.keybindings.categories.general,
-        icon: WaydirIconsRegular.gearSix,
+        icon: MyExplorerIconsRegular.gearSix,
       ),
       ShortcutGroup.plugins: (
         title: () => t.preferences.plugins.title,
-        icon: WaydirIconsRegular.gearSix,
+        icon: MyExplorerIconsRegular.gearSix,
       ),
     };
 

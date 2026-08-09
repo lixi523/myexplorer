@@ -164,7 +164,7 @@ class RecentEnteredPaths extends Table {
   Set<Column> get primaryKey => {path};
 }
 
-/// Waydir's own "file type → application" default mapping. Independent of the
+/// MyExplorer's own "file type → application" default mapping. Independent of the
 /// OS associations: [typeKey] is the MIME type on Linux/macOS and the file
 /// extension (with dot) on Windows.
 class DefaultApps extends Table {
@@ -762,7 +762,7 @@ class AppDatabase extends _$AppDatabase {
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
-      name: 'waydir.db',
+      name: 'myexplorer.db',
       native: DriftNativeOptions(databaseDirectory: _getDatabaseDirectory),
     );
   }

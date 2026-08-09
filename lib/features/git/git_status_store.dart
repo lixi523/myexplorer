@@ -183,7 +183,7 @@ class GitStatusStore {
       'push',
       '--include-untracked',
       '-m',
-      'waydir: auto-stash before switching to $branch',
+      'myexplorer: auto-stash before switching to $branch',
     ]);
     if (stashResult == null || stashResult.exitCode != 0) {
       final err = stashResult?.stderr.toString().trim();

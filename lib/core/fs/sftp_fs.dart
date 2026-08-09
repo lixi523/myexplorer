@@ -7,7 +7,7 @@ import '../models/file_entry.dart';
 import '../platform/platform_paths.dart';
 import 'fs_backend.dart';
 import 'sftp_session_manager.dart';
-import 'waydir_core_loader.dart';
+import 'myexplorer_core_loader.dart';
 
 class SftpFs implements FsBackend {
   const SftpFs();
@@ -47,7 +47,7 @@ class SftpFs implements FsBackend {
   Future<List<FileEntry>> listDirectory(String path) async {
     final sessionId = _sessionFor(path);
     final remote = _remote(path);
-    final buf = WaydirCoreLoader.sftpList(sessionId, remote);
+    final buf = MyExplorerCoreLoader.sftpList(sessionId, remote);
     if (buf == null) {
       throw FileSystemException(t.errors.sftpListingFailed, path);
     }
@@ -70,7 +70,7 @@ class SftpFs implements FsBackend {
   Future<FileEntry?> stat(String path) async {
     final sessionId = _sessionFor(path);
     final remote = _remote(path);
-    final s = WaydirCoreLoader.sftpStat(sessionId, remote);
+    final s = MyExplorerCoreLoader.sftpStat(sessionId, remote);
     if (s == null || !s.exists) return null;
     final name = PlatformPaths.fileName(path);
 
@@ -100,7 +100,7 @@ class SftpFs implements FsBackend {
     final remote = _remote(path);
     final s = start ?? -1;
     final length = (end != null && start != null) ? end - start : -1;
-    final bytes = WaydirCoreLoader.sftpRead(
+    final bytes = MyExplorerCoreLoader.sftpRead(
       sessionId,
       remote,
       start: s,
@@ -120,7 +120,7 @@ class SftpFs implements FsBackend {
   Future<void> writeBytes(String path, Uint8List bytes) async {
     final sessionId = _sessionFor(path);
     final remote = _remote(path);
-    final ok = WaydirCoreLoader.sftpWrite(sessionId, remote, bytes);
+    final ok = MyExplorerCoreLoader.sftpWrite(sessionId, remote, bytes);
     if (!ok) throw FileSystemException(t.errors.sftpWriteFailed, path);
   }
 
@@ -128,7 +128,7 @@ class SftpFs implements FsBackend {
   Future<void> mkdir(String path, {bool recursive = false}) async {
     final sessionId = _sessionFor(path);
     final remote = _remote(path);
-    final ok = WaydirCoreLoader.sftpMkdir(
+    final ok = MyExplorerCoreLoader.sftpMkdir(
       sessionId,
       remote,
       recursive: recursive,
@@ -140,7 +140,7 @@ class SftpFs implements FsBackend {
   Future<void> remove(String path, {bool recursive = false}) async {
     final sessionId = _sessionFor(path);
     final remote = _remote(path);
-    final ok = WaydirCoreLoader.sftpRemove(
+    final ok = MyExplorerCoreLoader.sftpRemove(
       sessionId,
       remote,
       recursive: recursive,
@@ -151,7 +151,7 @@ class SftpFs implements FsBackend {
   @override
   Future<void> rename(String from, String to) async {
     final sessionId = _sessionFor(from);
-    final ok = WaydirCoreLoader.sftpRename(
+    final ok = MyExplorerCoreLoader.sftpRename(
       sessionId,
       _remote(from),
       _remote(to),

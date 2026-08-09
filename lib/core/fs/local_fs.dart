@@ -6,7 +6,7 @@ import '../../i18n/strings.g.dart';
 import '../models/file_entry.dart';
 import '../platform/platform_paths.dart';
 import 'fs_backend.dart';
-import 'waydir_core_loader.dart';
+import 'myexplorer_core_loader.dart';
 
 /// Backend dla ścieżek lokalnych oraz tych zmapowanych przez gvfs/UNC
 /// (`smb://` które `LocationResolver` rozwiązuje na fizyczne mountpointy).
@@ -21,7 +21,7 @@ class LocalFs implements FsBackend {
 
   @override
   Future<List<FileEntry>> listDirectory(String path) async {
-    final native = WaydirCoreLoader.listDir(path);
+    final native = MyExplorerCoreLoader.listDir(path);
     if (native == null) {
       throw FileSystemException(t.errors.directoryNotReadable, path);
     }

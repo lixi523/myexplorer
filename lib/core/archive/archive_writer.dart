@@ -314,7 +314,7 @@ class ArchiveWriter {
     final tmpDir = Directory(
       p.join(
         p.dirname(destPath),
-        '.waydir-archive-pack-${DateTime.now().microsecondsSinceEpoch}',
+        '.myexplorer-archive-pack-${DateTime.now().microsecondsSinceEpoch}',
       ),
     )..createSync(recursive: true);
     final stagedPath = p.join(tmpDir.path, p.basename(destPath));
@@ -556,7 +556,7 @@ class ArchiveWriter {
     final work = Directory(
       p.join(
         p.dirname(archivePath),
-        '.waydir-archive-edit-${DateTime.now().microsecondsSinceEpoch}',
+        '.myexplorer-archive-edit-${DateTime.now().microsecondsSinceEpoch}',
       ),
     )..createSync(recursive: true);
     final tree = Directory(p.join(work.path, 'tree'))

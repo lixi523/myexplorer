@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../ui/theme/app_theme.dart';
@@ -42,7 +42,7 @@ class _HelpGroup {
 final _groups = <_HelpGroup>[
   _HelpGroup(
     title: () => t.help.groups.gettingStarted.title,
-    icon: WaydirIconsRegular.info,
+    icon: MyExplorerIconsRegular.info,
     pages: [
       _HelpPage(
         title: () => t.help.groups.gettingStarted.welcome.title,
@@ -60,7 +60,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.navigating.title,
-    icon: WaydirIconsRegular.compass,
+    icon: MyExplorerIconsRegular.compass,
     pages: [
       _HelpPage(
         title: () => t.help.groups.navigating.moving.title,
@@ -87,7 +87,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.tabsPanes.title,
-    icon: WaydirIconsRegular.columns,
+    icon: MyExplorerIconsRegular.columns,
     pages: [
       _HelpPage(
         title: () => t.help.groups.tabsPanes.tabs.title,
@@ -107,7 +107,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.selecting.title,
-    icon: WaydirIconsRegular.selectionAll,
+    icon: MyExplorerIconsRegular.selectionAll,
     pages: [
       _HelpPage(
         title: () => t.help.groups.selecting.basics.title,
@@ -122,7 +122,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.files.title,
-    icon: WaydirIconsRegular.copy,
+    icon: MyExplorerIconsRegular.copy,
     pages: [
       _HelpPage(
         title: () => t.help.groups.files.operations.title,
@@ -159,7 +159,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.previewing.title,
-    icon: WaydirIconsRegular.eye,
+    icon: MyExplorerIconsRegular.eye,
     pages: [
       _HelpPage(
         title: () => t.help.groups.previewing.quickLook.title,
@@ -174,7 +174,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.searching.title,
-    icon: WaydirIconsRegular.magnifyingGlass,
+    icon: MyExplorerIconsRegular.magnifyingGlass,
     pages: [
       _HelpPage(
         title: () => t.help.groups.searching.folder.title,
@@ -190,7 +190,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.commandPalette.title,
-    icon: WaydirIconsRegular.magicWand,
+    icon: MyExplorerIconsRegular.magicWand,
     pages: [
       _HelpPage(
         title: () => t.help.groups.commandPalette.basics.title,
@@ -204,7 +204,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.remote.title,
-    icon: WaydirIconsRegular.hardDrive,
+    icon: MyExplorerIconsRegular.hardDrive,
     pages: [
       _HelpPage(
         title: () => t.help.groups.remote.sftp.title,
@@ -228,7 +228,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.customization.title,
-    icon: WaydirIconsRegular.palette,
+    icon: MyExplorerIconsRegular.palette,
     pages: [
       _HelpPage(
         title: () => t.help.groups.customization.themes.title,
@@ -251,7 +251,7 @@ final _groups = <_HelpGroup>[
   ),
   _HelpGroup(
     title: () => t.help.groups.resources.title,
-    icon: WaydirIconsRegular.bookmarkSimple,
+    icon: MyExplorerIconsRegular.bookmarkSimple,
     pages: [
       _HelpPage(
         title: () => t.help.groups.resources.links.title,
@@ -354,7 +354,7 @@ class _HelpDialogState extends State<_HelpDialog> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: AppModal(
-        icon: WaydirIconsRegular.info,
+        icon: MyExplorerIconsRegular.info,
         title: t.help.title,
         width: width,
         height: height,
@@ -459,8 +459,8 @@ class _GroupRowState extends State<_GroupRow> {
             children: [
               Icon(
                 widget.expanded
-                    ? WaydirIconsRegular.caretDown
-                    : WaydirIconsRegular.caretRight,
+                    ? MyExplorerIconsRegular.caretDown
+                    : MyExplorerIconsRegular.caretRight,
                 size: 12,
                 color: color,
               ),

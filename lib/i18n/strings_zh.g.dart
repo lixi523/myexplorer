@@ -1048,7 +1048,7 @@ class _Translations$errors$zh extends Translations$errors$en {
 	@override String archiveReadFailed({required Object error}) => '压缩包错误：${error}';
 	@override String archiveEntryNotFound({required Object path}) => '压缩包条目不存在：${path}';
 	@override String get unsupportedArchiveFormat => '不支持的压缩包格式';
-	@override String nativeCoreNotFound({required Object paths}) => '未找到原生 waydir_core；已搜索：${paths}';
+	@override String nativeCoreNotFound({required Object paths}) => '未找到原生 myexplorer_core；已搜索：${paths}';
 	@override String moveFileExFailed({required Object error}) => 'MoveFileEx 失败，Windows 错误 ${error}';
 	@override String get nativeTrashListFailed => '原生回收站列表失败';
 	@override String nativeTrashListFailedWithMessage({required Object message}) => '原生回收站列表失败：${message}';
@@ -1177,7 +1177,7 @@ class _Translations$preferences$plugins$zh extends Translations$preferences$plug
 
 	// Translations
 	@override String get title => '插件';
-	@override String get subtitle => '使用 Lua 插件扩展 Waydir。每个插件是一个包含 manifest.json 和 init.lua 的文件夹。';
+	@override String get subtitle => '使用 Lua 插件扩展 MyExplorer。每个插件是一个包含 manifest.json 和 init.lua 的文件夹。';
 	@override String get installedSection => '已安装';
 	@override String get openFolder => '打开插件文件夹';
 	@override String get reload => '重新加载';
@@ -2340,7 +2340,7 @@ extension on TranslationsZh {
 			'preferences.categories.diagnostics' => '诊断',
 			'preferences.categories.about' => '关于',
 			'preferences.plugins.title' => '插件',
-			'preferences.plugins.subtitle' => '使用 Lua 插件扩展 Waydir。每个插件是一个包含 manifest.json 和 init.lua 的文件夹。',
+			'preferences.plugins.subtitle' => '使用 Lua 插件扩展 MyExplorer。每个插件是一个包含 manifest.json 和 init.lua 的文件夹。',
 			'preferences.plugins.installedSection' => '已安装',
 			'preferences.plugins.openFolder' => '打开插件文件夹',
 			'preferences.plugins.reload' => '重新加载',
@@ -3153,7 +3153,7 @@ extension on TranslationsZh {
 			'errors.archiveReadFailed' => ({required Object error}) => '压缩包错误：${error}',
 			'errors.archiveEntryNotFound' => ({required Object path}) => '压缩包条目不存在：${path}',
 			'errors.unsupportedArchiveFormat' => '不支持的压缩包格式',
-			'errors.nativeCoreNotFound' => ({required Object paths}) => '未找到原生 waydir_core；已搜索：${paths}',
+			'errors.nativeCoreNotFound' => ({required Object paths}) => '未找到原生 myexplorer_core；已搜索：${paths}',
 			'errors.moveFileExFailed' => ({required Object error}) => 'MoveFileEx 失败，Windows 错误 ${error}',
 			'errors.nativeTrashListFailed' => '原生回收站列表失败',
 			'errors.nativeTrashListFailedWithMessage' => ({required Object message}) => '原生回收站列表失败：${message}',

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/navigation/sidebar_store.dart';
+import 'package:myexplorer/features/navigation/sidebar_store.dart';
 
 void main() {
   final store = SidebarStore.instance;

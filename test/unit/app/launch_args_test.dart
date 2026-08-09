@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/app/launch_args.dart';
-import 'package:waydir/core/platform/platform_paths.dart';
+import 'package:myexplorer/app/launch_args.dart';
+import 'package:myexplorer/core/platform/platform_paths.dart';
 
 void main() {
   group('LaunchArgs.parse', () {
@@ -12,7 +12,7 @@ void main() {
 
     setUp(() {
       LaunchArgs.options = const LaunchOptions();
-      temp = Directory.systemTemp.createTempSync('waydir_launch');
+      temp = Directory.systemTemp.createTempSync('myexplorer_launch');
     });
 
     tearDown(() {

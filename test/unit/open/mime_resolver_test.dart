@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/open/mime_resolver.dart';
+import 'package:myexplorer/core/open/mime_resolver.dart';
 
 void main() {
   group('MimeType', () {

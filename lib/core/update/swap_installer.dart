@@ -18,7 +18,9 @@ class SwapInstaller {
     final bundleDir = _resolveBundleDir();
     if (!await _isWritable(bundleDir)) return false;
 
-    final staging = Directory(p.join(bundleDir.parent.path, '.waydir-staging'));
+    final staging = Directory(
+      p.join(bundleDir.parent.path, '.myexplorer-staging'),
+    );
     if (staging.existsSync()) staging.deleteSync(recursive: true);
     staging.createSync(recursive: true);
 
@@ -37,7 +39,7 @@ class SwapInstaller {
     }
 
     final stagingRoot = _flattenSingleChild(staging);
-    if (!File(p.join(stagingRoot.path, 'waydir.exe')).existsSync()) {
+    if (!File(p.join(stagingRoot.path, 'myexplorer.exe')).existsSync()) {
       staging.deleteSync(recursive: true);
 
       return false;
@@ -96,7 +98,7 @@ class SwapInstaller {
 
   static Future<bool> _isWritable(Directory dir) async {
     try {
-      final probe = File(p.join(dir.path, '.waydir-write-probe'));
+      final probe = File(p.join(dir.path, '.myexplorer-write-probe'));
       probe.writeAsStringSync('x');
       probe.deleteSync();
 
@@ -125,10 +127,10 @@ class SwapInstaller {
     required Directory staging,
     required String exeName,
   }) {
-    final script = File(p.join(bundle.parent.path, '.waydir-swap.ps1'));
+    final script = File(p.join(bundle.parent.path, '.myexplorer-swap.ps1'));
     final old = '${bundle.path}.old';
     final exePath = p.join(bundle.path, exeName);
-    final logPath = p.join(bundle.parent.path, '.waydir-swap.log');
+    final logPath = p.join(bundle.parent.path, '.myexplorer-swap.log');
     String q(String s) => "'${s.replaceAll("'", "''")}'";
     script.writeAsStringSync('''
 \$ErrorActionPreference = 'Stop'

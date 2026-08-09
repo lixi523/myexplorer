@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/fs/file_sort.dart';
-import 'package:waydir/core/models/file_entry.dart';
+import 'package:myexplorer/core/fs/file_sort.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
 
 FileEntry _file(String name) => FileEntry(
   name: name,

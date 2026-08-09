@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import '../../core/fs/duplicate_finder.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/widgets/app_modal.dart';
@@ -142,7 +142,7 @@ class _DuplicateFinderDialogState extends State<_DuplicateFinderDialog> {
     final dupCount = _groups.fold<int>(0, (acc, g) => acc + g.paths.length - 1);
 
     return AppModal(
-      icon: WaydirIconsRegular.copy,
+      icon: MyExplorerIconsRegular.copy,
       iconColor: AppColors.warning,
       title: t.duplicates.title,
       width: 620,

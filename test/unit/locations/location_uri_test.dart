@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/locations/location_uri.dart';
+import 'package:myexplorer/features/locations/location_uri.dart';
 
 void main() {
   group('LocationUri', () {

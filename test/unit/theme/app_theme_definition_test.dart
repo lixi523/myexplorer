@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/ui/theme/app_theme_definition.dart';
-import 'package:waydir/ui/theme/app_theme_registry.dart';
+import 'package:myexplorer/ui/theme/app_theme_definition.dart';
+import 'package:myexplorer/ui/theme/app_theme_registry.dart';
 
 void main() {
   group('AppThemeDefinition', () {

@@ -2,15 +2,15 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/fs/smb_share_discovery.dart';
-import 'package:waydir/core/platform/platform_paths.dart';
-import 'package:waydir/features/locations/location_resolver.dart';
+import 'package:myexplorer/core/fs/smb_share_discovery.dart';
+import 'package:myexplorer/core/platform/platform_paths.dart';
+import 'package:myexplorer/features/locations/location_resolver.dart';
 
 void main() {
-  const liveSmbEnabled = bool.fromEnvironment('WAYDIR_LIVE_SMB');
+  const liveSmbEnabled = bool.fromEnvironment('MYEXPLORER_LIVE_SMB');
   const liveSmbSkip = liveSmbEnabled
       ? null
-      : 'Run with --dart-define=WAYDIR_LIVE_SMB=true and an SMB server on 127.0.0.1:1445';
+      : 'Run with --dart-define=MYEXPLORER_LIVE_SMB=true and an SMB server on 127.0.0.1:1445';
 
   group('live SMB discovery against podman container on 127.0.0.1:1445', () {
     setUp(SmbShareDiscovery.invalidateAll);

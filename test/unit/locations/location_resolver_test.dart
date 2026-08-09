@@ -2,14 +2,16 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/features/locations/location_resolver.dart';
+import 'package:myexplorer/features/locations/location_resolver.dart';
 
 void main() {
   group('LocationResolver mappings', () {
     late Directory temp;
 
     setUp(() {
-      temp = Directory.systemTemp.createTempSync('waydir-location-resolver-');
+      temp = Directory.systemTemp.createTempSync(
+        'myexplorer-location-resolver-',
+      );
       LocationResolver.debugClearMappingsForTests();
     });
 

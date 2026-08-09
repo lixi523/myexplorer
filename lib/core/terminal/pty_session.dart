@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:waydir_term/xterm.dart';
+import 'package:myexplorer_term/xterm.dart';
 
-import '../fs/waydir_core_loader.dart';
+import '../fs/myexplorer_core_loader.dart';
 
 const _minPollInterval = Duration(milliseconds: 12);
 const _maxPollInterval = Duration(milliseconds: 32);
@@ -25,7 +25,7 @@ Duration nextPollInterval({
 }
 
 /// Bridges an `xterm` [Terminal] to a native pseudo-terminal spawned by
-/// `waydir_core` (portable-pty). Output is polled off the native buffer and
+/// `myexplorer_core` (portable-pty). Output is polled off the native buffer and
 /// fed into the terminal; terminal input and resizes are forwarded to the pty.
 class PtySession {
   final Terminal terminal;
@@ -55,7 +55,7 @@ class PtySession {
   void writeInput(String data) {
     final i = _id;
     if (i == null || data.isEmpty) return;
-    WaydirCoreLoader.ptyWrite(i, utf8.encode(data));
+    MyExplorerCoreLoader.ptyWrite(i, utf8.encode(data));
     _wake();
   }
 
@@ -69,7 +69,7 @@ class PtySession {
   }) {
     if (_id != null) return true;
     _onExit = onExit;
-    final id = WaydirCoreLoader.ptyOpen(
+    final id = MyExplorerCoreLoader.ptyOpen(
       shell: shell,
       cwd: cwd,
       args: args,
@@ -82,12 +82,12 @@ class PtySession {
     terminal.onOutput = (data) {
       final i = _id;
       if (i == null) return;
-      WaydirCoreLoader.ptyWrite(i, utf8.encode(data));
+      MyExplorerCoreLoader.ptyWrite(i, utf8.encode(data));
       _wake();
     };
     terminal.onResize = (w, h, pw, ph) {
       final i = _id;
-      if (i != null) WaydirCoreLoader.ptyResize(i, w, h);
+      if (i != null) MyExplorerCoreLoader.ptyResize(i, w, h);
     };
 
     _schedule();
@@ -109,12 +109,12 @@ class PtySession {
   void _tick() {
     final id = _id;
     if (id == null) return;
-    final data = WaydirCoreLoader.ptyRead(id);
+    final data = MyExplorerCoreLoader.ptyRead(id);
     final hadData = data != null && data.isNotEmpty;
     if (hadData) {
       _decoder.add(data);
     }
-    if (!WaydirCoreLoader.ptyAlive(id)) {
+    if (!MyExplorerCoreLoader.ptyAlive(id)) {
       _exited = true;
       _poll?.cancel();
       _poll = null;
@@ -133,7 +133,7 @@ class PtySession {
     _poll = null;
     final id = _id;
     _id = null;
-    if (id != null) WaydirCoreLoader.ptyClose(id);
+    if (id != null) MyExplorerCoreLoader.ptyClose(id);
     _decoder.close();
   }
 }

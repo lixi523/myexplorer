@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/archive/archive_reader.dart';
-import 'package:waydir/core/archive/seven_zip_service.dart';
+import 'package:myexplorer/core/archive/archive_reader.dart';
+import 'package:myexplorer/core/archive/seven_zip_service.dart';
 
 void main() {
   late Directory tempDir;
   late String archivePath;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('waydir_7z_test');
+    tempDir = Directory.systemTemp.createTempSync('myexplorer_7z_test');
     archivePath = '${tempDir.path}${Platform.pathSeparator}test.7z';
     final bin = SevenZipService.instance.binary;
     if (bin == null) {

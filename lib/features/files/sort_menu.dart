@@ -1,4 +1,4 @@
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import '../../core/fs/file_sort.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/overlays/context_menu.dart';
@@ -15,8 +15,8 @@ List<ContextMenuItem> buildSortMenuItems(NavigationStore store) {
   final c = t.fileView.columns;
   ContextMenuItem keyItem(String label, SortKey key) => ContextMenuItem(
     icon: activeKey == key
-        ? WaydirIconsRegular.check
-        : WaydirIconsRegular.caretUpDown,
+        ? MyExplorerIconsRegular.check
+        : MyExplorerIconsRegular.caretUpDown,
     label: label,
     action: '$sortKeyActionPrefix${sortKeyToString(key)}',
   );
@@ -27,12 +27,16 @@ List<ContextMenuItem> buildSortMenuItems(NavigationStore store) {
       keyItem(fileColumnLabel(col), fileColumnSortKey(col)),
     ContextMenuItem.divider,
     ContextMenuItem(
-      icon: ascending ? WaydirIconsRegular.check : WaydirIconsRegular.caretUp,
+      icon: ascending
+          ? MyExplorerIconsRegular.check
+          : MyExplorerIconsRegular.caretUp,
       label: t.menu.sortAscending,
       action: sortAscendingAction,
     ),
     ContextMenuItem(
-      icon: ascending ? WaydirIconsRegular.caretDown : WaydirIconsRegular.check,
+      icon: ascending
+          ? MyExplorerIconsRegular.caretDown
+          : MyExplorerIconsRegular.check,
       label: t.menu.sortDescending,
       action: sortDescendingAction,
     ),
@@ -40,7 +44,7 @@ List<ContextMenuItem> buildSortMenuItems(NavigationStore store) {
 }
 
 ContextMenuItem sortMenuParent(NavigationStore store) => ContextMenuItem(
-  icon: WaydirIconsRegular.caretUpDown,
+  icon: MyExplorerIconsRegular.caretUpDown,
   label: t.menu.sortBy,
   action: 'sort_by',
   children: buildSortMenuItems(store),

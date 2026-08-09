@@ -1,6 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/database/app_database.dart';
+import 'package:myexplorer/core/database/app_database.dart';
 
 void main() {
   late AppDatabase db;

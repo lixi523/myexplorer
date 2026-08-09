@@ -3,16 +3,16 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/archive/archive_path.dart';
-import 'package:waydir/core/archive/archive_reader.dart';
-import 'package:waydir/core/archive/archive_writer.dart';
+import 'package:myexplorer/core/archive/archive_path.dart';
+import 'package:myexplorer/core/archive/archive_reader.dart';
+import 'package:myexplorer/core/archive/archive_writer.dart';
 
 void main() {
   late Directory tempDir;
   late String zipPath;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('waydir_edit_test');
+    tempDir = Directory.systemTemp.createTempSync('myexplorer_edit_test');
     zipPath = '${tempDir.path}${Platform.pathSeparator}test.zip';
     // Build a zip with a single entry.
     final source = File('${tempDir.path}${Platform.pathSeparator}a.txt')

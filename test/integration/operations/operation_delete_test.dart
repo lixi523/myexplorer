@@ -5,8 +5,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/models/file_operation.dart';
-import 'package:waydir/features/operations/operation_store.dart';
+import 'package:myexplorer/core/models/file_operation.dart';
+import 'package:myexplorer/features/operations/operation_store.dart';
 
 import '../../support/ops.dart';
 
@@ -15,7 +15,7 @@ void main() {
   late OperationStore store;
 
   setUp(() {
-    tmpDir = Directory.systemTemp.createTempSync('waydir_ops_delete_');
+    tmpDir = Directory.systemTemp.createTempSync('myexplorer_ops_delete_');
     store = OperationStore();
   });
 

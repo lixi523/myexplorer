@@ -7,7 +7,7 @@ import 'dart:typed_data';
 
 import '../../core/fs/sftp_fs.dart';
 import '../../core/fs/sftp_session_manager.dart';
-import '../../core/fs/waydir_core_loader.dart';
+import '../../core/fs/myexplorer_core_loader.dart';
 import '../../core/models/file_entry.dart';
 import '../../core/models/file_operation.dart';
 import '../../core/platform/platform_paths.dart';
@@ -648,7 +648,7 @@ void _checkCancelled(bool Function() isCancelled) {
 String _partPath(String dst) {
   final rand = math.Random().nextInt(0x7fffffff);
 
-  return '$dst.waydir-${DateTime.now().microsecondsSinceEpoch}-$rand.part';
+  return '$dst.myexplorer-${DateTime.now().microsecondsSinceEpoch}-$rand.part';
 }
 
 Future<void> _copyEntity(
@@ -768,7 +768,7 @@ Future<void> _atomicSwap(
     if (rec == null) {
       throw FileSystemException(t.errors.sftpNoActiveSession, dst);
     }
-    final ok = WaydirCoreLoader.sftpRename(
+    final ok = MyExplorerCoreLoader.sftpRename(
       rec.sessionId,
       SftpSessionManager.remotePath(partial),
       SftpSessionManager.remotePath(dst),
@@ -811,8 +811,8 @@ Future<void> _uploadLocalToSftp(
   }
   final remote = SftpSessionManager.remotePath(dst);
 
-  if (WaydirCoreLoader.supportsSftpStreaming()) {
-    final writerId = WaydirCoreLoader.sftpOpenWriter(rec.sessionId, remote);
+  if (MyExplorerCoreLoader.supportsSftpStreaming()) {
+    final writerId = MyExplorerCoreLoader.sftpOpenWriter(rec.sessionId, remote);
     if (writerId == null) {
       throw FileSystemException(t.errors.sftpOpenWriterFailed, dst);
     }
@@ -825,7 +825,7 @@ Future<void> _uploadLocalToSftp(
           _checkCancelled(isCancelled);
           final end = math.min(data.length, offset + _chunkBytes);
           final part = Uint8List.sublistView(data, offset, end);
-          if (!WaydirCoreLoader.sftpWriterWrite(writerId, part)) {
+          if (!MyExplorerCoreLoader.sftpWriterWrite(writerId, part)) {
             throw FileSystemException(t.errors.sftpWriteFailed, dst);
           }
           offset = end;
@@ -834,19 +834,19 @@ Future<void> _uploadLocalToSftp(
         }
       }
     } catch (e) {
-      WaydirCoreLoader.sftpWriterClose(writerId);
+      MyExplorerCoreLoader.sftpWriterClose(writerId);
       rethrow;
     }
-    final closed = WaydirCoreLoader.sftpWriterClose(writerId);
+    final closed = MyExplorerCoreLoader.sftpWriterClose(writerId);
     if (!closed) throw FileSystemException(t.errors.sftpCloseFailed, dst);
 
     return;
   }
 
-  if (!WaydirCoreLoader.supportsSftpWriteChunk()) {
+  if (!MyExplorerCoreLoader.supportsSftpWriteChunk()) {
     final data = await File(src).readAsBytes();
     _checkCancelled(isCancelled);
-    final ok = WaydirCoreLoader.sftpWrite(rec.sessionId, remote, data);
+    final ok = MyExplorerCoreLoader.sftpWrite(rec.sessionId, remote, data);
     if (!ok) throw FileSystemException(t.errors.sftpWriteFailed, dst);
     onBytes(data.length);
 
@@ -861,7 +861,7 @@ Future<void> _uploadLocalToSftp(
       _checkCancelled(isCancelled);
       final end = math.min(data.length, offset + _chunkBytes);
       final part = Uint8List.sublistView(data, offset, end);
-      final ok = WaydirCoreLoader.sftpWriteChunk(
+      final ok = MyExplorerCoreLoader.sftpWriteChunk(
         rec.sessionId,
         remote,
         part,
@@ -875,7 +875,7 @@ Future<void> _uploadLocalToSftp(
     }
   }
   if (!append) {
-    final ok = WaydirCoreLoader.sftpWriteChunk(
+    final ok = MyExplorerCoreLoader.sftpWriteChunk(
       rec.sessionId,
       remote,
       Uint8List(0),
@@ -898,8 +898,8 @@ Future<void> _downloadSftpToLocal(
   }
   final remote = SftpSessionManager.remotePath(src);
 
-  if (WaydirCoreLoader.supportsSftpStreaming()) {
-    final opened = WaydirCoreLoader.sftpOpenReader(rec.sessionId, remote);
+  if (MyExplorerCoreLoader.supportsSftpStreaming()) {
+    final opened = MyExplorerCoreLoader.sftpOpenReader(rec.sessionId, remote);
     if (opened == null) {
       throw FileSystemException(t.errors.sftpOpenReaderFailed, src);
     }
@@ -907,7 +907,7 @@ Future<void> _downloadSftpToLocal(
     try {
       while (true) {
         _checkCancelled(isCancelled);
-        final chunk = WaydirCoreLoader.sftpReaderRead(
+        final chunk = MyExplorerCoreLoader.sftpReaderRead(
           opened.readerId,
           _chunkBytes,
         );
@@ -920,7 +920,7 @@ Future<void> _downloadSftpToLocal(
         await Future<void>.delayed(Duration.zero);
       }
     } finally {
-      WaydirCoreLoader.sftpReaderClose(opened.readerId);
+      MyExplorerCoreLoader.sftpReaderClose(opened.readerId);
       await sink.close();
     }
 
@@ -933,7 +933,7 @@ Future<void> _downloadSftpToLocal(
     while (offset < size) {
       _checkCancelled(isCancelled);
       final length = math.min(size - offset, _chunkBytes);
-      final chunk = WaydirCoreLoader.sftpRead(
+      final chunk = MyExplorerCoreLoader.sftpRead(
         rec.sessionId,
         remote,
         start: offset,
@@ -971,23 +971,26 @@ Future<void> _copySftpToSftp(
   final srcRemote = SftpSessionManager.remotePath(src);
   final dstRemote = SftpSessionManager.remotePath(dst);
 
-  if (WaydirCoreLoader.supportsSftpStreaming()) {
-    final opened = WaydirCoreLoader.sftpOpenReader(srcRec.sessionId, srcRemote);
+  if (MyExplorerCoreLoader.supportsSftpStreaming()) {
+    final opened = MyExplorerCoreLoader.sftpOpenReader(
+      srcRec.sessionId,
+      srcRemote,
+    );
     if (opened == null) {
       throw FileSystemException(t.errors.sftpOpenReaderFailed, src);
     }
-    final writerId = WaydirCoreLoader.sftpOpenWriter(
+    final writerId = MyExplorerCoreLoader.sftpOpenWriter(
       dstRec.sessionId,
       dstRemote,
     );
     if (writerId == null) {
-      WaydirCoreLoader.sftpReaderClose(opened.readerId);
+      MyExplorerCoreLoader.sftpReaderClose(opened.readerId);
       throw FileSystemException(t.errors.sftpOpenWriterFailed, dst);
     }
     try {
       while (true) {
         _checkCancelled(isCancelled);
-        final chunk = WaydirCoreLoader.sftpReaderRead(
+        final chunk = MyExplorerCoreLoader.sftpReaderRead(
           opened.readerId,
           _chunkBytes,
         );
@@ -995,32 +998,36 @@ Future<void> _copySftpToSftp(
           throw FileSystemException(t.errors.sftpReadFailed, src);
         }
         if (chunk.isEmpty) break;
-        if (!WaydirCoreLoader.sftpWriterWrite(writerId, chunk)) {
+        if (!MyExplorerCoreLoader.sftpWriterWrite(writerId, chunk)) {
           throw FileSystemException(t.errors.sftpWriteFailed, dst);
         }
         onBytes(chunk.length);
         await Future<void>.delayed(Duration.zero);
       }
     } catch (e) {
-      WaydirCoreLoader.sftpReaderClose(opened.readerId);
-      WaydirCoreLoader.sftpWriterClose(writerId);
+      MyExplorerCoreLoader.sftpReaderClose(opened.readerId);
+      MyExplorerCoreLoader.sftpWriterClose(writerId);
       rethrow;
     }
-    WaydirCoreLoader.sftpReaderClose(opened.readerId);
-    if (!WaydirCoreLoader.sftpWriterClose(writerId)) {
+    MyExplorerCoreLoader.sftpReaderClose(opened.readerId);
+    if (!MyExplorerCoreLoader.sftpWriterClose(writerId)) {
       throw FileSystemException(t.errors.sftpCloseFailed, dst);
     }
 
     return;
   }
 
-  if (!WaydirCoreLoader.supportsSftpWriteChunk()) {
-    final data = WaydirCoreLoader.sftpRead(srcRec.sessionId, srcRemote);
+  if (!MyExplorerCoreLoader.supportsSftpWriteChunk()) {
+    final data = MyExplorerCoreLoader.sftpRead(srcRec.sessionId, srcRemote);
     if (data == null) {
       throw FileSystemException(t.errors.sftpReadFailed, src);
     }
     _checkCancelled(isCancelled);
-    final ok = WaydirCoreLoader.sftpWrite(dstRec.sessionId, dstRemote, data);
+    final ok = MyExplorerCoreLoader.sftpWrite(
+      dstRec.sessionId,
+      dstRemote,
+      data,
+    );
     if (!ok) throw FileSystemException(t.errors.sftpWriteFailed, dst);
     onBytes(data.length);
 
@@ -1032,7 +1039,7 @@ Future<void> _copySftpToSftp(
   while (offset < size) {
     _checkCancelled(isCancelled);
     final length = math.min(size - offset, _chunkBytes);
-    final chunk = WaydirCoreLoader.sftpRead(
+    final chunk = MyExplorerCoreLoader.sftpRead(
       srcRec.sessionId,
       srcRemote,
       start: offset,
@@ -1042,7 +1049,7 @@ Future<void> _copySftpToSftp(
       throw FileSystemException(t.errors.sftpReadFailed, src);
     }
     if (chunk.isEmpty) break;
-    final ok = WaydirCoreLoader.sftpWriteChunk(
+    final ok = MyExplorerCoreLoader.sftpWriteChunk(
       dstRec.sessionId,
       dstRemote,
       chunk,
@@ -1055,7 +1062,7 @@ Future<void> _copySftpToSftp(
     await Future<void>.delayed(Duration.zero);
   }
   if (!append) {
-    final ok = WaydirCoreLoader.sftpWriteChunk(
+    final ok = MyExplorerCoreLoader.sftpWriteChunk(
       dstRec.sessionId,
       dstRemote,
       Uint8List(0),

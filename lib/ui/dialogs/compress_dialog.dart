@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/archive/archive_writer.dart';
 import '../../i18n/strings.g.dart';
@@ -88,7 +88,7 @@ class _CompressBodyState extends State<_CompressBody> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.fileZip,
+      icon: MyExplorerIconsRegular.fileZip,
       title: t.compress.title,
       width: 420,
       padding: const EdgeInsets.all(20),

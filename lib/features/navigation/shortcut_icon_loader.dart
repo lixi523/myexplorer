@@ -44,7 +44,7 @@ String _iconCacheDir() {
       Platform.environment['TEMP'] ??
       Platform.environment['TMP'] ??
       r'C:\Windows\Temp';
-  _cacheDir = p.join(base, 'waydir_shortcut_icons');
+  _cacheDir = p.join(base, 'myexplorer_shortcut_icons');
 
   return _cacheDir!;
 }

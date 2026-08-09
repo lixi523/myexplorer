@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
@@ -122,8 +122,8 @@ class _BranchButton extends StatelessWidget {
         for (final name in branches)
           ContextMenuItem(
             icon: name == status.branch
-                ? WaydirIconsFill.check
-                : WaydirIconsRegular.gitBranch,
+                ? MyExplorerIconsFill.check
+                : MyExplorerIconsRegular.gitBranch,
             label: name,
             action: name,
           ),
@@ -154,7 +154,7 @@ class _BranchButton extends StatelessWidget {
     final choice = await showCustomDialog<String>(
       context: context,
       title: t.git.uncommittedChanges,
-      icon: WaydirIconsRegular.warning,
+      icon: MyExplorerIconsRegular.warning,
       iconColor: AppColors.warning,
       body: Text(t.git.stashPrompt(branch: branch), style: context.txt.body),
       actions: [
@@ -191,8 +191,8 @@ class _BranchButton extends StatelessWidget {
             children: [
               Icon(
                 status.detached
-                    ? WaydirIconsRegular.warning
-                    : WaydirIconsRegular.gitBranch,
+                    ? MyExplorerIconsRegular.warning
+                    : MyExplorerIconsRegular.gitBranch,
                 size: 13,
                 color: color,
               ),
@@ -206,7 +206,7 @@ class _BranchButton extends StatelessWidget {
               ),
               const SizedBox(width: 3),
               Icon(
-                WaydirIconsRegular.caretUpDown,
+                MyExplorerIconsRegular.caretUpDown,
                 size: 11,
                 color: AppColors.fgMuted,
               ),
@@ -238,22 +238,22 @@ class _StashButton extends StatelessWidget {
       items: [
         for (final s in stashes)
           ContextMenuItem(
-            icon: WaydirIconsRegular.archive,
+            icon: MyExplorerIconsRegular.archive,
             label: t.git.stashEntry(index: s.index, message: s.message),
             action: 'stash:${s.index}',
             children: [
               ContextMenuItem(
-                icon: WaydirIconsRegular.arrowCounterClockwise,
+                icon: MyExplorerIconsRegular.arrowCounterClockwise,
                 label: t.git.stashPop,
                 action: 'pop:${s.index}',
               ),
               ContextMenuItem(
-                icon: WaydirIconsRegular.copy,
+                icon: MyExplorerIconsRegular.copy,
                 label: t.git.stashApply,
                 action: 'apply:${s.index}',
               ),
               ContextMenuItem(
-                icon: WaydirIconsRegular.trash,
+                icon: MyExplorerIconsRegular.trash,
                 label: t.git.stashDrop,
                 action: 'drop:${s.index}',
                 danger: true,
@@ -302,7 +302,7 @@ class _StashButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                WaydirIconsRegular.archive,
+                MyExplorerIconsRegular.archive,
                 size: 12,
                 color: AppColors.warning,
               ),

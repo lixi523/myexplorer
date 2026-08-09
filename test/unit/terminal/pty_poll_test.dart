@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/terminal/pty_session.dart';
+import 'package:myexplorer/core/terminal/pty_session.dart';
 
 void main() {
   group('nextPollInterval', () {

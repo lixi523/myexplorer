@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/clipboard/file_clipboard.dart';
+import 'package:myexplorer/core/clipboard/file_clipboard.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

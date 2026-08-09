@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/open/app_resolver.dart';
+import 'package:myexplorer/core/open/app_resolver.dart';
 
 void main() {
   group('WindowsAppResolver command-template expansion', () {

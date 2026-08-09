@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/utils/format.dart';
+import 'package:myexplorer/utils/format.dart';
 
 void main() {
   group('formatDurationShort', () {

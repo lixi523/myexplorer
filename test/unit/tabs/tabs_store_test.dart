@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/operations/operation_store.dart';
-import 'package:waydir/features/tabs/tabs_store.dart';
+import 'package:myexplorer/features/operations/operation_store.dart';
+import 'package:myexplorer/features/tabs/tabs_store.dart';
 
 late OperationStore _ops;
 late TabsStore _tabs;

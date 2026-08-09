@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/git/git_status_store.dart';
+import 'package:myexplorer/features/git/git_status_store.dart';
 
 Future<ProcessResult> _git(String cwd, List<String> args) =>
     Process.run('git', ['-C', cwd, ...args]);
@@ -32,7 +32,7 @@ void main() {
   });
 
   setUp(() {
-    tmp = Directory.systemTemp.createTempSync('waydir_git_test');
+    tmp = Directory.systemTemp.createTempSync('myexplorer_git_test');
   });
 
   tearDown(() {

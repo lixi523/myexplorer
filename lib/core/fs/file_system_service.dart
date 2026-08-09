@@ -21,7 +21,7 @@ import '../../i18n/strings.g.dart';
 import 'fs_worker_pool.dart';
 import 'sftp_fs.dart';
 import 'safe_file_replace.dart';
-import 'waydir_core_loader.dart';
+import 'myexplorer_core_loader.dart';
 import 'trash_service.dart';
 
 part 'file_system_workers.dart';
@@ -130,7 +130,7 @@ class FileSystemService {
     final staging = Directory(
       p.join(
         Directory.systemTemp.path,
-        'waydir-archive-stage',
+        'myexplorer-archive-stage',
         DateTime.now().microsecondsSinceEpoch.toString(),
       ),
     )..createSync(recursive: true);
@@ -189,7 +189,7 @@ class FileSystemService {
 
   static Future<void> openArchiveEntry(ArchiveLocation loc) async {
     final tempRoot = Directory(
-      p.join(Directory.systemTemp.path, 'waydir-archive'),
+      p.join(Directory.systemTemp.path, 'myexplorer-archive'),
     );
     final dest = p.join(
       tempRoot.path,

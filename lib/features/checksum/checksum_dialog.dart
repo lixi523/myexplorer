@@ -6,7 +6,7 @@ import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/widgets/app_modal.dart';
@@ -159,7 +159,7 @@ class _ChecksumDialogState extends State<_ChecksumDialog> {
         return KeyEventResult.ignored;
       },
       child: AppModal(
-        icon: WaydirIconsRegular.checkSquare,
+        icon: MyExplorerIconsRegular.checkSquare,
         title: t.checksum.title,
         width: 520,
         padding: const EdgeInsets.all(20),
@@ -292,7 +292,7 @@ class _ResultPanel extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(WaydirIconsRegular.check, size: 16, color: color),
+              Icon(MyExplorerIconsRegular.check, size: 16, color: color),
               const SizedBox(width: 8),
               Text(
                 label,

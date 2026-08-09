@@ -9,7 +9,7 @@
 #include <dwmapi.h>
 #include <math.h>
 
-namespace waydir_window {
+namespace myexplorer_window {
 
 namespace {
 
@@ -293,4 +293,4 @@ bool dragAppWindow() {
   return true;
 }
 
-}  // namespace waydir_window
+}  // namespace myexplorer_window

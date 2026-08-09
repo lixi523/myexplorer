@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/models/file_entry.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
 
 void main() {
   test('FileEntryCodec round-trips entries including unicode', () {

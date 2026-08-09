@@ -3,7 +3,7 @@ import 'package:signals/signals_flutter.dart';
 
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../i18n/strings.g.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
 import 'compare_controller.dart';
@@ -131,7 +131,7 @@ class _CompareCloseButtonState extends State<_CompareCloseButton> {
               borderRadius: BorderRadius.zero,
             ),
             child: Icon(
-              WaydirIconsRegular.x,
+              MyExplorerIconsRegular.x,
               size: 14,
               color: AppColors.fgMuted,
             ),

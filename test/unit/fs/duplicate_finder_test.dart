@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/fs/duplicate_finder.dart';
+import 'package:myexplorer/core/fs/duplicate_finder.dart';
 
 void main() {
   late Directory tempDir;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('waydir_dup_test');
+    tempDir = Directory.systemTemp.createTempSync('myexplorer_dup_test');
   });
 
   tearDown(() {

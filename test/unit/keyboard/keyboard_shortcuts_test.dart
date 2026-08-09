@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/keyboard/keyboard_shortcuts.dart';
+import 'package:myexplorer/core/keyboard/keyboard_shortcuts.dart';
 
 void main() {
   setUp(() => AppShortcuts.applyOverrides({}));

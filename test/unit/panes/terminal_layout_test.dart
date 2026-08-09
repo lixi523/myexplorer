@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/features/panes/terminal_layout.dart';
+import 'package:myexplorer/features/panes/terminal_layout.dart';
 
 void main() {
   group('TerminalLayout.reassignForDual', () {

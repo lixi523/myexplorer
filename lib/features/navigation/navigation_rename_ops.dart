@@ -348,7 +348,7 @@ mixin NavigationRenameOps on NavigationStoreHost {
     for (var i = 0; i < ops.length; i++) {
       if (shouldStop()) return;
       final op = ops[i];
-      final tempName = '.waydir-rename-$stamp-$i.tmp';
+      final tempName = '.myexplorer-rename-$stamp-$i.tmp';
       final dir = PlatformPaths.parentOf(op.physicalOld);
       final tempPath = '$dir${PlatformPaths.separator}$tempName';
       final r = FileSystemService.rename(op.physicalOld, tempName);
@@ -445,7 +445,7 @@ mixin NavigationRenameOps on NavigationStoreHost {
       if (shouldStop()) return;
       final op = filtered[i];
       final tempPath =
-          '${PlatformPaths.parentOf(op.oldPath)}/.waydir-rename-$stamp-$i.tmp';
+          '${PlatformPaths.parentOf(op.oldPath)}/.myexplorer-rename-$stamp-$i.tmp';
       try {
         await fs.rename(op.oldPath, tempPath);
         staged.add((tempPath: tempPath, finalPath: op.newPath));

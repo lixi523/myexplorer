@@ -2308,8 +2308,8 @@ class Translations$errors$en {
 	/// en: 'Unsupported archive format'
 	String get unsupportedArchiveFormat => 'Unsupported archive format';
 
-	/// en: 'Native waydir_core not found; searched: $paths'
-	String nativeCoreNotFound({required Object paths}) => 'Native waydir_core not found; searched: ${paths}';
+	/// en: 'Native myexplorer_core not found; searched: $paths'
+	String nativeCoreNotFound({required Object paths}) => 'Native myexplorer_core not found; searched: ${paths}';
 
 	/// en: 'MoveFileEx failed with Windows error $error'
 	String moveFileExFailed({required Object error}) => 'MoveFileEx failed with Windows error ${error}';
@@ -2586,8 +2586,8 @@ class Translations$preferences$plugins$en {
 	/// en: 'Plugins'
 	String get title => 'Plugins';
 
-	/// en: 'Extend Waydir with Lua plugins. Each plugin is a folder with manifest.json and init.lua.'
-	String get subtitle => 'Extend Waydir with Lua plugins. Each plugin is a folder with manifest.json and init.lua.';
+	/// en: 'Extend MyExplorer with Lua plugins. Each plugin is a folder with manifest.json and init.lua.'
+	String get subtitle => 'Extend MyExplorer with Lua plugins. Each plugin is a folder with manifest.json and init.lua.';
 
 	/// en: 'Installed'
 	String get installedSection => 'Installed';
@@ -4475,7 +4475,7 @@ extension on Translations {
 			'preferences.categories.diagnostics' => 'Diagnostics',
 			'preferences.categories.about' => 'About',
 			'preferences.plugins.title' => 'Plugins',
-			'preferences.plugins.subtitle' => 'Extend Waydir with Lua plugins. Each plugin is a folder with manifest.json and init.lua.',
+			'preferences.plugins.subtitle' => 'Extend MyExplorer with Lua plugins. Each plugin is a folder with manifest.json and init.lua.',
 			'preferences.plugins.installedSection' => 'Installed',
 			'preferences.plugins.openFolder' => 'Open plugins folder',
 			'preferences.plugins.reload' => 'Reload plugins',
@@ -5288,7 +5288,7 @@ extension on Translations {
 			'errors.archiveReadFailed' => ({required Object error}) => 'Archive error: ${error}',
 			'errors.archiveEntryNotFound' => ({required Object path}) => 'Archive entry not found: ${path}',
 			'errors.unsupportedArchiveFormat' => 'Unsupported archive format',
-			'errors.nativeCoreNotFound' => ({required Object paths}) => 'Native waydir_core not found; searched: ${paths}',
+			'errors.nativeCoreNotFound' => ({required Object paths}) => 'Native myexplorer_core not found; searched: ${paths}',
 			'errors.moveFileExFailed' => ({required Object error}) => 'MoveFileEx failed with Windows error ${error}',
 			'errors.nativeTrashListFailed' => 'Native trash list failed',
 			'errors.nativeTrashListFailedWithMessage' => ({required Object message}) => 'Native trash list failed: ${message}',

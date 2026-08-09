@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/models/file_operation.dart';
-import 'package:waydir/features/operations/operation_store.dart';
+import 'package:myexplorer/core/models/file_operation.dart';
+import 'package:myexplorer/features/operations/operation_store.dart';
 
 Future<FileTask> waitForTask(
   OperationStore store,

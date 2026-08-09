@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/logging/app_logger.dart';
-import 'package:waydir/ui/theme/app_theme_registry.dart';
+import 'package:myexplorer/core/logging/app_logger.dart';
+import 'package:myexplorer/ui/theme/app_theme_registry.dart';
 
 void main() {
   group('AppThemeRegistry', () {
@@ -12,7 +12,7 @@ void main() {
     final builtInIds = builtInThemes.map((theme) => theme.id).toList();
 
     setUp(() {
-      dir = Directory.systemTemp.createTempSync('waydir_theme_registry_');
+      dir = Directory.systemTemp.createTempSync('myexplorer_theme_registry_');
       log.clear();
     });
 

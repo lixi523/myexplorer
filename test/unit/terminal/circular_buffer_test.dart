@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir_term/src/utils/circular_buffer.dart';
+import 'package:myexplorer_term/src/utils/circular_buffer.dart';
 
 class _Item with IndexedItem {
   _Item(this.value);

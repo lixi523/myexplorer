@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/database/app_database.dart';
-import 'package:waydir/core/platform/platform_paths.dart';
-import 'package:waydir/features/navigation/shortcut_runner.dart';
+import 'package:myexplorer/core/database/app_database.dart';
+import 'package:myexplorer/core/platform/platform_paths.dart';
+import 'package:myexplorer/features/navigation/shortcut_runner.dart';
 
 ShortcutBarItem _item(String target, {String? label, String? icon}) {
   return ShortcutBarItem(
@@ -21,7 +21,7 @@ void main() {
   late String filePath;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('waydir_shortcut_test');
+    tempDir = Directory.systemTemp.createTempSync('myexplorer_shortcut_test');
     folderPath = tempDir.path;
     filePath = '${tempDir.path}${Platform.pathSeparator}note.txt';
     File(filePath).writeAsStringSync('hello');

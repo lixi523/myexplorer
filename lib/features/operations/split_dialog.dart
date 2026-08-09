@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/models/file_entry.dart';
 import '../../i18n/strings.g.dart';
@@ -108,7 +108,7 @@ class _SplitDialogState extends State<_SplitDialog> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.scissors,
+      icon: MyExplorerIconsRegular.scissors,
       iconColor: AppColors.accent,
       title: t.split.title,
       width: 480,

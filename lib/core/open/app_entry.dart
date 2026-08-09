@@ -27,7 +27,7 @@ class AppEntry {
 
   /// Sentinel id for "whatever the OS would do" — opening this entry routes
   /// through the system shell-open instead of launching a specific binary.
-  static const systemDefaultId = '__waydir_system_default__';
+  static const systemDefaultId = '__myexplorer_system_default__';
 
   factory AppEntry.systemDefault(String name) => AppEntry(
     id: systemDefaultId,

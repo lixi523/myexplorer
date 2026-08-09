@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals.dart';
 
 import '../../i18n/strings.g.dart';
@@ -228,12 +228,12 @@ class SettingsRegistry {
         SettingChoice(
           value: 'trash',
           label: () => t.preferences.general.deleteKeyTrash,
-          icon: WaydirIconsRegular.trashSimple,
+          icon: MyExplorerIconsRegular.trashSimple,
         ),
         SettingChoice(
           value: 'permanent',
           label: () => t.preferences.general.deleteKeyPermanent,
-          icon: WaydirIconsRegular.trash,
+          icon: MyExplorerIconsRegular.trash,
         ),
       ],
     ),
@@ -293,7 +293,7 @@ class SettingsRegistry {
           SettingChoice(
             value: value,
             label: () => '${value}px',
-            icon: WaydirIconsRegular.textAa,
+            icon: MyExplorerIconsRegular.textAa,
           ),
       ],
     ),
@@ -309,7 +309,7 @@ class SettingsRegistry {
           SettingChoice(
             value: value,
             label: () => value.toStringAsFixed(1),
-            icon: WaydirIconsRegular.rows,
+            icon: MyExplorerIconsRegular.rows,
           ),
       ],
     ),
@@ -332,12 +332,12 @@ class SettingsRegistry {
         SettingChoice(
           value: 'standard',
           label: () => t.preferences.terminal.copyPasteModeStandard,
-          icon: WaydirIconsRegular.copy,
+          icon: MyExplorerIconsRegular.copy,
         ),
         SettingChoice(
           value: 'shift',
           label: () => t.preferences.terminal.copyPasteModeShift,
-          icon: WaydirIconsRegular.clipboard,
+          icon: MyExplorerIconsRegular.clipboard,
         ),
       ],
     ),
@@ -386,12 +386,12 @@ class SettingsRegistry {
         SettingChoice(
           value: 'comfortable',
           label: () => t.preferences.appearance.rowDensityComfortable,
-          icon: WaydirIconsRegular.rows,
+          icon: MyExplorerIconsRegular.rows,
         ),
         SettingChoice(
           value: 'compact',
           label: () => t.preferences.appearance.rowDensityCompact,
-          icon: WaydirIconsRegular.list,
+          icon: MyExplorerIconsRegular.list,
         ),
       ],
     ),
@@ -401,7 +401,7 @@ class SettingsRegistry {
       label: () => t.preferences.appearance.fileListHorizontalSpacing,
       searchTerms: const ['files', 'spacing', 'horizontal', 'padding'],
       signal: SettingsStore.instance.fileListHorizontalSpacing,
-      choices: _spacingChoices(WaydirIconsRegular.arrowsLeftRight),
+      choices: _spacingChoices(MyExplorerIconsRegular.arrowsLeftRight),
     ),
     ChoiceSetting<String>(
       id: 'appearance.columnWidthMode',
@@ -413,12 +413,12 @@ class SettingsRegistry {
         SettingChoice(
           value: 'automatic',
           label: () => t.preferences.appearance.columnWidthModeAutomatic,
-          icon: WaydirIconsRegular.magicWand,
+          icon: MyExplorerIconsRegular.magicWand,
         ),
         SettingChoice(
           value: 'resizable',
           label: () => t.preferences.appearance.columnWidthModeResizable,
-          icon: WaydirIconsRegular.columns,
+          icon: MyExplorerIconsRegular.columns,
         ),
       ],
     ),
@@ -428,7 +428,7 @@ class SettingsRegistry {
       label: () => t.preferences.appearance.fileListVerticalSpacing,
       searchTerms: const ['files', 'spacing', 'vertical', 'rows', 'gap'],
       signal: SettingsStore.instance.fileListVerticalSpacing,
-      choices: _spacingChoices(WaydirIconsRegular.rows),
+      choices: _spacingChoices(MyExplorerIconsRegular.rows),
     ),
     ChoiceSetting<String>(
       id: 'appearance.dateFormat',
@@ -440,17 +440,17 @@ class SettingsRegistry {
         SettingChoice(
           value: 'iso',
           label: () => t.preferences.appearance.dateFormatIso,
-          icon: WaydirIconsRegular.calendar,
+          icon: MyExplorerIconsRegular.calendar,
         ),
         SettingChoice(
           value: 'locale',
           label: () => t.preferences.appearance.dateFormatLocale,
-          icon: WaydirIconsRegular.calendarBlank,
+          icon: MyExplorerIconsRegular.calendarBlank,
         ),
         SettingChoice(
           value: 'relative',
           label: () => t.preferences.appearance.dateFormatRelative,
-          icon: WaydirIconsRegular.clockClockwise,
+          icon: MyExplorerIconsRegular.clockClockwise,
         ),
       ],
     ),
@@ -496,17 +496,17 @@ class SettingsRegistry {
         SettingChoice(
           value: 'name',
           label: () => t.preferences.appearance.sortKeyName,
-          icon: WaydirIconsRegular.textAa,
+          icon: MyExplorerIconsRegular.textAa,
         ),
         SettingChoice(
           value: 'size',
           label: () => t.preferences.appearance.sortKeySize,
-          icon: WaydirIconsRegular.ruler,
+          icon: MyExplorerIconsRegular.ruler,
         ),
         SettingChoice(
           value: 'date',
           label: () => t.preferences.appearance.sortKeyDate,
-          icon: WaydirIconsRegular.calendar,
+          icon: MyExplorerIconsRegular.calendar,
         ),
       ],
     ),
@@ -559,7 +559,7 @@ class SettingsRegistry {
           SettingChoice(
             value: value,
             label: () => '${value}px',
-            icon: WaydirIconsRegular.textAa,
+            icon: MyExplorerIconsRegular.textAa,
           ),
       ],
     ),
@@ -582,7 +582,7 @@ class SettingsRegistry {
           SettingChoice(
             value: value,
             label: () => value.toStringAsFixed(1),
-            icon: WaydirIconsRegular.rows,
+            icon: MyExplorerIconsRegular.rows,
           ),
       ],
     ),
@@ -707,23 +707,23 @@ List<SettingChoice<String>> _externalTerminalChoices(
     SettingChoice(
       value: 'builtin',
       label: () => t.preferences.general.terminalBuiltin,
-      icon: WaydirIconsRegular.terminal,
+      icon: MyExplorerIconsRegular.terminal,
     ),
     SettingChoice(
       value: 'auto',
       label: () => t.preferences.general.terminalAuto,
-      icon: WaydirIconsRegular.magicWand,
+      icon: MyExplorerIconsRegular.magicWand,
     ),
     for (final term in terminals)
       SettingChoice(
         value: term.id,
         label: () => term.displayName,
-        icon: WaydirIconsRegular.appWindow,
+        icon: MyExplorerIconsRegular.appWindow,
       ),
     SettingChoice(
       value: 'custom',
       label: () => t.preferences.general.terminalCustom,
-      icon: WaydirIconsRegular.code,
+      icon: MyExplorerIconsRegular.code,
     ),
   ];
 }
@@ -736,19 +736,19 @@ List<SettingChoice<String>> _shellChoices(
     SettingChoice(
       value: 'system',
       label: () => t.preferences.terminal.shellSystem,
-      icon: WaydirIconsRegular.magicWand,
+      icon: MyExplorerIconsRegular.magicWand,
     ),
     for (final shell in shells)
       SettingChoice(
         value: shell.path,
         label: () => shell.label,
-        icon: WaydirIconsRegular.terminal,
+        icon: MyExplorerIconsRegular.terminal,
       ),
     if (extra != null)
       SettingChoice(
         value: extra,
         label: () => extra,
-        icon: WaydirIconsRegular.terminal,
+        icon: MyExplorerIconsRegular.terminal,
       ),
   ];
 }
@@ -759,7 +759,7 @@ List<SettingChoice<String>> _fontChoices(List<String> families) {
       SettingChoice(
         value: family,
         label: () => family,
-        icon: WaydirIconsRegular.textAa,
+        icon: MyExplorerIconsRegular.textAa,
       ),
   ];
 }
@@ -779,8 +779,8 @@ String _themeLabel(AppThemeDefinition theme) => switch (theme.id) {
 };
 
 IconData _themeIcon(AppThemeDefinition theme) {
-  if (theme.id == 'light') return WaydirIconsRegular.sun;
-  if (theme.id == 'dark') return WaydirIconsRegular.moon;
+  if (theme.id == 'light') return MyExplorerIconsRegular.sun;
+  if (theme.id == 'dark') return MyExplorerIconsRegular.moon;
 
-  return WaydirIconsRegular.palette;
+  return MyExplorerIconsRegular.palette;
 }

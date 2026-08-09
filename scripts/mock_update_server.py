@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Mock GitHub Releases server for testing Waydir's in-app updater.
+"""Mock GitHub Releases server for testing MyExplorer's in-app updater.
 
 Usage:
     python3 scripts/mock_update_server.py --asset <path> --version <ver>
 
 Point the installed app at it:
-    WAYDIR_GITHUB_API_BASE=http://127.0.0.1:8765 waydir
+    MYEXPLORER_GITHUB_API_BASE=http://127.0.0.1:8765 myexplorer
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ def build_release_json(version: str, asset_path: str, download_url: str) -> list
     return [
         {
             "tag_name": f"v{version}",
-            "name": f"Waydir {version}",
+            "name": f"MyExplorer {version}",
             "body": f"Mock update to {version} for local testing.",
             "prerelease": False,
             "published_at": published,
@@ -55,7 +55,7 @@ def make_handler(version: str, asset_path: str, public_origin: str, content_type
             parsed = urlparse(self.path)
             path = parsed.path
 
-            if path == "/repos/Waydir/Waydir/releases":
+            if path == "/repos/MyExplorer/MyExplorer/releases":
                 payload = json.dumps(
                     build_release_json(version, asset_path, download_url)
                 ).encode("utf-8")
@@ -133,9 +133,9 @@ def main() -> int:
 
     print(
         f"[mock] serving v{args.version} from {asset_path}\n"
-        f"[mock] api:      http://{args.host}:{args.port}/repos/Waydir/Waydir/releases\n"
+        f"[mock] api:      http://{args.host}:{args.port}/repos/MyExplorer/MyExplorer/releases\n"
         f"[mock] download: {public_origin}/download/{os.path.basename(asset_path)}\n"
-        f"[mock] run app:  WAYDIR_GITHUB_API_BASE=http://{args.host}:{args.port} waydir",
+        f"[mock] run app:  MYEXPLORER_GITHUB_API_BASE=http://{args.host}:{args.port} myexplorer",
         file=sys.stderr,
     )
     try:

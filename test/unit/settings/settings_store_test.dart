@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/settings/settings_store.dart';
+import 'package:myexplorer/core/settings/settings_store.dart';
 
 void main() {
   final store = SettingsStore.instance;

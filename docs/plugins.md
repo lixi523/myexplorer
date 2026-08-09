@@ -1,6 +1,6 @@
-# Waydir Plugin Guide
+# MyExplorer Plugin Guide
 
-Waydir plugins are small Lua folders that add workflow actions to the file manager. They can add context menu items, top menu items, toolbar buttons, shortcuts, status bars, dialogs, background commands and queued file operations.
+MyExplorer plugins are small Lua folders that add workflow actions to the file manager. They can add context menu items, top menu items, toolbar buttons, shortcuts, status bars, dialogs, background commands and queued file operations.
 
 No build step is required. Drop a folder into the plugins directory, reload plugins and the action is live.
 
@@ -10,21 +10,21 @@ Good plugin ideas are small actions around the current folder or selection:
 
 | Idea | How it fits |
 |------|-------------|
-| Open current folder in an editor | Toolbar button or background context action using `waydir.exec` |
-| Compress selected files | Selection context action using `waydir.run_task` |
-| Create files from templates | Toolbar, menubar and shortcut action using `waydir.dialog` and `waydir.write_text` |
-| Show project metadata | Per-pane status bar using `waydir.register_bar` |
-| Run a backup command | Long task in Operations using `waydir.run_task({ operation = true })` |
-| Add custom copy or trash actions | Queued operations using `waydir.copy`, `waydir.move`, `waydir.trash` |
+| Open current folder in an editor | Toolbar button or background context action using `myexplorer.exec` |
+| Compress selected files | Selection context action using `myexplorer.run_task` |
+| Create files from templates | Toolbar, menubar and shortcut action using `myexplorer.dialog` and `myexplorer.write_text` |
+| Show project metadata | Per-pane status bar using `myexplorer.register_bar` |
+| Run a backup command | Long task in Operations using `myexplorer.run_task({ operation = true })` |
+| Add custom copy or trash actions | Queued operations using `myexplorer.copy`, `myexplorer.move`, `myexplorer.trash` |
 
-Plugins are not meant to replace full applications. Lua decides where an action appears and when it runs. Heavy work should be delegated to external commands or Waydir's queued file operations.
+Plugins are not meant to replace full applications. Lua decides where an action appears and when it runs. Heavy work should be delegated to external commands or MyExplorer's queued file operations.
 
 ## Quick Start
 
 Create this folder:
 
 ```text
-hello-waydir/
+hello-myexplorer/
   manifest.json
   init.lua
 ```
@@ -33,8 +33,8 @@ hello-waydir/
 
 ```json
 {
-  "id": "hello-waydir",
-  "name": "Hello Waydir",
+  "id": "hello-myexplorer",
+  "name": "Hello MyExplorer",
   "version": "1.0.0",
   "author": "you",
   "description": "Shows a toast from the selection menu.",
@@ -45,12 +45,12 @@ hello-waydir/
 `init.lua`:
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "hello",
   title = "Say hello",
   icon = "bell",
   run = function(ctx)
-    waydir.toast("Selected " .. ctx.count .. " item(s)")
+    myexplorer.toast("Selected " .. ctx.count .. " item(s)")
   end,
 })
 ```
@@ -59,7 +59,7 @@ Install it, reload plugins and right-click a selected file. You should see **Say
 
 ## Install A Plugin
 
-Copy the whole plugin folder into Waydir's plugins directory. The folder itself must contain `manifest.json` and `init.lua` at the top level.
+Copy the whole plugin folder into MyExplorer's plugins directory. The folder itself must contain `manifest.json` and `init.lua` at the top level.
 
 | OS | Plugins directory |
 |----|-------------------|
@@ -101,16 +101,16 @@ Only registration should happen at the top level of `init.lua`. Actions run late
 
 ## Runtime Model
 
-On reload, Waydir scans the plugins directory, reads each `manifest.json`, rejects unsupported API versions and runs `init.lua` once in a sandbox to collect contributions from `waydir.register` and `waydir.register_bar`.
+On reload, MyExplorer scans the plugins directory, reads each `manifest.json`, rejects unsupported API versions and runs `init.lua` once in a sandbox to collect contributions from `myexplorer.register` and `myexplorer.register_bar`.
 
-When a user invokes an action, Waydir starts a fresh Lua VM, runs the same `init.lua`, finds the matching action id, calls `run(ctx)` and applies the effects emitted through the `waydir.*` API.
+When a user invokes an action, MyExplorer starts a fresh Lua VM, runs the same `init.lua`, finds the matching action id, calls `run(ctx)` and applies the effects emitted through the `myexplorer.*` API.
 
-Status bars follow the same fresh-VM rule. Waydir calls `update(ctx)` on load, when the bar context changes and on the configured interval. Button clicks call `click(ctx)` when the bar defines one.
+Status bars follow the same fresh-VM rule. MyExplorer calls `update(ctx)` on load, when the bar context changes and on the configured interval. Button clicks call `click(ctx)` when the bar defines one.
 
 | Area | Behavior |
 |------|----------|
 | API version | This build supports manifest `api_version` value `2`. |
-| Sandbox | Lua gets `table`, `string`, `math` and `waydir`. No `os`, `io` or `require`. |
+| Sandbox | Lua gets `table`, `string`, `math` and `myexplorer`. No `os`, `io` or `require`. |
 | Timeout | Lua load, action runs and bar updates are capped at 5 seconds. |
 | State | Lua globals do not persist between clicks. Use settings for durable state. |
 | Trust | Plugins run with your full user privileges. They can run any command and touch any file, so only install plugins you trust. |
@@ -130,27 +130,27 @@ Status bars follow the same fresh-VM rule. Waydir calls `update(ctx)` on load, w
 
 | Field | Required | Meaning |
 |-------|----------|---------|
-| `id` | No | Stable plugin id. If missing, Waydir uses the folder name. Use lowercase words separated by `-`. |
+| `id` | No | Stable plugin id. If missing, MyExplorer uses the folder name. Use lowercase words separated by `-`. |
 | `name` | No | Human-readable name in Preferences. Defaults to the plugin id. |
 | `version` | No | Plugin version shown to users. Defaults to `0.0.0`. |
 | `author` | No | Author name. |
 | `description` | No | Short explanation shown in Preferences. |
-| `api_version` | Yes | Must be `2` for this Waydir build. |
+| `api_version` | Yes | Must be `2` for this MyExplorer build. |
 
 A legacy `permissions` field is accepted but ignored; plugins run with your full user privileges.
 
 ## Register An Action
 
-Actions are registered with `waydir.register`:
+Actions are registered with `myexplorer.register`:
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "open_here",
   title = "Open here in Code",
   menu = "toolbar",
   icon = "code",
   run = function(ctx)
-    waydir.exec("code", { ctx.dir })
+    myexplorer.exec("code", { ctx.dir })
   end,
 })
 ```
@@ -205,25 +205,25 @@ The `ctx` table tells your action where it is running:
 | `ctx.dir` | Current folder. |
 | `ctx.plugin_dir` | Absolute path to your plugin folder. |
 | `ctx.settings` | Settings values, with defaults merged with saved user values. |
-| `ctx.form` | Dialog result after a `waydir.dialog` submit. |
+| `ctx.form` | Dialog result after a `myexplorer.dialog` submit. |
 | `ctx.other_pane` | The inactive pane in a dual-pane layout as `{ dir, paths }`, or absent when only one pane is open. |
 | `ctx.panes` | Every open pane as `{ dir, paths, active }`, in layout order. |
 
 `ctx.other_pane` and `ctx.panes` are only populated for action runs (context menu, menubar, toolbar, shortcuts), not for status bars. Use them for copy-to-other-pane, compare and sync workflows:
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "copy_to_other",
   title = "Copy to other pane",
   when = { min = 1 },
   run = function(ctx)
     local target = ctx.other_pane and ctx.other_pane.dir
     if not target then
-      waydir.toast("Open a second pane first")
+      myexplorer.toast("Open a second pane first")
       return
     end
     for _, path in ipairs(ctx.paths) do
-      waydir.copy(path, target)
+      myexplorer.copy(path, target)
     end
   end,
 })
@@ -232,12 +232,12 @@ waydir.register({
 Example:
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "copy_paths",
   title = "Show selected paths",
   when = { min = 1 },
   run = function(ctx)
-    waydir.notify({
+    myexplorer.notify({
       title = "Selected paths",
       message = table.concat(ctx.paths, "\n"),
       level = "info",
@@ -275,12 +275,12 @@ Omit `when` to show the action for any non-empty selection. For background actio
 Add an `event` field instead of a menu to run when something changes in the active pane, with no menu entry, toolbar button or shortcut. The `run(ctx)` receives the same context as an action (including `ctx.other_pane` and `ctx.panes`).
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "log_navigation",
   title = "Log navigation",
   event = "navigate",
   run = function(ctx)
-    waydir.log("entered " .. ctx.dir)
+    myexplorer.log("entered " .. ctx.dir)
   end,
 })
 ```
@@ -290,21 +290,21 @@ waydir.register({
 | `navigate` | The active pane's folder changes. |
 | `selection_change` | The active pane's selection changes. |
 
-Events are debounced so rapid cursor or selection changes coalesce into one run. Keep handlers cheap; offload slow work to `waydir.run_task`.
+Events are debounced so rapid cursor or selection changes coalesce into one run. Keep handlers cheap; offload slow work to `myexplorer.run_task`.
 
 ## Dialogs
 
-`waydir.dialog` opens a modal form. It does not return a value immediately. When the user submits the form, Waydir runs the same action again with `ctx.form` filled. Branch on `ctx.form` to tell the two passes apart.
+`myexplorer.dialog` opens a modal form. It does not return a value immediately. When the user submits the form, MyExplorer runs the same action again with `ctx.form` filled. Branch on `ctx.form` to tell the two passes apart.
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "new_file",
   title = "New file...",
   where = { "background" },
   icon = "file-text",
   run = function(ctx)
     if not ctx.form then
-      waydir.dialog({
+      myexplorer.dialog({
         title = "New file",
         fields = {
           { id = "name", type = "input", label = "File name", default = "untitled.txt" },
@@ -317,8 +317,8 @@ waydir.register({
       return
     end
 
-    waydir.write_text(ctx.dir .. "/" .. ctx.form.name, "")
-    waydir.refresh()
+    myexplorer.write_text(ctx.dir .. "/" .. ctx.form.name, "")
+    myexplorer.refresh()
   end,
 })
 ```
@@ -361,10 +361,10 @@ options = {
 
 ## Settings
 
-Declare `settings` on any action or bar. Waydir merges all fields from the plugin, renders them in **Preferences -> Plugins -> Configure** and injects saved values into `ctx.settings`.
+Declare `settings` on any action or bar. MyExplorer merges all fields from the plugin, renders them in **Preferences -> Plugins -> Configure** and injects saved values into `ctx.settings`.
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "convert",
   title = "Convert image",
   settings = {
@@ -380,27 +380,27 @@ waydir.register({
   },
   run = function(ctx)
     local quality = (ctx.settings or {}).quality or "85"
-    waydir.toast("Quality: " .. quality)
+    myexplorer.toast("Quality: " .. quality)
   end,
 })
 ```
 
-Update one setting from Lua with `waydir.set_setting`:
+Update one setting from Lua with `myexplorer.set_setting`:
 
 ```lua
-waydir.set_setting("quality", "90")
+myexplorer.set_setting("quality", "90")
 ```
 
 Settings are stored per plugin id.
 
 ## Status Bars
 
-Use `waydir.register_bar` for compact always-visible information.
+Use `myexplorer.register_bar` for compact always-visible information.
 
-Waydir refreshes a bar when it is first shown, when its context changes and on its `interval`. Current builds always refresh on context changes.
+MyExplorer refreshes a bar when it is first shown, when its context changes and on its `interval`. Current builds always refresh on context changes.
 
 ```lua
-waydir.register_bar({
+myexplorer.register_bar({
   id = "project",
   scope = "pane",
   title = "Project",
@@ -468,43 +468,43 @@ Button behavior:
 
 - A button with `action = "refresh"` refreshes the bar and does not call `click(ctx)`.
 - Other buttons call `click(ctx)` with `ctx.item_id` set to the button `id`.
-- If `click(ctx)` returns a bar state, Waydir applies it and then refreshes the bar.
+- If `click(ctx)` returns a bar state, MyExplorer applies it and then refreshes the bar.
 
-## `waydir` API
+## `myexplorer` API
 
 ### UI And State
 
 | Function | Effect |
 |----------|--------|
-| `waydir.toast(message)` | Shows a short toast. |
-| `waydir.notify({ title, message, level, persistent })` | Shows a notification. `level` can be `info`, `success`, `warn` or `error`. |
-| `waydir.dialog({ title, fields })` | Opens a form and re-runs the same action with `ctx.form`. |
-| `waydir.set_setting(key, value)` | Persists one setting for this plugin. |
-| `waydir.refresh()` | Refreshes the active file list. |
-| `waydir.log(message)` | Writes to Waydir's plugin log channel. |
+| `myexplorer.toast(message)` | Shows a short toast. |
+| `myexplorer.notify({ title, message, level, persistent })` | Shows a notification. `level` can be `info`, `success`, `warn` or `error`. |
+| `myexplorer.dialog({ title, fields })` | Opens a form and re-runs the same action with `ctx.form`. |
+| `myexplorer.set_setting(key, value)` | Persists one setting for this plugin. |
+| `myexplorer.refresh()` | Refreshes the active file list. |
+| `myexplorer.log(message)` | Writes to MyExplorer's plugin log channel. |
 
 ### External Commands
 
 | Function | Effect |
 |----------|--------|
-| `waydir.exec(cmd, args)` | Runs a short command and waits for it. Returns `stdout`, `stderr`, `exit_code`. |
-| `waydir.run_task(spec)` | Starts a long-running process outside the Lua action. |
+| `myexplorer.exec(cmd, args)` | Runs a short command and waits for it. Returns `stdout`, `stderr`, `exit_code`. |
+| `myexplorer.run_task(spec)` | Starts a long-running process outside the Lua action. |
 
-Use `waydir.exec` only for quick commands. A single `exec` call is capped at 5 seconds; a command that runs longer is killed and returns exit code `-1`. Lua actions also have an overall 5 second sandbox budget. For anything slower, use `waydir.run_task`.
+Use `myexplorer.exec` only for quick commands. A single `exec` call is capped at 5 seconds; a command that runs longer is killed and returns exit code `-1`. Lua actions also have an overall 5 second sandbox budget. For anything slower, use `myexplorer.run_task`.
 
 ```lua
-local out, err, code = waydir.exec("git", { "branch", "--show-current" })
+local out, err, code = myexplorer.exec("git", { "branch", "--show-current" })
 if code == 0 then
-  waydir.toast("Branch: " .. out)
+  myexplorer.toast("Branch: " .. out)
 else
-  waydir.notify({ title = "Git failed", message = err, level = "error" })
+  myexplorer.notify({ title = "Git failed", message = err, level = "error" })
 end
 ```
 
-Use `waydir.run_task` for slow commands:
+Use `myexplorer.run_task` for slow commands:
 
 ```lua
-waydir.run_task({
+myexplorer.run_task({
   title = "Backup",
   cmd = "rsync",
   args = { "-a", ctx.dir .. "/", "/backup/project/" },
@@ -523,13 +523,13 @@ waydir.run_task({
 | `cwd` | Optional working directory. |
 | `timeout` | Timeout in seconds. Defaults to 600. Maximum is 21600. |
 | `operation` | `true` shows the process in the Operations panel. |
-| `pty` | `true` asks Waydir to run the command through a pseudo-terminal. Useful for commands that only print progress in a terminal. |
+| `pty` | `true` asks MyExplorer to run the command through a pseudo-terminal. Useful for commands that only print progress in a terminal. |
 | `progress` | Regex config for Operations progress parsing. |
 
 Progress parsing uses Dart regular expressions. The first capture group is used when present.
 
 ```lua
-waydir.run_task({
+myexplorer.run_task({
   title = "Upload",
   cmd = "uploader",
   args = { "--progress", "file.bin" },
@@ -548,38 +548,38 @@ waydir.run_task({
 
 | Function | Effect |
 |----------|--------|
-| `waydir.read_text(path)` | Reads UTF-8 text. Capped at 4 MiB. |
-| `waydir.write_text(path, text)` | Writes UTF-8 text. |
-| `waydir.mkdir(path)` | Creates a directory and parents. |
-| `waydir.exists(path)` | Returns `true` if the path exists. |
-| `waydir.list(path)` | Returns `{ { name, path, is_dir }, ... }`. |
-| `waydir.file_size(path)` | Returns file size in bytes. |
-| `waydir.copy(src, dest_dir)` | Queues a Waydir copy operation. |
-| `waydir.move(src, dest_dir)` | Queues a Waydir move operation. |
-| `waydir.delete(path)` | Queues a permanent delete after confirmation. |
-| `waydir.trash(path)` | Queues move to trash, respecting delete confirmation settings. |
+| `myexplorer.read_text(path)` | Reads UTF-8 text. Capped at 4 MiB. |
+| `myexplorer.write_text(path, text)` | Writes UTF-8 text. |
+| `myexplorer.mkdir(path)` | Creates a directory and parents. |
+| `myexplorer.exists(path)` | Returns `true` if the path exists. |
+| `myexplorer.list(path)` | Returns `{ { name, path, is_dir }, ... }`. |
+| `myexplorer.file_size(path)` | Returns file size in bytes. |
+| `myexplorer.copy(src, dest_dir)` | Queues a MyExplorer copy operation. |
+| `myexplorer.move(src, dest_dir)` | Queues a MyExplorer move operation. |
+| `myexplorer.delete(path)` | Queues a permanent delete after confirmation. |
+| `myexplorer.trash(path)` | Queues move to trash, respecting delete confirmation settings. |
 
-Queued file operations appear in Waydir's Operations panel and use the same copy, move, delete and trash machinery as the UI.
+Queued file operations appear in MyExplorer's Operations panel and use the same copy, move, delete and trash machinery as the UI.
 
 ### Custom Operations
 
 Use custom Operations entries when your plugin does work itself and wants to report progress.
 
 ```lua
-waydir.operation_start({ id = "sync", title = "Sync", total_files = 10 })
-waydir.operation_update("sync", {
+myexplorer.operation_start({ id = "sync", title = "Sync", total_files = 10 })
+myexplorer.operation_update("sync", {
   progress = 0.5,
   message = "5 of 10",
   processed_files = 5,
 })
-waydir.operation_finish("sync", { success = true })
+myexplorer.operation_finish("sync", { success = true })
 ```
 
 | Function | Effect |
 |----------|--------|
-| `waydir.operation_start({ id, title, total_bytes, total_files })` | Creates a custom Operations entry. |
-| `waydir.operation_update(id, spec)` | Updates progress, message, bytes and files. |
-| `waydir.operation_finish(id, spec)` | Marks the operation as successful, cancelled or failed. |
+| `myexplorer.operation_start({ id, title, total_bytes, total_files })` | Creates a custom Operations entry. |
+| `myexplorer.operation_update(id, spec)` | Updates progress, message, bytes and files. |
+| `myexplorer.operation_finish(id, spec)` | Marks the operation as successful, cancelled or failed. |
 
 `operation_update` fields:
 
@@ -629,7 +629,7 @@ Unknown icon names fall back to the default plugin glyph.
 
 ## Sandbox And Runtime Rules
 
-Waydir runs plugins in a restricted Lua sandbox:
+MyExplorer runs plugins in a restricted Lua sandbox:
 
 - Available standard libraries: `table`, `string`, `math`.
 - Not available: `os`, `io`, `require`.
@@ -637,7 +637,7 @@ Waydir runs plugins in a restricted Lua sandbox:
 - Do not rely on Lua globals persisting between clicks.
 - Top-level code should only register actions and bars.
 - Action and bar Lua execution has a 5 second budget.
-- Use `waydir.run_task` for slow external work.
+- Use `myexplorer.run_task` for slow external work.
 - Use `ctx.plugin_dir` to call bundled helper scripts or read bundled files.
 - Plugins run with your full user privileges; there is no permission sandbox. Only install plugins you trust.
 
@@ -646,13 +646,13 @@ Waydir runs plugins in a restricted Lua sandbox:
 ### Background Action
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "open_terminal_here",
   title = "Open external terminal here",
   where = { "background" },
   icon = "terminal",
   run = function(ctx)
-    waydir.exec("x-terminal-emulator", { "--working-directory", ctx.dir })
+    myexplorer.exec("x-terminal-emulator", { "--working-directory", ctx.dir })
   end,
 })
 ```
@@ -660,13 +660,13 @@ waydir.register({
 ### Toolbar Button
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "open_code",
   title = "Open in VS Code",
   menu = "toolbar",
   icon = "code",
   run = function(ctx)
-    waydir.exec("code", { ctx.dir })
+    myexplorer.exec("code", { ctx.dir })
   end,
 })
 ```
@@ -676,7 +676,7 @@ waydir.register({
 ```lua
 local group = "Image tools"
 
-waydir.register({
+myexplorer.register({
   id = "webp",
   title = "Convert to WebP",
   group = group,
@@ -684,7 +684,7 @@ waydir.register({
   when = { types = { "file" }, extensions = { "png", "jpg", "jpeg" } },
   run = function(ctx)
     for _, path in ipairs(ctx.paths) do
-      waydir.run_task({
+      myexplorer.run_task({
         title = "Convert " .. path,
         cmd = "cwebp",
         args = { path, "-o", path .. ".webp" },
@@ -697,7 +697,7 @@ waydir.register({
 ### Helper Script
 
 ```lua
-waydir.register({
+myexplorer.register({
   id = "process",
   title = "Process with helper",
   when = { min = 1 },
@@ -706,7 +706,7 @@ waydir.register({
     for _, path in ipairs(ctx.paths) do
       args[#args + 1] = path
     end
-    waydir.run_task({
+    myexplorer.run_task({
       title = "Processing",
       cmd = "python3",
       args = args,
@@ -723,7 +723,7 @@ Ready-to-copy examples live in [examples/plugins/](examples/plugins/):
 
 | Example | Shows |
 |---------|-------|
-| `selection-count` | Tiny action using `ctx.count` and `waydir.toast`. |
+| `selection-count` | Tiny action using `ctx.count` and `myexplorer.toast`. |
 | `backup-copy` | External command action using `exec`. |
 | `open-vscode` | Toolbar and folder action with a configurable command. |
 | `templates` | Toolbar, background menu, top menu, shortcut, settings, dialog and `fs`. |
@@ -738,8 +738,8 @@ Ready-to-copy examples live in [examples/plugins/](examples/plugins/):
 | Action is missing from context menu | Check `where`, `menu`, `when`, current selection and archive state. |
 | Shortcut does nothing | Check for conflicts with built-in shortcuts or another plugin. |
 | Command works in terminal but not plugin | Use an absolute command path, configure `cwd`, or check PATH differences. |
-| Long command times out | Use `waydir.run_task` and set a suitable `timeout`. |
+| Long command times out | Use `myexplorer.run_task` and set a suitable `timeout`. |
 | Progress does not update | Use `operation = true`, check regex capture groups and try `pty = true`. |
 | Dialog submits but nothing happens | Branch on `ctx.form` after the form is submitted. |
 
-Use `waydir.log("message")` while developing. Plugin failures are also surfaced in **Preferences -> Plugins** or as notifications.
+Use `myexplorer.log("message")` while developing. Plugin failures are also surfaced in **Preferences -> Plugins** or as notifications.

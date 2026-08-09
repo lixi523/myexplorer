@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 
-import '../../../core/fs/waydir_core_loader.dart';
+import '../../../core/fs/myexplorer_core_loader.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/logging/log_entry.dart';
 import '../../../i18n/strings.g.dart';
@@ -23,7 +23,7 @@ Future<void> showDiagnosticsDialog(BuildContext context) {
     barrierDismissible: true,
     barrierColor: Colors.black.withValues(alpha: 0.55),
     builder: (ctx) => AppModal(
-      icon: WaydirIconsRegular.bug,
+      icon: MyExplorerIconsRegular.bug,
       title: t.preferences.diagnostics.title,
       width: width,
       height: height,
@@ -96,7 +96,7 @@ class _DiagnosticsPaneState extends State<DiagnosticsPane> {
             Text(t.preferences.diagnostics.subtitle, style: context.txt.muted),
             const SizedBox(height: 8),
             SelectableText(
-              '${t.preferences.diagnostics.native}: ${WaydirCoreLoader.buildInfo() ?? t.preferences.diagnostics.unavailable}',
+              '${t.preferences.diagnostics.native}: ${MyExplorerCoreLoader.buildInfo() ?? t.preferences.diagnostics.unavailable}',
               style: context.txt.muted,
             ),
             const SizedBox(height: 16),
@@ -137,13 +137,13 @@ class _DiagnosticsPaneState extends State<DiagnosticsPane> {
                 ),
                 const SizedBox(width: 8),
                 _Btn(
-                  icon: WaydirIconsRegular.copy,
+                  icon: MyExplorerIconsRegular.copy,
                   label: t.preferences.diagnostics.copy,
                   onTap: visible.isEmpty ? null : () => _copy(visible),
                 ),
                 const SizedBox(width: 6),
                 _Btn(
-                  icon: WaydirIconsRegular.trashSimple,
+                  icon: MyExplorerIconsRegular.trashSimple,
                   label: t.preferences.diagnostics.clear,
                   onTap: all.isEmpty ? null : log.clear,
                 ),
@@ -179,7 +179,7 @@ class _DiagnosticsPaneState extends State<DiagnosticsPane> {
             Row(
               children: [
                 Icon(
-                  WaydirIconsRegular.info,
+                  MyExplorerIconsRegular.info,
                   size: 13,
                   color: AppColors.fgMuted,
                 ),

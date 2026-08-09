@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../../core/platform/app_dirs.dart';
@@ -25,7 +25,7 @@ Future<void> showPluginsDialog(BuildContext context) {
     barrierDismissible: true,
     barrierColor: Colors.black.withValues(alpha: 0.55),
     builder: (ctx) => AppModal(
-      icon: WaydirIconsRegular.gearSix,
+      icon: MyExplorerIconsRegular.gearSix,
       title: t.preferences.plugins.title,
       width: width,
       height: height,
@@ -76,13 +76,13 @@ class _PluginsPaneState extends State<PluginsPane> {
             Row(
               children: [
                 _Btn(
-                  icon: WaydirIconsRegular.folderOpen,
+                  icon: MyExplorerIconsRegular.folderOpen,
                   label: t.preferences.plugins.openFolder,
                   onTap: _openFolder,
                 ),
                 const SizedBox(width: 6),
                 _Btn(
-                  icon: WaydirIconsRegular.arrowClockwise,
+                  icon: MyExplorerIconsRegular.arrowClockwise,
                   label: t.preferences.plugins.reload,
                   onTap: _reload,
                 ),
@@ -221,7 +221,7 @@ class _PluginRow extends StatelessWidget {
             if (canConfigure) ...[
               const SizedBox(width: 8),
               _Btn(
-                icon: WaydirIconsRegular.slidersHorizontal,
+                icon: MyExplorerIconsRegular.slidersHorizontal,
                 label: t.preferences.plugins.configure,
                 onTap: () => _configure(context),
               ),
@@ -230,8 +230,8 @@ class _PluginRow extends StatelessWidget {
               const SizedBox(width: 8),
               _Btn(
                 icon: userDisabled
-                    ? WaydirIconsRegular.check
-                    : WaydirIconsRegular.prohibit,
+                    ? MyExplorerIconsRegular.check
+                    : MyExplorerIconsRegular.prohibit,
                 label: userDisabled
                     ? t.preferences.plugins.enable
                     : t.preferences.plugins.disable,

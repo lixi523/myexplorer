@@ -202,7 +202,7 @@
     },
     "plugins": {
       "title": "插件",
-      "subtitle": "使用 Lua 插件扩展 Waydir。每个插件是一个包含 manifest.json 和 init.lua 的文件夹。",
+      "subtitle": "使用 Lua 插件扩展 MyExplorer。每个插件是一个包含 manifest.json 和 init.lua 的文件夹。",
       "installedSection": "已安装",
       "openFolder": "打开插件文件夹",
       "reload": "重新加载",
@@ -1231,7 +1231,7 @@
     "archiveReadFailed": "压缩包错误：$error",
     "archiveEntryNotFound": "压缩包条目不存在：$path",
     "unsupportedArchiveFormat": "不支持的压缩包格式",
-    "nativeCoreNotFound": "未找到原生 waydir_core；已搜索：$paths",
+    "nativeCoreNotFound": "未找到原生 myexplorer_core；已搜索：$paths",
     "moveFileExFailed": "MoveFileEx 失败，Windows 错误 $error",
     "nativeTrashListFailed": "原生回收站列表失败",
     "nativeTrashListFailedWithMessage": "原生回收站列表失败：$message",

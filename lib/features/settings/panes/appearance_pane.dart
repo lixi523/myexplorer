@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../../core/open/open_service.dart';
 import '../../../core/platform/app_dirs.dart';
@@ -139,7 +139,7 @@ class _AppearancePaneState extends State<AppearancePane> {
     final result = await showCustomDialog<String>(
       context: context,
       title: t.preferences.appearance.deleteThemeTitle,
-      icon: WaydirIconsRegular.warning,
+      icon: MyExplorerIconsRegular.warning,
       iconColor: AppColors.danger,
       body: Text(
         t.preferences.appearance.deleteThemeMessage(name: name),
@@ -262,7 +262,7 @@ class _ThemeNameDialogState extends State<_ThemeNameDialog> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.palette,
+      icon: MyExplorerIconsRegular.palette,
       title: t.preferences.appearance.addThemeTitle,
       width: 360,
       padding: const EdgeInsets.all(16),
@@ -374,7 +374,7 @@ class _CustomThemesRow extends StatelessWidget {
           const SizedBox(width: 16),
           if (onAdd != null)
             SettingsActionButton(
-              icon: WaydirIconsRegular.plus,
+              icon: MyExplorerIconsRegular.plus,
               label: t.preferences.appearance.addTheme,
               onTap: onAdd!,
             ),
@@ -415,8 +415,8 @@ class _ThemeFileRow extends StatelessWidget {
         children: [
           Icon(
             theme == null
-                ? WaydirIconsRegular.warning
-                : WaydirIconsRegular.palette,
+                ? MyExplorerIconsRegular.warning
+                : MyExplorerIconsRegular.palette,
             size: 14,
             color: theme == null ? AppColors.warning : AppColors.fgMuted,
           ),
@@ -443,13 +443,13 @@ class _ThemeFileRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           SettingsActionButton(
-            icon: WaydirIconsRegular.pencilSimple,
+            icon: MyExplorerIconsRegular.pencilSimple,
             label: t.preferences.appearance.editTheme,
             onTap: () => onEdit(file.path),
           ),
           const SizedBox(width: 4),
           SettingsActionButton(
-            icon: WaydirIconsRegular.trash,
+            icon: MyExplorerIconsRegular.trash,
             label: t.preferences.appearance.deleteTheme,
             onTap: () => onDelete(file.path, title),
           ),

@@ -3,7 +3,7 @@ import 'package:signals/signals_flutter.dart';
 
 import '../../core/models/file_entry.dart';
 import '../../i18n/strings.g.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../navigation/navigation_store.dart';
@@ -129,8 +129,8 @@ class _PanelHeader extends StatelessWidget {
           if (isMarkdown) ...[
             _PanelIconButton(
               icon: markdownRendered
-                  ? WaydirIconsRegular.code
-                  : WaydirIconsRegular.eye,
+                  ? MyExplorerIconsRegular.code
+                  : MyExplorerIconsRegular.eye,
               tooltip: markdownRendered
                   ? t.quickLook.viewSource
                   : t.quickLook.viewRendered,
@@ -140,7 +140,7 @@ class _PanelHeader extends StatelessWidget {
           ],
           if (hasPreview) ...[
             _PanelIconButton(
-              icon: WaydirIconsRegular.info,
+              icon: MyExplorerIconsRegular.info,
               active: showInfo,
               tooltip: t.menu.properties,
               onTap: onToggleInfo,

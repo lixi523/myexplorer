@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/fs/smb_share_discovery.dart';
+import 'package:myexplorer/core/fs/smb_share_discovery.dart';
 
 void main() {
   group('SmbShareDiscovery.parseNetView', () {

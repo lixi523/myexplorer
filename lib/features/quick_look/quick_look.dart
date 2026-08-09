@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../core/keyboard/keyboard_shortcuts.dart';
@@ -99,7 +99,7 @@ class _QuickLookState extends State<_QuickLook> {
     final result = await showCustomDialog<String>(
       context: context,
       title: t.quickLook.unsavedTitle,
-      icon: WaydirIconsRegular.warning,
+      icon: MyExplorerIconsRegular.warning,
       iconColor: AppColors.warning,
       body: Text(
         t.quickLook.unsavedMessage,
@@ -525,9 +525,13 @@ class _Header extends StatelessWidget {
       child: Row(
         children: [
           if (multi)
-            Icon(WaydirIconsRegular.copy, size: 18, color: AppColors.accent)
+            Icon(MyExplorerIconsRegular.copy, size: 18, color: AppColors.accent)
           else if (e == null)
-            Icon(WaydirIconsRegular.file, size: 18, color: AppColors.fgMuted)
+            Icon(
+              MyExplorerIconsRegular.file,
+              size: 18,
+              color: AppColors.fgMuted,
+            )
           else
             buildFileIcon(
               name: e.name,
@@ -552,8 +556,8 @@ class _Header extends StatelessWidget {
 
                 return _HeaderButton(
                   icon: markdownRendered
-                      ? WaydirIconsRegular.code
-                      : WaydirIconsRegular.eye,
+                      ? MyExplorerIconsRegular.code
+                      : MyExplorerIconsRegular.eye,
                   active: false,
                   enabled: !blocked,
                   tooltip: blocked
@@ -569,7 +573,7 @@ class _Header extends StatelessWidget {
           ],
           if (hasPreview) ...[
             _HeaderButton(
-              icon: WaydirIconsRegular.info,
+              icon: MyExplorerIconsRegular.info,
               active: showInfo,
               tooltip: t.menu.properties,
               onTap: onToggleInfo,

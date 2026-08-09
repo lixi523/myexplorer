@@ -6,13 +6,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/features/plugins/plugin_ffi.dart';
+import 'package:myexplorer/features/plugins/plugin_ffi.dart';
 
 void main() {
   late Directory tmp;
 
   setUp(() {
-    tmp = Directory.systemTemp.createTempSync('waydir_plugin_test');
+    tmp = Directory.systemTemp.createTempSync('myexplorer_plugin_test');
   });
 
   tearDown(() {
@@ -29,12 +29,12 @@ void main() {
 
   test('load returns declared contributions', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "greet",
         menu = "context",
         title = "Greet",
         when = { extensions = {"txt"}, min = 1 },
-        run = function(ctx) waydir.toast("hi") end,
+        run = function(ctx) myexplorer.toast("hi") end,
       })
     ''');
 
@@ -53,12 +53,12 @@ void main() {
 
   test('invoke runs the action and collects effects', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "greet",
         title = "Greet",
         run = function(ctx)
-          waydir.toast("hello " .. ctx.count)
-          waydir.refresh()
+          myexplorer.toast("hello " .. ctx.count)
+          myexplorer.refresh()
         end,
       })
     ''');
@@ -85,7 +85,7 @@ void main() {
 
   test('bar update and click return state and effects', () async {
     final path = writePlugin('''
-      waydir.register_bar({
+      myexplorer.register_bar({
         id = "status",
         scope = "pane",
         title = "Status",
@@ -100,7 +100,7 @@ void main() {
           }
         end,
         click = function(ctx)
-          waydir.toast("clicked " .. ctx.item_id)
+          myexplorer.toast("clicked " .. ctx.item_id)
         end,
       })
     ''');
@@ -149,12 +149,12 @@ void main() {
 
   test('exec runs without any permission declaration', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "danger",
         title = "Danger",
         run = function(ctx)
-          local stdout = waydir.exec("echo", {"hi"})
-          waydir.toast(stdout)
+          local stdout = myexplorer.exec("echo", {"hi"})
+          myexplorer.toast(stdout)
         end,
       })
     ''');
@@ -178,15 +178,15 @@ void main() {
 
   test('exec returns stdout, stderr and exit code', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "exec_out",
         title = "Exec Out",
         run = function(ctx)
-          local stdout, stderr, code = waydir.exec("sh", {
+          local stdout, stderr, code = myexplorer.exec("sh", {
             "-c",
             "printf out; printf err >&2; exit 7",
           })
-          waydir.toast(stdout .. ":" .. stderr .. ":" .. code)
+          myexplorer.toast(stdout .. ":" .. stderr .. ":" .. code)
         end,
       })
     ''');
@@ -209,12 +209,12 @@ void main() {
 
   test('exec is bounded and a hung command times out', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "hang",
         title = "Hang",
         run = function(ctx)
-          local stdout, stderr, code = waydir.exec("sleep", {"30"})
-          waydir.toast("code:" .. code)
+          local stdout, stderr, code = myexplorer.exec("sleep", {"30"})
+          myexplorer.toast("code:" .. code)
         end,
       })
     ''');
@@ -241,7 +241,7 @@ void main() {
 
   test('load returns where, shortcut and settings schema', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "cfg",
         title = "Config",
         where = { "selection", "background" },
@@ -269,12 +269,12 @@ void main() {
     final dataFile = File(p.join(tmp.path, 'data.txt'))
       ..writeAsStringSync('payload');
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "reader",
         title = "Reader",
         run = function(ctx)
-          local text = waydir.read_text(ctx.paths[1])
-          waydir.toast(text)
+          local text = myexplorer.read_text(ctx.paths[1])
+          myexplorer.toast(text)
         end,
       })
     ''');
@@ -299,12 +299,12 @@ void main() {
 
   test('ctx exposes other_pane and panes', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "panes",
         title = "Panes",
         run = function(ctx)
           local other = ctx.other_pane and ctx.other_pane.dir or "?"
-          waydir.toast(other .. ":" .. #ctx.panes .. ":" .. tostring(ctx.panes[1].active))
+          myexplorer.toast(other .. ":" .. #ctx.panes .. ":" .. tostring(ctx.panes[1].active))
         end,
       })
     ''');
@@ -338,13 +338,13 @@ void main() {
 
   test('notify, set_setting and dialog effects round-trip', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "ui",
         title = "UI",
         run = function(ctx)
-          waydir.notify({ title = "T", message = "M", level = "success" })
-          waydir.set_setting("k", "v")
-          waydir.dialog({
+          myexplorer.notify({ title = "T", message = "M", level = "success" })
+          myexplorer.set_setting("k", "v")
+          myexplorer.dialog({
             title = "Pick",
             fields = { { id = "name", type = "text", label = "Name" } },
             submit_action = "ui",
@@ -372,11 +372,11 @@ void main() {
 
   test('ctx exposes injected settings and form values', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "ctx",
         title = "Ctx",
         run = function(ctx)
-          waydir.toast((ctx.settings.greeting or "?") .. ":" .. (ctx.form.x or "?"))
+          myexplorer.toast((ctx.settings.greeting or "?") .. ":" .. (ctx.form.x or "?"))
         end,
       })
     ''');
@@ -402,15 +402,15 @@ void main() {
     'absent form and settings arrive as nil, not a truthy sentinel',
     () async {
       final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "guard",
         title = "Guard",
         run = function(ctx)
           if not ctx.form then
-            waydir.toast("no-form")
+            myexplorer.toast("no-form")
             return
           end
-          waydir.toast("has-form")
+          myexplorer.toast("has-form")
         end,
       })
     ''');
@@ -433,11 +433,11 @@ void main() {
 
   test('run_task emits a task effect with timeout', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "job",
         title = "Job",
         run = function(ctx)
-          waydir.run_task({ title = "T", cmd = "echo", args = {"hi"}, timeout = 30 })
+          myexplorer.run_task({ title = "T", cmd = "echo", args = {"hi"}, timeout = 30 })
         end,
       })
     ''');
@@ -461,11 +461,11 @@ void main() {
     'run_task can request an operations entry with progress parsing',
     () async {
       final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "job_op",
         title = "Job Op",
         run = function(ctx)
-          waydir.run_task({
+          myexplorer.run_task({
             title = "T",
             cmd = "echo",
             args = {"42%"},
@@ -496,24 +496,24 @@ void main() {
 
   test('custom operation effects round-trip', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "op",
         title = "Op",
         run = function(ctx)
-          waydir.operation_start({
+          myexplorer.operation_start({
             id = "x",
             title = "Custom",
             total_bytes = 100,
             total_files = 2,
           })
-          waydir.operation_update("x", {
+          myexplorer.operation_update("x", {
             progress = 0.5,
             message = "half",
             processed_bytes = 50,
             bytes_per_second = 10,
             processed_files = 1,
           })
-          waydir.operation_finish("x", { success = true })
+          myexplorer.operation_finish("x", { success = true })
         end,
       })
     ''');
@@ -557,7 +557,7 @@ void main() {
 
   test('columns register and compute values for a batch of files', () async {
     final path = writePlugin('''
-      waydir.register_column({
+      myexplorer.register_column({
         id = "tag",
         title = "Tag",
         width = 80,
@@ -599,11 +599,11 @@ void main() {
 
   test('event handlers round-trip through load', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "watch",
         title = "Watch",
         event = "navigate",
-        run = function(ctx) waydir.log("at " .. ctx.dir) end,
+        run = function(ctx) myexplorer.log("at " .. ctx.dir) end,
       })
     ''');
     final json =
@@ -614,7 +614,7 @@ void main() {
 
   test('toolbar menu and icon round-trip through load', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "bar",
         title = "Bar",
         menu = "toolbar",
@@ -642,7 +642,7 @@ void main() {
 
   test('sandbox blocks os and io access', () async {
     final path = writePlugin('''
-      waydir.register({
+      myexplorer.register({
         id = "x", title = "X",
         run = function() local _ = os.execute end,
       })

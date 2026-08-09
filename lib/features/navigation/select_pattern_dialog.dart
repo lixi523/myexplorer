@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
@@ -88,7 +88,7 @@ class _SelectPatternDialogState extends State<_SelectPatternDialog> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.selectionAll,
+      icon: MyExplorerIconsRegular.selectionAll,
       title: widget.title ?? t.selectPattern.title,
       width: 360,
       padding: const EdgeInsets.all(16),

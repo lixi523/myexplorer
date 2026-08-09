@@ -4,7 +4,7 @@ import 'dart:io';
 import '../logging/app_logger.dart';
 import 'dart:isolate';
 import '../models/file_entry.dart';
-import 'waydir_core_loader.dart';
+import 'myexplorer_core_loader.dart';
 
 class _BatchMsg {
   final List<FileEntry> entries;
@@ -191,7 +191,7 @@ class RecursiveSearch {
 
     final int? session;
     try {
-      session = WaydirCoreLoader.searchStart(
+      session = MyExplorerCoreLoader.searchStart(
         root,
         query,
         includeHidden,
@@ -216,9 +216,9 @@ class RecursiveSearch {
     try {
       while (true) {
         if (isCancelled()) {
-          WaydirCoreLoader.searchCancel(session);
+          MyExplorerCoreLoader.searchCancel(session);
         }
-        final r = WaydirCoreLoader.searchPoll(session);
+        final r = MyExplorerCoreLoader.searchPoll(session);
         if (r.batch != null) {
           final entries = _hydrateEntries(FileEntryCodec.decode(r.batch!));
           if (entries.isNotEmpty) mainPort.send(_BatchMsg(entries));
@@ -228,7 +228,7 @@ class RecursiveSearch {
           mainPort.send(_ProgressMsg(r.scanned, null));
         }
         if (r.done || isCancelled()) {
-          final f = WaydirCoreLoader.searchPoll(session);
+          final f = MyExplorerCoreLoader.searchPoll(session);
           if (f.batch != null) {
             final entries = _hydrateEntries(FileEntryCodec.decode(f.batch!));
             if (entries.isNotEmpty) mainPort.send(_BatchMsg(entries));
@@ -238,7 +238,7 @@ class RecursiveSearch {
         await Future.delayed(pollInterval);
       }
     } finally {
-      WaydirCoreLoader.searchFree(session);
+      MyExplorerCoreLoader.searchFree(session);
     }
     mainPort.send(_ProgressMsg(lastScanned < 0 ? 0 : lastScanned, null));
     mainPort.send(const _DoneMsg());

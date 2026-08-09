@@ -6,14 +6,14 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/fs/directory_watcher_service.dart';
+import 'package:myexplorer/core/fs/directory_watcher_service.dart';
 
 void main() {
   late Directory tmpDir;
   late DirectoryWatcherService watcher;
 
   setUp(() {
-    tmpDir = Directory.systemTemp.createTempSync('waydir_watch_burst_');
+    tmpDir = Directory.systemTemp.createTempSync('myexplorer_watch_burst_');
     watcher = DirectoryWatcherService();
   });
 

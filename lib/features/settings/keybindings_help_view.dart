@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../core/settings/settings_store.dart';
@@ -66,7 +66,7 @@ class _KeybindingsHelpDialogState extends State<_KeybindingsHelpDialog> {
     final groups = _filtered();
 
     return AppModal(
-      icon: WaydirIconsRegular.keyboard,
+      icon: MyExplorerIconsRegular.keyboard,
       title: t.keybindings.title,
       width: width,
       height: height,
@@ -111,7 +111,7 @@ class _SearchBar extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              WaydirIconsRegular.magnifyingGlass,
+              MyExplorerIconsRegular.magnifyingGlass,
               size: 13,
               color: AppColors.fgSubtle,
             ),
@@ -166,7 +166,7 @@ class _ClearButtonState extends State<_ClearButton> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Icon(
-          WaydirIconsRegular.x,
+          MyExplorerIconsRegular.x,
           size: 12,
           color: _hovered ? AppColors.fg : AppColors.fgSubtle,
         ),
@@ -184,7 +184,7 @@ class _EmptyState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            WaydirIconsRegular.magnifyingGlass,
+            MyExplorerIconsRegular.magnifyingGlass,
             size: 28,
             color: AppColors.fgSubtle,
           ),
@@ -322,7 +322,7 @@ class _ShortcutActions extends StatelessWidget {
       return Tooltip(
         message: t.keybindings.fixed,
         child: Icon(
-          WaydirIconsRegular.prohibit,
+          MyExplorerIconsRegular.prohibit,
           size: 13,
           color: AppColors.fgSubtle,
         ),
@@ -333,13 +333,13 @@ class _ShortcutActions extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _ShortcutIconButton(
-          icon: WaydirIconsRegular.pencilSimple,
+          icon: MyExplorerIconsRegular.pencilSimple,
           tooltip: t.keybindings.change,
           onTap: () => _showShortcutCapture(context, def),
         ),
         const SizedBox(width: 4),
         _ShortcutIconButton(
-          icon: WaydirIconsRegular.arrowCounterClockwise,
+          icon: MyExplorerIconsRegular.arrowCounterClockwise,
           tooltip: t.keybindings.reset,
           enabled: overridden,
           onTap: () => SettingsStore.instance.resetShortcutBinding(def.id),
@@ -468,7 +468,7 @@ class _ShortcutCaptureDialogState extends State<_ShortcutCaptureDialog> {
   @override
   Widget build(BuildContext context) {
     return AppModal(
-      icon: WaydirIconsRegular.keyboard,
+      icon: MyExplorerIconsRegular.keyboard,
       title: t.keybindings.change,
       width: 360,
       height: 180,

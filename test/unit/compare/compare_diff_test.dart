@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waydir/core/models/file_entry.dart';
-import 'package:waydir/features/compare/compare_diff.dart';
+import 'package:myexplorer/core/models/file_entry.dart';
+import 'package:myexplorer/features/compare/compare_diff.dart';
 
 void main() {
   FileEntry entry(

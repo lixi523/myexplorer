@@ -12,7 +12,7 @@ import '../../core/models/file_entry.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../core/settings/settings_store.dart';
 import '../../i18n/strings.g.dart';
-import '../../ui/icons/waydir_icons.dart';
+import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../utils/drag_drop.dart';
@@ -1045,7 +1045,7 @@ class _GridEmptyState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            WaydirIconsRegular.folderOpen,
+            MyExplorerIconsRegular.folderOpen,
             size: 48,
             color: AppColors.fgSubtle,
           ),

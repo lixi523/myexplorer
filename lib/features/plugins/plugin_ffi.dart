@@ -4,7 +4,7 @@ import 'dart:isolate';
 
 import 'package:ffi/ffi.dart';
 
-import '../../core/fs/waydir_core_loader.dart';
+import '../../core/fs/myexplorer_core_loader.dart';
 import '../../core/logging/app_logger.dart';
 
 typedef _LoadNative = Pointer<Utf8> Function(Pointer<Utf8>);
@@ -58,7 +58,7 @@ class PluginFfi {
   /// Runs a plugin action off the UI isolate. Returns the raw effects JSON.
   ///
   /// Actions run on a fresh ephemeral isolate (not the shared worker): a user
-  /// action may legitimately call `waydir.exec` for up to a few seconds, and
+  /// action may legitimately call `myexplorer.exec` for up to a few seconds, and
   /// keeping it off the worker stops one slow action from stalling status-bar
   /// polling.
   static Future<String?> invoke({
@@ -169,11 +169,13 @@ class PluginFfi {
   }
 
   static String? _loadSync(String initLuaPath) {
-    final lib = WaydirCoreLoader.load();
+    final lib = MyExplorerCoreLoader.load();
     if (lib == null) return null;
-    final fn = lib.lookupFunction<_LoadNative, _LoadDart>('waydir_plugin_load');
+    final fn = lib.lookupFunction<_LoadNative, _LoadDart>(
+      'myexplorer_plugin_load',
+    );
     final free = lib.lookupFunction<_FreeNative, _FreeDart>(
-      'waydir_plugin_str_free',
+      'myexplorer_plugin_str_free',
     );
     final pathPtr = initLuaPath.toNativeUtf8();
     try {
@@ -197,13 +199,13 @@ class PluginFfi {
     String actionId,
     String ctxJson,
   ) {
-    final lib = WaydirCoreLoader.load();
+    final lib = MyExplorerCoreLoader.load();
     if (lib == null) return null;
     final fn = lib.lookupFunction<_InvokeNative, _InvokeDart>(
-      'waydir_plugin_invoke',
+      'myexplorer_plugin_invoke',
     );
     final free = lib.lookupFunction<_FreeNative, _FreeDart>(
-      'waydir_plugin_str_free',
+      'myexplorer_plugin_str_free',
     );
     final pathPtr = initLuaPath.toNativeUtf8();
     final actionPtr = actionId.toNativeUtf8();
@@ -231,13 +233,13 @@ class PluginFfi {
     String barId,
     String ctxJson,
   ) {
-    final lib = WaydirCoreLoader.load();
+    final lib = MyExplorerCoreLoader.load();
     if (lib == null) return null;
     final fn = lib.lookupFunction<_BarUpdateNative, _BarUpdateDart>(
-      'waydir_plugin_bar_update',
+      'myexplorer_plugin_bar_update',
     );
     final free = lib.lookupFunction<_FreeNative, _FreeDart>(
-      'waydir_plugin_str_free',
+      'myexplorer_plugin_str_free',
     );
     final pathPtr = initLuaPath.toNativeUtf8();
     final barPtr = barId.toNativeUtf8();
@@ -265,13 +267,13 @@ class PluginFfi {
     String columnId,
     String ctxJson,
   ) {
-    final lib = WaydirCoreLoader.load();
+    final lib = MyExplorerCoreLoader.load();
     if (lib == null) return null;
     final fn = lib.lookupFunction<_ColumnNative, _ColumnDart>(
-      'waydir_plugin_column_compute',
+      'myexplorer_plugin_column_compute',
     );
     final free = lib.lookupFunction<_FreeNative, _FreeDart>(
-      'waydir_plugin_str_free',
+      'myexplorer_plugin_str_free',
     );
     final pathPtr = initLuaPath.toNativeUtf8();
     final colPtr = columnId.toNativeUtf8();
@@ -300,13 +302,13 @@ class PluginFfi {
     String itemId,
     String ctxJson,
   ) {
-    final lib = WaydirCoreLoader.load();
+    final lib = MyExplorerCoreLoader.load();
     if (lib == null) return null;
     final fn = lib.lookupFunction<_BarClickNative, _BarClickDart>(
-      'waydir_plugin_bar_click',
+      'myexplorer_plugin_bar_click',
     );
     final free = lib.lookupFunction<_FreeNative, _FreeDart>(
-      'waydir_plugin_str_free',
+      'myexplorer_plugin_str_free',
     );
     final pathPtr = initLuaPath.toNativeUtf8();
     final barPtr = barId.toNativeUtf8();

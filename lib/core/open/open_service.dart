@@ -14,18 +14,18 @@ export 'mime_resolver.dart' show MimeType;
 
 /// Facade for file-type detection and opening.
 ///
-/// Waydir owns its own "file type → application" default mapping (stored in
+/// MyExplorer owns its own "file type → application" default mapping (stored in
 /// the app database), independent of the OS associations. Every open path —
 /// double-click, Enter, the "Open With [app]" menu entry — funnels through
 /// [openDefault], so behaviour is identical by construction. The OS default is
-/// only the fallback when Waydir has no mapping for the type yet.
+/// only the fallback when MyExplorer has no mapping for the type yet.
 class OpenService {
   OpenService._();
 
   static final MimeResolver _mime = MimeResolver.platform();
   static final AppResolver _apps = AppResolver.platform();
 
-  /// The key Waydir stores its default under: the file extension (with dot,
+  /// The key MyExplorer stores its default under: the file extension (with dot,
   /// lowercased).
   static Future<String> typeKeyFor(String path) async {
     return p.extension(path).toLowerCase();
@@ -33,7 +33,7 @@ class OpenService {
 
   static Future<MimeType> mimeOf(String path) => _mime.resolve(path);
 
-  /// Opens [path] with Waydir's chosen default for its type; if none is set,
+  /// Opens [path] with MyExplorer's chosen default for its type; if none is set,
   /// falls back to the OS default handler.
   static Future<void> openDefault(String path) async {
     await _osOpenDefault(path);
@@ -43,12 +43,12 @@ class OpenService {
     shellOpenOnWindows(path);
   }
 
-  /// Waydir's stored default for [path]'s type. On first encounter with a type
-  /// the OS default handler is resolved and **persisted** as Waydir's default,
+  /// MyExplorer's stored default for [path]'s type. On first encounter with a type
+  /// the OS default handler is resolved and **persisted** as MyExplorer's default,
   /// so from then on it is a concrete, editable mapping (shown in "Open With
   /// [app]", preselected in the chooser, etc.) rather than an ephemeral
   /// fallback. Returns null only when the OS has no resolvable handler either.
-  static Future<AppEntry?> getWaydirDefault(String path) async {
+  static Future<AppEntry?> getMyExplorerDefault(String path) async {
     try {
       final key = await typeKeyFor(path);
       final db = SettingsStore.instance.db;
@@ -86,7 +86,7 @@ class OpenService {
     }
   }
 
-  static Future<void> setWaydirDefault(String path, AppEntry app) async {
+  static Future<void> setMyExplorerDefault(String path, AppEntry app) async {
     final key = await typeKeyFor(path);
     await SettingsStore.instance.db.setDefaultApp(
       typeKey: key,
@@ -97,25 +97,25 @@ class OpenService {
     );
   }
 
-  static Future<void> clearWaydirDefault(String path) async {
+  static Future<void> clearMyExplorerDefault(String path) async {
     final key = await typeKeyFor(path);
     await SettingsStore.instance.db.clearDefaultApp(key);
   }
 
-  /// Apps for the "Open With" UI. The default is Waydir's stored choice when
+  /// Apps for the "Open With" UI. The default is MyExplorer's stored choice when
   /// set, otherwise the OS-resolved handler as a seed.
   static Future<OpenWithOptions> optionsFor(String path) async {
     final mime = await _mime.resolve(path);
     final associated = await _apps.appsFor(mime, path);
     final recent = await _recentFor(mime);
-    final defaultApp = await getWaydirDefault(path);
+    final defaultApp = await getMyExplorerDefault(path);
 
     return OpenWithOptions(
       mime: mime,
       recent: recent,
       associated: associated,
       defaultApp: defaultApp,
-      isWaydirManaged: defaultApp != null,
+      isMyExplorerManaged: defaultApp != null,
     );
   }
 
@@ -185,18 +185,18 @@ class OpenWithOptions {
   final List<AppEntry> recent;
   final List<AppEntry> associated;
 
-  /// Waydir's stored default, or the OS-resolved handler as a seed.
+  /// MyExplorer's stored default, or the OS-resolved handler as a seed.
   final AppEntry? defaultApp;
 
-  /// True when [defaultApp] comes from Waydir's own mapping (vs OS seed).
-  final bool isWaydirManaged;
+  /// True when [defaultApp] comes from MyExplorer's own mapping (vs OS seed).
+  final bool isMyExplorerManaged;
 
   const OpenWithOptions({
     required this.mime,
     required this.recent,
     required this.associated,
     required this.defaultApp,
-    required this.isWaydirManaged,
+    required this.isMyExplorerManaged,
   });
 
   bool get isEmpty => recent.isEmpty && associated.isEmpty;

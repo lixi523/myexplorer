@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../core/models/app_notification.dart';
 import '../../i18n/strings.g.dart';
@@ -54,7 +54,7 @@ class _NotificationsPanelBody extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  WaydirIconsRegular.bell,
+                  MyExplorerIconsRegular.bell,
                   size: 16,
                   color: AppColors.fgMuted,
                 ),
@@ -234,7 +234,7 @@ class _NotificationTileState extends State<_NotificationTile> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 6, top: 2),
                   child: Icon(
-                    WaydirIconsRegular.x,
+                    MyExplorerIconsRegular.x,
                     size: 12,
                     color: AppColors.fgMuted,
                   ),
@@ -291,7 +291,11 @@ class _InlineCheckboxState extends State<_InlineCheckbox> {
                 ),
               ),
               child: widget.value
-                  ? Icon(WaydirIconsRegular.check, size: 9, color: Colors.white)
+                  ? Icon(
+                      MyExplorerIconsRegular.check,
+                      size: 9,
+                      color: Colors.white,
+                    )
                   : null,
             ),
             const SizedBox(width: 6),

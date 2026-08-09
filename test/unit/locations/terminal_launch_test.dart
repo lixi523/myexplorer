@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/platform/platform_paths.dart';
-import 'package:waydir/core/settings/settings_store.dart';
-import 'package:waydir/core/terminal/sftp_terminal.dart';
-import 'package:waydir/core/terminal/shell_detector.dart';
-import 'package:waydir/core/terminal/terminal_launch.dart';
-import 'package:waydir/features/locations/location_resolver.dart';
-import 'package:waydir/features/locations/location_uri.dart';
+import 'package:myexplorer/core/platform/platform_paths.dart';
+import 'package:myexplorer/core/settings/settings_store.dart';
+import 'package:myexplorer/core/terminal/sftp_terminal.dart';
+import 'package:myexplorer/core/terminal/shell_detector.dart';
+import 'package:myexplorer/core/terminal/terminal_launch.dart';
+import 'package:myexplorer/features/locations/location_resolver.dart';
+import 'package:myexplorer/features/locations/location_uri.dart';
 
 void main() {
   group('SftpTerminal.command', () {
@@ -78,7 +78,7 @@ void main() {
     });
 
     test('mounted smb path launches shell in the physical mountpoint', () {
-      final mount = Directory.systemTemp.createTempSync('waydir_smb_mount');
+      final mount = Directory.systemTemp.createTempSync('myexplorer_smb_mount');
       Directory('${mount.path}/docs').createSync();
       LocationResolver.debugSetMappingForTests(
         'smb://server/share',

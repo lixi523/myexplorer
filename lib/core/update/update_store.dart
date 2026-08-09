@@ -24,8 +24,8 @@ enum UpdateStatus {
 }
 
 class UpdateStore {
-  static const _owner = 'Waydir';
-  static const _repo = 'Waydir';
+  static const _owner = 'MyExplorer';
+  static const _repo = 'MyExplorer';
   static const _cacheTtl = Duration(hours: 1);
 
   static UpdateStore? _instance;
@@ -146,7 +146,7 @@ class UpdateStore {
       totalBytes.value = total;
 
       final dir = await _temporaryDirectory();
-      final outDir = Directory('${dir.path}/waydir-update');
+      final outDir = Directory('${dir.path}/myexplorer-update');
       if (outDir.existsSync()) {
         try {
           outDir.deleteSync(recursive: true);

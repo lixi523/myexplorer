@@ -7,7 +7,7 @@ import 'package:re_editor/re_editor.dart' as re;
 import 'package:re_highlight/styles/atom-one-dark.dart';
 import 'package:re_highlight/styles/atom-one-light.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:waydir/ui/icons/waydir_icons.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/archive/archive_path.dart';
 import '../../core/archive/archive_writer.dart';
@@ -116,7 +116,7 @@ class _CodeEditorState extends State<CodeEditor> {
         // entry via ArchiveWriter.mutate (replace the entry in place).
         final tmp = File(
           '${Directory.systemTemp.path}${Platform.pathSeparator}'
-          'waydir_edit_${DateTime.now().microsecondsSinceEpoch}.tmp',
+          'myexplorer_edit_${DateTime.now().microsecondsSinceEpoch}.tmp',
         );
         try {
           await tmp.writeAsString(text, flush: true);
@@ -571,7 +571,7 @@ class _SaveButtonState extends State<_SaveButton> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(WaydirIconsRegular.floppyDisk, size: 13, color: color),
+              Icon(MyExplorerIconsRegular.floppyDisk, size: 13, color: color),
               const SizedBox(width: 6),
               Text(
                 '${t.quickLook.save}  ⌃S',

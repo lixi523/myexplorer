@@ -1,9 +1,9 @@
-#ifndef WAYDIR_WINDOW_H_
-#define WAYDIR_WINDOW_H_
+#ifndef MYEXPLORER_WINDOW_H_
+#define MYEXPLORER_WINDOW_H_
 
 #include <windows.h>
 
-namespace waydir_window {
+namespace myexplorer_window {
 
 // Flags for configure().
 constexpr unsigned int kCustomFrame    = 0x1;
@@ -16,6 +16,6 @@ void setMinSize(int width, int height);
 void setWindowCanBeShown(bool value);
 bool dragAppWindow();
 
-}  // namespace waydir_window
+}  // namespace myexplorer_window
 
-#endif  // WAYDIR_WINDOW_H_
+#endif  // MYEXPLORER_WINDOW_H_

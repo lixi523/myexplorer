@@ -5,14 +5,14 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:waydir/core/fs/safe_file_replace.dart';
+import 'package:myexplorer/core/fs/safe_file_replace.dart';
 
 void main() {
   group('SafeFileReplace', () {
     late Directory tmpDir;
 
     setUp(() {
-      tmpDir = Directory.systemTemp.createTempSync('waydir_safe_replace_');
+      tmpDir = Directory.systemTemp.createTempSync('myexplorer_safe_replace_');
     });
 
     tearDown(() {
@@ -59,7 +59,7 @@ void main() {
 
       final leftovers = tmpDir
           .listSync()
-          .where((e) => p.basename(e.path).contains('.waydir_tmp_'))
+          .where((e) => p.basename(e.path).contains('.myexplorer_tmp_'))
           .toList();
       expect(leftovers, isEmpty);
       expect(destination.existsSync(), isTrue);

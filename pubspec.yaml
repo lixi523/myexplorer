@@ -1,11 +1,11 @@
-name: waydir
+name: myexplorer
 description: "MyExplorer - A fast, minimal desktop file manager built with Flutter. Custom dark theme, custom title bar, and keyboard-driven workflow."
 publish_to: 'none'
 version: 2.0.0+33
 
-homepage: https://github.com/Waydir/Waydir
-repository: https://github.com/Waydir/Waydir
-issue_tracker: https://github.com/Waydir/Waydir/issues
+homepage: https://github.com/MyExplorer/MyExplorer
+repository: https://github.com/MyExplorer/MyExplorer
+issue_tracker: https://github.com/MyExplorer/MyExplorer/issues
 
 environment:
   sdk: ^3.10.0
@@ -46,8 +46,8 @@ dependencies:
   file_picker: ^11.0.2
   re_editor: ^0.9.0
   re_highlight: ^0.0.3
-  waydir_term:
-    path: packages/waydir_term
+  myexplorer_term:
+    path: packages/myexplorer_term
 dev_dependencies:
   flutter_test:
     sdk: flutter
