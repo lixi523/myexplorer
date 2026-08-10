@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:signals/signals.dart';
 
 import '../fs/checksum_service.dart';
@@ -73,8 +73,18 @@ class UpdateStore {
     Future<Directory> Function()? temporaryDirectory,
     http.Client Function()? downloadClientFactory,
   }) : _gh = client ?? GithubReleasesClient(owner: _owner, repo: _repo),
-       _temporaryDirectory = temporaryDirectory ?? getTemporaryDirectory,
+       _temporaryDirectory = temporaryDirectory ?? _defaultTemporaryDirectory,
        _downloadClientFactory = downloadClientFactory ?? http.Client.new;
+
+  /// Downloads stay inside the program folder (portable layout).
+  static Future<Directory> _defaultTemporaryDirectory() async {
+    final dir = Directory(
+      p.join(p.dirname(Platform.resolvedExecutable), 'update_tmp'),
+    );
+    await dir.create(recursive: true);
+
+    return dir;
+  }
 
   static bool canSelfInstall(InstallFormat? fmt) =>
       fmt != null && fmt != InstallFormat.unknown;

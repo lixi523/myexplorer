@@ -40,11 +40,7 @@ String? _cacheDir;
 
 String _iconCacheDir() {
   if (_cacheDir != null) return _cacheDir!;
-  final base =
-      Platform.environment['TEMP'] ??
-      Platform.environment['TMP'] ??
-      r'C:\Windows\Temp';
-  _cacheDir = p.join(base, 'myexplorer_shortcut_icons');
+  _cacheDir = p.join(p.dirname(Platform.resolvedExecutable), 'icon_cache');
 
   return _cacheDir!;
 }

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 
+import '../../core/platform/app_dirs.dart';
 import '../../i18n/strings.g.dart';
 import 'seven_zip_service.dart';
 
@@ -223,7 +224,7 @@ class ArchiveReader {
     if (archivePath.toLowerCase().endsWith('.7z')) {
       final tmp = File(
         p.join(
-          Directory.systemTemp.path,
+          AppDirs.tempSync(),
           'myexplorer-7z-entry-${DateTime.now().microsecondsSinceEpoch}.bin',
         ),
       );
@@ -415,7 +416,7 @@ class ArchiveReader {
   }) {
     final staging = Directory(
       p.join(
-        Directory.systemTemp.path,
+        AppDirs.tempSync(),
         'myexplorer-7z-${DateTime.now().microsecondsSinceEpoch}',
       ),
     )..createSync(recursive: true);

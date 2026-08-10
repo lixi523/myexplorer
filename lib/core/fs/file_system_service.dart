@@ -6,6 +6,8 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
+
+import '../platform/app_dirs.dart';
 import '../archive/archive_path.dart';
 import '../archive/archive_reader.dart';
 import '../archive/archive_writer.dart';
@@ -129,7 +131,7 @@ class FileSystemService {
     if (!sources.any(isInsideArchive)) return sources;
     final staging = Directory(
       p.join(
-        Directory.systemTemp.path,
+        AppDirs.tempSync(),
         'myexplorer-archive-stage',
         DateTime.now().microsecondsSinceEpoch.toString(),
       ),
@@ -189,7 +191,7 @@ class FileSystemService {
 
   static Future<void> openArchiveEntry(ArchiveLocation loc) async {
     final tempRoot = Directory(
-      p.join(Directory.systemTemp.path, 'myexplorer-archive'),
+      p.join(AppDirs.tempSync(), 'myexplorer-archive'),
     );
     final dest = p.join(
       tempRoot.path,

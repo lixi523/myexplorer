@@ -7,6 +7,8 @@ import 'package:re_editor/re_editor.dart' as re;
 import 'package:re_highlight/styles/atom-one-dark.dart';
 import 'package:re_highlight/styles/atom-one-light.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../../core/platform/app_dirs.dart';
 import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/archive/archive_path.dart';
@@ -115,7 +117,7 @@ class _CodeEditorState extends State<CodeEditor> {
         // In-archive edit: write to a temp file and rebuild the archive
         // entry via ArchiveWriter.mutate (replace the entry in place).
         final tmp = File(
-          '${Directory.systemTemp.path}${Platform.pathSeparator}'
+          '${AppDirs.tempSync()}${Platform.pathSeparator}'
           'myexplorer_edit_${DateTime.now().microsecondsSinceEpoch}.tmp',
         );
         try {
