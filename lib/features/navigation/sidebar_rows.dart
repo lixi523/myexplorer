@@ -74,6 +74,7 @@ class _ItemRow extends StatefulWidget {
   final VoidCallback? onUnmount;
   final void Function(Offset position)? onContextMenu;
   final String? tooltip;
+  final Color? labelColor;
 
   const _ItemRow({
     required this.item,
@@ -88,6 +89,7 @@ class _ItemRow extends StatefulWidget {
     this.onUnmount,
     this.onContextMenu,
     this.tooltip,
+    this.labelColor,
   });
 
   @override
@@ -213,11 +215,13 @@ class _ItemRowState extends State<_ItemRow> {
             widget.item.label,
             overflow: TextOverflow.ellipsis,
             style: context.txt.body.copyWith(
-              color: widget.isSelected
-                  ? AppColors.fg
-                  : (widget.isMounted
-                        ? AppColors.fg.withValues(alpha: 0.85)
-                        : AppColors.fgMuted),
+              color:
+                  widget.labelColor ??
+                  (widget.isSelected
+                      ? AppColors.fg
+                      : (widget.isMounted
+                            ? AppColors.fg.withValues(alpha: 0.85)
+                            : AppColors.fgMuted)),
               fontWeight: widget.isSelected
                   ? FontWeight.w500
                   : FontWeight.normal,

@@ -83,6 +83,7 @@ class _SidebarEntry {
   final bool isTagTarget;
   final VoidCallback? onUnmount;
   final void Function(Offset position)? onContextMenu;
+  final Color? labelColor;
 
   const _SidebarEntry({
     required this.key,
@@ -97,6 +98,7 @@ class _SidebarEntry {
     this.isTagTarget = false,
     this.onUnmount,
     this.onContextMenu,
+    this.labelColor,
   });
 }
 
@@ -606,7 +608,7 @@ class _SidebarState extends State<Sidebar> {
       sidebarSectionTags: _SidebarSection(
         id: sidebarSectionTags,
         title: t.sidebar.tags,
-        entries: _tagEntries(tags, currentPath),
+        entries: _tagEntries(tags, currentPath, context),
       ),
       sidebarSectionBookmarks: _SidebarSection(
         id: sidebarSectionBookmarks,
@@ -724,6 +726,7 @@ class _SidebarState extends State<Sidebar> {
       isTagTarget: entry.isTagTarget,
       onUnmount: entry.onUnmount,
       onContextMenu: entry.onContextMenu,
+      labelColor: entry.labelColor,
     );
   }
 
@@ -991,7 +994,14 @@ class _SidebarState extends State<Sidebar> {
     }).toList();
   }
 
-  List<_SidebarEntry> _tagEntries(List<TagDef> tags, String currentPath) {
+  List<_SidebarEntry> _tagEntries(
+    List<TagDef> tags,
+    String currentPath,
+    BuildContext context,
+  ) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final tagLabelColor = isLight ? const Color(0xFF232323) : null;
+
     return tags.map((tag) {
       final path = tagPathFor(tag.id);
 
@@ -1016,6 +1026,7 @@ class _SidebarState extends State<Sidebar> {
             widget.store.addTag(paths, tag.id),
         isTagTarget: true,
         onContextMenu: (position) => _showTagMenu(tag, position),
+        labelColor: tagLabelColor,
       );
     }).toList();
   }
