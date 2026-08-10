@@ -6,6 +6,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
+> **V2.4**: 便携式布局 —— 数据库、日志、主题、插件、更新与缓存全部保存在程序目录内，不写入 `%APPDATA%`/`%TEMP%`；标签行与浅色模式文字精细调整。
+>
 > **V2.3**: 稳定性与性能 —— 快捷栏保存串行化（快速操作不再丢配置）、文件操作目标校验、Git 状态缓存与更宽容的超时。
 >
 > **V2.2**: 主题与可用性打磨 —— 深色模式底色 RGB(70,75,85)、文字 RGB(223,233,233)；快捷栏按钮自动从目标 exe 提取图标（支持 `路径,索引`）；标签文件行不再整行着色（保留 badge 圆点）。

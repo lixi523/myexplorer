@@ -5,6 +5,18 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-08-10
+
+### Changed
+- Portable layout: database, logs, themes, plugins, update downloads, archive scratch and icon cache all live under the program directory; the app no longer writes to %APPDATA% or %TEMP%.
+- Dropped the unused `path_provider` dependency.
+
+### Fixed
+- Fully transparent row decorations (e.g. tagged rows) no longer draw an 18% black overlay, keeping file rows on the window background in both list and grid views.
+
+### Style
+- Tag labels use RGB(35,35,35) in light mode.
+
 ## [2.3.0] - 2026-08-10
 
 ### Fixed
