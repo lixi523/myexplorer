@@ -5,6 +5,20 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-08-10
+
+### Added
+- Shortcut bar icons: when no icon is configured the button auto-extracts one from the target exe; explicit `path,index` specs (e.g. `shell32.dll,34`) are supported via `SHDefExtractIconW`.
+
+### Changed
+- Dark theme palette: background RGB(70,75,85), primary text RGB(223,233,233).
+- Tagged file rows no longer tint the whole row background; tags remain visible as badge dots.
+- Repository links (About pane, toolbar, help, update checker) point at the actual GitHub repo.
+
+### Fixed
+- Icon extraction now uses `SHGetFileInfoW` (some Windows hosts lack `ExtractIconExW`).
+- Integration test fixtures no longer depend on an external `zip` binary.
+
 ## [2.1.0] - 2026-08-09
 
 ### Changed
