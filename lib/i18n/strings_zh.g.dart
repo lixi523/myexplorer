@@ -1411,7 +1411,7 @@ class _Translations$preferences$shortcutBar$zh extends Translations$preferences$
 	@override String get title => '快捷栏';
 	@override String get labelHint => '名称';
 	@override String get targetHint => '文件夹、文件路径或命令';
-	@override String get iconHint => '图标：文件路径或 路径,索引';
+	@override String get iconHint => '图标（留空时自动从目标 exe 提取）：文件路径或 路径,索引';
 	@override String get pickFile => '文件';
 	@override String get add => '添加';
 	@override String get importTcBar => '导入 Total Commander 按钮栏…';
@@ -2520,7 +2520,7 @@ extension on TranslationsZh {
 			'preferences.shortcutBar.title' => '快捷栏',
 			'preferences.shortcutBar.labelHint' => '名称',
 			'preferences.shortcutBar.targetHint' => '文件夹、文件路径或命令',
-			'preferences.shortcutBar.iconHint' => '图标：文件路径或 路径,索引',
+			'preferences.shortcutBar.iconHint' => '图标（留空时自动从目标 exe 提取）：文件路径或 路径,索引',
 			'preferences.shortcutBar.pickFile' => '文件',
 			'preferences.shortcutBar.add' => '添加',
 			'preferences.shortcutBar.importTcBar' => '导入 Total Commander 按钮栏…',

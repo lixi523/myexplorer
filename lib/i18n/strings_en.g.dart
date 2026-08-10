@@ -3180,8 +3180,8 @@ class Translations$preferences$shortcutBar$en {
 	/// en: 'Folder, file path or command'
 	String get targetHint => 'Folder, file path or command';
 
-	/// en: 'Icon: file path or path,index'
-	String get iconHint => 'Icon: file path or path,index';
+	/// en: 'Icon (leave empty to auto-extract from the target exe): file path or path,index'
+	String get iconHint => 'Icon (leave empty to auto-extract from the target exe): file path or path,index';
 
 	/// en: 'File'
 	String get pickFile => 'File';
@@ -4655,7 +4655,7 @@ extension on Translations {
 			'preferences.shortcutBar.title' => 'Shortcut Bar',
 			'preferences.shortcutBar.labelHint' => 'Name',
 			'preferences.shortcutBar.targetHint' => 'Folder, file path or command',
-			'preferences.shortcutBar.iconHint' => 'Icon: file path or path,index',
+			'preferences.shortcutBar.iconHint' => 'Icon (leave empty to auto-extract from the target exe): file path or path,index',
 			'preferences.shortcutBar.pickFile' => 'File',
 			'preferences.shortcutBar.add' => 'Add',
 			'preferences.shortcutBar.importTcBar' => 'Import Total Commander bar…',

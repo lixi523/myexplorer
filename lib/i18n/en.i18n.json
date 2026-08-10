@@ -394,7 +394,7 @@
       "title": "Shortcut Bar",
       "labelHint": "Name",
       "targetHint": "Folder, file path or command",
-      "iconHint": "Icon: file path or path,index",
+      "iconHint": "Icon (leave empty to auto-extract from the target exe): file path or path,index",
       "pickFile": "File",
       "add": "Add",
       "importTcBar": "Import Total Commander bar…",

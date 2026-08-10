@@ -540,7 +540,14 @@ class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
   @override
   void initState() {
     super.initState();
-    final spec = widget.item.icon;
+    // When no icon is configured, fall back to extracting one from the
+    // target (e.g. an exe/dll) so buttons get a sensible glyph by default.
+    final explicit = widget.item.icon;
+    final spec =
+        (explicit == null || explicit.isEmpty) &&
+            widget.item.target.trim().isNotEmpty
+        ? widget.item.target.trim()
+        : explicit;
     _isSvg = isSvgIconSpec(spec);
     _iconFuture = resolveShortcutIcon(spec);
   }

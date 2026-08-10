@@ -394,7 +394,7 @@
       "title": "快捷栏",
       "labelHint": "名称",
       "targetHint": "文件夹、文件路径或命令",
-      "iconHint": "图标：文件路径或 路径,索引",
+      "iconHint": "图标（留空时自动从目标 exe 提取）：文件路径或 路径,索引",
       "pickFile": "文件",
       "add": "添加",
       "importTcBar": "导入 Total Commander 按钮栏…",
