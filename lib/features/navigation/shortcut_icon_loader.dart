@@ -259,6 +259,8 @@ DynamicLibrary? _gdi32;
 DynamicLibrary? _shell32;
 int Function(Pointer<Utf16>, int, Pointer<_SHFileInfo>, int, int)?
 _shGetFileInfo;
+int Function(Pointer<Utf16>, int, int, Pointer<IntPtr>, Pointer<IntPtr>, int)?
+_shDefExtractIcon;
 int Function(int, Pointer<_IconInfo>)? _getIconInfo;
 int Function(int)? _destroyIcon;
 int Function(int)? _deleteObject;
@@ -293,6 +295,25 @@ void _ensureIconApis() {
         ),
         int Function(Pointer<Utf16>, int, Pointer<_SHFileInfo>, int, int)
       >('SHGetFileInfoW');
+  _shDefExtractIcon = _shell32!
+      .lookupFunction<
+        Int32 Function(
+          Pointer<Utf16>,
+          Int32,
+          Uint32,
+          Pointer<IntPtr>,
+          Pointer<IntPtr>,
+          Uint32,
+        ),
+        int Function(
+          Pointer<Utf16>,
+          int,
+          int,
+          Pointer<IntPtr>,
+          Pointer<IntPtr>,
+          int,
+        )
+      >('SHDefExtractIconW');
   _getIconInfo = _user32!
       .lookupFunction<
         Int32 Function(IntPtr, Pointer<_IconInfo>),
@@ -349,7 +370,7 @@ Future<String?> _extractIconPng(String file, int index) {
   final cacheKey = _extractCacheKey(file, index);
   final existing = _extractCache[cacheKey];
   if (existing != null) return existing;
-  final future = _doExtractIconPng(file, cacheKey);
+  final future = _doExtractIconPng(file, index, cacheKey);
   _extractCache[cacheKey] = future;
 
   return future;
@@ -369,7 +390,11 @@ String _extractCacheKey(String file, int index) {
   return digest.substring(0, digest.length.clamp(0, 48));
 }
 
-Future<String?> _doExtractIconPng(String file, String cacheKey) async {
+Future<String?> _doExtractIconPng(
+  String file,
+  int index,
+  String cacheKey,
+) async {
   if (!Platform.isWindows) return null;
   _ensureIconApis();
   final cached = File(p.join(_iconCacheDir(), '$cacheKey.png'));
@@ -379,20 +404,29 @@ Future<String?> _doExtractIconPng(String file, String cacheKey) async {
 
   final filePtr = file.toNativeUtf16();
   final shInfo = calloc<_SHFileInfo>();
+  final large = calloc<IntPtr>();
+  final small = calloc<IntPtr>();
   var hIcon = 0;
   var hbm = 0;
   try {
-    // SHGFI_ICON | SHGFI_LARGEICON: read the file's embedded icon without
-    // visiting the defaults (SHGFI_USEFILEATTRIBUTES would skip exe icons).
-    final result = _shGetFileInfo!(
-      filePtr,
-      0,
-      shInfo,
-      sizeOf<_SHFileInfo>(),
-      0x100,
-    );
-    if (result == 0) return null;
-    hIcon = shInfo.ref.hIcon;
+    if (index > 0) {
+      // An explicit index: extract exactly that icon via SHDefExtractIconW.
+      final hr = _shDefExtractIcon!(filePtr, index, 0, large, small, 0);
+      if (hr != 0) return null;
+      hIcon = large.value != 0 ? large.value : small.value;
+    } else {
+      // SHGFI_ICON | SHGFI_LARGEICON: read the file's embedded icon without
+      // visiting the defaults (SHGFI_USEFILEATTRIBUTES would skip exe icons).
+      final result = _shGetFileInfo!(
+        filePtr,
+        0,
+        shInfo,
+        sizeOf<_SHFileInfo>(),
+        0x100,
+      );
+      if (result == 0) return null;
+      hIcon = shInfo.ref.hIcon;
+    }
     if (hIcon == 0) return null;
 
     final info = calloc<_IconInfo>();
@@ -461,6 +495,8 @@ Future<String?> _doExtractIconPng(String file, String cacheKey) async {
   } finally {
     calloc.free(filePtr);
     calloc.free(shInfo);
+    calloc.free(large);
+    calloc.free(small);
     if (hbm != 0) _deleteObject!(hbm);
     if (hIcon != 0) _destroyIcon!(hIcon);
   }

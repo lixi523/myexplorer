@@ -46,5 +46,15 @@ void main() {
       final provider = await resolveShortcutIcon(target);
       expect(provider, isNotNull, reason: 'exe icon extraction failed');
     });
+
+    test('extracts a specific icon index from a system library', () async {
+      final target = r'C:\Windows\System32\shell32.dll';
+      if (!File(target).existsSync()) {
+        markTestSkipped('shell32.dll not found on this host');
+        return;
+      }
+      final provider = await resolveShortcutIcon('$target,34');
+      expect(provider, isNotNull, reason: 'indexed icon extraction failed');
+    });
   });
 }
