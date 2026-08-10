@@ -276,13 +276,23 @@ class GitStatusStore {
     );
   }
 
+  String? _knownRepoRoot;
+
   bool _hasGitUpward(String path) {
     if (path.isEmpty) return false;
     if (!p.isAbsolute(path)) return false;
+    final cached = _knownRepoRoot;
+    if (cached != null &&
+        (path == cached ||
+            path.startsWith('$cached${Platform.pathSeparator}'))) {
+      return true;
+    }
     var dir = Directory(path);
     for (var i = 0; i < 64; i++) {
       final marker = '${dir.path}${Platform.pathSeparator}.git';
       if (FileSystemEntity.typeSync(marker) != FileSystemEntityType.notFound) {
+        _knownRepoRoot = dir.path;
+
         return true;
       }
       final parent = dir.parent;
@@ -424,7 +434,7 @@ class GitStatusStore {
       final stderrF = p.stderr.transform(systemEncoding.decoder).join();
       var timedOut = false;
       final exitCode = await p.exitCode.timeout(
-        const Duration(seconds: 4),
+        const Duration(seconds: 8),
         onTimeout: () {
           timedOut = true;
           p.kill(ProcessSignal.sigkill);

@@ -373,6 +373,17 @@ void copyWorker(List<dynamic> args) {
     try {
       if (msg is StartCommand) {
         destination = msg.destination;
+        if (destination == null || destination!.isEmpty) {
+          mainSendPort.send(
+            TaskDoneMessage(
+              cancelled: true,
+              errors: [TaskError(path: '', message: 'missing destination')],
+            ),
+          );
+          workerReceivePort.close();
+
+          return;
+        }
         isDuplicate = msg.options['duplicate'] == '1';
         autoOverwriteOlder = msg.options['autoOverwriteOlder'] == '1';
         autoSkipSameSize = msg.options['autoSkipSameSize'] == '1';
@@ -767,6 +778,17 @@ void moveWorker(List<dynamic> args) {
     try {
       if (msg is StartCommand) {
         destination = msg.destination;
+        if (destination == null || destination!.isEmpty) {
+          mainSendPort.send(
+            TaskDoneMessage(
+              cancelled: true,
+              errors: [TaskError(path: '', message: 'missing destination')],
+            ),
+          );
+          workerReceivePort.close();
+
+          return;
+        }
         for (final src in msg.sources) {
           if (cancelled) break;
           sourceRoots.add(src);
@@ -1345,6 +1367,17 @@ void extractWorker(List<dynamic> args) {
       if (msg is StartCommand) {
         sources = msg.sources;
         destination = msg.destination;
+        if (destination == null || destination!.isEmpty) {
+          mainSendPort.send(
+            TaskDoneMessage(
+              cancelled: true,
+              errors: [TaskError(path: '', message: 'missing destination')],
+            ),
+          );
+          workerReceivePort.close();
+
+          return;
+        }
         final dest = destination!;
         for (final src in sources) {
           try {
@@ -1515,6 +1548,17 @@ void compressWorker(List<dynamic> args) {
       if (msg is StartCommand) {
         sources = msg.sources;
         destination = msg.destination;
+        if (destination == null || destination!.isEmpty) {
+          mainSendPort.send(
+            TaskDoneMessage(
+              cancelled: true,
+              errors: [TaskError(path: '', message: 'missing destination')],
+            ),
+          );
+          workerReceivePort.close();
+
+          return;
+        }
         format = ArchiveFormat.values.byName(msg.options['format'] ?? 'zip');
         level = CompressionLevel.values.byName(
           msg.options['level'] ?? 'normal',
@@ -2195,6 +2239,17 @@ void splitFileWorker(List<dynamic> args) {
       if (msg is StartCommand) {
         sources = msg.sources;
         destination = msg.destination;
+        if (destination == null || destination!.isEmpty) {
+          mainSendPort.send(
+            TaskDoneMessage(
+              cancelled: true,
+              errors: [TaskError(path: '', message: 'missing destination')],
+            ),
+          );
+          workerReceivePort.close();
+
+          return;
+        }
         partSize = int.tryParse(msg.options['partSize'] ?? '') ?? 0;
         if (partSize <= 0) {
           final err = TaskError(
@@ -2341,6 +2396,17 @@ void combineFileWorker(List<dynamic> args) {
       if (msg is StartCommand) {
         sources = msg.sources;
         destination = msg.destination;
+        if (destination == null || destination!.isEmpty) {
+          mainSendPort.send(
+            TaskDoneMessage(
+              cancelled: true,
+              errors: [TaskError(path: '', message: 'missing destination')],
+            ),
+          );
+          workerReceivePort.close();
+
+          return;
+        }
         totalBytes = 0;
         for (final s in sources) {
           try {

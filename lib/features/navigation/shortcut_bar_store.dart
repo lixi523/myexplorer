@@ -121,12 +121,25 @@ class ShortcutBarStore {
     await _save();
   }
 
-  Future<void> _save() async {
+  Future<void> _pendingSave = Future.value();
+
+  /// Serializes writes so rapid mutations cannot race on the shared `.tmp`
+  /// file. Each call snapshots the current items; the chain applies them in
+  /// order, so the final file always reflects the last mutation.
+  Future<void> _save() {
+    final specs = items.value
+        .map((e) => (label: e.label, target: e.target, icon: e.icon))
+        .toList();
+    _pendingSave = _pendingSave.then((_) => _writeFile(specs));
+
+    return _pendingSave;
+  }
+
+  Future<void> _writeFile(
+    List<({String label, String target, String? icon})> specs,
+  ) async {
     final file = File(filePath);
     try {
-      final specs = items.value.map(
-        (e) => (label: e.label, target: e.target, icon: e.icon),
-      );
       final content = serializeToolbarIni(specs);
       final bytes = [0xEF, 0xBB, 0xBF, ...utf8.encode(content)];
       final tmp = File('${file.path}.tmp');
