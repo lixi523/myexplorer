@@ -5,6 +5,16 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-08-10
+
+### Fixed
+- Shortcut bar saves are serialized: rapid add/remove/reorder no longer race on the shared temp file and silently drop edits.
+- File operation workers guard against a missing destination instead of crashing on a null assertion.
+- Changelog now matches the actual 2 s right-button long-press delay.
+
+### Performance
+- Git status caching: the repo-root lookup skips parent-directory walks once a repository is known, and the git command timeout is relaxed to 8 s for large repositories.
+
 ## [2.2.0] - 2026-08-10
 
 ### Added
