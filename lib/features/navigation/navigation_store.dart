@@ -384,7 +384,10 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
         if (entry.value.contains(def.id)) colors.add(def.color);
       }
       if (colors.isEmpty) continue;
-      deco[entry.key] = RowDecoration(tint: colors.first, badgeColors: colors);
+      deco[entry.key] = RowDecoration(
+        tint: const Color(0x00000000),
+        badgeColors: colors,
+      );
     }
 
     return deco;
