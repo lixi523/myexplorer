@@ -181,7 +181,7 @@ const darkTheme = AppThemeDefinition(
     borderColor: Color(0xFF5A6070),
     accent: Color(0xFF5CA8FF),
     accentHover: Color(0xFF7CBCFF),
-    fg: Color(0xFFE4E4E4),
+    fg: Color(0xFFDFE9E9),
     fgMuted: Color(0xFF9CA3AF),
     fgSubtle: Color(0xFF7A808C),
     fgAccent: Color(0xFF7CBCFF),
