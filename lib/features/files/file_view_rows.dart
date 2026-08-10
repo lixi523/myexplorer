@@ -182,7 +182,9 @@ class _ListRowState extends State<_ListRow> {
     if (widget.selected) return AppColors.bgSelectedMuted;
     if (_hovered) return AppColors.bgHover;
     final tint = widget.rowDecoration?.tint;
-    if (tint != null) return tint.withValues(alpha: 0.18);
+    // Skip fully transparent tints (e.g. tag rows) so the row keeps the
+    // window background instead of getting a dark overlay.
+    if (tint != null && tint.a > 0) return tint.withValues(alpha: 0.18);
 
     return Colors.transparent;
   }

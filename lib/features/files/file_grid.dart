@@ -815,13 +815,16 @@ class _GridTileState extends State<_GridTile> {
       height: 1.15,
     );
     final tint = widget.rowDecoration?.tint;
+    // Skip fully transparent tints (e.g. tag rows) so the tile keeps the
+    // window background instead of getting a dark overlay.
+    final hasTint = tint != null && tint.a > 0;
     final bg = widget.isFolderDragOver
         ? AppColors.accent.withValues(alpha: 0.12)
         : selected
         ? AppColors.bgSelectedMuted
         : _hovered
         ? AppColors.bgHover
-        : tint != null
+        : hasTint
         ? tint.withValues(alpha: 0.18)
         : Colors.transparent;
     final border = widget.isFolderDragOver
