@@ -50,8 +50,9 @@ class ArchiveReader {
     final normalized = p.normalize(path).replaceAll('\\', '/');
     if (normalized.startsWith('/') ||
         normalized == '..' ||
-        normalized.startsWith('../'))
+        normalized.startsWith('../')) {
       return true;
+    }
     for (final seg in normalized.split('/')) {
       if (seg.isEmpty) continue;
       if (seg == '..') return true;
