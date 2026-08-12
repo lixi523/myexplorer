@@ -883,30 +883,33 @@ class $AppSettingsTable extends AppSettings
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('theme_mode')) {
       context.handle(
         _themeModeMeta,
-        themeMode.isAcceptable(data['theme_mode']!, _themeModeMeta),
+        themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta),
       );
     }
     if (data.containsKey('terminal')) {
       context.handle(
         _terminalMeta,
-        terminal.isAcceptable(data['terminal']!, _terminalMeta),
+        terminal.isAcceptableOrUnknown(data['terminal']!, _terminalMeta),
       );
     }
     if (data.containsKey('terminal_shell')) {
       context.handle(
         _terminalShellMeta,
-        terminalShell.isAcceptable(data['terminal_shell']!, _terminalShellMeta),
+        terminalShell.isAcceptableOrUnknown(
+          data['terminal_shell']!,
+          _terminalShellMeta,
+        ),
       );
     }
     if (data.containsKey('terminal_custom_command')) {
       context.handle(
         _terminalCustomCommandMeta,
-        terminalCustomCommand.isAcceptable(
+        terminalCustomCommand.isAcceptableOrUnknown(
           data['terminal_custom_command']!,
           _terminalCustomCommandMeta,
         ),
@@ -915,7 +918,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_use_system_font')) {
       context.handle(
         _terminalUseSystemFontMeta,
-        terminalUseSystemFont.isAcceptable(
+        terminalUseSystemFont.isAcceptableOrUnknown(
           data['terminal_use_system_font']!,
           _terminalUseSystemFontMeta,
         ),
@@ -924,7 +927,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_font_family')) {
       context.handle(
         _terminalFontFamilyMeta,
-        terminalFontFamily.isAcceptable(
+        terminalFontFamily.isAcceptableOrUnknown(
           data['terminal_font_family']!,
           _terminalFontFamilyMeta,
         ),
@@ -933,7 +936,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_font_size')) {
       context.handle(
         _terminalFontSizeMeta,
-        terminalFontSize.isAcceptable(
+        terminalFontSize.isAcceptableOrUnknown(
           data['terminal_font_size']!,
           _terminalFontSizeMeta,
         ),
@@ -942,7 +945,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_line_height')) {
       context.handle(
         _terminalLineHeightMeta,
-        terminalLineHeight.isAcceptable(
+        terminalLineHeight.isAcceptableOrUnknown(
           data['terminal_line_height']!,
           _terminalLineHeightMeta,
         ),
@@ -951,7 +954,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_copy_paste_mode')) {
       context.handle(
         _terminalCopyPasteModeMeta,
-        terminalCopyPasteMode.isAcceptable(
+        terminalCopyPasteMode.isAcceptableOrUnknown(
           data['terminal_copy_paste_mode']!,
           _terminalCopyPasteModeMeta,
         ),
@@ -960,19 +963,19 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('is_dual')) {
       context.handle(
         _isDualMeta,
-        isDual.isAcceptable(data['is_dual']!, _isDualMeta),
+        isDual.isAcceptableOrUnknown(data['is_dual']!, _isDualMeta),
       );
     }
     if (data.containsKey('split_ratio')) {
       context.handle(
         _splitRatioMeta,
-        splitRatio.isAcceptable(data['split_ratio']!, _splitRatioMeta),
+        splitRatio.isAcceptableOrUnknown(data['split_ratio']!, _splitRatioMeta),
       );
     }
     if (data.containsKey('active_pane_index')) {
       context.handle(
         _activePaneIndexMeta,
-        activePaneIndex.isAcceptable(
+        activePaneIndex.isAcceptableOrUnknown(
           data['active_pane_index']!,
           _activePaneIndexMeta,
         ),
@@ -981,7 +984,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('sidebar_collapsed')) {
       context.handle(
         _sidebarCollapsedMeta,
-        sidebarCollapsed.isAcceptable(
+        sidebarCollapsed.isAcceptableOrUnknown(
           data['sidebar_collapsed']!,
           _sidebarCollapsedMeta,
         ),
@@ -990,13 +993,16 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('sidebar_width')) {
       context.handle(
         _sidebarWidthMeta,
-        sidebarWidth.isAcceptable(data['sidebar_width']!, _sidebarWidthMeta),
+        sidebarWidth.isAcceptableOrUnknown(
+          data['sidebar_width']!,
+          _sidebarWidthMeta,
+        ),
       );
     }
     if (data.containsKey('restore_session')) {
       context.handle(
         _restoreSessionMeta,
-        restoreSession.isAcceptable(
+        restoreSession.isAcceptableOrUnknown(
           data['restore_session']!,
           _restoreSessionMeta,
         ),
@@ -1005,7 +1011,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('default_starting_path')) {
       context.handle(
         _defaultStartingPathMeta,
-        defaultStartingPath.isAcceptable(
+        defaultStartingPath.isAcceptableOrUnknown(
           data['default_starting_path']!,
           _defaultStartingPathMeta,
         ),
@@ -1014,25 +1020,34 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('confirm_delete')) {
       context.handle(
         _confirmDeleteMeta,
-        confirmDelete.isAcceptable(data['confirm_delete']!, _confirmDeleteMeta),
+        confirmDelete.isAcceptableOrUnknown(
+          data['confirm_delete']!,
+          _confirmDeleteMeta,
+        ),
       );
     }
     if (data.containsKey('confirm_copy')) {
       context.handle(
         _confirmCopyMeta,
-        confirmCopy.isAcceptable(data['confirm_copy']!, _confirmCopyMeta),
+        confirmCopy.isAcceptableOrUnknown(
+          data['confirm_copy']!,
+          _confirmCopyMeta,
+        ),
       );
     }
     if (data.containsKey('confirm_move')) {
       context.handle(
         _confirmMoveMeta,
-        confirmMove.isAcceptable(data['confirm_move']!, _confirmMoveMeta),
+        confirmMove.isAcceptableOrUnknown(
+          data['confirm_move']!,
+          _confirmMoveMeta,
+        ),
       );
     }
     if (data.containsKey('show_hidden_default')) {
       context.handle(
         _showHiddenDefaultMeta,
-        showHiddenDefault.isAcceptable(
+        showHiddenDefault.isAcceptableOrUnknown(
           data['show_hidden_default']!,
           _showHiddenDefaultMeta,
         ),
@@ -1041,13 +1056,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('row_density')) {
       context.handle(
         _rowDensityMeta,
-        rowDensity.isAcceptable(data['row_density']!, _rowDensityMeta),
+        rowDensity.isAcceptableOrUnknown(data['row_density']!, _rowDensityMeta),
       );
     }
     if (data.containsKey('file_list_horizontal_spacing')) {
       context.handle(
         _fileListHorizontalSpacingMeta,
-        fileListHorizontalSpacing.isAcceptable(
+        fileListHorizontalSpacing.isAcceptableOrUnknown(
           data['file_list_horizontal_spacing']!,
           _fileListHorizontalSpacingMeta,
         ),
@@ -1056,7 +1071,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('file_list_vertical_spacing')) {
       context.handle(
         _fileListVerticalSpacingMeta,
-        fileListVerticalSpacing.isAcceptable(
+        fileListVerticalSpacing.isAcceptableOrUnknown(
           data['file_list_vertical_spacing']!,
           _fileListVerticalSpacingMeta,
         ),
@@ -1065,13 +1080,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('date_format')) {
       context.handle(
         _dateFormatMeta,
-        dateFormat.isAcceptable(data['date_format']!, _dateFormatMeta),
+        dateFormat.isAcceptableOrUnknown(data['date_format']!, _dateFormatMeta),
       );
     }
     if (data.containsKey('recent_dates_relative')) {
       context.handle(
         _recentDatesRelativeMeta,
-        recentDatesRelative.isAcceptable(
+        recentDatesRelative.isAcceptableOrUnknown(
           data['recent_dates_relative']!,
           _recentDatesRelativeMeta,
         ),
@@ -1080,7 +1095,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('delete_key_behavior')) {
       context.handle(
         _deleteKeyBehaviorMeta,
-        deleteKeyBehavior.isAcceptable(
+        deleteKeyBehavior.isAcceptableOrUnknown(
           data['delete_key_behavior']!,
           _deleteKeyBehaviorMeta,
         ),
@@ -1089,43 +1104,55 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('sort_key')) {
       context.handle(
         _sortKeyMeta,
-        sortKey.isAcceptable(data['sort_key']!, _sortKeyMeta),
+        sortKey.isAcceptableOrUnknown(data['sort_key']!, _sortKeyMeta),
       );
     }
     if (data.containsKey('sort_ascending')) {
       context.handle(
         _sortAscendingMeta,
-        sortAscending.isAcceptable(data['sort_ascending']!, _sortAscendingMeta),
+        sortAscending.isAcceptableOrUnknown(
+          data['sort_ascending']!,
+          _sortAscendingMeta,
+        ),
       );
     }
     if (data.containsKey('folders_first')) {
       context.handle(
         _foldersFirstMeta,
-        foldersFirst.isAcceptable(data['folders_first']!, _foldersFirstMeta),
+        foldersFirst.isAcceptableOrUnknown(
+          data['folders_first']!,
+          _foldersFirstMeta,
+        ),
       );
     }
     if (data.containsKey('natural_sort')) {
       context.handle(
         _naturalSortMeta,
-        naturalSort.isAcceptable(data['natural_sort']!, _naturalSortMeta),
+        naturalSort.isAcceptableOrUnknown(
+          data['natural_sort']!,
+          _naturalSortMeta,
+        ),
       );
     }
     if (data.containsKey('sort_folders')) {
       context.handle(
         _sortFoldersMeta,
-        sortFolders.isAcceptable(data['sort_folders']!, _sortFoldersMeta),
+        sortFolders.isAcceptableOrUnknown(
+          data['sort_folders']!,
+          _sortFoldersMeta,
+        ),
       );
     }
     if (data.containsKey('search_mode')) {
       context.handle(
         _searchModeMeta,
-        searchMode.isAcceptable(data['search_mode']!, _searchModeMeta),
+        searchMode.isAcceptableOrUnknown(data['search_mode']!, _searchModeMeta),
       );
     }
     if (data.containsKey('remember_folder_state')) {
       context.handle(
         _rememberFolderStateMeta,
-        rememberFolderState.isAcceptable(
+        rememberFolderState.isAcceptableOrUnknown(
           data['remember_folder_state']!,
           _rememberFolderStateMeta,
         ),
@@ -1134,7 +1161,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('remember_folder_sort')) {
       context.handle(
         _rememberFolderSortMeta,
-        rememberFolderSort.isAcceptable(
+        rememberFolderSort.isAcceptableOrUnknown(
           data['remember_folder_sort']!,
           _rememberFolderSortMeta,
         ),
@@ -1143,7 +1170,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('type_ahead_buffer')) {
       context.handle(
         _typeAheadBufferMeta,
-        typeAheadBuffer.isAcceptable(
+        typeAheadBuffer.isAcceptableOrUnknown(
           data['type_ahead_buffer']!,
           _typeAheadBufferMeta,
         ),
@@ -1152,7 +1179,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('file_list_scale')) {
       context.handle(
         _fileListScaleMeta,
-        fileListScale.isAcceptable(
+        fileListScale.isAcceptableOrUnknown(
           data['file_list_scale']!,
           _fileListScaleMeta,
         ),
@@ -1161,13 +1188,16 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('file_view_mode')) {
       context.handle(
         _fileViewModeMeta,
-        fileViewMode.isAcceptable(data['file_view_mode']!, _fileViewModeMeta),
+        fileViewMode.isAcceptableOrUnknown(
+          data['file_view_mode']!,
+          _fileViewModeMeta,
+        ),
       );
     }
     if (data.containsKey('show_column_size')) {
       context.handle(
         _showColumnSizeMeta,
-        showColumnSize.isAcceptable(
+        showColumnSize.isAcceptableOrUnknown(
           data['show_column_size']!,
           _showColumnSizeMeta,
         ),
@@ -1176,7 +1206,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_date')) {
       context.handle(
         _showColumnDateMeta,
-        showColumnDate.isAcceptable(
+        showColumnDate.isAcceptableOrUnknown(
           data['show_column_date']!,
           _showColumnDateMeta,
         ),
@@ -1185,7 +1215,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_kind')) {
       context.handle(
         _showColumnKindMeta,
-        showColumnKind.isAcceptable(
+        showColumnKind.isAcceptableOrUnknown(
           data['show_column_kind']!,
           _showColumnKindMeta,
         ),
@@ -1194,7 +1224,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_created')) {
       context.handle(
         _showColumnCreatedMeta,
-        showColumnCreated.isAcceptable(
+        showColumnCreated.isAcceptableOrUnknown(
           data['show_column_created']!,
           _showColumnCreatedMeta,
         ),
@@ -1203,7 +1233,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_added')) {
       context.handle(
         _showColumnAddedMeta,
-        showColumnAdded.isAcceptable(
+        showColumnAdded.isAcceptableOrUnknown(
           data['show_column_added']!,
           _showColumnAddedMeta,
         ),
@@ -1212,7 +1242,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_permissions')) {
       context.handle(
         _showColumnPermissionsMeta,
-        showColumnPermissions.isAcceptable(
+        showColumnPermissions.isAcceptableOrUnknown(
           data['show_column_permissions']!,
           _showColumnPermissionsMeta,
         ),
@@ -1221,7 +1251,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_owner')) {
       context.handle(
         _showColumnOwnerMeta,
-        showColumnOwner.isAcceptable(
+        showColumnOwner.isAcceptableOrUnknown(
           data['show_column_owner']!,
           _showColumnOwnerMeta,
         ),
@@ -1230,13 +1260,16 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('column_order')) {
       context.handle(
         _columnOrderMeta,
-        columnOrder.isAcceptable(data['column_order']!, _columnOrderMeta),
+        columnOrder.isAcceptableOrUnknown(
+          data['column_order']!,
+          _columnOrderMeta,
+        ),
       );
     }
     if (data.containsKey('column_width_mode')) {
       context.handle(
         _columnWidthModeMeta,
-        columnWidthMode.isAcceptable(
+        columnWidthMode.isAcceptableOrUnknown(
           data['column_width_mode']!,
           _columnWidthModeMeta,
         ),
@@ -1245,13 +1278,16 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('column_widths')) {
       context.handle(
         _columnWidthsMeta,
-        columnWidths.isAcceptable(data['column_widths']!, _columnWidthsMeta),
+        columnWidths.isAcceptableOrUnknown(
+          data['column_widths']!,
+          _columnWidthsMeta,
+        ),
       );
     }
     if (data.containsKey('quick_look_use_system_font')) {
       context.handle(
         _quickLookUseSystemFontMeta,
-        quickLookUseSystemFont.isAcceptable(
+        quickLookUseSystemFont.isAcceptableOrUnknown(
           data['quick_look_use_system_font']!,
           _quickLookUseSystemFontMeta,
         ),
@@ -1260,7 +1296,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_font_family')) {
       context.handle(
         _quickLookFontFamilyMeta,
-        quickLookFontFamily.isAcceptable(
+        quickLookFontFamily.isAcceptableOrUnknown(
           data['quick_look_font_family']!,
           _quickLookFontFamilyMeta,
         ),
@@ -1269,7 +1305,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_font_size')) {
       context.handle(
         _quickLookFontSizeMeta,
-        quickLookFontSize.isAcceptable(
+        quickLookFontSize.isAcceptableOrUnknown(
           data['quick_look_font_size']!,
           _quickLookFontSizeMeta,
         ),
@@ -1278,7 +1314,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_line_height')) {
       context.handle(
         _quickLookLineHeightMeta,
-        quickLookLineHeight.isAcceptable(
+        quickLookLineHeight.isAcceptableOrUnknown(
           data['quick_look_line_height']!,
           _quickLookLineHeightMeta,
         ),
@@ -1287,7 +1323,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_show_line_numbers')) {
       context.handle(
         _quickLookShowLineNumbersMeta,
-        quickLookShowLineNumbers.isAcceptable(
+        quickLookShowLineNumbers.isAcceptableOrUnknown(
           data['quick_look_show_line_numbers']!,
           _quickLookShowLineNumbersMeta,
         ),
@@ -1296,7 +1332,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_relative_line_numbers')) {
       context.handle(
         _quickLookRelativeLineNumbersMeta,
-        quickLookRelativeLineNumbers.isAcceptable(
+        quickLookRelativeLineNumbers.isAcceptableOrUnknown(
           data['quick_look_relative_line_numbers']!,
           _quickLookRelativeLineNumbersMeta,
         ),
@@ -1305,7 +1341,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_vim_mode')) {
       context.handle(
         _quickLookVimModeMeta,
-        quickLookVimMode.isAcceptable(
+        quickLookVimMode.isAcceptableOrUnknown(
           data['quick_look_vim_mode']!,
           _quickLookVimModeMeta,
         ),
@@ -1314,7 +1350,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_wrap_lines')) {
       context.handle(
         _quickLookWrapLinesMeta,
-        quickLookWrapLines.isAcceptable(
+        quickLookWrapLines.isAcceptableOrUnknown(
           data['quick_look_wrap_lines']!,
           _quickLookWrapLinesMeta,
         ),
@@ -1323,7 +1359,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_show_statistics')) {
       context.handle(
         _quickLookShowStatisticsMeta,
-        quickLookShowStatistics.isAcceptable(
+        quickLookShowStatistics.isAcceptableOrUnknown(
           data['quick_look_show_statistics']!,
           _quickLookShowStatisticsMeta,
         ),
@@ -1332,7 +1368,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('drag_moves_by_default')) {
       context.handle(
         _dragMovesByDefaultMeta,
-        dragMovesByDefault.isAcceptable(
+        dragMovesByDefault.isAcceptableOrUnknown(
           data['drag_moves_by_default']!,
           _dragMovesByDefaultMeta,
         ),
@@ -1341,7 +1377,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('auto_overwrite_older')) {
       context.handle(
         _autoOverwriteOlderMeta,
-        autoOverwriteOlder.isAcceptable(
+        autoOverwriteOlder.isAcceptableOrUnknown(
           data['auto_overwrite_older']!,
           _autoOverwriteOlderMeta,
         ),
@@ -1350,7 +1386,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('auto_skip_same_size')) {
       context.handle(
         _autoSkipSameSizeMeta,
-        autoSkipSameSize.isAcceptable(
+        autoSkipSameSize.isAcceptableOrUnknown(
           data['auto_skip_same_size']!,
           _autoSkipSameSizeMeta,
         ),
@@ -3359,12 +3395,12 @@ class $SessionTabsTable extends SessionTabs
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('pane_index')) {
       context.handle(
         _paneIndexMeta,
-        paneIndex.isAcceptable(data['pane_index']!, _paneIndexMeta),
+        paneIndex.isAcceptableOrUnknown(data['pane_index']!, _paneIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_paneIndexMeta);
@@ -3372,20 +3408,23 @@ class $SessionTabsTable extends SessionTabs
     if (data.containsKey('tab_index')) {
       context.handle(
         _tabIndexMeta,
-        tabIndex.isAcceptable(data['tab_index']!, _tabIndexMeta),
+        tabIndex.isAcceptableOrUnknown(data['tab_index']!, _tabIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_tabIndexMeta);
     }
     if (data.containsKey('path')) {
-      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('is_active')) {
       context.handle(
         _isActiveMeta,
-        isActive.isAcceptable(data['is_active']!, _isActiveMeta),
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
       );
     }
     return context;
@@ -3685,12 +3724,12 @@ class $BookmarksTable extends Bookmarks
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
@@ -3698,13 +3737,16 @@ class $BookmarksTable extends Bookmarks
     if (data.containsKey('label')) {
       context.handle(
         _labelMeta,
-        label.isAcceptable(data['label']!, _labelMeta),
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
       );
     } else if (isInserting) {
       context.missing(_labelMeta);
     }
     if (data.containsKey('path')) {
-      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
@@ -3814,12 +3856,12 @@ class $ShortcutBarItemsTable extends ShortcutBarItems
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
@@ -3827,7 +3869,7 @@ class $ShortcutBarItemsTable extends ShortcutBarItems
     if (data.containsKey('label')) {
       context.handle(
         _labelMeta,
-        label.isAcceptable(data['label']!, _labelMeta),
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
       );
     } else if (isInserting) {
       context.missing(_labelMeta);
@@ -3835,13 +3877,16 @@ class $ShortcutBarItemsTable extends ShortcutBarItems
     if (data.containsKey('target')) {
       context.handle(
         _targetMeta,
-        target.isAcceptable(data['target']!, _targetMeta),
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
       );
     } else if (isInserting) {
       context.missing(_targetMeta);
     }
     if (data.containsKey('icon')) {
-      context.handle(_iconMeta, icon.isAcceptable(data['icon']!, _iconMeta));
+      context.handle(
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
     }
     return context;
   }
@@ -4365,44 +4410,56 @@ class $FolderPrefsTable extends FolderPrefs
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('path')) {
-      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('sort_key')) {
       context.handle(
         _sortKeyMeta,
-        sortKey.isAcceptable(data['sort_key']!, _sortKeyMeta),
+        sortKey.isAcceptableOrUnknown(data['sort_key']!, _sortKeyMeta),
       );
     }
     if (data.containsKey('sort_ascending')) {
       context.handle(
         _sortAscendingMeta,
-        sortAscending.isAcceptable(data['sort_ascending']!, _sortAscendingMeta),
+        sortAscending.isAcceptableOrUnknown(
+          data['sort_ascending']!,
+          _sortAscendingMeta,
+        ),
       );
     }
     if (data.containsKey('folders_first')) {
       context.handle(
         _foldersFirstMeta,
-        foldersFirst.isAcceptable(data['folders_first']!, _foldersFirstMeta),
+        foldersFirst.isAcceptableOrUnknown(
+          data['folders_first']!,
+          _foldersFirstMeta,
+        ),
       );
     }
     if (data.containsKey('cursor_path')) {
       context.handle(
         _cursorPathMeta,
-        cursorPath.isAcceptable(data['cursor_path']!, _cursorPathMeta),
+        cursorPath.isAcceptableOrUnknown(data['cursor_path']!, _cursorPathMeta),
       );
     }
     if (data.containsKey('selected_paths')) {
       context.handle(
         _selectedPathsMeta,
-        selectedPaths.isAcceptable(data['selected_paths']!, _selectedPathsMeta),
+        selectedPaths.isAcceptableOrUnknown(
+          data['selected_paths']!,
+          _selectedPathsMeta,
+        ),
       );
     }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
-        updatedAt.isAcceptable(data['updated_at']!, _updatedAtMeta),
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
     }
     return context;
@@ -4814,14 +4871,17 @@ class $RecentAppsTable extends RecentApps
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('mime')) {
-      context.handle(_mimeMeta, mime.isAcceptable(data['mime']!, _mimeMeta));
+      context.handle(
+        _mimeMeta,
+        mime.isAcceptableOrUnknown(data['mime']!, _mimeMeta),
+      );
     } else if (isInserting) {
       context.missing(_mimeMeta);
     }
     if (data.containsKey('app_id')) {
       context.handle(
         _appIdMeta,
-        appId.isAcceptable(data['app_id']!, _appIdMeta),
+        appId.isAcceptableOrUnknown(data['app_id']!, _appIdMeta),
       );
     } else if (isInserting) {
       context.missing(_appIdMeta);
@@ -4829,7 +4889,7 @@ class $RecentAppsTable extends RecentApps
     if (data.containsKey('app_name')) {
       context.handle(
         _appNameMeta,
-        appName.isAcceptable(data['app_name']!, _appNameMeta),
+        appName.isAcceptableOrUnknown(data['app_name']!, _appNameMeta),
       );
     } else if (isInserting) {
       context.missing(_appNameMeta);
@@ -4837,7 +4897,7 @@ class $RecentAppsTable extends RecentApps
     if (data.containsKey('app_exec')) {
       context.handle(
         _appExecMeta,
-        appExec.isAcceptable(data['app_exec']!, _appExecMeta),
+        appExec.isAcceptableOrUnknown(data['app_exec']!, _appExecMeta),
       );
     } else if (isInserting) {
       context.missing(_appExecMeta);
@@ -4845,13 +4905,13 @@ class $RecentAppsTable extends RecentApps
     if (data.containsKey('icon_path')) {
       context.handle(
         _iconPathMeta,
-        iconPath.isAcceptable(data['icon_path']!, _iconPathMeta),
+        iconPath.isAcceptableOrUnknown(data['icon_path']!, _iconPathMeta),
       );
     }
     if (data.containsKey('used_at')) {
       context.handle(
         _usedAtMeta,
-        usedAt.isAcceptable(data['used_at']!, _usedAtMeta),
+        usedAt.isAcceptableOrUnknown(data['used_at']!, _usedAtMeta),
       );
     }
     return context;
@@ -5170,14 +5230,17 @@ class $RecentEnteredPathsTable extends RecentEnteredPaths
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('path')) {
-      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('used_at')) {
       context.handle(
         _usedAtMeta,
-        usedAt.isAcceptable(data['used_at']!, _usedAtMeta),
+        usedAt.isAcceptableOrUnknown(data['used_at']!, _usedAtMeta),
       );
     }
     return context;
@@ -5419,7 +5482,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('type_key')) {
       context.handle(
         _typeKeyMeta,
-        typeKey.isAcceptable(data['type_key']!, _typeKeyMeta),
+        typeKey.isAcceptableOrUnknown(data['type_key']!, _typeKeyMeta),
       );
     } else if (isInserting) {
       context.missing(_typeKeyMeta);
@@ -5427,7 +5490,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('app_id')) {
       context.handle(
         _appIdMeta,
-        appId.isAcceptable(data['app_id']!, _appIdMeta),
+        appId.isAcceptableOrUnknown(data['app_id']!, _appIdMeta),
       );
     } else if (isInserting) {
       context.missing(_appIdMeta);
@@ -5435,7 +5498,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('app_name')) {
       context.handle(
         _appNameMeta,
-        appName.isAcceptable(data['app_name']!, _appNameMeta),
+        appName.isAcceptableOrUnknown(data['app_name']!, _appNameMeta),
       );
     } else if (isInserting) {
       context.missing(_appNameMeta);
@@ -5443,7 +5506,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('app_exec')) {
       context.handle(
         _appExecMeta,
-        appExec.isAcceptable(data['app_exec']!, _appExecMeta),
+        appExec.isAcceptableOrUnknown(data['app_exec']!, _appExecMeta),
       );
     } else if (isInserting) {
       context.missing(_appExecMeta);
@@ -5451,7 +5514,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('icon_path')) {
       context.handle(
         _iconPathMeta,
-        iconPath.isAcceptable(data['icon_path']!, _iconPathMeta),
+        iconPath.isAcceptableOrUnknown(data['icon_path']!, _iconPathMeta),
       );
     }
     return context;
@@ -5785,7 +5848,7 @@ class $ShortcutBindingsTable extends ShortcutBindings
     if (data.containsKey('action_id')) {
       context.handle(
         _actionIdMeta,
-        actionId.isAcceptable(data['action_id']!, _actionIdMeta),
+        actionId.isAcceptableOrUnknown(data['action_id']!, _actionIdMeta),
       );
     } else if (isInserting) {
       context.missing(_actionIdMeta);
@@ -5793,22 +5856,28 @@ class $ShortcutBindingsTable extends ShortcutBindings
     if (data.containsKey('key_id')) {
       context.handle(
         _keyIdMeta,
-        keyId.isAcceptable(data['key_id']!, _keyIdMeta),
+        keyId.isAcceptableOrUnknown(data['key_id']!, _keyIdMeta),
       );
     } else if (isInserting) {
       context.missing(_keyIdMeta);
     }
     if (data.containsKey('ctrl')) {
-      context.handle(_ctrlMeta, ctrl.isAcceptable(data['ctrl']!, _ctrlMeta));
+      context.handle(
+        _ctrlMeta,
+        ctrl.isAcceptableOrUnknown(data['ctrl']!, _ctrlMeta),
+      );
     }
     if (data.containsKey('shift')) {
       context.handle(
         _shiftMeta,
-        shift.isAcceptable(data['shift']!, _shiftMeta),
+        shift.isAcceptableOrUnknown(data['shift']!, _shiftMeta),
       );
     }
     if (data.containsKey('alt')) {
-      context.handle(_altMeta, alt.isAcceptable(data['alt']!, _altMeta));
+      context.handle(
+        _altMeta,
+        alt.isAcceptableOrUnknown(data['alt']!, _altMeta),
+      );
     }
     return context;
   }
@@ -6105,20 +6174,23 @@ class $PluginSettingsTable extends PluginSettings
     if (data.containsKey('plugin_id')) {
       context.handle(
         _pluginIdMeta,
-        pluginId.isAcceptable(data['plugin_id']!, _pluginIdMeta),
+        pluginId.isAcceptableOrUnknown(data['plugin_id']!, _pluginIdMeta),
       );
     } else if (isInserting) {
       context.missing(_pluginIdMeta);
     }
     if (data.containsKey('key')) {
-      context.handle(_keyMeta, key.isAcceptable(data['key']!, _keyMeta));
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
     } else if (isInserting) {
       context.missing(_keyMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
         _valueMeta,
-        value.isAcceptable(data['value']!, _valueMeta),
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
       );
     } else if (isInserting) {
       context.missing(_valueMeta);
@@ -6346,7 +6418,7 @@ class $DisabledPluginsTable extends DisabledPlugins
     if (data.containsKey('plugin_id')) {
       context.handle(
         _pluginIdMeta,
-        pluginId.isAcceptable(data['plugin_id']!, _pluginIdMeta),
+        pluginId.isAcceptableOrUnknown(data['plugin_id']!, _pluginIdMeta),
       );
     } else if (isInserting) {
       context.missing(_pluginIdMeta);
@@ -6547,7 +6619,7 @@ class $SidebarPrefsTable extends SidebarPrefs
     if (data.containsKey('scope')) {
       context.handle(
         _scopeMeta,
-        scope.isAcceptable(data['scope']!, _scopeMeta),
+        scope.isAcceptableOrUnknown(data['scope']!, _scopeMeta),
       );
     } else if (isInserting) {
       context.missing(_scopeMeta);
@@ -6555,7 +6627,7 @@ class $SidebarPrefsTable extends SidebarPrefs
     if (data.containsKey('item_key')) {
       context.handle(
         _itemKeyMeta,
-        itemKey.isAcceptable(data['item_key']!, _itemKeyMeta),
+        itemKey.isAcceptableOrUnknown(data['item_key']!, _itemKeyMeta),
       );
     } else if (isInserting) {
       context.missing(_itemKeyMeta);
@@ -6563,13 +6635,13 @@ class $SidebarPrefsTable extends SidebarPrefs
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
       );
     }
     if (data.containsKey('hidden')) {
       context.handle(
         _hiddenMeta,
-        hidden.isAcceptable(data['hidden']!, _hiddenMeta),
+        hidden.isAcceptableOrUnknown(data['hidden']!, _hiddenMeta),
       );
     }
     return context;
@@ -6854,17 +6926,20 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('name')) {
-      context.handle(_nameMeta, name.isAcceptable(data['name']!, _nameMeta));
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('color')) {
       context.handle(
         _colorMeta,
-        color.isAcceptable(data['color']!, _colorMeta),
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
       );
     } else if (isInserting) {
       context.missing(_colorMeta);
@@ -6872,7 +6947,7 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
       );
     }
     return context;
@@ -7119,14 +7194,17 @@ class $FileTagsTable extends FileTags with TableInfo<$FileTagsTable, FileTag> {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('path')) {
-      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
+      context.handle(
+        _pathMeta,
+        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
+      );
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('tag_id')) {
       context.handle(
         _tagIdMeta,
-        tagId.isAcceptable(data['tag_id']!, _tagIdMeta),
+        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
       );
     } else if (isInserting) {
       context.missing(_tagIdMeta);
