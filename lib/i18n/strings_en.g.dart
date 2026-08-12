@@ -2272,6 +2272,9 @@ class Translations$errors$en {
 	/// en: 'SFTP rename failed'
 	String get sftpRenameFailed => 'SFTP rename failed';
 
+	/// en: 'SFTP rename target is on a different server'
+	String get sftpRenameCrossSession => 'SFTP rename target is on a different server';
+
 	/// en: 'SFTP open reader failed'
 	String get sftpOpenReaderFailed => 'SFTP open reader failed';
 
@@ -5276,6 +5279,7 @@ extension on Translations {
 			'errors.sftpMkdirFailed' => 'SFTP mkdir failed',
 			'errors.sftpRemoveFailed' => 'SFTP remove failed',
 			'errors.sftpRenameFailed' => 'SFTP rename failed',
+			'errors.sftpRenameCrossSession' => 'SFTP rename target is on a different server',
 			'errors.sftpOpenReaderFailed' => 'SFTP open reader failed',
 			'errors.sftpOpenWriterFailed' => 'SFTP open writer failed',
 			'errors.sftpCloseFailed' => 'SFTP close failed',
@@ -5327,9 +5331,9 @@ extension on Translations {
 			'git.merging' => 'MERGING',
 			'git.rebasing' => 'REBASING',
 			'git.cherryPicking' => 'CHERRY-PICK',
-			'git.reverting' => 'REVERTING',
 			_ => null,
 		} ?? switch (path) {
+			'git.reverting' => 'REVERTING',
 			'git.bisecting' => 'BISECTING',
 			'git.checkoutFailed' => ({required Object message}) => 'Checkout failed: ${message}',
 			'git.uncommittedChanges' => 'Uncommitted changes',

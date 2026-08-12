@@ -1036,6 +1036,7 @@ class _Translations$errors$zh extends Translations$errors$en {
 	@override String get sftpMkdirFailed => 'SFTP 创建目录失败';
 	@override String get sftpRemoveFailed => 'SFTP 删除失败';
 	@override String get sftpRenameFailed => 'SFTP 重命名失败';
+	@override String get sftpRenameCrossSession => 'SFTP 重命名目标在不同服务器';
 	@override String get sftpOpenReaderFailed => 'SFTP 打开读取器失败';
 	@override String get sftpOpenWriterFailed => 'SFTP 打开写入器失败';
 	@override String get sftpCloseFailed => 'SFTP 关闭失败';
@@ -3141,6 +3142,7 @@ extension on TranslationsZh {
 			'errors.sftpMkdirFailed' => 'SFTP 创建目录失败',
 			'errors.sftpRemoveFailed' => 'SFTP 删除失败',
 			'errors.sftpRenameFailed' => 'SFTP 重命名失败',
+			'errors.sftpRenameCrossSession' => 'SFTP 重命名目标在不同服务器',
 			'errors.sftpOpenReaderFailed' => 'SFTP 打开读取器失败',
 			'errors.sftpOpenWriterFailed' => 'SFTP 打开写入器失败',
 			'errors.sftpCloseFailed' => 'SFTP 关闭失败',
@@ -3192,9 +3194,9 @@ extension on TranslationsZh {
 			'git.merging' => '合并中',
 			'git.rebasing' => '变基中',
 			'git.cherryPicking' => '拣选中',
-			'git.reverting' => '还原中',
 			_ => null,
 		} ?? switch (path) {
+			'git.reverting' => '还原中',
 			'git.bisecting' => '二分查找中',
 			'git.checkoutFailed' => ({required Object message}) => '切换分支失败：${message}',
 			'git.uncommittedChanges' => '未提交的更改',
