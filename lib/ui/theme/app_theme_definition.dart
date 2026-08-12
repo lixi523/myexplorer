@@ -2,6 +2,62 @@ import 'package:flutter/material.dart';
 
 import '../../i18n/strings.g.dart';
 
+const _terminalNames = <String, String>{
+  'black': '黑色',
+  'red': '红色',
+  'green': '绿色',
+  'yellow': '黄色',
+  'blue': '蓝色',
+  'magenta': '品红色',
+  'cyan': '青色',
+  'white': '白色',
+  'brightBlack': '亮黑色',
+  'brightRed': '亮红色',
+  'brightGreen': '亮绿色',
+  'brightYellow': '亮黄色',
+  'brightBlue': '亮蓝色',
+  'brightMagenta': '亮品红色',
+  'brightCyan': '亮青色',
+  'brightWhite': '亮白色',
+};
+
+const _paletteNames = <String, String>{
+  'bg': '背景色',
+  'bgSurface': '表面色',
+  'bgSidebar': '侧边栏背景',
+  'bgToolbar': '工具栏背景',
+  'bgStatus': '状态栏背景',
+  'bgHover': '悬停背景',
+  'bgSelected': '选中背景',
+  'bgSelectedMuted': '选中柔和背景',
+  'bgInput': '输入框背景',
+  'bgDivider': '分隔线色',
+  'borderColor': '边框色',
+  'accent': '强调色',
+  'accentHover': '强调悬停色',
+  'fg': '文字色',
+  'fgMuted': '次要文字色',
+  'fgSubtle': '弱文字色',
+  'fgAccent': '强调文字色',
+  'danger': '危险色',
+  'success': '成功色',
+  'warning': '警告色',
+  'neutral': '中性色',
+  'bgHoverStrong': '强悬停背景',
+  'windowCloseHover': '关闭按钮悬停色',
+  'windowClosePressed': '关闭按钮按下色',
+  'shadowSubtle': '阴影色',
+  'fileJs': 'JavaScript文件色',
+  'fileHtml': 'HTML文件色',
+  'fileCss': 'CSS文件色',
+  'fileArchive': '压缩包文件色',
+  'fileAudio': '音频文件色',
+  'fileVideo': '视频文件色',
+  'fileDefault': '默认文件色',
+  'folderNameDark': '深色文件夹文字色',
+  'folderNameLight': '浅色文件夹文字色',
+};
+
 @immutable
 class TerminalColors {
   final Color black;
@@ -59,10 +115,10 @@ class TerminalColors {
     brightWhite: Color(0xFFFFFFFF),
   );
 
-  factory TerminalColors.fromJson(Map<String, dynamic> json) {
+  factory TerminalColors.fromIni(Map<String, String> ini) {
     Color read(String key, Color fallback) {
-      final value = json[key];
-      if (value is! String) return fallback;
+      final value = ini[key] ?? ini[_terminalNames[key] ?? ''];
+      if (value == null) return fallback;
       try {
         return parseThemeColor(value, key);
       } catch (e) {
@@ -92,24 +148,28 @@ class TerminalColors {
     );
   }
 
-  Map<String, String> toJson() => {
-    'black': _hex(black),
-    'red': _hex(red),
-    'green': _hex(green),
-    'yellow': _hex(yellow),
-    'blue': _hex(blue),
-    'magenta': _hex(magenta),
-    'cyan': _hex(cyan),
-    'white': _hex(white),
-    'brightBlack': _hex(brightBlack),
-    'brightRed': _hex(brightRed),
-    'brightGreen': _hex(brightGreen),
-    'brightYellow': _hex(brightYellow),
-    'brightBlue': _hex(brightBlue),
-    'brightMagenta': _hex(brightMagenta),
-    'brightCyan': _hex(brightCyan),
-    'brightWhite': _hex(brightWhite),
-  };
+  String toIni() {
+    final b = StringBuffer();
+    b.writeln('[terminal]');
+    b.writeln('${_terminalNames['black']}=${_iniColor(black)}');
+    b.writeln('${_terminalNames['red']}=${_iniColor(red)}');
+    b.writeln('${_terminalNames['green']}=${_iniColor(green)}');
+    b.writeln('${_terminalNames['yellow']}=${_iniColor(yellow)}');
+    b.writeln('${_terminalNames['blue']}=${_iniColor(blue)}');
+    b.writeln('${_terminalNames['magenta']}=${_iniColor(magenta)}');
+    b.writeln('${_terminalNames['cyan']}=${_iniColor(cyan)}');
+    b.writeln('${_terminalNames['white']}=${_iniColor(white)}');
+    b.writeln('${_terminalNames['brightBlack']}=${_iniColor(brightBlack)}');
+    b.writeln('${_terminalNames['brightRed']}=${_iniColor(brightRed)}');
+    b.writeln('${_terminalNames['brightGreen']}=${_iniColor(brightGreen)}');
+    b.writeln('${_terminalNames['brightYellow']}=${_iniColor(brightYellow)}');
+    b.writeln('${_terminalNames['brightBlue']}=${_iniColor(brightBlue)}');
+    b.writeln('${_terminalNames['brightMagenta']}=${_iniColor(brightMagenta)}');
+    b.writeln('${_terminalNames['brightCyan']}=${_iniColor(brightCyan)}');
+    b.writeln('${_terminalNames['brightWhite']}=${_iniColor(brightWhite)}');
+
+    return b.toString();
+  }
 }
 
 @immutable
@@ -146,6 +206,8 @@ class AppThemePalette {
   final Color fileAudio;
   final Color fileVideo;
   final Color fileDefault;
+  final Color folderNameDark;
+  final Color folderNameLight;
   final TerminalColors terminal;
 
   const AppThemePalette({
@@ -181,17 +243,32 @@ class AppThemePalette {
     required this.fileAudio,
     required this.fileVideo,
     required this.fileDefault,
+    this.folderNameDark = const Color(0xFFE9E9E9),
+    this.folderNameLight = const Color(0xFF3C414B),
     this.terminal = TerminalColors.standard,
   });
 
-  factory AppThemePalette.fromJson(Map<String, dynamic> json) {
+  factory AppThemePalette.fromIni(
+    Map<String, String> ini,
+    Map<String, String>? terminal,
+  ) {
     Color read(String key) {
-      final value = json[key];
-      if (value is! String) {
+      final value = ini[key] ?? ini[_paletteNames[key] ?? ''];
+      if (value == null) {
         throw FormatException(t.preferences.appearance.missingColor(key: key));
       }
 
       return parseThemeColor(value, key);
+    }
+
+    Color readOpt(String key, Color fallback) {
+      final value = ini[key] ?? ini[_paletteNames[key] ?? ''];
+      if (value == null) return fallback;
+      try {
+        return parseThemeColor(value, key);
+      } catch (e) {
+        return fallback;
+      }
     }
 
     return AppThemePalette(
@@ -227,47 +304,66 @@ class AppThemePalette {
       fileAudio: read('fileAudio'),
       fileVideo: read('fileVideo'),
       fileDefault: read('fileDefault'),
-      terminal: json['terminal'] is Map<String, dynamic>
-          ? TerminalColors.fromJson(json['terminal'] as Map<String, dynamic>)
-          : TerminalColors.standard,
+      folderNameDark: readOpt('folderNameDark', const Color(0xFFE9E9E9)),
+      folderNameLight: readOpt('folderNameLight', const Color(0xFF3C414B)),
+      terminal: terminal == null
+          ? TerminalColors.standard
+          : TerminalColors.fromIni(terminal),
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'bg': _hex(bg),
-    'bgSurface': _hex(bgSurface),
-    'bgSidebar': _hex(bgSidebar),
-    'bgToolbar': _hex(bgToolbar),
-    'bgStatus': _hex(bgStatus),
-    'bgHover': _hex(bgHover),
-    'bgSelected': _hex(bgSelected),
-    'bgSelectedMuted': _hex(bgSelectedMuted),
-    'bgInput': _hex(bgInput),
-    'bgDivider': _hex(bgDivider),
-    'borderColor': _hex(borderColor),
-    'accent': _hex(accent),
-    'accentHover': _hex(accentHover),
-    'fg': _hex(fg),
-    'fgMuted': _hex(fgMuted),
-    'fgSubtle': _hex(fgSubtle),
-    'fgAccent': _hex(fgAccent),
-    'danger': _hex(danger),
-    'success': _hex(success),
-    'warning': _hex(warning),
-    'neutral': _hex(neutral),
-    'bgHoverStrong': _hex(bgHoverStrong),
-    'windowCloseHover': _hex(windowCloseHover),
-    'windowClosePressed': _hex(windowClosePressed),
-    'shadowSubtle': _hex(shadowSubtle),
-    'fileJs': _hex(fileJs),
-    'fileHtml': _hex(fileHtml),
-    'fileCss': _hex(fileCss),
-    'fileArchive': _hex(fileArchive),
-    'fileAudio': _hex(fileAudio),
-    'fileVideo': _hex(fileVideo),
-    'fileDefault': _hex(fileDefault),
-    'terminal': terminal.toJson(),
-  };
+  String toIni() {
+    final b = StringBuffer();
+    b.writeln('[palette]');
+    b.writeln('${_paletteNames['bg']}=${_iniColor(bg)}');
+    b.writeln('${_paletteNames['bgSurface']}=${_iniColor(bgSurface)}');
+    b.writeln('${_paletteNames['bgSidebar']}=${_iniColor(bgSidebar)}');
+    b.writeln('${_paletteNames['bgToolbar']}=${_iniColor(bgToolbar)}');
+    b.writeln('${_paletteNames['bgStatus']}=${_iniColor(bgStatus)}');
+    b.writeln('${_paletteNames['bgHover']}=${_iniColor(bgHover)}');
+    b.writeln('${_paletteNames['bgSelected']}=${_iniColor(bgSelected)}');
+    b.writeln(
+      '${_paletteNames['bgSelectedMuted']}=${_iniColor(bgSelectedMuted)}',
+    );
+    b.writeln('${_paletteNames['bgInput']}=${_iniColor(bgInput)}');
+    b.writeln('${_paletteNames['bgDivider']}=${_iniColor(bgDivider)}');
+    b.writeln('${_paletteNames['borderColor']}=${_iniColor(borderColor)}');
+    b.writeln('${_paletteNames['accent']}=${_iniColor(accent)}');
+    b.writeln('${_paletteNames['accentHover']}=${_iniColor(accentHover)}');
+    b.writeln('${_paletteNames['fg']}=${_iniColor(fg)}');
+    b.writeln('${_paletteNames['fgMuted']}=${_iniColor(fgMuted)}');
+    b.writeln('${_paletteNames['fgSubtle']}=${_iniColor(fgSubtle)}');
+    b.writeln('${_paletteNames['fgAccent']}=${_iniColor(fgAccent)}');
+    b.writeln('${_paletteNames['danger']}=${_iniColor(danger)}');
+    b.writeln('${_paletteNames['success']}=${_iniColor(success)}');
+    b.writeln('${_paletteNames['warning']}=${_iniColor(warning)}');
+    b.writeln('${_paletteNames['neutral']}=${_iniColor(neutral)}');
+    b.writeln('${_paletteNames['bgHoverStrong']}=${_iniColor(bgHoverStrong)}');
+    b.writeln(
+      '${_paletteNames['windowCloseHover']}=${_iniColor(windowCloseHover)}',
+    );
+    b.writeln(
+      '${_paletteNames['windowClosePressed']}=${_iniColor(windowClosePressed)}',
+    );
+    b.writeln('${_paletteNames['shadowSubtle']}=${_iniColor(shadowSubtle)}');
+    b.writeln('${_paletteNames['fileJs']}=${_iniColor(fileJs)}');
+    b.writeln('${_paletteNames['fileHtml']}=${_iniColor(fileHtml)}');
+    b.writeln('${_paletteNames['fileCss']}=${_iniColor(fileCss)}');
+    b.writeln('${_paletteNames['fileArchive']}=${_iniColor(fileArchive)}');
+    b.writeln('${_paletteNames['fileAudio']}=${_iniColor(fileAudio)}');
+    b.writeln('${_paletteNames['fileVideo']}=${_iniColor(fileVideo)}');
+    b.writeln('${_paletteNames['fileDefault']}=${_iniColor(fileDefault)}');
+    b.writeln(
+      '${_paletteNames['folderNameDark']}=${_iniColor(folderNameDark)}',
+    );
+    b.writeln(
+      '${_paletteNames['folderNameLight']}=${_iniColor(folderNameLight)}',
+    );
+    b.writeln();
+    b.write(terminal.toIni());
+
+    return b.toString();
+  }
 }
 
 @immutable
@@ -286,21 +382,23 @@ class AppThemeDefinition {
     this.builtIn = false,
   });
 
-  factory AppThemeDefinition.fromJson(Map<String, dynamic> json) {
-    final id = json['id'];
-    final name = json['name'];
-    final brightness = json['brightness'];
-    final palette = json['palette'];
-    if (id is! String || id.trim().isEmpty) {
+  factory AppThemeDefinition.fromIni(String content) {
+    final sections = _parseIni(content);
+    final meta = sections['meta'] ?? const <String, String>{};
+    final id = meta['id'];
+    final name = meta['name'];
+    final brightness = meta['brightness'];
+    final palette = sections['palette'];
+    if (id == null || id.trim().isEmpty) {
       throw FormatException(t.preferences.appearance.missingThemeId);
     }
-    if (name is! String || name.trim().isEmpty) {
+    if (name == null || name.trim().isEmpty) {
       throw FormatException(t.preferences.appearance.missingThemeName);
     }
-    if (brightness is! String) {
+    if (brightness == null) {
       throw FormatException(t.preferences.appearance.missingThemeBrightness);
     }
-    if (palette is! Map<String, dynamic>) {
+    if (palette == null || palette.isEmpty) {
       throw FormatException(t.preferences.appearance.missingThemePalette);
     }
 
@@ -308,16 +406,56 @@ class AppThemeDefinition {
       id: id.trim(),
       name: name.trim(),
       brightness: _parseBrightness(brightness),
-      palette: AppThemePalette.fromJson(palette),
+      palette: AppThemePalette.fromIni(palette, sections['terminal']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'brightness': brightness == Brightness.dark ? 'dark' : 'light',
-    'palette': palette.toJson(),
-  };
+  String toIni() {
+    final b = StringBuffer();
+    b.writeln('[meta]');
+    b.writeln('id=$id');
+    b.writeln('name=$name');
+    b.writeln('brightness=${brightness == Brightness.dark ? 'dark' : 'light'}');
+    b.writeln();
+    b.write(palette.toIni());
+
+    return b.toString();
+  }
+}
+
+Map<String, Map<String, String>> _parseIni(String content) {
+  final sections = <String, Map<String, String>>{};
+  String? current;
+  for (var line in content.split('\n')) {
+    final trimmed = line.trim();
+    if (trimmed.isEmpty || trimmed.startsWith(';') || trimmed.startsWith('#')) {
+      continue;
+    }
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      current = trimmed.substring(1, trimmed.length - 1).trim();
+      sections[current] = <String, String>{};
+      continue;
+    }
+    if (current == null) continue;
+    final eq = trimmed.indexOf('=');
+    if (eq <= 0) continue;
+    final key = trimmed.substring(0, eq).trim();
+    final value = trimmed.substring(eq + 1).trim();
+    sections[current]![key] = value;
+  }
+
+  return sections;
+}
+
+String _iniColor(Color color) {
+  String h(int v) => v.toRadixString(16).padLeft(2, '0');
+  final a = (color.a * 255).round();
+  final r = h((color.r * 255).round());
+  final g = h((color.g * 255).round());
+  final b = h((color.b * 255).round());
+  if (a == 255) return (r + g + b).toUpperCase();
+
+  return (h(a) + r + g + b).toUpperCase();
 }
 
 Color parseThemeColor(String value, String key) {
@@ -343,13 +481,4 @@ Brightness _parseBrightness(String value) {
     'light' => Brightness.light,
     _ => throw FormatException(t.preferences.appearance.invalidThemeBrightness),
   };
-}
-
-String _hex(Color color) {
-  final a = (color.a * 255).round().toRadixString(16).padLeft(2, '0');
-  final r = (color.r * 255).round().toRadixString(16).padLeft(2, '0');
-  final g = (color.g * 255).round().toRadixString(16).padLeft(2, '0');
-  final b = (color.b * 255).round().toRadixString(16).padLeft(2, '0');
-
-  return '#${(a + r + g + b).toUpperCase()}';
 }

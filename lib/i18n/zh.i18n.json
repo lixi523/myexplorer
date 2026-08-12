@@ -1219,6 +1219,7 @@
     "sftpMkdirFailed": "SFTP 创建目录失败",
     "sftpRemoveFailed": "SFTP 删除失败",
     "sftpRenameFailed": "SFTP 重命名失败",
+    "sftpRenameCrossSession": "SFTP 重命名目标在不同服务器",
     "sftpOpenReaderFailed": "SFTP 打开读取器失败",
     "sftpOpenWriterFailed": "SFTP 打开写入器失败",
     "sftpCloseFailed": "SFTP 关闭失败",

@@ -91,6 +91,13 @@ class GitStatusStore {
     });
   }
 
+  void unwatchPath() {
+    _debounce?.cancel();
+    _debounce = null;
+    _lastPath = null;
+    status.value = null;
+  }
+
   /// Refreshes the most recently watched path (e.g. on window focus regain),
   /// without needing the caller to know it.
   Future<void> refreshCurrent() {

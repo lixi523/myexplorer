@@ -62,6 +62,9 @@ class DuplicateFinder {
         log.warn('duplicates', 'scan isolate error', error: e);
         onError?.call('$e');
       }),
+      exitPort.listen((_) {
+        // Isolate exited; errors already surfaced via errorPort if fatal.
+      }),
     ];
 
     return DuplicateScanHandle(

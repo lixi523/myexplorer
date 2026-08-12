@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
@@ -9,6 +10,12 @@ import '../logging/app_logger.dart';
 import 'native_copy.dart';
 
 class SafeFileReplace {
+  /// Maximum retries when generating a unique temp filename.
+  static const int kTempRetryMax = 10000;
+
+  /// Random hex suffix length to reduce cross-process collision probability.
+  static const int kTempRandomSuffixLen = 8;
+
   SafeFileReplace._();
 
   /// Copies [source] to [destinationPath] via a temp sibling, then atomically
@@ -76,17 +83,19 @@ class SafeFileReplace {
     final dir = split >= 0 ? path.substring(0, split) : '.';
     final name = split >= 0 ? path.substring(split + 1) : path;
     final timestamp = DateTime.now().microsecondsSinceEpoch;
+    final randomSuffix = _randomHex(kTempRandomSuffixLen);
 
-    for (var counter = 0; counter < 10000; counter++) {
+    for (var counter = 0; counter < kTempRetryMax; counter++) {
       final tempPath =
-          '$dir$separator.$name.myexplorer_tmp_${timestamp}_$counter';
+          '$dir$separator.$name.myexplorer_tmp_${timestamp}_${randomSuffix}_$counter';
       if (FileSystemEntity.typeSync(tempPath, followLinks: false) ==
           FileSystemEntityType.notFound) {
         return tempPath;
       }
     }
 
-    return '$dir$separator.$name.myexplorer_tmp_${DateTime.now().microsecondsSinceEpoch}';
+    // Fallback: extremely unlikely to collide given the random suffix.
+    return '$dir$separator.$name.myexplorer_tmp_${DateTime.now().microsecondsSinceEpoch}_$randomSuffix';
   }
 
   static void cleanupLeftovers(String directoryPath) {
@@ -218,10 +227,16 @@ class SafeFileReplace {
     }
   }
 
+  static String _randomHex(int len) {
+    final rnd = math.Random.secure();
+    return String.fromCharCodes(List.generate(len, (_) => rnd.nextInt(16)));
+  }
+
   static void _replaceWindows(String replacementPath, String destinationPath) {
     final replacement = replacementPath.toNativeUtf16();
-    final destination = destinationPath.toNativeUtf16();
+    late final Uint16Pointer destination;
     try {
+      destination = destinationPath.toNativeUtf16();
       final result = MoveFileEx(
         replacement,
         destination,

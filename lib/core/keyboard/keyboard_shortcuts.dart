@@ -821,21 +821,19 @@ class AppShortcuts {
     var ctrl = false, shift = false, alt = false;
     LogicalKeyboardKey? key;
     for (final part in parts) {
-      switch (part) {
-        case 'ctrl':
-        case 'control':
-        case 'cmd':
-        case 'command':
-        case 'meta':
-        case 'super':
-          ctrl = true;
-        case 'shift':
-          shift = true;
-        case 'alt':
-        case 'option':
-          alt = true;
-        default:
-          key = _parseKeyToken(part);
+      if (part == 'ctrl' ||
+          part == 'control' ||
+          part == 'cmd' ||
+          part == 'command' ||
+          part == 'meta' ||
+          part == 'super') {
+        ctrl = true;
+      } else if (part == 'shift') {
+        shift = true;
+      } else if (part == 'alt' || part == 'option') {
+        alt = true;
+      } else {
+        key = _parseKeyToken(part);
       }
     }
     if (key == null) return null;

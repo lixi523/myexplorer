@@ -208,7 +208,8 @@ class RecursiveSearch {
     if (session == null) {
       mainPort.send(_ProgressMsg(0, null));
       mainPort.send(const _DoneMsg());
-
+      // No session to free when searchStart returns null (empty result or
+      // library not available).
       return;
     }
 

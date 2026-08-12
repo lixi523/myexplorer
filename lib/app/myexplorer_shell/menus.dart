@@ -766,16 +766,20 @@ mixin _MyExplorerMenuMixin
     switch (op) {
       case 'copy':
         if (dst != null) _operationStore.enqueueCopy([src], dst);
+        break;
       case 'move':
         if (dst != null) _operationStore.enqueueMove([src], dst);
+        break;
       case 'delete':
         if (await _confirmPluginDelete(src, permanent: true)) {
           _operationStore.enqueueDelete([src]);
         }
+        break;
       case 'trash':
         if (await _confirmPluginDelete(src, permanent: false)) {
           _operationStore.enqueueTrash([src]);
         }
+        break;
     }
   }
 

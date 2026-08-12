@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' show Color;
+import 'dart:ui' show Color, Brightness;
 import 'package:signals/signals.dart';
 import '../../core/archive/archive_path.dart';
 import '../../core/archive/archive_reader.dart';
@@ -20,6 +20,7 @@ import '../locations/location_uri.dart';
 import '../../core/settings/settings_store.dart';
 import '../../core/settings/color_rule_store.dart';
 import '../../i18n/strings.g.dart';
+import '../../ui/theme/app_theme.dart';
 import '../files/row_decorations.dart';
 import '../git/git_status_store.dart';
 import '../hidden/hidden_list_store.dart';
@@ -399,18 +400,20 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
   late final _colorRuleDecorations = computed<Map<String, RowDecoration>>(() {
     final rules = ColorRuleStore.instance.rules.value; // reactive
-    if (rules.isEmpty) return const {};
+    SettingsStore.instance.themeId.value;
     final deco = <String, RowDecoration>{};
     final list = visibleFiles.value;
     for (final entry in list) {
       if (entry.type == FileItemType.folder) {
-        // Folders get a fixed name color.
-        deco[entry.path] = const RowDecoration(
-          tint: Color(0x00000000),
-          nameColor: Color(0xFFE9E9E9),
+        deco[entry.path] = RowDecoration(
+          tint: const Color(0x00000000),
+          nameColor: AppColors.brightness == Brightness.dark
+              ? AppColors.folderNameDark
+              : AppColors.folderNameLight,
         );
         continue;
       }
+      if (rules.isEmpty) continue;
       final color = ColorRuleStore.instance.colorFor(entry.extension);
       if (color != null) {
         deco[entry.path] = RowDecoration(
@@ -453,7 +456,10 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
   void _setupGitStatusEffect() {
     _gitStatusDisposer = effect(() {
       final path = currentPath.value;
-      if (!PlatformPaths.isNetworkPath(path)) gitStatus.watchPath(path);
+      if (!PlatformPaths.isNetworkPath(path)) {
+        gitStatus.unwatchPath();
+        gitStatus.watchPath(path);
+      }
     });
   }
 

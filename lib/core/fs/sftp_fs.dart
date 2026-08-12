@@ -29,8 +29,6 @@ class SftpFs implements FsBackend {
 
   String _remote(String path) => SftpSessionManager.remotePath(path);
 
-  /// Buduje logiczny URI z remote path (np. `/etc/foo`) używając sesji
-  /// rozpoznanej po `referencePath`.
   String _logicalFrom(String referencePath, String remotePath) {
     final rec = SftpSessionManager.recordFor(referencePath);
     if (rec == null) return referencePath;
@@ -151,6 +149,10 @@ class SftpFs implements FsBackend {
   @override
   Future<void> rename(String from, String to) async {
     final sessionId = _sessionFor(from);
+    final toSessionId = _sessionFor(to);
+    if (sessionId != toSessionId) {
+      throw FileSystemException(t.errors.sftpRenameCrossSession, from);
+    }
     final ok = MyExplorerCoreLoader.sftpRename(
       sessionId,
       _remote(from),

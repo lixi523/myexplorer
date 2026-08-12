@@ -792,6 +792,21 @@ class $AppSettingsTable extends AppSettings
     ),
     defaultValue: const Constant(false),
   );
+  // ignore: unused_field
+  static const VerificationMeta _autoOverwriteOlderMeta =
+      const VerificationMeta('autoOverwriteOlder');
+  @override
+  late final GeneratedColumn<bool> autoOverwriteOlder = GeneratedColumn<bool>(
+    'auto_overwrite_older',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("auto_overwrite_older" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -852,6 +867,8 @@ class $AppSettingsTable extends AppSettings
     quickLookWrapLines,
     quickLookShowStatistics,
     dragMovesByDefault,
+    autoOverwriteOlder,
+    autoSkipSameSize,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -866,33 +883,30 @@ class $AppSettingsTable extends AppSettings
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
     }
     if (data.containsKey('theme_mode')) {
       context.handle(
         _themeModeMeta,
-        themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta),
+        themeMode.isAcceptable(data['theme_mode']!, _themeModeMeta),
       );
     }
     if (data.containsKey('terminal')) {
       context.handle(
         _terminalMeta,
-        terminal.isAcceptableOrUnknown(data['terminal']!, _terminalMeta),
+        terminal.isAcceptable(data['terminal']!, _terminalMeta),
       );
     }
     if (data.containsKey('terminal_shell')) {
       context.handle(
         _terminalShellMeta,
-        terminalShell.isAcceptableOrUnknown(
-          data['terminal_shell']!,
-          _terminalShellMeta,
-        ),
+        terminalShell.isAcceptable(data['terminal_shell']!, _terminalShellMeta),
       );
     }
     if (data.containsKey('terminal_custom_command')) {
       context.handle(
         _terminalCustomCommandMeta,
-        terminalCustomCommand.isAcceptableOrUnknown(
+        terminalCustomCommand.isAcceptable(
           data['terminal_custom_command']!,
           _terminalCustomCommandMeta,
         ),
@@ -901,7 +915,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_use_system_font')) {
       context.handle(
         _terminalUseSystemFontMeta,
-        terminalUseSystemFont.isAcceptableOrUnknown(
+        terminalUseSystemFont.isAcceptable(
           data['terminal_use_system_font']!,
           _terminalUseSystemFontMeta,
         ),
@@ -910,7 +924,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_font_family')) {
       context.handle(
         _terminalFontFamilyMeta,
-        terminalFontFamily.isAcceptableOrUnknown(
+        terminalFontFamily.isAcceptable(
           data['terminal_font_family']!,
           _terminalFontFamilyMeta,
         ),
@@ -919,7 +933,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_font_size')) {
       context.handle(
         _terminalFontSizeMeta,
-        terminalFontSize.isAcceptableOrUnknown(
+        terminalFontSize.isAcceptable(
           data['terminal_font_size']!,
           _terminalFontSizeMeta,
         ),
@@ -928,7 +942,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_line_height')) {
       context.handle(
         _terminalLineHeightMeta,
-        terminalLineHeight.isAcceptableOrUnknown(
+        terminalLineHeight.isAcceptable(
           data['terminal_line_height']!,
           _terminalLineHeightMeta,
         ),
@@ -937,7 +951,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('terminal_copy_paste_mode')) {
       context.handle(
         _terminalCopyPasteModeMeta,
-        terminalCopyPasteMode.isAcceptableOrUnknown(
+        terminalCopyPasteMode.isAcceptable(
           data['terminal_copy_paste_mode']!,
           _terminalCopyPasteModeMeta,
         ),
@@ -946,19 +960,19 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('is_dual')) {
       context.handle(
         _isDualMeta,
-        isDual.isAcceptableOrUnknown(data['is_dual']!, _isDualMeta),
+        isDual.isAcceptable(data['is_dual']!, _isDualMeta),
       );
     }
     if (data.containsKey('split_ratio')) {
       context.handle(
         _splitRatioMeta,
-        splitRatio.isAcceptableOrUnknown(data['split_ratio']!, _splitRatioMeta),
+        splitRatio.isAcceptable(data['split_ratio']!, _splitRatioMeta),
       );
     }
     if (data.containsKey('active_pane_index')) {
       context.handle(
         _activePaneIndexMeta,
-        activePaneIndex.isAcceptableOrUnknown(
+        activePaneIndex.isAcceptable(
           data['active_pane_index']!,
           _activePaneIndexMeta,
         ),
@@ -967,7 +981,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('sidebar_collapsed')) {
       context.handle(
         _sidebarCollapsedMeta,
-        sidebarCollapsed.isAcceptableOrUnknown(
+        sidebarCollapsed.isAcceptable(
           data['sidebar_collapsed']!,
           _sidebarCollapsedMeta,
         ),
@@ -976,16 +990,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('sidebar_width')) {
       context.handle(
         _sidebarWidthMeta,
-        sidebarWidth.isAcceptableOrUnknown(
-          data['sidebar_width']!,
-          _sidebarWidthMeta,
-        ),
+        sidebarWidth.isAcceptable(data['sidebar_width']!, _sidebarWidthMeta),
       );
     }
     if (data.containsKey('restore_session')) {
       context.handle(
         _restoreSessionMeta,
-        restoreSession.isAcceptableOrUnknown(
+        restoreSession.isAcceptable(
           data['restore_session']!,
           _restoreSessionMeta,
         ),
@@ -994,7 +1005,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('default_starting_path')) {
       context.handle(
         _defaultStartingPathMeta,
-        defaultStartingPath.isAcceptableOrUnknown(
+        defaultStartingPath.isAcceptable(
           data['default_starting_path']!,
           _defaultStartingPathMeta,
         ),
@@ -1003,34 +1014,25 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('confirm_delete')) {
       context.handle(
         _confirmDeleteMeta,
-        confirmDelete.isAcceptableOrUnknown(
-          data['confirm_delete']!,
-          _confirmDeleteMeta,
-        ),
+        confirmDelete.isAcceptable(data['confirm_delete']!, _confirmDeleteMeta),
       );
     }
     if (data.containsKey('confirm_copy')) {
       context.handle(
         _confirmCopyMeta,
-        confirmCopy.isAcceptableOrUnknown(
-          data['confirm_copy']!,
-          _confirmCopyMeta,
-        ),
+        confirmCopy.isAcceptable(data['confirm_copy']!, _confirmCopyMeta),
       );
     }
     if (data.containsKey('confirm_move')) {
       context.handle(
         _confirmMoveMeta,
-        confirmMove.isAcceptableOrUnknown(
-          data['confirm_move']!,
-          _confirmMoveMeta,
-        ),
+        confirmMove.isAcceptable(data['confirm_move']!, _confirmMoveMeta),
       );
     }
     if (data.containsKey('show_hidden_default')) {
       context.handle(
         _showHiddenDefaultMeta,
-        showHiddenDefault.isAcceptableOrUnknown(
+        showHiddenDefault.isAcceptable(
           data['show_hidden_default']!,
           _showHiddenDefaultMeta,
         ),
@@ -1039,13 +1041,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('row_density')) {
       context.handle(
         _rowDensityMeta,
-        rowDensity.isAcceptableOrUnknown(data['row_density']!, _rowDensityMeta),
+        rowDensity.isAcceptable(data['row_density']!, _rowDensityMeta),
       );
     }
     if (data.containsKey('file_list_horizontal_spacing')) {
       context.handle(
         _fileListHorizontalSpacingMeta,
-        fileListHorizontalSpacing.isAcceptableOrUnknown(
+        fileListHorizontalSpacing.isAcceptable(
           data['file_list_horizontal_spacing']!,
           _fileListHorizontalSpacingMeta,
         ),
@@ -1054,7 +1056,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('file_list_vertical_spacing')) {
       context.handle(
         _fileListVerticalSpacingMeta,
-        fileListVerticalSpacing.isAcceptableOrUnknown(
+        fileListVerticalSpacing.isAcceptable(
           data['file_list_vertical_spacing']!,
           _fileListVerticalSpacingMeta,
         ),
@@ -1063,13 +1065,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('date_format')) {
       context.handle(
         _dateFormatMeta,
-        dateFormat.isAcceptableOrUnknown(data['date_format']!, _dateFormatMeta),
+        dateFormat.isAcceptable(data['date_format']!, _dateFormatMeta),
       );
     }
     if (data.containsKey('recent_dates_relative')) {
       context.handle(
         _recentDatesRelativeMeta,
-        recentDatesRelative.isAcceptableOrUnknown(
+        recentDatesRelative.isAcceptable(
           data['recent_dates_relative']!,
           _recentDatesRelativeMeta,
         ),
@@ -1078,7 +1080,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('delete_key_behavior')) {
       context.handle(
         _deleteKeyBehaviorMeta,
-        deleteKeyBehavior.isAcceptableOrUnknown(
+        deleteKeyBehavior.isAcceptable(
           data['delete_key_behavior']!,
           _deleteKeyBehaviorMeta,
         ),
@@ -1087,55 +1089,43 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('sort_key')) {
       context.handle(
         _sortKeyMeta,
-        sortKey.isAcceptableOrUnknown(data['sort_key']!, _sortKeyMeta),
+        sortKey.isAcceptable(data['sort_key']!, _sortKeyMeta),
       );
     }
     if (data.containsKey('sort_ascending')) {
       context.handle(
         _sortAscendingMeta,
-        sortAscending.isAcceptableOrUnknown(
-          data['sort_ascending']!,
-          _sortAscendingMeta,
-        ),
+        sortAscending.isAcceptable(data['sort_ascending']!, _sortAscendingMeta),
       );
     }
     if (data.containsKey('folders_first')) {
       context.handle(
         _foldersFirstMeta,
-        foldersFirst.isAcceptableOrUnknown(
-          data['folders_first']!,
-          _foldersFirstMeta,
-        ),
+        foldersFirst.isAcceptable(data['folders_first']!, _foldersFirstMeta),
       );
     }
     if (data.containsKey('natural_sort')) {
       context.handle(
         _naturalSortMeta,
-        naturalSort.isAcceptableOrUnknown(
-          data['natural_sort']!,
-          _naturalSortMeta,
-        ),
+        naturalSort.isAcceptable(data['natural_sort']!, _naturalSortMeta),
       );
     }
     if (data.containsKey('sort_folders')) {
       context.handle(
         _sortFoldersMeta,
-        sortFolders.isAcceptableOrUnknown(
-          data['sort_folders']!,
-          _sortFoldersMeta,
-        ),
+        sortFolders.isAcceptable(data['sort_folders']!, _sortFoldersMeta),
       );
     }
     if (data.containsKey('search_mode')) {
       context.handle(
         _searchModeMeta,
-        searchMode.isAcceptableOrUnknown(data['search_mode']!, _searchModeMeta),
+        searchMode.isAcceptable(data['search_mode']!, _searchModeMeta),
       );
     }
     if (data.containsKey('remember_folder_state')) {
       context.handle(
         _rememberFolderStateMeta,
-        rememberFolderState.isAcceptableOrUnknown(
+        rememberFolderState.isAcceptable(
           data['remember_folder_state']!,
           _rememberFolderStateMeta,
         ),
@@ -1144,7 +1134,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('remember_folder_sort')) {
       context.handle(
         _rememberFolderSortMeta,
-        rememberFolderSort.isAcceptableOrUnknown(
+        rememberFolderSort.isAcceptable(
           data['remember_folder_sort']!,
           _rememberFolderSortMeta,
         ),
@@ -1153,7 +1143,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('type_ahead_buffer')) {
       context.handle(
         _typeAheadBufferMeta,
-        typeAheadBuffer.isAcceptableOrUnknown(
+        typeAheadBuffer.isAcceptable(
           data['type_ahead_buffer']!,
           _typeAheadBufferMeta,
         ),
@@ -1162,7 +1152,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('file_list_scale')) {
       context.handle(
         _fileListScaleMeta,
-        fileListScale.isAcceptableOrUnknown(
+        fileListScale.isAcceptable(
           data['file_list_scale']!,
           _fileListScaleMeta,
         ),
@@ -1171,16 +1161,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('file_view_mode')) {
       context.handle(
         _fileViewModeMeta,
-        fileViewMode.isAcceptableOrUnknown(
-          data['file_view_mode']!,
-          _fileViewModeMeta,
-        ),
+        fileViewMode.isAcceptable(data['file_view_mode']!, _fileViewModeMeta),
       );
     }
     if (data.containsKey('show_column_size')) {
       context.handle(
         _showColumnSizeMeta,
-        showColumnSize.isAcceptableOrUnknown(
+        showColumnSize.isAcceptable(
           data['show_column_size']!,
           _showColumnSizeMeta,
         ),
@@ -1189,7 +1176,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_date')) {
       context.handle(
         _showColumnDateMeta,
-        showColumnDate.isAcceptableOrUnknown(
+        showColumnDate.isAcceptable(
           data['show_column_date']!,
           _showColumnDateMeta,
         ),
@@ -1198,7 +1185,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_kind')) {
       context.handle(
         _showColumnKindMeta,
-        showColumnKind.isAcceptableOrUnknown(
+        showColumnKind.isAcceptable(
           data['show_column_kind']!,
           _showColumnKindMeta,
         ),
@@ -1207,7 +1194,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_created')) {
       context.handle(
         _showColumnCreatedMeta,
-        showColumnCreated.isAcceptableOrUnknown(
+        showColumnCreated.isAcceptable(
           data['show_column_created']!,
           _showColumnCreatedMeta,
         ),
@@ -1216,7 +1203,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_added')) {
       context.handle(
         _showColumnAddedMeta,
-        showColumnAdded.isAcceptableOrUnknown(
+        showColumnAdded.isAcceptable(
           data['show_column_added']!,
           _showColumnAddedMeta,
         ),
@@ -1225,7 +1212,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_permissions')) {
       context.handle(
         _showColumnPermissionsMeta,
-        showColumnPermissions.isAcceptableOrUnknown(
+        showColumnPermissions.isAcceptable(
           data['show_column_permissions']!,
           _showColumnPermissionsMeta,
         ),
@@ -1234,7 +1221,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('show_column_owner')) {
       context.handle(
         _showColumnOwnerMeta,
-        showColumnOwner.isAcceptableOrUnknown(
+        showColumnOwner.isAcceptable(
           data['show_column_owner']!,
           _showColumnOwnerMeta,
         ),
@@ -1243,16 +1230,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('column_order')) {
       context.handle(
         _columnOrderMeta,
-        columnOrder.isAcceptableOrUnknown(
-          data['column_order']!,
-          _columnOrderMeta,
-        ),
+        columnOrder.isAcceptable(data['column_order']!, _columnOrderMeta),
       );
     }
     if (data.containsKey('column_width_mode')) {
       context.handle(
         _columnWidthModeMeta,
-        columnWidthMode.isAcceptableOrUnknown(
+        columnWidthMode.isAcceptable(
           data['column_width_mode']!,
           _columnWidthModeMeta,
         ),
@@ -1261,16 +1245,13 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('column_widths')) {
       context.handle(
         _columnWidthsMeta,
-        columnWidths.isAcceptableOrUnknown(
-          data['column_widths']!,
-          _columnWidthsMeta,
-        ),
+        columnWidths.isAcceptable(data['column_widths']!, _columnWidthsMeta),
       );
     }
     if (data.containsKey('quick_look_use_system_font')) {
       context.handle(
         _quickLookUseSystemFontMeta,
-        quickLookUseSystemFont.isAcceptableOrUnknown(
+        quickLookUseSystemFont.isAcceptable(
           data['quick_look_use_system_font']!,
           _quickLookUseSystemFontMeta,
         ),
@@ -1279,7 +1260,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_font_family')) {
       context.handle(
         _quickLookFontFamilyMeta,
-        quickLookFontFamily.isAcceptableOrUnknown(
+        quickLookFontFamily.isAcceptable(
           data['quick_look_font_family']!,
           _quickLookFontFamilyMeta,
         ),
@@ -1288,7 +1269,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_font_size')) {
       context.handle(
         _quickLookFontSizeMeta,
-        quickLookFontSize.isAcceptableOrUnknown(
+        quickLookFontSize.isAcceptable(
           data['quick_look_font_size']!,
           _quickLookFontSizeMeta,
         ),
@@ -1297,7 +1278,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_line_height')) {
       context.handle(
         _quickLookLineHeightMeta,
-        quickLookLineHeight.isAcceptableOrUnknown(
+        quickLookLineHeight.isAcceptable(
           data['quick_look_line_height']!,
           _quickLookLineHeightMeta,
         ),
@@ -1306,7 +1287,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_show_line_numbers')) {
       context.handle(
         _quickLookShowLineNumbersMeta,
-        quickLookShowLineNumbers.isAcceptableOrUnknown(
+        quickLookShowLineNumbers.isAcceptable(
           data['quick_look_show_line_numbers']!,
           _quickLookShowLineNumbersMeta,
         ),
@@ -1315,7 +1296,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_relative_line_numbers')) {
       context.handle(
         _quickLookRelativeLineNumbersMeta,
-        quickLookRelativeLineNumbers.isAcceptableOrUnknown(
+        quickLookRelativeLineNumbers.isAcceptable(
           data['quick_look_relative_line_numbers']!,
           _quickLookRelativeLineNumbersMeta,
         ),
@@ -1324,7 +1305,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_vim_mode')) {
       context.handle(
         _quickLookVimModeMeta,
-        quickLookVimMode.isAcceptableOrUnknown(
+        quickLookVimMode.isAcceptable(
           data['quick_look_vim_mode']!,
           _quickLookVimModeMeta,
         ),
@@ -1333,7 +1314,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_wrap_lines')) {
       context.handle(
         _quickLookWrapLinesMeta,
-        quickLookWrapLines.isAcceptableOrUnknown(
+        quickLookWrapLines.isAcceptable(
           data['quick_look_wrap_lines']!,
           _quickLookWrapLinesMeta,
         ),
@@ -1342,7 +1323,7 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('quick_look_show_statistics')) {
       context.handle(
         _quickLookShowStatisticsMeta,
-        quickLookShowStatistics.isAcceptableOrUnknown(
+        quickLookShowStatistics.isAcceptable(
           data['quick_look_show_statistics']!,
           _quickLookShowStatisticsMeta,
         ),
@@ -1351,9 +1332,27 @@ class $AppSettingsTable extends AppSettings
     if (data.containsKey('drag_moves_by_default')) {
       context.handle(
         _dragMovesByDefaultMeta,
-        dragMovesByDefault.isAcceptableOrUnknown(
+        dragMovesByDefault.isAcceptable(
           data['drag_moves_by_default']!,
           _dragMovesByDefaultMeta,
+        ),
+      );
+    }
+    if (data.containsKey('auto_overwrite_older')) {
+      context.handle(
+        _autoOverwriteOlderMeta,
+        autoOverwriteOlder.isAcceptable(
+          data['auto_overwrite_older']!,
+          _autoOverwriteOlderMeta,
+        ),
+      );
+    }
+    if (data.containsKey('auto_skip_same_size')) {
+      context.handle(
+        _autoSkipSameSizeMeta,
+        autoSkipSameSize.isAcceptable(
+          data['auto_skip_same_size']!,
+          _autoSkipSameSizeMeta,
         ),
       );
     }
@@ -1666,6 +1665,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   final bool quickLookWrapLines;
   final bool quickLookShowStatistics;
   final bool dragMovesByDefault;
+  final bool autoOverwriteOlder;
+  final bool autoSkipSameSize;
   const AppSetting({
     required this.id,
     required this.themeMode,
@@ -1725,6 +1726,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     required this.quickLookWrapLines,
     required this.quickLookShowStatistics,
     required this.dragMovesByDefault,
+    required this.autoOverwriteOlder,
+    required this.autoSkipSameSize,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1793,6 +1796,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     map['quick_look_wrap_lines'] = Variable<bool>(quickLookWrapLines);
     map['quick_look_show_statistics'] = Variable<bool>(quickLookShowStatistics);
     map['drag_moves_by_default'] = Variable<bool>(dragMovesByDefault);
+    map['auto_overwrite_older'] = Variable<bool>(autoOverwriteOlder);
+    map['auto_skip_same_size'] = Variable<bool>(autoSkipSameSize);
     return map;
   }
 
@@ -1856,6 +1861,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       quickLookWrapLines: Value(quickLookWrapLines),
       quickLookShowStatistics: Value(quickLookShowStatistics),
       dragMovesByDefault: Value(dragMovesByDefault),
+      autoOverwriteOlder: Value(autoOverwriteOlder),
+      autoSkipSameSize: Value(autoSkipSameSize),
     );
   }
 
@@ -1957,6 +1964,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
         json['quickLookShowStatistics'],
       ),
       dragMovesByDefault: serializer.fromJson<bool>(json['dragMovesByDefault']),
+      autoOverwriteOlder: serializer.fromJson<bool>(json['autoOverwriteOlder']),
+      autoSkipSameSize: serializer.fromJson<bool>(json['autoSkipSameSize']),
     );
   }
   @override
@@ -2031,6 +2040,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
         quickLookShowStatistics,
       ),
       'dragMovesByDefault': serializer.toJson<bool>(dragMovesByDefault),
+      'autoOverwriteOlder': serializer.toJson<bool>(autoOverwriteOlder),
+      'autoSkipSameSize': serializer.toJson<bool>(autoSkipSameSize),
     };
   }
 
@@ -2093,6 +2104,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     bool? quickLookWrapLines,
     bool? quickLookShowStatistics,
     bool? dragMovesByDefault,
+    bool? autoOverwriteOlder,
+    bool? autoSkipSameSize,
   }) => AppSetting(
     id: id ?? this.id,
     themeMode: themeMode ?? this.themeMode,
@@ -2158,6 +2171,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     quickLookShowStatistics:
         quickLookShowStatistics ?? this.quickLookShowStatistics,
     dragMovesByDefault: dragMovesByDefault ?? this.dragMovesByDefault,
+    autoOverwriteOlder: autoOverwriteOlder ?? this.autoOverwriteOlder,
+    autoSkipSameSize: autoSkipSameSize ?? this.autoSkipSameSize,
   );
   AppSetting copyWithCompanion(AppSettingsCompanion data) {
     return AppSetting(
@@ -2455,6 +2470,8 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     quickLookWrapLines,
     quickLookShowStatistics,
     dragMovesByDefault,
+    autoOverwriteOlder,
+    autoSkipSameSize,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -2518,7 +2535,9 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
           other.quickLookVimMode == this.quickLookVimMode &&
           other.quickLookWrapLines == this.quickLookWrapLines &&
           other.quickLookShowStatistics == this.quickLookShowStatistics &&
-          other.dragMovesByDefault == this.dragMovesByDefault);
+          other.dragMovesByDefault == this.dragMovesByDefault &&
+          other.autoOverwriteOlder == this.autoOverwriteOlder &&
+          other.autoSkipSameSize == this.autoSkipSameSize);
 }
 
 class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
@@ -2580,6 +2599,8 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   final Value<bool> quickLookWrapLines;
   final Value<bool> quickLookShowStatistics;
   final Value<bool> dragMovesByDefault;
+  final Value<bool> autoOverwriteOlder;
+  final Value<bool> autoSkipSameSize;
   const AppSettingsCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
@@ -2639,6 +2660,8 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     this.quickLookWrapLines = const Value.absent(),
     this.quickLookShowStatistics = const Value.absent(),
     this.dragMovesByDefault = const Value.absent(),
+    this.autoOverwriteOlder = const Value.absent(),
+    this.autoSkipSameSize = const Value.absent(),
   });
   AppSettingsCompanion.insert({
     this.id = const Value.absent(),
@@ -2699,6 +2722,8 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     this.quickLookWrapLines = const Value.absent(),
     this.quickLookShowStatistics = const Value.absent(),
     this.dragMovesByDefault = const Value.absent(),
+    this.autoOverwriteOlder = const Value.absent(),
+    this.autoSkipSameSize = const Value.absent(),
   });
   static Insertable<AppSetting> custom({
     Expression<int>? id,
@@ -3334,12 +3359,12 @@ class $SessionTabsTable extends SessionTabs
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
     }
     if (data.containsKey('pane_index')) {
       context.handle(
         _paneIndexMeta,
-        paneIndex.isAcceptableOrUnknown(data['pane_index']!, _paneIndexMeta),
+        paneIndex.isAcceptable(data['pane_index']!, _paneIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_paneIndexMeta);
@@ -3347,23 +3372,20 @@ class $SessionTabsTable extends SessionTabs
     if (data.containsKey('tab_index')) {
       context.handle(
         _tabIndexMeta,
-        tabIndex.isAcceptableOrUnknown(data['tab_index']!, _tabIndexMeta),
+        tabIndex.isAcceptable(data['tab_index']!, _tabIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_tabIndexMeta);
     }
     if (data.containsKey('path')) {
-      context.handle(
-        _pathMeta,
-        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
-      );
+      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('is_active')) {
       context.handle(
         _isActiveMeta,
-        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+        isActive.isAcceptable(data['is_active']!, _isActiveMeta),
       );
     }
     return context;
@@ -3663,12 +3685,12 @@ class $BookmarksTable extends Bookmarks
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
     }
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
@@ -3676,16 +3698,13 @@ class $BookmarksTable extends Bookmarks
     if (data.containsKey('label')) {
       context.handle(
         _labelMeta,
-        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+        label.isAcceptable(data['label']!, _labelMeta),
       );
     } else if (isInserting) {
       context.missing(_labelMeta);
     }
     if (data.containsKey('path')) {
-      context.handle(
-        _pathMeta,
-        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
-      );
+      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
@@ -3795,12 +3814,12 @@ class $ShortcutBarItemsTable extends ShortcutBarItems
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
     }
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_orderIndexMeta);
@@ -3808,7 +3827,7 @@ class $ShortcutBarItemsTable extends ShortcutBarItems
     if (data.containsKey('label')) {
       context.handle(
         _labelMeta,
-        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+        label.isAcceptable(data['label']!, _labelMeta),
       );
     } else if (isInserting) {
       context.missing(_labelMeta);
@@ -3816,16 +3835,13 @@ class $ShortcutBarItemsTable extends ShortcutBarItems
     if (data.containsKey('target')) {
       context.handle(
         _targetMeta,
-        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+        target.isAcceptable(data['target']!, _targetMeta),
       );
     } else if (isInserting) {
       context.missing(_targetMeta);
     }
     if (data.containsKey('icon')) {
-      context.handle(
-        _iconMeta,
-        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
-      );
+      context.handle(_iconMeta, icon.isAcceptable(data['icon']!, _iconMeta));
     }
     return context;
   }
@@ -4349,56 +4365,44 @@ class $FolderPrefsTable extends FolderPrefs
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('path')) {
-      context.handle(
-        _pathMeta,
-        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
-      );
+      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('sort_key')) {
       context.handle(
         _sortKeyMeta,
-        sortKey.isAcceptableOrUnknown(data['sort_key']!, _sortKeyMeta),
+        sortKey.isAcceptable(data['sort_key']!, _sortKeyMeta),
       );
     }
     if (data.containsKey('sort_ascending')) {
       context.handle(
         _sortAscendingMeta,
-        sortAscending.isAcceptableOrUnknown(
-          data['sort_ascending']!,
-          _sortAscendingMeta,
-        ),
+        sortAscending.isAcceptable(data['sort_ascending']!, _sortAscendingMeta),
       );
     }
     if (data.containsKey('folders_first')) {
       context.handle(
         _foldersFirstMeta,
-        foldersFirst.isAcceptableOrUnknown(
-          data['folders_first']!,
-          _foldersFirstMeta,
-        ),
+        foldersFirst.isAcceptable(data['folders_first']!, _foldersFirstMeta),
       );
     }
     if (data.containsKey('cursor_path')) {
       context.handle(
         _cursorPathMeta,
-        cursorPath.isAcceptableOrUnknown(data['cursor_path']!, _cursorPathMeta),
+        cursorPath.isAcceptable(data['cursor_path']!, _cursorPathMeta),
       );
     }
     if (data.containsKey('selected_paths')) {
       context.handle(
         _selectedPathsMeta,
-        selectedPaths.isAcceptableOrUnknown(
-          data['selected_paths']!,
-          _selectedPathsMeta,
-        ),
+        selectedPaths.isAcceptable(data['selected_paths']!, _selectedPathsMeta),
       );
     }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+        updatedAt.isAcceptable(data['updated_at']!, _updatedAtMeta),
       );
     }
     return context;
@@ -4810,17 +4814,14 @@ class $RecentAppsTable extends RecentApps
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('mime')) {
-      context.handle(
-        _mimeMeta,
-        mime.isAcceptableOrUnknown(data['mime']!, _mimeMeta),
-      );
+      context.handle(_mimeMeta, mime.isAcceptable(data['mime']!, _mimeMeta));
     } else if (isInserting) {
       context.missing(_mimeMeta);
     }
     if (data.containsKey('app_id')) {
       context.handle(
         _appIdMeta,
-        appId.isAcceptableOrUnknown(data['app_id']!, _appIdMeta),
+        appId.isAcceptable(data['app_id']!, _appIdMeta),
       );
     } else if (isInserting) {
       context.missing(_appIdMeta);
@@ -4828,7 +4829,7 @@ class $RecentAppsTable extends RecentApps
     if (data.containsKey('app_name')) {
       context.handle(
         _appNameMeta,
-        appName.isAcceptableOrUnknown(data['app_name']!, _appNameMeta),
+        appName.isAcceptable(data['app_name']!, _appNameMeta),
       );
     } else if (isInserting) {
       context.missing(_appNameMeta);
@@ -4836,7 +4837,7 @@ class $RecentAppsTable extends RecentApps
     if (data.containsKey('app_exec')) {
       context.handle(
         _appExecMeta,
-        appExec.isAcceptableOrUnknown(data['app_exec']!, _appExecMeta),
+        appExec.isAcceptable(data['app_exec']!, _appExecMeta),
       );
     } else if (isInserting) {
       context.missing(_appExecMeta);
@@ -4844,13 +4845,13 @@ class $RecentAppsTable extends RecentApps
     if (data.containsKey('icon_path')) {
       context.handle(
         _iconPathMeta,
-        iconPath.isAcceptableOrUnknown(data['icon_path']!, _iconPathMeta),
+        iconPath.isAcceptable(data['icon_path']!, _iconPathMeta),
       );
     }
     if (data.containsKey('used_at')) {
       context.handle(
         _usedAtMeta,
-        usedAt.isAcceptableOrUnknown(data['used_at']!, _usedAtMeta),
+        usedAt.isAcceptable(data['used_at']!, _usedAtMeta),
       );
     }
     return context;
@@ -5169,17 +5170,14 @@ class $RecentEnteredPathsTable extends RecentEnteredPaths
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('path')) {
-      context.handle(
-        _pathMeta,
-        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
-      );
+      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('used_at')) {
       context.handle(
         _usedAtMeta,
-        usedAt.isAcceptableOrUnknown(data['used_at']!, _usedAtMeta),
+        usedAt.isAcceptable(data['used_at']!, _usedAtMeta),
       );
     }
     return context;
@@ -5421,7 +5419,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('type_key')) {
       context.handle(
         _typeKeyMeta,
-        typeKey.isAcceptableOrUnknown(data['type_key']!, _typeKeyMeta),
+        typeKey.isAcceptable(data['type_key']!, _typeKeyMeta),
       );
     } else if (isInserting) {
       context.missing(_typeKeyMeta);
@@ -5429,7 +5427,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('app_id')) {
       context.handle(
         _appIdMeta,
-        appId.isAcceptableOrUnknown(data['app_id']!, _appIdMeta),
+        appId.isAcceptable(data['app_id']!, _appIdMeta),
       );
     } else if (isInserting) {
       context.missing(_appIdMeta);
@@ -5437,7 +5435,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('app_name')) {
       context.handle(
         _appNameMeta,
-        appName.isAcceptableOrUnknown(data['app_name']!, _appNameMeta),
+        appName.isAcceptable(data['app_name']!, _appNameMeta),
       );
     } else if (isInserting) {
       context.missing(_appNameMeta);
@@ -5445,7 +5443,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('app_exec')) {
       context.handle(
         _appExecMeta,
-        appExec.isAcceptableOrUnknown(data['app_exec']!, _appExecMeta),
+        appExec.isAcceptable(data['app_exec']!, _appExecMeta),
       );
     } else if (isInserting) {
       context.missing(_appExecMeta);
@@ -5453,7 +5451,7 @@ class $DefaultAppsTable extends DefaultApps
     if (data.containsKey('icon_path')) {
       context.handle(
         _iconPathMeta,
-        iconPath.isAcceptableOrUnknown(data['icon_path']!, _iconPathMeta),
+        iconPath.isAcceptable(data['icon_path']!, _iconPathMeta),
       );
     }
     return context;
@@ -5787,7 +5785,7 @@ class $ShortcutBindingsTable extends ShortcutBindings
     if (data.containsKey('action_id')) {
       context.handle(
         _actionIdMeta,
-        actionId.isAcceptableOrUnknown(data['action_id']!, _actionIdMeta),
+        actionId.isAcceptable(data['action_id']!, _actionIdMeta),
       );
     } else if (isInserting) {
       context.missing(_actionIdMeta);
@@ -5795,28 +5793,22 @@ class $ShortcutBindingsTable extends ShortcutBindings
     if (data.containsKey('key_id')) {
       context.handle(
         _keyIdMeta,
-        keyId.isAcceptableOrUnknown(data['key_id']!, _keyIdMeta),
+        keyId.isAcceptable(data['key_id']!, _keyIdMeta),
       );
     } else if (isInserting) {
       context.missing(_keyIdMeta);
     }
     if (data.containsKey('ctrl')) {
-      context.handle(
-        _ctrlMeta,
-        ctrl.isAcceptableOrUnknown(data['ctrl']!, _ctrlMeta),
-      );
+      context.handle(_ctrlMeta, ctrl.isAcceptable(data['ctrl']!, _ctrlMeta));
     }
     if (data.containsKey('shift')) {
       context.handle(
         _shiftMeta,
-        shift.isAcceptableOrUnknown(data['shift']!, _shiftMeta),
+        shift.isAcceptable(data['shift']!, _shiftMeta),
       );
     }
     if (data.containsKey('alt')) {
-      context.handle(
-        _altMeta,
-        alt.isAcceptableOrUnknown(data['alt']!, _altMeta),
-      );
+      context.handle(_altMeta, alt.isAcceptable(data['alt']!, _altMeta));
     }
     return context;
   }
@@ -6113,23 +6105,20 @@ class $PluginSettingsTable extends PluginSettings
     if (data.containsKey('plugin_id')) {
       context.handle(
         _pluginIdMeta,
-        pluginId.isAcceptableOrUnknown(data['plugin_id']!, _pluginIdMeta),
+        pluginId.isAcceptable(data['plugin_id']!, _pluginIdMeta),
       );
     } else if (isInserting) {
       context.missing(_pluginIdMeta);
     }
     if (data.containsKey('key')) {
-      context.handle(
-        _keyMeta,
-        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
-      );
+      context.handle(_keyMeta, key.isAcceptable(data['key']!, _keyMeta));
     } else if (isInserting) {
       context.missing(_keyMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
         _valueMeta,
-        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+        value.isAcceptable(data['value']!, _valueMeta),
       );
     } else if (isInserting) {
       context.missing(_valueMeta);
@@ -6357,7 +6346,7 @@ class $DisabledPluginsTable extends DisabledPlugins
     if (data.containsKey('plugin_id')) {
       context.handle(
         _pluginIdMeta,
-        pluginId.isAcceptableOrUnknown(data['plugin_id']!, _pluginIdMeta),
+        pluginId.isAcceptable(data['plugin_id']!, _pluginIdMeta),
       );
     } else if (isInserting) {
       context.missing(_pluginIdMeta);
@@ -6558,7 +6547,7 @@ class $SidebarPrefsTable extends SidebarPrefs
     if (data.containsKey('scope')) {
       context.handle(
         _scopeMeta,
-        scope.isAcceptableOrUnknown(data['scope']!, _scopeMeta),
+        scope.isAcceptable(data['scope']!, _scopeMeta),
       );
     } else if (isInserting) {
       context.missing(_scopeMeta);
@@ -6566,7 +6555,7 @@ class $SidebarPrefsTable extends SidebarPrefs
     if (data.containsKey('item_key')) {
       context.handle(
         _itemKeyMeta,
-        itemKey.isAcceptableOrUnknown(data['item_key']!, _itemKeyMeta),
+        itemKey.isAcceptable(data['item_key']!, _itemKeyMeta),
       );
     } else if (isInserting) {
       context.missing(_itemKeyMeta);
@@ -6574,13 +6563,13 @@ class $SidebarPrefsTable extends SidebarPrefs
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
       );
     }
     if (data.containsKey('hidden')) {
       context.handle(
         _hiddenMeta,
-        hidden.isAcceptableOrUnknown(data['hidden']!, _hiddenMeta),
+        hidden.isAcceptable(data['hidden']!, _hiddenMeta),
       );
     }
     return context;
@@ -6865,20 +6854,17 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+      context.handle(_idMeta, id.isAcceptable(data['id']!, _idMeta));
     }
     if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
+      context.handle(_nameMeta, name.isAcceptable(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('color')) {
       context.handle(
         _colorMeta,
-        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+        color.isAcceptable(data['color']!, _colorMeta),
       );
     } else if (isInserting) {
       context.missing(_colorMeta);
@@ -6886,7 +6872,7 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
     if (data.containsKey('order_index')) {
       context.handle(
         _orderIndexMeta,
-        orderIndex.isAcceptableOrUnknown(data['order_index']!, _orderIndexMeta),
+        orderIndex.isAcceptable(data['order_index']!, _orderIndexMeta),
       );
     }
     return context;
@@ -7133,17 +7119,14 @@ class $FileTagsTable extends FileTags with TableInfo<$FileTagsTable, FileTag> {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('path')) {
-      context.handle(
-        _pathMeta,
-        path.isAcceptableOrUnknown(data['path']!, _pathMeta),
-      );
+      context.handle(_pathMeta, path.isAcceptable(data['path']!, _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('tag_id')) {
       context.handle(
         _tagIdMeta,
-        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
+        tagId.isAcceptable(data['tag_id']!, _tagIdMeta),
       );
     } else if (isInserting) {
       context.missing(_tagIdMeta);

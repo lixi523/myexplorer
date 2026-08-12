@@ -65,10 +65,27 @@ class _PlannedEntry {
   const _PlannedEntry(this.absPath, this.archiveName, this.isDir, this.size);
 }
 
+class _PlanCache {
+  final List<String> sources;
+  final List<_PlannedEntry> entries;
+  const _PlanCache(this.sources, this.entries);
+}
+
 class ArchiveWriter {
   ArchiveWriter._();
 
+  /// Cached plan results keyed by the exact sources list.
+  static final Map<String, _PlanCache> _planCache = <String, _PlanCache>{};
+
+  /// Maximum number of entries to cache; larger plans are uncacheable.
+  static const int _kMaxCachedEntries = 10000;
+
   static List<_PlannedEntry> _plan(List<String> sources) {
+    if (sources.length <= _kMaxCachedEntries) {
+      final key = sources.join('\n');
+      final cached = _planCache[key];
+      if (cached != null) return cached.entries;
+    }
     final out = <_PlannedEntry>[];
     for (final src in sources) {
       final base = p.dirname(src);
@@ -115,6 +132,9 @@ class ArchiveWriter {
       }
     }
 
+    if (sources.length <= _kMaxCachedEntries) {
+      _planCache[sources] = _PlanCache(sources, out);
+    }
     return out;
   }
 

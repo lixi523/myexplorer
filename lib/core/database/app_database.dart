@@ -102,6 +102,10 @@ class AppSettings extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get dragMovesByDefault =>
       boolean().withDefault(const Constant(false))();
+  BoolColumn get autoOverwriteOlder =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get autoSkipSameSize =>
+      boolean().withDefault(const Constant(false))();
 }
 
 class SessionTabs extends Table {
@@ -261,7 +265,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 44;
+  int get schemaVersion => 45;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -273,7 +277,7 @@ class AppDatabase extends _$AppDatabase {
       if (from < 2) {
         await m.createTable(bookmarks);
       }
-      Future<void> addSettingColumn(GeneratedColumn column) async {
+      Future<void> addSettingColumn(Column<Object> column) async {
         final existing = await customSelect(
           'PRAGMA table_info(app_settings)',
         ).get();
@@ -333,7 +337,7 @@ class AppDatabase extends _$AppDatabase {
         await addSettingColumn(appSettings.fileListHorizontalSpacing);
         await addSettingColumn(appSettings.fileListVerticalSpacing);
       }
-      Future<void> addFolderPrefColumn(GeneratedColumn column) async {
+      Future<void> addFolderPrefColumn(Column<Object> column) async {
         final existing = await customSelect(
           'PRAGMA table_info(folder_prefs)',
         ).get();
@@ -415,7 +419,7 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 34) {
         await customStatement(
-          "UPDATE app_settings SET show_column_kind = 1, column_order = 'kind,size,date,created,permissions,owner' WHERE show_column_size = 1 AND show_column_date = 1 AND show_column_kind = 0 AND show_column_created = 0 AND show_column_permissions = 0 AND show_column_owner = 0 AND column_order = 'size,date,kind,created,permissions,owner'",
+          "UPDATE app_settings SET show_column_kind = 1, column_order = 'kind,size,date,created,added,permissions,owner' WHERE show_column_size = 1 AND show_column_date = 1 AND show_column_kind = 0 AND show_column_created = 0 AND show_column_permissions = 0 AND show_column_owner = 0 AND column_order = 'size,date,kind,created,permissions,owner'",
         );
       }
       if (from < 35) {
@@ -466,6 +470,10 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 44) {
         await m.createTable(shortcutBarItems);
+      }
+      if (from < 45) {
+        await addSettingColumn(appSettings.autoOverwriteOlder);
+        await addSettingColumn(appSettings.autoSkipSameSize);
       }
     },
   );
@@ -911,13 +919,11 @@ class AppDatabase extends _$AppDatabase {
     )..addColumns([countExp])).getSingle();
     final total = row.read(countExp) ?? 0;
     if (total <= _maxFolderPrefs) return;
-    final cutoff =
-        await (select(folderPrefs)
-              ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
-              ..limit(1, offset: _maxFolderPrefs - 1))
-            .getSingle();
-    await (delete(
-      folderPrefs,
-    )..where((t) => t.updatedAt.isSmallerThanValue(cutoff.updatedAt))).go();
+    final rowsToDelete = total - _maxFolderPrefs;
+    await customStatement(
+      "DELETE FROM folder_prefs WHERE rowid IN ("
+      "SELECT rowid FROM folder_prefs ORDER BY updated_at ASC, rowid ASC "
+      "LIMIT $rowsToDelete)",
+    );
   }
 }

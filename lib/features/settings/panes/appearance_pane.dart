@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -43,8 +42,7 @@ class _AppearancePaneState extends State<AppearancePane> {
     await dir.create(recursive: true);
     final files = <_CustomThemeFile>[];
     await for (final entity in dir.list()) {
-      if (entity is! File ||
-          p.extension(entity.path).toLowerCase() != '.json') {
+      if (entity is! File || p.extension(entity.path).toLowerCase() != '.ini') {
         continue;
       }
       files.add(await _readThemeFile(entity));
@@ -56,13 +54,7 @@ class _AppearancePaneState extends State<AppearancePane> {
 
   Future<_CustomThemeFile> _readThemeFile(File file) async {
     try {
-      final decoded = jsonDecode(await file.readAsString());
-      if (decoded is! Map<String, dynamic>) {
-        throw FormatException(
-          t.preferences.appearance.themeFileMustContainJsonObject,
-        );
-      }
-      final theme = AppThemeDefinition.fromJson(decoded);
+      final theme = AppThemeDefinition.fromIni(await file.readAsString());
 
       return _CustomThemeFile(path: file.path, theme: theme);
     } catch (error) {
@@ -75,28 +67,20 @@ class _AppearancePaneState extends State<AppearancePane> {
     if (name == null || name.trim().isEmpty) return;
     final trimmed = name.trim();
     final id = trimmed.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
-    final fileName = '$id.json';
+    final fileName = '$id.ini';
     final path = p.join(themesPath, fileName);
     if (File(path).existsSync()) {
       var index = 2;
       late String uniquePath;
       do {
-        uniquePath = p.join(themesPath, '${id}_$index.json');
+        uniquePath = p.join(themesPath, '${id}_$index.ini');
         index++;
       } while (File(uniquePath).existsSync());
-      final json = darkTheme.toJson()
-        ..['id'] = '${id}_${index - 1}'
-        ..['name'] = trimmed;
-      await File(
-        uniquePath,
-      ).writeAsString(const JsonEncoder.withIndent('  ').convert(json));
+      await File(uniquePath).writeAsString(
+        _withMeta(darkTheme, '${id}_${index - 1}', trimmed).toIni(),
+      );
     } else {
-      final json = darkTheme.toJson()
-        ..['id'] = id
-        ..['name'] = trimmed;
-      await File(
-        path,
-      ).writeAsString(const JsonEncoder.withIndent('  ').convert(json));
+      await File(path).writeAsString(_withMeta(darkTheme, id, trimmed).toIni());
     }
     await _reloadRegistry();
   }
@@ -465,6 +449,16 @@ String _themeLabel(AppThemeDefinition theme) => switch (theme.id) {
   'nord' => t.preferences.appearance.themeNord,
   _ => theme.name,
 };
+
+AppThemeDefinition _withMeta(AppThemeDefinition theme, String id, String name) {
+  return AppThemeDefinition(
+    id: id,
+    name: name,
+    brightness: theme.brightness,
+    palette: theme.palette,
+    builtIn: theme.builtIn,
+  );
+}
 
 class _ThemeFilesState {
   final String themesPath;

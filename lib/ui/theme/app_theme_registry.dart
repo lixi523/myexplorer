@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -27,21 +26,21 @@ class AppThemeRegistry {
   );
 
   Future<void> load({String? customThemesPath}) async {
-    _themes
-      ..clear()
-      ..addAll(builtInThemes);
     final dir = customThemesPath ?? await AppDirs.themes();
     _cachedThemesDir = dir;
-    await _loadCustomThemes(dir);
+    await _seedBuiltInThemes(dir);
+    _themes
+      ..clear()
+      ..addAll(await _loadThemesFromDir(dir));
   }
 
   void loadSync() {
     final dirPath = _cachedThemesDir;
     if (dirPath == null) return;
+    _seedBuiltInThemesSync(dirPath);
     _themes
       ..clear()
-      ..addAll(builtInThemes);
-    _loadCustomThemesSync(dirPath);
+      ..addAll(_loadThemesFromDirSync(dirPath));
   }
 
   AppThemeDefinition resolve(String id) {
@@ -61,20 +60,20 @@ class AppThemeRegistry {
     return defaultTheme;
   }
 
-  Future<void> _loadCustomThemes(String dirPath) async {
+  Future<List<AppThemeDefinition>> _loadThemesFromDir(String dirPath) async {
+    final iniById = <String, AppThemeDefinition>{};
+    final custom = <AppThemeDefinition>[];
     final dir = Directory(dirPath);
     try {
-      if (!await dir.exists()) {
-        await dir.create(recursive: true);
-
-        return;
-      }
       await for (final entity in dir.list()) {
         if (entity is! File ||
-            p.extension(entity.path).toLowerCase() != '.json') {
+            p.extension(entity.path).toLowerCase() != '.ini') {
           continue;
         }
-        await _loadThemeFile(entity);
+        final theme = await _readThemeIni(entity);
+        if (theme == null || iniById.containsKey(theme.id)) continue;
+        iniById[theme.id] = theme;
+        custom.add(theme);
       }
     } catch (error, stack) {
       log.warn(
@@ -84,18 +83,66 @@ class AppThemeRegistry {
         stack: stack,
       );
     }
+
+    return _mergeThemes(iniById, custom);
   }
 
-  void _loadCustomThemesSync(String dirPath) {
+  List<AppThemeDefinition> _loadThemesFromDirSync(String dirPath) {
+    final iniById = <String, AppThemeDefinition>{};
+    final custom = <AppThemeDefinition>[];
     final dir = Directory(dirPath);
     try {
-      if (!dir.existsSync()) return;
       for (final entity in dir.listSync()) {
         if (entity is! File ||
-            p.extension(entity.path).toLowerCase() != '.json') {
+            p.extension(entity.path).toLowerCase() != '.ini') {
           continue;
         }
-        _loadThemeFileSync(entity);
+        final theme = _readThemeIniSync(entity);
+        if (theme == null || iniById.containsKey(theme.id)) continue;
+        iniById[theme.id] = theme;
+        custom.add(theme);
+      }
+    } catch (error, stack) {
+      log.warn(
+        'theme',
+        t.preferences.appearance.couldNotLoadCustomThemes,
+        error: error,
+        stack: stack,
+      );
+    }
+
+    return _mergeThemes(iniById, custom);
+  }
+
+  List<AppThemeDefinition> _mergeThemes(
+    Map<String, AppThemeDefinition> iniById,
+    List<AppThemeDefinition> custom,
+  ) {
+    final builtInIds = builtInThemes.map((t) => t.id).toSet();
+    final out = <AppThemeDefinition>[];
+    for (final builtIn in builtInThemes) {
+      out.add(iniById[builtIn.id] ?? builtIn);
+    }
+    for (final theme in custom) {
+      if (!builtInIds.contains(theme.id)) out.add(theme);
+    }
+
+    return out;
+  }
+
+  Future<void> _seedBuiltInThemes(String dirPath) async {
+    final dir = Directory(dirPath);
+    try {
+      await dir.create(recursive: true);
+      final hasIni = await dir.list().any(
+        (entity) =>
+            entity is File && p.extension(entity.path).toLowerCase() == '.ini',
+      );
+      if (hasIni) return;
+      for (final theme in builtInThemes) {
+        await File(
+          p.join(dirPath, '${theme.id}.ini'),
+        ).writeAsString(theme.toIni());
       }
     } catch (error, stack) {
       log.warn(
@@ -107,27 +154,34 @@ class AppThemeRegistry {
     }
   }
 
-  Future<void> _loadThemeFile(File file) async {
+  void _seedBuiltInThemesSync(String dirPath) {
+    final dir = Directory(dirPath);
     try {
-      final decoded = jsonDecode(await file.readAsString());
-      if (decoded is! Map<String, dynamic>) {
-        throw FormatException(
-          t.preferences.appearance.themeFileMustContainJsonObject,
-        );
+      dir.createSync(recursive: true);
+      if (!dir.existsSync()) return;
+      final hasIni = dir.listSync().any(
+        (entity) =>
+            entity is File && p.extension(entity.path).toLowerCase() == '.ini',
+      );
+      if (hasIni) return;
+      for (final theme in builtInThemes) {
+        File(
+          p.join(dirPath, '${theme.id}.ini'),
+        ).writeAsStringSync(theme.toIni());
       }
-      final theme = AppThemeDefinition.fromJson(decoded);
-      if (_themes.any((existing) => existing.id == theme.id)) {
-        log.warn(
-          'theme',
-          t.preferences.appearance.skippingDuplicateTheme(
-            id: theme.id,
-            path: file.path,
-          ),
-        );
+    } catch (error, stack) {
+      log.warn(
+        'theme',
+        t.preferences.appearance.couldNotLoadCustomThemes,
+        error: error,
+        stack: stack,
+      );
+    }
+  }
 
-        return;
-      }
-      _themes.add(theme);
+  Future<AppThemeDefinition?> _readThemeIni(File file) async {
+    try {
+      return AppThemeDefinition.fromIni(await file.readAsString());
     } catch (error, stack) {
       log.warn(
         'theme',
@@ -135,22 +189,14 @@ class AppThemeRegistry {
         error: error,
         stack: stack,
       );
+
+      return null;
     }
   }
 
-  void _loadThemeFileSync(File file) {
+  AppThemeDefinition? _readThemeIniSync(File file) {
     try {
-      final decoded = jsonDecode(file.readAsStringSync());
-      if (decoded is! Map<String, dynamic>) {
-        throw FormatException(
-          t.preferences.appearance.themeFileMustContainJsonObject,
-        );
-      }
-      final theme = AppThemeDefinition.fromJson(decoded);
-      if (_themes.any((existing) => existing.id == theme.id)) {
-        return;
-      }
-      _themes.add(theme);
+      return AppThemeDefinition.fromIni(file.readAsStringSync());
     } catch (e, st) {
       log.warn(
         'theme',
@@ -158,6 +204,8 @@ class AppThemeRegistry {
         error: e,
         stack: st,
       );
+
+      return null;
     }
   }
 }
@@ -222,7 +270,7 @@ const lightTheme = AppThemeDefinition(
     borderColor: Color(0xFFD7DAE0),
     accent: Color(0xFF2F7FE5),
     accentHover: Color(0xFF1D63C9),
-    fg: Color(0xFF15171A),
+    fg: Color(0xFF3C414B),
     fgMuted: Color(0xFF4A515C),
     fgSubtle: Color(0xFF878D98),
     fgAccent: Color(0xFF1D63C9),

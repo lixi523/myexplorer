@@ -5,36 +5,45 @@ import 'package:myexplorer/ui/theme/app_theme_registry.dart';
 
 void main() {
   group('AppThemeDefinition', () {
-    test('parses a complete json theme', () {
-      final json = darkTheme.toJson()
-        ..['id'] = 'custom'
-        ..['name'] = 'Custom';
+    test('round-trips through ini', () {
+      final theme = AppThemeDefinition(
+        id: 'custom',
+        name: 'Custom',
+        brightness: Brightness.dark,
+        palette: darkTheme.palette,
+      );
 
-      final theme = AppThemeDefinition.fromJson(json);
+      final parsed = AppThemeDefinition.fromIni(theme.toIni());
 
-      expect(theme.id, 'custom');
-      expect(theme.name, 'Custom');
-      expect(theme.brightness, Brightness.dark);
-      expect(theme.palette.bg, darkTheme.palette.bg);
-      expect(theme.palette.accent, darkTheme.palette.accent);
+      expect(parsed.id, 'custom');
+      expect(parsed.name, 'Custom');
+      expect(parsed.brightness, Brightness.dark);
+      expect(parsed.palette.bg, darkTheme.palette.bg);
+      expect(parsed.palette.accent, darkTheme.palette.accent);
+      expect(parsed.palette.terminal.blue, darkTheme.palette.terminal.blue);
     });
 
     test('parses rgb and argb hex colors', () {
       expect(parseThemeColor('#181818', 'bg'), const Color(0xFF181818));
       expect(parseThemeColor('#33181818', 'bg'), const Color(0x33181818));
       expect(parseThemeColor('0xFF181818', 'bg'), const Color(0xFF181818));
+      expect(parseThemeColor('FF181818', 'bg'), const Color(0xFF181818));
     });
 
     test('rejects missing required color fields', () {
-      final json = darkTheme.toJson()
-        ..['id'] = 'broken'
-        ..['name'] = 'Broken';
-      final palette = Map<String, dynamic>.from(json['palette'] as Map);
-      palette.remove('accent');
-      json['palette'] = palette;
+      final ini = AppThemeDefinition(
+        id: 'broken',
+        name: 'Broken',
+        brightness: Brightness.dark,
+        palette: darkTheme.palette,
+      ).toIni();
+      final broken = ini
+          .split('\n')
+          .where((line) => !line.startsWith('背景色='))
+          .join('\n');
 
       expect(
-        () => AppThemeDefinition.fromJson(json),
+        () => AppThemeDefinition.fromIni(broken),
         throwsA(isA<FormatException>()),
       );
     });

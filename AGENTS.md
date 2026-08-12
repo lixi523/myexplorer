@@ -1,5 +1,7 @@
 # MyExplorer
 
+使用简体中文显示思考过程，执行过程，交流和回复，特定术语、名词除外。
+
 Desktop file manager built with Flutter/Dart. Fast, minimal, dark theme, keyboard-driven navigation. Target: Windows.
 
 ## Project structure

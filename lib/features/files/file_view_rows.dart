@@ -633,7 +633,7 @@ class _ListRowState extends State<_ListRow> {
                             color: widget.selected
                                 ? AppColors.fg
                                 : widget.rowDecoration?.nameColor ??
-                                      AppColors.fg.withValues(alpha: 0.9),
+                                      AppColors.fg,
                             fontWeight: FontWeight.normal,
                           ),
                         ),

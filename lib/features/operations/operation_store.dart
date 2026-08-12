@@ -411,8 +411,8 @@ class OperationStore {
         'archive': archivePath,
         'addInner': addInner,
         'deleteInner': deleteInner.join('\n'),
-        'renameFrom': ?renameFromInner,
-        'renameTo': ?renameToName,
+        if (renameFromInner != null) 'renameFrom': renameFromInner,
+        if (renameToName != null) 'renameTo': renameToName,
       },
       startTime: DateTime.now(),
     );

@@ -522,7 +522,7 @@ class MyExplorerCoreLoader {
     } catch (e, st) {
       _warnNative('search poll', e, st);
 
-      return const SearchPollResult(null, 0, true);
+      return const SearchPollResult(null, 0, false);
     } finally {
       calloc.free(outLen);
       calloc.free(outScanned);

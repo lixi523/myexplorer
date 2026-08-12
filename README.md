@@ -6,6 +6,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
+> **V2.5**: 代码审查修复 —— 路径穿越防护（archive_reader）、编译错误（operation_store）、插件操作级联（menus.dart）、快捷键绑定错误（keyboard_shortcuts）、数据库过度删除、搜索异常静默失败、git 监听泄漏等 16 项 bug 修复。
+>
 > **V2.4**: 便携式布局 —— 数据库、日志、主题、插件、更新与缓存全部保存在程序目录内，不写入 `%APPDATA%`/`%TEMP%`；标签行与浅色模式文字精细调整。
 >
 > **V2.3**: 稳定性与性能 —— 快捷栏保存串行化（快速操作不再丢配置）、文件操作目标校验、Git 状态缓存与更宽容的超时。

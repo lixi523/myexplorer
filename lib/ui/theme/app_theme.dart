@@ -54,6 +54,8 @@ class AppColors {
   static Color get fileAudio => _p.fileAudio;
   static Color get fileVideo => _p.fileVideo;
   static Color get fileDefault => _p.fileDefault;
+  static Color get folderNameDark => _p.folderNameDark;
+  static Color get folderNameLight => _p.folderNameLight;
 
   static Color get folderColor => _p.accent;
 

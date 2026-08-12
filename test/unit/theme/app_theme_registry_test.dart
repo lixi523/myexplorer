@@ -1,9 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:myexplorer/core/logging/app_logger.dart';
 import 'package:myexplorer/ui/theme/app_theme_registry.dart';
+
+String _iniFor(String id, String name) => darkTheme
+    .toIni()
+    .replaceFirst('id=dark', 'id=$id')
+    .replaceFirst('name=Dark', 'name=$name');
 
 void main() {
   group('AppThemeRegistry', () {
@@ -38,10 +42,9 @@ void main() {
     });
 
     test('loads valid custom themes after built-ins', () async {
-      final json = darkTheme.toJson()
-        ..['id'] = 'midnight'
-        ..['name'] = 'Midnight';
-      File('${dir.path}/midnight.json').writeAsStringSync(jsonEncode(json));
+      File(
+        '${dir.path}/midnight.ini',
+      ).writeAsStringSync(_iniFor('midnight', 'Midnight'));
 
       final registry = AppThemeRegistry();
       await registry.load(customThemesPath: dir.path);
@@ -54,7 +57,9 @@ void main() {
     });
 
     test('skips invalid themes and logs diagnostics entries', () async {
-      File('${dir.path}/broken.json').writeAsStringSync('{"id":"broken"}');
+      File('${dir.path}/broken.ini').writeAsStringSync(
+        '[meta]\nid=broken\nname=Broken\nbrightness=dark\n\n[palette]\n',
+      );
 
       final registry = AppThemeRegistry();
       await registry.load(customThemesPath: dir.path);
@@ -64,18 +69,16 @@ void main() {
       expect(log.entries.value.last.tag, 'theme');
     });
 
-    test('custom themes cannot replace built-ins', () async {
-      final json = darkTheme.toJson()
-        ..['id'] = 'dark'
-        ..['name'] = 'Other Dark';
-      File('${dir.path}/dark.json').writeAsStringSync(jsonEncode(json));
+    test('ini themes override built-in themes with the same id', () async {
+      File(
+        '${dir.path}/dark.ini',
+      ).writeAsStringSync(_iniFor('dark', 'Other Dark'));
 
       final registry = AppThemeRegistry();
       await registry.load(customThemesPath: dir.path);
 
-      expect(registry.resolve('dark').name, 'Dark');
+      expect(registry.resolve('dark').name, 'Other Dark');
       expect(registry.themes.length, builtInThemes.length);
-      expect(log.entries.value.last.message, contains('duplicate id'));
     });
 
     test('unknown ids resolve to dark and log once', () {

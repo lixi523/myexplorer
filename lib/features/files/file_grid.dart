@@ -420,9 +420,11 @@ class _FileGridState extends State<FileGrid> {
                 (available - (columns - 1) * crossAxisGap) / columns;
             _tileWidth = tileWidth;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) _reportMetrics(constraints, columns);
+              if (mounted) {
+                _reportMetrics(constraints, columns);
+                _revealSelectedTile();
+              }
             });
-            _revealSelectedTile();
 
             return Stack(
               children: [
@@ -805,7 +807,7 @@ class _GridTileState extends State<_GridTile> {
       fontSize: (context.txt.row.fontSize ?? 13) * scale,
       color: selected
           ? AppColors.fg
-          : widget.rowDecoration?.nameColor ?? AppColors.fgMuted,
+          : widget.rowDecoration?.nameColor ?? AppColors.fg,
       fontWeight: FontWeight.w400,
       height: 1.25,
     );

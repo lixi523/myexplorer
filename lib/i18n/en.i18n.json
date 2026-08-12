@@ -1219,6 +1219,7 @@
     "sftpMkdirFailed": "SFTP mkdir failed",
     "sftpRemoveFailed": "SFTP remove failed",
     "sftpRenameFailed": "SFTP rename failed",
+    "sftpRenameCrossSession": "SFTP rename target is on a different server",
     "sftpOpenReaderFailed": "SFTP open reader failed",
     "sftpOpenWriterFailed": "SFTP open writer failed",
     "sftpCloseFailed": "SFTP close failed",

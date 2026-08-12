@@ -54,8 +54,20 @@ void main() {
     });
 
     test('handles leading zeros and trailing text', () {
-      expect(compareNatural('v1', 'v01'), lessThan(0));
+      expect(compareNatural('v1', 'v01'), greaterThan(0));
       expect(compareNatural('a10b2', 'a10b10'), lessThan(0));
+    });
+
+    test('more leading zeros sorts first when strings are otherwise equal', () {
+      expect(compareNatural('a01', 'a1'), lessThan(0));
+      expect(compareNatural('file01.txt', 'file1.txt'), lessThan(0));
+    });
+
+    test('full stop acts as a break before numbers and characters', () {
+      expect(compareNatural('a.txt', 'a1'), lessThan(0));
+      expect(compareNatural('a.txt', 'ab'), lessThan(0));
+      expect(compareNatural('a1', 'ab'), lessThan(0));
+      expect(compareNatural('a.log', 'a.txt'), lessThan(0));
     });
   });
 

@@ -91,57 +91,93 @@ List<FileEntry> sortEntries(
   return out;
 }
 
-/// Compares two strings the way a human reads them: runs of digits are
-/// compared by numeric value rather than character by character, so "file2"
-/// sorts before "file10". Inputs are expected to already be case-folded.
+int _metaType(int c) {
+  if (c == 0x2E) {
+    return 0; // period
+  }
+  if (c >= 0x30 && c <= 0x39) {
+    return 1; // digit
+  }
+
+  return 2; // character
+}
+
+int _lower(int c) => (c >= 0x41 && c <= 0x5A) ? c + 0x20 : c;
+
+(int, int, int, int) _parseDigits(String s, int i) {
+  final n = s.length;
+  var zeros = 0;
+  while (i < n && s.codeUnitAt(i) == 0x30) {
+    zeros++;
+    i++;
+  }
+  final sigStart = i;
+  while (i < n && _metaType(s.codeUnitAt(i)) == 1) {
+    i++;
+  }
+
+  return (zeros, sigStart, i - sigStart, i);
+}
+
+/// Compares two file names the way Windows Explorer does (StrCmpLogicalW,
+/// Vista+ semantics):
+/// - Runs of digits are compared by numeric value ("file2" < "file10").
+/// - A full stop (".") acts as a break between chunks and sorts before any
+///   number or character, so base names group before their extensions.
+/// - Meta-characters order as period < number < character, so a letter sorts
+///   after a digit at the same position ("a1" < "ab").
+/// - Comparison is case-insensitive.
+/// - Among numbers with equal value, the one with more leading zeros is
+///   lesser, but only when the strings are otherwise identical ("v01" < "v1").
 int compareNatural(String a, String b) {
-  const zero = 0x30;
-  const nine = 0x39;
   final la = a.length;
   final lb = b.length;
   var i = 0;
   var j = 0;
+  var tieZerosA = 0;
+  var tieZerosB = 0;
+
   while (i < la && j < lb) {
-    final ca = a.codeUnitAt(i);
-    final cb = b.codeUnitAt(j);
-    final aDigit = ca >= zero && ca <= nine;
-    final bDigit = cb >= zero && cb <= nine;
-    if (aDigit && bDigit) {
-      var si = i;
-      var sj = j;
-      while (si < la && a.codeUnitAt(si) == zero) {
-        si++;
-      }
-      while (sj < lb && b.codeUnitAt(sj) == zero) {
-        sj++;
-      }
-      var ei = si;
-      var ej = sj;
-      while (ei < la && a.codeUnitAt(ei) >= zero && a.codeUnitAt(ei) <= nine) {
-        ei++;
-      }
-      while (ej < lb && b.codeUnitAt(ej) >= zero && b.codeUnitAt(ej) <= nine) {
-        ej++;
-      }
-      final lenA = ei - si;
-      final lenB = ej - sj;
-      if (lenA != lenB) return lenA < lenB ? -1 : 1;
-      for (var k = 0; k < lenA; k++) {
-        final d = a.codeUnitAt(si + k) - b.codeUnitAt(sj + k);
+    final ta = _metaType(a.codeUnitAt(i));
+    final tb = _metaType(b.codeUnitAt(j));
+
+    if (ta == 1 && tb == 1) {
+      final ra = _parseDigits(a, i);
+      final rb = _parseDigits(b, j);
+      final sigLenA = ra.$3;
+      final sigLenB = rb.$3;
+      if (sigLenA != sigLenB) return sigLenA < sigLenB ? -1 : 1;
+      for (var k = 0; k < sigLenA; k++) {
+        final d = a.codeUnitAt(ra.$2 + k) - b.codeUnitAt(rb.$2 + k);
         if (d != 0) return d < 0 ? -1 : 1;
       }
-      final zerosA = si - i;
-      final zerosB = sj - j;
-      if (zerosA != zerosB) return zerosA < zerosB ? -1 : 1;
-      i = ei;
-      j = ej;
+      tieZerosA += ra.$1;
+      tieZerosB += rb.$1;
+      i = ra.$4;
+      j = rb.$4;
+    } else if (ta != tb) {
+      return ta < tb ? -1 : 1;
+    } else if (ta == 0) {
+      i++;
+      j++;
     } else {
+      final ca = _lower(a.codeUnitAt(i));
+      final cb = _lower(b.codeUnitAt(j));
       if (ca != cb) return ca < cb ? -1 : 1;
       i++;
       j++;
     }
   }
-  final rest = (la - i) - (lb - j);
 
-  return rest.sign;
+  if (i < la) {
+    return 1;
+  }
+  if (j < lb) {
+    return -1;
+  }
+  if (tieZerosA != tieZerosB) {
+    return tieZerosA > tieZerosB ? -1 : 1;
+  }
+
+  return 0;
 }

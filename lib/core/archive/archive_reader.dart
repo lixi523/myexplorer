@@ -46,11 +46,17 @@ class ArchiveReader {
   }
 
   static bool _isUnsafe(String path) {
-    if (path.startsWith('/')) return true;
-    for (final seg in path.split('/')) {
+    // Normalize first to catch path traversal like "foo/../bar"
+    final normalized = p.normalize(path).replaceAll('\\', '/');
+    if (normalized.startsWith('/') ||
+        normalized == '..' ||
+        normalized.startsWith('../'))
+      return true;
+    for (final seg in normalized.split('/')) {
+      if (seg.isEmpty) continue;
       if (seg == '..') return true;
     }
-
+    // After normalization, the path must not escape the archive root
     return false;
   }
 

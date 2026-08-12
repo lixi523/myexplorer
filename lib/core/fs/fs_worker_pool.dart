@@ -8,6 +8,7 @@ import '../archive/archive_service.dart';
 import '../logging/app_logger.dart';
 import '../models/file_entry.dart';
 import '../platform/platform_paths.dart';
+import 'file_sort.dart';
 import 'sftp_fs.dart';
 import 'myexplorer_core_loader.dart';
 
@@ -351,7 +352,7 @@ class FsWorkerPool {
             return a.type == FileItemType.folder ? -1 : 1;
           }
 
-          return a.nameLower.compareTo(b.nameLower);
+          return compareNatural(a.nameLower, b.nameLower);
         });
 
         return entries;

@@ -773,7 +773,7 @@ class _FilterSuggestionPopupState extends State<_FilterSuggestionPopup> {
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
-                    t.search.complete,
+                    t.search.go,
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
