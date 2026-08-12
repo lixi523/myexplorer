@@ -133,7 +133,8 @@ class ArchiveWriter {
     }
 
     if (sources.length <= _kMaxCachedEntries) {
-      _planCache[sources] = _PlanCache(sources, out);
+      final key = sources.join('\n');
+      _planCache[key] = _PlanCache(sources, out);
     }
     return out;
   }
