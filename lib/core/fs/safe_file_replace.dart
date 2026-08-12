@@ -1,3 +1,4 @@
+import 'dart:ffi' as ffi;
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -234,7 +235,7 @@ class SafeFileReplace {
 
   static void _replaceWindows(String replacementPath, String destinationPath) {
     final replacement = replacementPath.toNativeUtf16();
-    late final Uint16Pointer destination;
+    late final ffi.Uint16Pointer destination;
     try {
       destination = destinationPath.toNativeUtf16();
       final result = MoveFileEx(
