@@ -792,21 +792,6 @@ class $AppSettingsTable extends AppSettings
     ),
     defaultValue: const Constant(false),
   );
-  // ignore: unused_field
-  static const VerificationMeta _autoOverwriteOlderMeta =
-      const VerificationMeta('autoOverwriteOlder');
-  @override
-  late final GeneratedColumn<bool> autoOverwriteOlder = GeneratedColumn<bool>(
-    'auto_overwrite_older',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("auto_overwrite_older" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
-  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -867,8 +852,6 @@ class $AppSettingsTable extends AppSettings
     quickLookWrapLines,
     quickLookShowStatistics,
     dragMovesByDefault,
-    autoOverwriteOlder,
-    autoSkipSameSize,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1374,24 +1357,6 @@ class $AppSettingsTable extends AppSettings
         ),
       );
     }
-    if (data.containsKey('auto_overwrite_older')) {
-      context.handle(
-        _autoOverwriteOlderMeta,
-        autoOverwriteOlder.isAcceptableOrUnknown(
-          data['auto_overwrite_older']!,
-          _autoOverwriteOlderMeta,
-        ),
-      );
-    }
-    if (data.containsKey('auto_skip_same_size')) {
-      context.handle(
-        _autoSkipSameSizeMeta,
-        autoSkipSameSize.isAcceptableOrUnknown(
-          data['auto_skip_same_size']!,
-          _autoSkipSameSizeMeta,
-        ),
-      );
-    }
     return context;
   }
 
@@ -1701,8 +1666,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   final bool quickLookWrapLines;
   final bool quickLookShowStatistics;
   final bool dragMovesByDefault;
-  final bool autoOverwriteOlder;
-  final bool autoSkipSameSize;
   const AppSetting({
     required this.id,
     required this.themeMode,
@@ -1762,8 +1725,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     required this.quickLookWrapLines,
     required this.quickLookShowStatistics,
     required this.dragMovesByDefault,
-    required this.autoOverwriteOlder,
-    required this.autoSkipSameSize,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1832,8 +1793,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     map['quick_look_wrap_lines'] = Variable<bool>(quickLookWrapLines);
     map['quick_look_show_statistics'] = Variable<bool>(quickLookShowStatistics);
     map['drag_moves_by_default'] = Variable<bool>(dragMovesByDefault);
-    map['auto_overwrite_older'] = Variable<bool>(autoOverwriteOlder);
-    map['auto_skip_same_size'] = Variable<bool>(autoSkipSameSize);
     return map;
   }
 
@@ -1897,8 +1856,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       quickLookWrapLines: Value(quickLookWrapLines),
       quickLookShowStatistics: Value(quickLookShowStatistics),
       dragMovesByDefault: Value(dragMovesByDefault),
-      autoOverwriteOlder: Value(autoOverwriteOlder),
-      autoSkipSameSize: Value(autoSkipSameSize),
     );
   }
 
@@ -2000,8 +1957,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
         json['quickLookShowStatistics'],
       ),
       dragMovesByDefault: serializer.fromJson<bool>(json['dragMovesByDefault']),
-      autoOverwriteOlder: serializer.fromJson<bool>(json['autoOverwriteOlder']),
-      autoSkipSameSize: serializer.fromJson<bool>(json['autoSkipSameSize']),
     );
   }
   @override
@@ -2076,8 +2031,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
         quickLookShowStatistics,
       ),
       'dragMovesByDefault': serializer.toJson<bool>(dragMovesByDefault),
-      'autoOverwriteOlder': serializer.toJson<bool>(autoOverwriteOlder),
-      'autoSkipSameSize': serializer.toJson<bool>(autoSkipSameSize),
     };
   }
 
@@ -2140,8 +2093,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     bool? quickLookWrapLines,
     bool? quickLookShowStatistics,
     bool? dragMovesByDefault,
-    bool? autoOverwriteOlder,
-    bool? autoSkipSameSize,
   }) => AppSetting(
     id: id ?? this.id,
     themeMode: themeMode ?? this.themeMode,
@@ -2207,8 +2158,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     quickLookShowStatistics:
         quickLookShowStatistics ?? this.quickLookShowStatistics,
     dragMovesByDefault: dragMovesByDefault ?? this.dragMovesByDefault,
-    autoOverwriteOlder: autoOverwriteOlder ?? this.autoOverwriteOlder,
-    autoSkipSameSize: autoSkipSameSize ?? this.autoSkipSameSize,
   );
   AppSetting copyWithCompanion(AppSettingsCompanion data) {
     return AppSetting(
@@ -2506,8 +2455,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     quickLookWrapLines,
     quickLookShowStatistics,
     dragMovesByDefault,
-    autoOverwriteOlder,
-    autoSkipSameSize,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -2571,9 +2518,7 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
           other.quickLookVimMode == this.quickLookVimMode &&
           other.quickLookWrapLines == this.quickLookWrapLines &&
           other.quickLookShowStatistics == this.quickLookShowStatistics &&
-          other.dragMovesByDefault == this.dragMovesByDefault &&
-          other.autoOverwriteOlder == this.autoOverwriteOlder &&
-          other.autoSkipSameSize == this.autoSkipSameSize);
+          other.dragMovesByDefault == this.dragMovesByDefault);
 }
 
 class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
@@ -2635,8 +2580,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   final Value<bool> quickLookWrapLines;
   final Value<bool> quickLookShowStatistics;
   final Value<bool> dragMovesByDefault;
-  final Value<bool> autoOverwriteOlder;
-  final Value<bool> autoSkipSameSize;
   const AppSettingsCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
@@ -2696,8 +2639,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     this.quickLookWrapLines = const Value.absent(),
     this.quickLookShowStatistics = const Value.absent(),
     this.dragMovesByDefault = const Value.absent(),
-    this.autoOverwriteOlder = const Value.absent(),
-    this.autoSkipSameSize = const Value.absent(),
   });
   AppSettingsCompanion.insert({
     this.id = const Value.absent(),
@@ -2758,8 +2699,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     this.quickLookWrapLines = const Value.absent(),
     this.quickLookShowStatistics = const Value.absent(),
     this.dragMovesByDefault = const Value.absent(),
-    this.autoOverwriteOlder = const Value.absent(),
-    this.autoSkipSameSize = const Value.absent(),
   });
   static Insertable<AppSetting> custom({
     Expression<int>? id,

@@ -34,6 +34,9 @@ class SettingsStore {
   final confirmMove = signal<bool>(true);
   final autoOverwriteOlder = signal<bool>(false);
   final autoSkipSameSize = signal<bool>(false);
+  // NOTE: the two signals above are runtime-only for now (not persisted to
+  // the DB) because build_runner cannot regenerate app_database.g.dart in the
+  // local toolchain. Persist them once codegen is available.
   final showHiddenDefault = signal<bool>(false);
   final dragMovesByDefault = signal<bool>(false);
   final rowDensity = signal<String>('comfortable');
@@ -117,8 +120,6 @@ class SettingsStore {
     confirmDelete.value = row.confirmDelete;
     confirmCopy.value = row.confirmCopy;
     confirmMove.value = row.confirmMove;
-    autoOverwriteOlder.value = row.autoOverwriteOlder;
-    autoSkipSameSize.value = row.autoSkipSameSize;
     showHiddenDefault.value = row.showHiddenDefault;
     dragMovesByDefault.value = row.dragMovesByDefault;
     rowDensity.value = row.rowDensity;
@@ -398,7 +399,5 @@ class SettingsStore {
     }
     _disposers.clear();
     _saveDebounce?.cancel();
-    _saveDebounce = null;
-    _save();
   }
 }
