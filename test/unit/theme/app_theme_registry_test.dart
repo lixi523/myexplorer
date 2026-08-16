@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:myexplorer/core/logging/app_logger.dart';
+import 'package:myexplorer/core/platform/gbk_codec.dart';
 import 'package:myexplorer/ui/theme/app_theme_registry.dart';
 
 String _iniFor(String id, String name) => darkTheme
@@ -79,6 +80,20 @@ void main() {
 
       expect(registry.resolve('dark').name, 'Other Dark');
       expect(registry.themes.length, builtInThemes.length);
+    });
+
+    test('loads GBK-encoded theme ini files', () async {
+      final content = _iniFor('gbk-theme', '中文主题');
+      final gbk = encodeGbkBytes(content);
+      if (gbk == null) {
+        markTestSkipped('GBK codec unavailable off Windows');
+      }
+      File('${dir.path}/gbk-theme.ini').writeAsBytesSync(gbk!);
+
+      final registry = AppThemeRegistry();
+      await registry.load(customThemesPath: dir.path);
+
+      expect(registry.resolve('gbk-theme').name, '中文主题');
     });
 
     test('unknown ids resolve to dark and log once', () {

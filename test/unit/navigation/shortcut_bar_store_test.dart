@@ -114,6 +114,56 @@ void main() {
       expect(items.single.label, 'Two');
     });
 
+    test('update changes label, target and icon', () async {
+      final store = ShortcutBarStore.instance;
+      await store.add('One', r'C:\One');
+      await store.update(
+        0,
+        label: 'Renamed',
+        target: r'D:\Two',
+        icon: r'C:\icons\x.ico',
+      );
+      final item = store.items.value.single;
+      expect(item.label, 'Renamed');
+      expect(item.target, r'D:\Two');
+      expect(item.icon, r'C:\icons\x.ico');
+    });
+
+    test('update with null args keeps existing fields', () async {
+      final store = ShortcutBarStore.instance;
+      await store.add('One', r'C:\One', icon: r'C:\i.ico');
+      await store.update(0, label: 'Renamed');
+      final item = store.items.value.single;
+      expect(item.label, 'Renamed');
+      expect(item.target, r'C:\One');
+      expect(item.icon, r'C:\i.ico');
+    });
+
+    test('update with empty icon clears the icon', () async {
+      final store = ShortcutBarStore.instance;
+      await store.add('One', r'C:\One', icon: r'C:\i.ico');
+      await store.update(0, icon: '');
+      expect(store.items.value.single.icon, '');
+    });
+
+    test('update no-ops for unknown id', () async {
+      final store = ShortcutBarStore.instance;
+      await store.add('One', r'C:\One');
+      await store.update(99, label: 'Nope');
+      expect(store.items.value.single.label, 'One');
+    });
+
+    test('update persists to disk and reloads', () async {
+      final store = ShortcutBarStore.instance;
+      await store.add('Home', r'C:\Users\me');
+      await store.update(0, label: 'Work', target: r'D:\Work');
+      store.items.value = const [];
+      await store.load();
+      final item = store.items.value.single;
+      expect(item.label, 'Work');
+      expect(item.target, r'D:\Work');
+    });
+
     test('reorder reorders items and rewrites orderIndex', () async {
       final store = ShortcutBarStore.instance;
       await store.add('One', r'C:\One');

@@ -53,3 +53,6 @@ rust/**/target/
 .cowork-temp/
 *.tgz
 
+
+# InsCode tooling (never versioned)
+.inscode/

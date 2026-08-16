@@ -5,6 +5,28 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-08-16
+
+### Added
+- Shortcut bar editing: right-click a shortcut button for Edit/Remove, and the shortcut bar config dialog now supports editing existing shortcuts (pre-filled form with Save/Cancel).
+
+### Changed
+- Split `menus.dart` (1649 lines) into `menus.dart` + `menus_plugin.dart` by domain (menu construction vs plugin execution).
+- Split `sidebar.dart` (1916 lines) into `sidebar.dart` + `sidebar_edit.dart`, `sidebar_footer.dart`, `sidebar_header.dart`, `sidebar_operations.dart`.
+- Portable layout hardening: when the program folder is read-only (e.g. `Program Files`), app data falls back to `%LOCALAPPDATA%\MyExplorer` instead of failing silently; the fallback is logged at startup.
+- Theme INI fallback decode: theme files saved as GBK/ANSI (legacy Windows codepage) are decoded via the GBK codec when they are not valid UTF-8.
+
+### Fixed
+- `encodeGbkBytes` returned a view into freed calloc memory; bytes are now copied before the native buffer is released, so GBK fixtures (and TC bar round-trips) no longer carry garbage prefixes.
+
+### Tests
+- Added unit tests for `OperationStore` plugin tasks, `SftpTaskExecutor` path detection/session serialization, `SftpSessionManager` URI mapping, `AppDirs` read-only fallback, GBK theme loading, and `ShortcutBarStore.update` (+35 tests).
+
+## [2.5.0] - 2026-08-12
+
+### Fixed
+- Code review fixes: path traversal protection (`archive_reader`), compile error (`operation_store`), plugin action cascade (`menus`), shortcut binding (`keyboard_shortcuts`), database over-deletion, silent search failures, git listener leaks, and 10 more.
+
 ## [2.4.0] - 2026-08-10
 
 ### Changed

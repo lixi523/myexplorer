@@ -102,6 +102,27 @@ class ShortcutBarStore {
     await _save();
   }
 
+  /// Updates label/target/icon of the item with [id] and persists. A null
+  /// field keeps its current value; pass an empty string to clear it.
+  Future<void> update(
+    int id, {
+    String? label,
+    String? target,
+    String? icon,
+  }) async {
+    final current = [...items.value];
+    final index = current.indexWhere((e) => e.id == id);
+    if (index < 0) return;
+    final existing = current[index];
+    current[index] = existing.copyWith(
+      label: label ?? existing.label,
+      target: target ?? existing.target,
+      icon: icon ?? existing.icon,
+    );
+    items.value = current;
+    await _save();
+  }
+
   /// Reorders items to match [idsInOrder] and persists.
   Future<void> reorder(List<int> idsInOrder) async {
     final current = [...items.value];

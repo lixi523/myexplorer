@@ -397,6 +397,9 @@
       "iconHint": "Icon (leave empty to auto-extract from the target exe): file path or path,index",
       "pickFile": "File",
       "add": "Add",
+      "edit": "Edit",
+      "save": "Save",
+      "remove": "Remove",
       "importTcBar": "Import Total Commander bar…",
       "imported": "Imported $count buttons",
       "importFailed": "Could not import bar file"

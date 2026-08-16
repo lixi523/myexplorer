@@ -397,6 +397,9 @@
       "iconHint": "图标（留空时自动从目标 exe 提取）：文件路径或 路径,索引",
       "pickFile": "文件",
       "add": "添加",
+      "edit": "编辑",
+      "save": "保存",
+      "remove": "移除",
       "importTcBar": "导入 Total Commander 按钮栏…",
       "imported": "已导入 $count 个按钮",
       "importFailed": "导入按钮栏失败"

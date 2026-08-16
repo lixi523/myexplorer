@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:path/path.dart' as p;
 import 'ui/window/window.dart';
 import 'app/app_info.dart';
 import 'app/launch_args.dart';
@@ -12,6 +13,7 @@ import 'core/fs/fs_worker_pool.dart';
 import 'core/fs/local_fs.dart';
 import 'core/fs/sftp_fs.dart';
 import 'core/logging/app_logger.dart';
+import 'core/platform/app_dirs.dart';
 import 'core/settings/settings_store.dart';
 import 'core/update/update_store.dart';
 import 'features/navigation/sidebar_store.dart';
@@ -34,6 +36,16 @@ void main(List<String> args) async {
       }
 
       await AppLogger.instance.init();
+
+      final exeDir = p.dirname(Platform.resolvedExecutable);
+      final supportDir = await AppDirs.support();
+      if (supportDir != exeDir) {
+        log.warn(
+          'platform',
+          'Program folder is read-only ($exeDir); '
+              'falling back to per-user data folder: $supportDir',
+        );
+      }
 
       FlutterError.onError = (details) {
         log.error('flutter', details.exceptionAsString(), stack: details.stack);

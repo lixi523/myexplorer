@@ -1,31 +1,30 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v2.5.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v2.6.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
-- 自定义快捷栏（手写横快捷栏 INI + 中间 46px 竖快捷栏 17 按钮）
+- 自定义快捷栏（手写横快捷栏 INI + 中间 46px 竖快捷栏 17 按钮；**按钮支持右键编辑/删除**）
 - 右键 NC 扩展选择模式（2 秒长按触发菜单，无加粗选中）
 - 深色主题：底色 RGB(70,75,85)、文字 RGB(223,233,233)
-- **便携式布局**：所有数据（数据库/日志/主题/插件/更新/缓存）在程序目录内，不写 %APPDATA%/%TEMP%
-- **主题配色调色板由 `themes/*.ini` 文件驱动**（每主题一个 ini，键中文名 + RGB 色号）
+- **便携式布局**：所有数据（数据库/日志/主题/插件/更新/缓存）在程序目录内，不写 %APPDATA%/%TEMP%；**只读目录（如 Program Files）自动降级到 %LOCALAPPDATA%\MyExplorer**
+- **主题配色调色板由 `themes/*.ini` 文件驱动**（每主题一个 ini，键中文名 + RGB 色号；**兼容 GBK/ANSI 编码文件**）
 - Windows 原生窗口 Chrome（bitsdojo_window 自定义标题栏、横快捷栏）
 - Rust 原生核心（list/search/trash/enumerate/pdf/pty/sftp/plugin）+ FFI
 
 ---
 
-## 2. 当前进度（2026-08-12）
+## 2. 当前进度（2026-08-16）
 
-- ✅ **v2.5.0 已发布**（提交推送，CI & Release 产出 exe + zip）
-- ✅ **代码审查修复完成**：路径穿越防护（`archive_reader.dart`）、编译错误（`operation_store.dart`）、插件操作级联（`menus.dart`）、快捷键绑定错误（`keyboard_shortcuts.dart`）、数据库过度删除（`app_database.dart`）、搜索异常静默失败（`myexplorer_core_loader.dart`）、git 监听泄漏（`navigation_store.dart`）、dispose 丢失设置、首屏滚动、同步主题 seeding 不建目录、SFTP rename session 验证、exit port 订阅、safe_file_replace 内存泄漏、archive 计划缓存永 miss、搜索标签重复等 16 项
-- ✅ **便携式布局完成**：应用不再在程序目录外创建任何目录/文件
-- ✅ **path_provider 依赖已移除**
-- ✅ **文件排序对齐 Windows**：改用 StrCmpLogicalW（Vista+）语义，点号/数字/前导零规则与资源管理器一致
-- ✅ **浅色模式文字色调整**：双窗口文件列表文字为 RGB(60,65,75)；文件夹名深/浅色由 `themes/*.ini` 的 `深色文件夹文字色`/`浅色文件夹文字色` 配置（默认 深色 RGB(233,233,233) / 浅色 RGB(60,65,75)）
-- ✅ **主题系统全面改为 ini**：移除 JSON，`themes/*.ini` 每主题一个文件，内置主题首次启动自动导出；`[palette]`/`[terminal]` 键名简体中文、不透明色 6 位 RGB、透明色 8 位 ARGB
-- ✅ 大量健壮性修复（快捷栏保存串行化、worker 目标校验、git 缓存等）
-- ✅ 单元测试 509 全过、integration 86 过 + 4 skip、CI 全绿
+- ✅ **v2.6.0 版本号已更新**（pubspec `2.6.0+39`），今日本地构建通过（Release exe 正常产出）
+- ✅ **横快捷栏编辑功能**：配置对话框支持编辑已有按钮（预填 + 保存/取消），快捷栏按钮右键菜单（编辑/移除）；`ShortcutBarStore.update` 已实现并持久化
+- ✅ **代码拆分**：`menus.dart`（1649 行）拆为 menus + menus_plugin（插件域独立 mixin）；`sidebar.dart`（1916 行）拆为 sidebar + sidebar_edit/footer/header/operations 四个 part
+- ✅ **Program Files 只读降级**：`AppDirs.selectBase` 检测 exe 目录可写性，不可写时回退 `%LOCALAPPDATA%\MyExplorer` 并在启动日志提示
+- ✅ **主题 ini GBK 容错**：`app_theme_registry` 读取改为 UTF-8 优先 → GBK 回退；**顺带修复 `gbk_codec.encodeGbkBytes` use-after-free**（返回 calloc 裸视图后即释放，字节带垃圾前缀），改为 `Uint8List.fromList` 拷贝
+- ✅ **README 恢复 hero 截图**：`docs/screenshots/hero.png`（最新 exe 实拍，旧 Waydir 截图 5d3c1bb 已删）
+- ✅ 单元测试 **544 全过**（v2.5 的 509 + 新增 35：operations/sftp/AppDirs/GBK 主题/shortcut update）、integration 86 过 + 4 skip
+- （v2.5 遗留完成项保留）代码审查 16 项修复、便携式布局、StrCmpLogicalW 排序、主题 ini 化、path_provider 移除
 
 ---
 
@@ -33,6 +32,7 @@
 
 | Commit | 说明 |
 |--------|------|
+| （未提交，工作区） | **v2.6.0**：横快捷栏编辑（update/右键菜单/编辑表单）、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、gbk_codec UAF 修复、README hero 截图、`ShortcutBarStore.update` 测试等；**待用户确认后提交推送** |
 | `fix: v2.5 code review — 16 bug fixes` | 路径穿越防护、编译错误、插件操作级联、快捷键 fall-through、DB 过度删除、搜索异常静默失败、git 监听泄漏、dispose 丢设置、首屏滚动、主题 seeding、SFTP session 验证、exit port 订阅、内存泄漏、缓存永 miss、i18n 标签修复 |
 | `feat: match Windows sort order (StrCmpLogicalW)` | 重写 `compareNatural`：点号断点、number<char、前导零多的排前（v01<v1）；压缩包列表排序同步 |
 | `feat: light mode text color RGB(60,65,75)` | `lightTheme.fg` 改 `0xFF3C414B` |
@@ -63,14 +63,19 @@
 | `lib/features/navigation/navigation_store.dart` | **文件夹名颜色从 palette 读取**：深色用 `folderNameDark`、浅色用 `folderNameLight`（`_colorRuleDecorations`） |
 | `test/unit/theme/` | `app_theme_definition_test.dart`、`app_theme_registry_test.dart`（ini 解析/加载） |
 | `lib/core/fs/myexplorer_core_loader.dart` | Rust FFI 加载器 |
-| `test/` | 509 单测 + 86 integration |
+| `lib/core/platform/app_dirs.dart` | **便携目录解析 + 只读降级**：`selectBase`/`isWritableDir` 检测 exe 目录可写性，不可写回退 `%LOCALAPPDATA%\MyExplorer`；`debugExeDirOverride`/`debugReset` 测试 seam |
+| `lib/core/platform/gbk_codec.dart` | GBK(code 936) 编解码（FFI）；**encodeGbkBytes 已修复 UAF**（`Uint8List.fromList` 拷贝） |
+| `lib/app/myexplorer_shell/menus.dart` + `menus_plugin.dart` | 拆分的两个 part：菜单构建/分发 + 插件执行域（`_MyExplorerMenuMixin` / `_MyExplorerPluginMixin`） |
+| `lib/features/navigation/sidebar.dart` + `sidebar_*.dart` | 拆分：sidebar（主 State）+ edit/footer/header/operations 四个 part |
+| `lib/ui/dialogs/shortcut_bar_config_dialog.dart` | 快捷栏配置：支持 `editingId` 预填编辑、保存/取消、行内编辑 |
+| `test/` | 544 单测 + 86 integration |
 
 ---
 
 ## 5. 不能动的边界（红线）
 
 - **`pubspec name: myexplorer` 不能改**（已全面更名，import 路径 `package:myexplorer/`）
-- **不写程序目录外**：任何数据目录都必须经 `AppDirs`（exe 目录下），禁止再引入 `path_provider` / 直写 %APPDATA%/%TEMP%
+- **不写程序目录外**：任何数据目录都必须经 `AppDirs`；仅当 exe 目录只读（Program Files）时降级到 `%LOCALAPPDATA%\MyExplorer`（v2.6 新增白名单例外），禁止再引入 `path_provider` / 直写 %APPDATA%/%TEMP%
 - **恒双窗口**（`shell_store.dart` `isDual = signal(true)`）
 - **不恢复 Linux/macOS/单窗口支持**
 - **插件 Lua API 为 `myexplorer.register` 等**（勿改回 waydir）
@@ -103,12 +108,12 @@
 ## 7. 当前风险点
 
 1. **首次启动自动导出内置 ini**：若 `themes/` 目录已非空（如用户只留一个自定义 ini），`load()` 会跳过导出内置 ini，导致 dark 等内置主题退回 const 兜底配色。默认/兜底用 const dark。
-2. **中文键 ini 编码**：`File.writeAsString` 默认 UTF-8，中文键名与值均存 UTF-8；解析用 `readAsString()`（UTF-8）。若第三方用记事本另存为 ANSI/GBK 会解析失败（`_parseIni` 按 `key=value` 硬解析，非法主题会被跳过并记日志）。
+2. **中文键 ini 编码**：解析已支持 UTF-8 优先 + GBK 回退（v2.6）；若第三方存为其它编码（如 UTF-16）仍会解析失败被跳过并记日志。
 3. **`shadowSubtle` 半透明**：输出为 8 位 ARGB（`33000000`），其余不透明输出 6 位 RGB；编辑时若用户只留 6 位会丢失阴影 alpha。
-4. **便携式写入权限**：装到 `Program Files` 等只读目录时写 exe 目录（数据库/日志/主题 ini）会失败。自用/便携可接受。
+4. **便携式写入权限**：exe 目录只读（Program Files）时自动降级 `%LOCALAPPDATA%\MyExplorer`（v2.6）；降级后与"便携"定位略有偏差，启动日志会提示。仍不理想：`support()` 解析在首次调用即决定 base，之后缓存。
 5. **Rust core 需单独构建**：integration 测试与发布依赖 `rust/myexplorer_core/target/release/myexplorer_core.dll`；改动 Rust 后需 `cargo build --release` 且同步 vendored。
 6. **CI 环境 GBK 测试**：`tc_bar_parser` GBK 解码依赖代码页 936，英文 runner 上不可用时 skip（不要删 skip 防护）。
-7. **`.inscode/` 工具目录**：不纳入版本控制。
+7. **`.inscode/` 工具目录**：不纳入版本控制（已加入 .gitignore）。
 8. **识图技能 `claude-vision-skill` 的 API 不可用**：默认网关对所有模型返回 503（`model_not_found`），需要时须在脚本目录 `.env` 配有效 key。
 
 ---
@@ -118,22 +123,22 @@
 | 测试项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 509 全过 |
+| `flutter test --exclude-tags=integration` | ✅ 544 全过 |
 | `flutter test --tags=integration` | ✅ 86 过 + 4 skip |
-| `flutter build windows --release` | ✅ 成功（增量 ~17s，首次 ~2-4min） |
-| GitHub CI & Release | ✅ 全绿（Analyze/Unit/Integration/Build/Publish） |
+| `flutter build windows --release` | ✅ 成功（增量 ~17s-40s，首次 ~2-4min；v2.6 实测 147s 含插件警告但产物正常） |
+| GitHub CI & Release | v2.5 全绿；v2.6 待推送后验证 |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
-1. **拆分剩余大文件**：`lib/app/myexplorer_shell/menus.dart`（1645 行）、`lib/features/navigation/sidebar.dart`（1905 行）可继续按域拆分。
-2. **补测试**：operations 的 isolate 深层、sftp_task_executor、压缩包内编辑路径覆盖偏少；主题 ini 与归档列表排序可补更多边界。
-3. **便携式可写性**：考虑 Program Files 安装时的降级策略或错误提示（当前静默失败）。
-4. **主题 ini 容错**：编辑器把中文 ini 存为 GBK 时的容错（自动检测编码或提示）。
-5. **README 重传截图**：可用最新 exe 截图替换。
+1. **v2.6.0 提交推送**：当前改动全部在工作区未提交（含版本号 2.6.0+39、README/CHANGELOG/handoff），用户确认后按惯例提交并推送，让 CI & Release 出 v2.6 产物。
+2. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
+3. **拆分收尾**：`lib/features/navigation/toolbar.dart`（1100+ 行路径栏/建议）等仍偏大，可按域继续拆分。
+4. **主题 ini 其它容错**：UTF-16 等编码仍会失败；可考虑 BOM 检测或编码选择提示。
+5. **README 动图**：docs/gifs/ 已有 13 个演示 gif，可考虑挑重点 2-4 个插入 README 对应特性段。
 
-**当前无遗留任务**，v2.5.0 代码审查修复全部完成。
+**当前无遗留任务**，v2.6.0 功能与工程整理已完成，待提交推送。
 
 ---
 
@@ -148,14 +153,12 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
-- MyExplorer v2.5.0（pubspec name: myexplorer）
-- v2.5 代码审查修复：16 项 bug 修复（路径穿越防护、编译错误、插件操作级联、快捷键绑定、DB 过度删除、搜索异常静默失败、git 监听泄漏等）
-- 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%
-- 文件排序对齐 Windows（StrCmpLogicalW：点号断点/数字比较/前导零多的排前）
-- 浅色模式文件列表文字 RGB(60,65,75)；文件夹名深/浅色从 ini 读取（`深色文件夹文字色`/`浅色文件夹文字色`，默认 深色 E9E9E9 / 浅色 3C414B）
-- 主题系统全面改为 ini：themes/*.ini 每主题一个，[palette]/[terminal] 键名简体中文 + RGB 色号；首次启动自动导出内置主题；已移除 JSON；解析兼容旧英文键
-- 单元测试 509 + integration 86 全绿，flutter analyze 通过，CI & Release 正常
-- 已推送到 github.com/lixi523/myexplorer（NEVER push，需用户确认）
+- MyExplorer v2.6.0（pubspec name: myexplorer，version 2.6.0+39）
+- v2.6 新功能：横快捷栏编辑（右键编辑/删除 + 配置对话框编辑表单）、menus/sidebar 大文件拆分、Program Files 只读目录降级（%LOCALAPPDATA%\MyExplorer）、主题 ini GBK 容错、gbk_codec UAF 修复、README hero 截图恢复
+- 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
+- v2.5 遗留：代码审查 16 项修复已完成；文件排序 StrCmpLogicalW；主题全面 ini 化
+- 单元测试 544 + integration 86 全绿，flutter analyze 通过；v2.6 本地 Release 构建成功，CI 待推送验证
+- v2.6 改动全部在工作区未提交（NEVER push，需用户确认）
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

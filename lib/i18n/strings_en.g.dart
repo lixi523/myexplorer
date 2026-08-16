@@ -3192,6 +3192,15 @@ class Translations$preferences$shortcutBar$en {
 	/// en: 'Add'
 	String get add => 'Add';
 
+	/// en: 'Edit'
+	String get edit => 'Edit';
+
+	/// en: 'Save'
+	String get save => 'Save';
+
+	/// en: 'Remove'
+	String get remove => 'Remove';
+
 	/// en: 'Import Total Commander bar…'
 	String get importTcBar => 'Import Total Commander bar…';
 
@@ -4661,6 +4670,9 @@ extension on Translations {
 			'preferences.shortcutBar.iconHint' => 'Icon (leave empty to auto-extract from the target exe): file path or path,index',
 			'preferences.shortcutBar.pickFile' => 'File',
 			'preferences.shortcutBar.add' => 'Add',
+			'preferences.shortcutBar.edit' => 'Edit',
+			'preferences.shortcutBar.save' => 'Save',
+			'preferences.shortcutBar.remove' => 'Remove',
 			'preferences.shortcutBar.importTcBar' => 'Import Total Commander bar…',
 			'preferences.shortcutBar.imported' => ({required Object count}) => 'Imported ${count} buttons',
 			'preferences.shortcutBar.importFailed' => 'Could not import bar file',
@@ -4814,11 +4826,11 @@ extension on Translations {
 			'help.groups.resources.links.body' => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md).',
 			'tags.menuLabel' => 'Tags',
 			'tags.newTag' => 'New Tag',
+			_ => null,
+		} ?? switch (path) {
 			'tags.newTagDots' => 'New tag…',
 			'tags.editTag' => 'Edit Tag',
 			'tags.deleteTag' => 'Delete Tag',
-			_ => null,
-		} ?? switch (path) {
 			'tags.clear' => 'Clear Tags',
 			'tags.save' => 'Save',
 			'keybindings.title' => 'Keyboard Shortcuts',
@@ -5328,11 +5340,11 @@ extension on Translations {
 			'tasks.status.cancelled' => 'Cancelled',
 			'git.clean' => 'clean',
 			'git.detachedHead' => 'detached HEAD',
+			_ => null,
+		} ?? switch (path) {
 			'git.merging' => 'MERGING',
 			'git.rebasing' => 'REBASING',
 			'git.cherryPicking' => 'CHERRY-PICK',
-			_ => null,
-		} ?? switch (path) {
 			'git.reverting' => 'REVERTING',
 			'git.bisecting' => 'BISECTING',
 			'git.checkoutFailed' => ({required Object message}) => 'Checkout failed: ${message}',

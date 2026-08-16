@@ -14,8 +14,12 @@ import '../widgets/app_modal.dart';
 import '../widgets/app_text_field.dart';
 
 /// Manages the user-defined items on the shortcut bar below the title bar:
-/// add a folder/file/command shortcut, remove or reorder existing ones.
-Future<void> showShortcutBarConfigDialog(BuildContext context) {
+/// add, edit, remove or reorder shortcuts. When [editingId] is set, the form
+/// is pre-filled with that item so the user can save changes onto it.
+Future<void> showShortcutBarConfigDialog(
+  BuildContext context, {
+  int? editingId,
+}) {
   return showGeneralDialog<void>(
     context: context,
     barrierColor: Colors.black.withValues(alpha: 0.4),
@@ -27,7 +31,7 @@ Future<void> showShortcutBarConfigDialog(BuildContext context) {
         opacity: animation,
         child: ScaleTransition(
           scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-          child: const _ShortcutBarConfigDialog(),
+          child: _ShortcutBarConfigDialog(editingId: editingId),
         ),
       );
     },
@@ -35,7 +39,9 @@ Future<void> showShortcutBarConfigDialog(BuildContext context) {
 }
 
 class _ShortcutBarConfigDialog extends StatefulWidget {
-  const _ShortcutBarConfigDialog();
+  final int? editingId;
+
+  const _ShortcutBarConfigDialog({this.editingId});
 
   @override
   State<_ShortcutBarConfigDialog> createState() =>
@@ -50,11 +56,30 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
   bool _busy = false;
   bool _importing = false;
   String? _importMessage;
+  int? _editingId;
 
   @override
   void initState() {
     super.initState();
-    _store.load();
+    _store.load().then((_) {
+      if (!mounted) return;
+      _applyEditingIdOnce();
+    });
+    _applyEditingIdOnce();
+  }
+
+  void _applyEditingIdOnce() {
+    final editingId = widget.editingId;
+    if (editingId == null || _editingId != null) return;
+    final items = _store.items.value;
+    for (final item in items) {
+      if (item.id != editingId) continue;
+      _editingId = editingId;
+      _labelController.text = item.label;
+      _targetController.text = item.target;
+      _iconController.text = item.icon ?? '';
+      break;
+    }
   }
 
   @override
@@ -63,6 +88,32 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
     _targetController.dispose();
     _iconController.dispose();
     super.dispose();
+  }
+
+  void _startEdit(int id) {
+    final items = _store.items.value;
+    for (final item in items) {
+      if (item.id != id) continue;
+      setState(() {
+        _editingId = id;
+        _importMessage = null;
+        _labelController.text = item.label;
+        _targetController.text = item.target;
+        _iconController.text = item.icon ?? '';
+      });
+
+      return;
+    }
+  }
+
+  void _cancelEdit() {
+    setState(() {
+      _editingId = null;
+      _importMessage = null;
+      _labelController.clear();
+      _targetController.clear();
+      _iconController.clear();
+    });
   }
 
   Future<void> _pickFile() async {
@@ -78,16 +129,24 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
     _targetController.text = path;
   }
 
-  Future<void> _add() async {
+  Future<void> _save() async {
     final label = _labelController.text.trim();
     final target = _targetController.text.trim();
     if (label.isEmpty || target.isEmpty || _busy) return;
     setState(() => _busy = true);
     final icon = _iconController.text.trim();
-    await _store.add(label, target, icon: icon.isEmpty ? null : icon);
-    _labelController.clear();
-    _targetController.clear();
-    _iconController.clear();
+    final editingId = _editingId;
+    if (editingId != null) {
+      await _store.update(
+        editingId,
+        label: label,
+        target: target,
+        icon: icon.isEmpty ? null : icon,
+      );
+    } else {
+      await _store.add(label, target, icon: icon.isEmpty ? null : icon);
+    }
+    _cancelEdit();
     if (mounted) setState(() => _busy = false);
   }
 
@@ -219,10 +278,16 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
                 onTap: _pickFile,
               ),
               const SizedBox(width: 8),
+              if (_editingId != null) ...[
+                _ActionButton(label: t.dialog.cancel, onTap: _cancelEdit),
+                const SizedBox(width: 8),
+              ],
               _ActionButton(
-                label: t.preferences.shortcutBar.add,
+                label: _editingId != null
+                    ? t.preferences.shortcutBar.save
+                    : t.preferences.shortcutBar.add,
                 busy: _busy,
-                onTap: _add,
+                onTap: _save,
               ),
             ],
           ),
@@ -250,6 +315,8 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
                       _ItemRow(
                         label: item.label,
                         target: item.target,
+                        editing: item.id == _editingId,
+                        onEdit: () => _startEdit(item.id),
                         onDelete: () => _remove(item.id),
                       ),
                   ],
@@ -266,11 +333,15 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
 class _ItemRow extends StatelessWidget {
   final String label;
   final String target;
+  final bool editing;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _ItemRow({
     required this.label,
     required this.target,
+    required this.editing,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -280,8 +351,10 @@ class _ItemRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       margin: const EdgeInsets.only(bottom: 6),
       decoration: BoxDecoration(
-        color: AppColors.bgSidebar,
-        border: Border.all(color: AppColors.bgDivider),
+        color: editing ? AppColors.bgSelectedMuted : AppColors.bgSidebar,
+        border: Border.all(
+          color: editing ? AppColors.accent : AppColors.bgDivider,
+        ),
       ),
       child: Row(
         children: [
@@ -301,6 +374,17 @@ class _ItemRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+            ),
+          ),
+          GestureDetector(
+            onTap: onEdit,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              child: Icon(
+                Icons.edit,
+                size: 14,
+                color: editing ? AppColors.accent : AppColors.fgMuted,
+              ),
             ),
           ),
           GestureDetector(

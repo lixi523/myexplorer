@@ -86,6 +86,7 @@ part 'myexplorer_shell/base.dart';
 part 'myexplorer_shell/actions.dart';
 part 'myexplorer_shell/terminal.dart';
 part 'myexplorer_shell/menus.dart';
+part 'myexplorer_shell/menus_plugin.dart';
 part 'myexplorer_shell/command_palette.dart';
 part 'myexplorer_shell/keyboard.dart';
 
@@ -101,6 +102,7 @@ class _MyExplorerShellState extends State<MyExplorerShell>
         _MyExplorerStateBase,
         _MyExplorerActionsMixin,
         _MyExplorerTerminalMixin,
+        _MyExplorerPluginMixin,
         _MyExplorerMenuMixin,
         _MyExplorerCommandPaletteMixin,
         _MyExplorerKeyboardMixin {

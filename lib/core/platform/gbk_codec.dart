@@ -137,7 +137,10 @@ Uint8List? encodeGbkBytes(String text) {
       );
       if (written <= 0) return null;
 
-      return output.asTypedList(written);
+      // Copy out of the calloc buffer before it is freed below: asTypedList
+      // only wraps the native memory, so returning it directly would hand the
+      // caller a view into freed (already-reused) memory.
+      return Uint8List.fromList(output.asTypedList(written));
     } finally {
       calloc.free(output);
     }

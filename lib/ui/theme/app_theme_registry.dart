@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 import '../../core/logging/app_logger.dart';
 import '../../core/platform/app_dirs.dart';
+import '../../core/platform/gbk_codec.dart';
 import '../../i18n/strings.g.dart';
 import 'app_theme_definition.dart';
 
@@ -181,7 +183,9 @@ class AppThemeRegistry {
 
   Future<AppThemeDefinition?> _readThemeIni(File file) async {
     try {
-      return AppThemeDefinition.fromIni(await file.readAsString());
+      return AppThemeDefinition.fromIni(
+        _decodeThemeBytes(await file.readAsBytes()),
+      );
     } catch (error, stack) {
       log.warn(
         'theme',
@@ -196,7 +200,9 @@ class AppThemeRegistry {
 
   AppThemeDefinition? _readThemeIniSync(File file) {
     try {
-      return AppThemeDefinition.fromIni(file.readAsStringSync());
+      return AppThemeDefinition.fromIni(
+        _decodeThemeBytes(file.readAsBytesSync()),
+      );
     } catch (e, st) {
       log.warn(
         'theme',
@@ -206,6 +212,18 @@ class AppThemeRegistry {
       );
 
       return null;
+    }
+  }
+
+  /// Decodes theme ini bytes as UTF-8, falling back to GBK (ANSI on Chinese
+  /// Windows) when the file was saved by an editor defaulting to the legacy
+  /// codepage. Unknown encodings fall back to UTF-8's lossy decode so a bad
+  /// file still produces a parse error (and is skipped) instead of crashing.
+  String _decodeThemeBytes(List<int> bytes) {
+    try {
+      return utf8.decode(bytes);
+    } on FormatException {
+      return decodeGbkBytes(bytes) ?? utf8.decode(bytes, allowMalformed: true);
     }
   }
 }

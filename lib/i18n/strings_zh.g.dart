@@ -1415,6 +1415,9 @@ class _Translations$preferences$shortcutBar$zh extends Translations$preferences$
 	@override String get iconHint => '图标（留空时自动从目标 exe 提取）：文件路径或 路径,索引';
 	@override String get pickFile => '文件';
 	@override String get add => '添加';
+	@override String get edit => '编辑';
+	@override String get save => '保存';
+	@override String get remove => '移除';
 	@override String get importTcBar => '导入 Total Commander 按钮栏…';
 	@override String imported({required Object count}) => '已导入 ${count} 个按钮';
 	@override String get importFailed => '导入按钮栏失败';
@@ -2524,6 +2527,9 @@ extension on TranslationsZh {
 			'preferences.shortcutBar.iconHint' => '图标（留空时自动从目标 exe 提取）：文件路径或 路径,索引',
 			'preferences.shortcutBar.pickFile' => '文件',
 			'preferences.shortcutBar.add' => '添加',
+			'preferences.shortcutBar.edit' => '编辑',
+			'preferences.shortcutBar.save' => '保存',
+			'preferences.shortcutBar.remove' => '移除',
 			'preferences.shortcutBar.importTcBar' => '导入 Total Commander 按钮栏…',
 			'preferences.shortcutBar.imported' => ({required Object count}) => '已导入 ${count} 个按钮',
 			'preferences.shortcutBar.importFailed' => '导入按钮栏失败',
@@ -2677,11 +2683,11 @@ extension on TranslationsZh {
 			'help.groups.resources.links.body' => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/lixi523/myexplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)。',
 			'tags.menuLabel' => '标签',
 			'tags.newTag' => '新建标签',
+			_ => null,
+		} ?? switch (path) {
 			'tags.newTagDots' => '新建标签…',
 			'tags.editTag' => '编辑标签',
 			'tags.deleteTag' => '删除标签',
-			_ => null,
-		} ?? switch (path) {
 			'tags.clear' => '清除标签',
 			'tags.save' => '保存',
 			'keybindings.title' => '键盘快捷键',
@@ -3191,11 +3197,11 @@ extension on TranslationsZh {
 			'tasks.status.cancelled' => '已取消',
 			'git.clean' => '干净',
 			'git.detachedHead' => '分离 HEAD',
+			_ => null,
+		} ?? switch (path) {
 			'git.merging' => '合并中',
 			'git.rebasing' => '变基中',
 			'git.cherryPicking' => '拣选中',
-			_ => null,
-		} ?? switch (path) {
 			'git.reverting' => '还原中',
 			'git.bisecting' => '二分查找中',
 			'git.checkoutFailed' => ({required Object message}) => '切换分支失败：${message}',

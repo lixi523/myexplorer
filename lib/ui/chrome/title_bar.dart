@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show File, Process, ProcessStartMode;
 
 import 'package:signals/signals_flutter.dart';
@@ -452,6 +453,35 @@ class _ShortcutBarState extends State<ShortcutBar> {
     if (ctx != null) showShortcutBarConfigDialog(ctx);
   }
 
+  void _editItem(ShortcutBarItem item, Offset position) {
+    final ctx = myexplorerNavigatorKey.currentContext;
+    if (ctx == null) return;
+    showContextMenu(
+      context: ctx,
+      position: position,
+      items: [
+        ContextMenuItem(
+          icon: MyExplorerIconsRegular.pencilSimple,
+          label: t.preferences.shortcutBar.edit,
+          action: 'edit',
+        ),
+        ContextMenuItem(
+          icon: MyExplorerIconsRegular.trash,
+          label: t.preferences.shortcutBar.remove,
+          action: 'remove',
+          danger: true,
+        ),
+      ],
+      onSelect: (action) {
+        if (action != 'edit') {
+          unawaited(_store.remove(item.id));
+        } else {
+          showShortcutBarConfigDialog(ctx, editingId: item.id);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -487,6 +517,7 @@ class _ShortcutBarState extends State<ShortcutBar> {
                             ? item.target
                             : item.label,
                         onTap: () => _openItem(item),
+                        onSecondaryTap: (position) => _editItem(item, position),
                       ),
                 ],
               );
@@ -521,11 +552,13 @@ class _ShortcutItemButton extends StatefulWidget {
   final ShortcutBarItem item;
   final String tooltip;
   final VoidCallback onTap;
+  final void Function(Offset position) onSecondaryTap;
 
   const _ShortcutItemButton({
     required this.item,
     required this.tooltip,
     required this.onTap,
+    required this.onSecondaryTap,
   });
 
   @override
@@ -602,6 +635,8 @@ class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: widget.onTap,
+          onSecondaryTapDown: (details) =>
+              widget.onSecondaryTap(details.globalPosition),
           child: Container(
             width: 28,
             height: 28,

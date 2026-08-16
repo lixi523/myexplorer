@@ -6,6 +6,12 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
+<p align="center">
+  <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
+</p>
+
+> **V2.6**: 快捷栏编辑与工程整理 —— 横快捷栏支持**右键编辑/删除**快捷方式，配置对话框可直接修改已有按钮（预填表单 + 保存/取消）；代码审查相关：GBK 编码主题 ini 自动容错、Program Files 只读目录降级、`menus.dart`/`sidebar.dart` 按域拆分、新增 operations/sftp/AppDirs 单测等。
+>
 > **V2.5**: 代码审查修复 —— 路径穿越防护（archive_reader）、编译错误（operation_store）、插件操作级联（menus.dart）、快捷键绑定错误（keyboard_shortcuts）、数据库过度删除、搜索异常静默失败、git 监听泄漏等 16 项 bug 修复。
 >
 > **V2.4**: 便携式布局 —— 数据库、日志、主题、插件、更新与缓存全部保存在程序目录内，不写入 `%APPDATA%`/`%TEMP%`；标签行与浅色模式文字精细调整。
@@ -29,7 +35,7 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 - Quick Look 弹窗（空格）支持代码高亮、图片、Markdown、PDF 预览与**压缩包内文件编辑**
 
 ### TC 兼容
-- **快捷栏**：导入 Total Commander `.bar` 按钮栏（GBK/UTF-8）、exe/dll 图标提取、`CD` 跳转、`cm_` 内置命令
+- **快捷栏**：导入 Total Commander `.bar` 按钮栏（GBK/UTF-8）、exe/dll 图标提取、`CD` 跳转、`cm_` 内置命令；按钮支持**右键编辑/删除**，配置对话框可添加、编辑、移除、排序
 - **参数宏**：`%P` `%N` `%T` `%M` `%L` `%S`（及小写原始值变体）在按钮运行时展开，完全对齐 TC 语义
 - **右键 NC 模式（扩展选择）**：右键单击文件 = 追加多选（高亮但不加粗）；按住右键拖动 = 轨迹经过全部选中（含边缘自动滚动、快速拖动区间补全不丢行）；**长按右键 >2 秒** = 弹出上下文菜单（文件上弹文件菜单，空白处弹背景菜单）；快速右键单击空白不弹菜单
 - 操作队列支持**暂停/恢复/取消**；冲突自动策略（覆盖较旧/跳过同大小）
