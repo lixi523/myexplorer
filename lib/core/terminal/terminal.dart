@@ -87,7 +87,7 @@ class TerminalService {
 
   static Future<bool> _which(String executable) async {
     try {
-      final result = await Process.run('where', [executable], runInShell: true);
+      final result = await Process.run('where', [executable]);
 
       return result.exitCode == 0;
     } catch (e, st) {
@@ -109,7 +109,6 @@ class TerminalService {
         spec.argsBuilder(directory),
         workingDirectory: directory,
         mode: ProcessStartMode.detached,
-        runInShell: true,
       );
 
       return true;
@@ -152,7 +151,6 @@ class TerminalService {
         parts.sublist(1),
         workingDirectory: directory,
         mode: ProcessStartMode.detached,
-        runInShell: true,
       );
 
       return true;

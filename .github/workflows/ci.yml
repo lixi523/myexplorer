@@ -112,6 +112,10 @@ jobs:
         shell: pwsh
         run: scripts\build_myexplorer_core_windows.ps1
 
+      - name: Check vendored myexplorer_core is up to date
+        shell: pwsh
+        run: scripts\check_myexplorer_core_up_to_date.ps1
+
       - name: Get dependencies
         run: flutter pub get
 

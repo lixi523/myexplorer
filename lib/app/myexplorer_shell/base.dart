@@ -33,7 +33,17 @@ mixin _MyExplorerStateBase on State<MyExplorerShell> {
   int _typeAheadIndex = -1;
   DateTime? _typeAheadLastAt;
 
-  NavigationStore get _active => _shell.activeStore.value!;
+  NavigationStore get _active {
+    final store = _shell.activeStore.value;
+    if (store != null) return store;
+    for (final pane in _shell.panes.value) {
+      for (final tab in pane.tabs.tabs.value) {
+        return tab.store;
+      }
+    }
+
+    throw StateError('no active navigation store');
+  }
 
   void _installRenameErrorEffects() {
     final currentStores = <NavigationStore>{};

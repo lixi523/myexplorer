@@ -69,6 +69,25 @@ void main() {
       final second = await AppDirs.support();
       expect(first, second);
     });
+
+    test(
+      'base is pinned until debugReset even if the exe dir changes',
+      () async {
+        final first = await AppDirs.support();
+        expect(first, tempDir.path);
+
+        final elsewhere = '${tempDir.path}\\elsewhere';
+        Directory(elsewhere).createSync(recursive: true);
+        AppDirs.debugExeDirOverride = elsewhere;
+
+        final pinned = await AppDirs.support();
+        expect(pinned, first);
+
+        AppDirs.debugReset();
+        final resolved = await AppDirs.support();
+        expect(resolved, elsewhere);
+      },
+    );
   });
 
   group('AppDirs isWritableDir', () {

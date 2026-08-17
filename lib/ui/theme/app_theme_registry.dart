@@ -136,12 +136,9 @@ class AppThemeRegistry {
     final dir = Directory(dirPath);
     try {
       await dir.create(recursive: true);
-      final hasIni = await dir.list().any(
-        (entity) =>
-            entity is File && p.extension(entity.path).toLowerCase() == '.ini',
-      );
-      if (hasIni) return;
+      final existingIds = await _themeIdsInDir(dir);
       for (final theme in builtInThemes) {
+        if (existingIds.contains(theme.id)) continue;
         await File(
           p.join(dirPath, '${theme.id}.ini'),
         ).writeAsString(theme.toIni());
@@ -161,12 +158,9 @@ class AppThemeRegistry {
     try {
       dir.createSync(recursive: true);
       if (!dir.existsSync()) return;
-      final hasIni = dir.listSync().any(
-        (entity) =>
-            entity is File && p.extension(entity.path).toLowerCase() == '.ini',
-      );
-      if (hasIni) return;
+      final existingIds = _themeIdsInDirSync(dir);
       for (final theme in builtInThemes) {
+        if (existingIds.contains(theme.id)) continue;
         File(
           p.join(dirPath, '${theme.id}.ini'),
         ).writeAsStringSync(theme.toIni());
@@ -179,6 +173,32 @@ class AppThemeRegistry {
         stack: stack,
       );
     }
+  }
+
+  Future<Set<String>> _themeIdsInDir(Directory dir) async {
+    final ids = <String>{};
+    await for (final entity in dir.list()) {
+      if (entity is! File || p.extension(entity.path).toLowerCase() != '.ini') {
+        continue;
+      }
+      final theme = await _readThemeIni(entity);
+      if (theme != null) ids.add(theme.id);
+    }
+
+    return ids;
+  }
+
+  Set<String> _themeIdsInDirSync(Directory dir) {
+    final ids = <String>{};
+    for (final entity in dir.listSync()) {
+      if (entity is! File || p.extension(entity.path).toLowerCase() != '.ini') {
+        continue;
+      }
+      final theme = _readThemeIniSync(entity);
+      if (theme != null) ids.add(theme.id);
+    }
+
+    return ids;
   }
 
   Future<AppThemeDefinition?> _readThemeIni(File file) async {
@@ -217,14 +237,44 @@ class AppThemeRegistry {
 
   /// Decodes theme ini bytes as UTF-8, falling back to GBK (ANSI on Chinese
   /// Windows) when the file was saved by an editor defaulting to the legacy
-  /// codepage. Unknown encodings fall back to UTF-8's lossy decode so a bad
-  /// file still produces a parse error (and is skipped) instead of crashing.
+  /// codepage. Explicit BOMs are honoured first (UTF-8, UTF-16LE, UTF-16BE) so
+  /// files saved by editors defaulting to UTF-16 still load. Unknown encodings
+  /// fall back to UTF-8's lossy decode so a bad file still produces a parse
+  /// error (and is skipped) instead of crashing.
   String _decodeThemeBytes(List<int> bytes) {
+    if (bytes.length >= 3 &&
+        bytes[0] == 0xEF &&
+        bytes[1] == 0xBB &&
+        bytes[2] == 0xBF) {
+      return utf8.decode(bytes.sublist(3));
+    }
+    if (bytes.length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xFE) {
+      return _decodeUtf16(bytes, 2, littleEndian: true);
+    }
+    if (bytes.length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF) {
+      return _decodeUtf16(bytes, 2, littleEndian: false);
+    }
     try {
       return utf8.decode(bytes);
     } on FormatException {
       return decodeGbkBytes(bytes) ?? utf8.decode(bytes, allowMalformed: true);
     }
+  }
+
+  String _decodeUtf16(
+    List<int> bytes,
+    int offset, {
+    required bool littleEndian,
+  }) {
+    final buffer = StringBuffer();
+    for (var i = offset; i + 1 < bytes.length; i += 2) {
+      final unit = littleEndian
+          ? (bytes[i] | (bytes[i + 1] << 8))
+          : ((bytes[i] << 8) | bytes[i + 1]);
+      buffer.writeCharCode(unit);
+    }
+
+    return buffer.toString();
   }
 }
 

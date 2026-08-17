@@ -25,7 +25,7 @@ import 'i18n/strings.g.dart';
 import 'ui/theme/app_theme_registry.dart';
 
 void main(List<String> args) async {
-  runZonedGuarded(
+  await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 

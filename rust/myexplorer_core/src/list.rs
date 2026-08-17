@@ -17,6 +17,22 @@ pub unsafe extern "C" fn myexplorer_list(
     with_stat: bool,
     out_len: *mut usize,
 ) -> *mut u8 {
+    let default = if out_len.is_null() {
+        std::ptr::null_mut()
+    } else {
+        unsafe {
+            *out_len = 0;
+        }
+        std::ptr::null_mut()
+    };
+    crate::util::guard(|| unsafe { list_entry(path, with_stat, out_len) }, default)
+}
+
+unsafe fn list_entry(
+    path: *const c_char,
+    with_stat: bool,
+    out_len: *mut usize,
+) -> *mut u8 {
     if path.is_null() || out_len.is_null() {
         return std::ptr::null_mut();
     }

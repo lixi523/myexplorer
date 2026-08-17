@@ -16,6 +16,25 @@ pub unsafe extern "C" fn myexplorer_trash(
     count: usize,
     out_len: *mut usize,
 ) -> *mut u8 {
+    let default = if out_len.is_null() {
+        std::ptr::null_mut()
+    } else {
+        unsafe {
+            *out_len = 0;
+        }
+        std::ptr::null_mut()
+    };
+    crate::util::guard(
+        || unsafe { trash_entry(paths, count, out_len) },
+        default,
+    )
+}
+
+unsafe fn trash_entry(
+    paths: *const *const c_char,
+    count: usize,
+    out_len: *mut usize,
+) -> *mut u8 {
     if paths.is_null() || out_len.is_null() {
         return std::ptr::null_mut();
     }
@@ -135,6 +154,13 @@ fn finish_trash_list_error(err: impl std::fmt::Display, out_len: *mut usize) -> 
 /// `out_len` must be writable.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_trash_list(out_len: *mut usize) -> *mut u8 {
+    crate::util::guard(
+        || unsafe { trash_list_entry(out_len) },
+        crate::util::null_with_len(out_len),
+    )
+}
+
+unsafe fn trash_list_entry(out_len: *mut usize) -> *mut u8 {
     if out_len.is_null() {
         return std::ptr::null_mut();
     }
@@ -185,6 +211,17 @@ pub unsafe extern "C" fn myexplorer_trash_restore(
     count: usize,
     out_len: *mut usize,
 ) -> *mut u8 {
+    crate::util::guard(
+        || unsafe { trash_restore_entry(ids, count, out_len) },
+        crate::util::null_with_len(out_len),
+    )
+}
+
+unsafe fn trash_restore_entry(
+    ids: *const *const c_char,
+    count: usize,
+    out_len: *mut usize,
+) -> *mut u8 {
     if ids.is_null() || out_len.is_null() {
         return std::ptr::null_mut();
     }
@@ -201,6 +238,17 @@ pub unsafe extern "C" fn myexplorer_trash_restore(
 /// `ids` is an array of `count` NUL-terminated C strings; `out_len` writable.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_trash_purge(
+    ids: *const *const c_char,
+    count: usize,
+    out_len: *mut usize,
+) -> *mut u8 {
+    crate::util::guard(
+        || unsafe { trash_purge_entry(ids, count, out_len) },
+        crate::util::null_with_len(out_len),
+    )
+}
+
+unsafe fn trash_purge_entry(
     ids: *const *const c_char,
     count: usize,
     out_len: *mut usize,

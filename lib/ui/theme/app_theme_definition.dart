@@ -412,6 +412,8 @@ class AppThemeDefinition {
 
   String toIni() {
     final b = StringBuffer();
+    b.writeln('; 半透明颜色（如 阴影色）请保留 8 位 #AARRGGBB 以保留透明度');
+
     b.writeln('[meta]');
     b.writeln('id=$id');
     b.writeln('name=$name');

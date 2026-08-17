@@ -824,7 +824,7 @@ class _GridTileState extends State<_GridTile> {
     final scale = widget.scale;
     final thumbSize = widget.thumbSize;
     final nameStyle = context.txt.row.copyWith(
-      fontSize: (context.txt.row.fontSize ?? 13) * scale,
+      fontSize: context.txt.row.fontSize! * scale,
       color: selected
           ? AppColors.fg
           : widget.rowDecoration?.nameColor ?? AppColors.fg,
@@ -832,7 +832,7 @@ class _GridTileState extends State<_GridTile> {
       height: 1.25,
     );
     final captionStyle = context.txt.caption.copyWith(
-      fontSize: (context.txt.caption.fontSize ?? 11) * scale,
+      fontSize: context.txt.caption.fontSize! * scale,
       color: AppColors.fgSubtle,
       height: 1.15,
     );

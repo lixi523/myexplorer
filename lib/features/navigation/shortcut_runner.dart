@@ -236,7 +236,6 @@ Future<void> _launchCommandLine(String commandLine) async {
       parts.first,
       parts.sublist(1),
       mode: ProcessStartMode.detached,
-      runInShell: true,
     );
   } catch (e, st) {
     log.warn('shortcut', 'failed to launch command', error: e, stack: st);

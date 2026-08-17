@@ -21,6 +21,22 @@ pub unsafe extern "C" fn myexplorer_enumerate(
     postorder: bool,
     out_len: *mut usize,
 ) -> *mut u8 {
+    let default = if out_len.is_null() {
+        std::ptr::null_mut()
+    } else {
+        unsafe {
+            *out_len = 0;
+        }
+        std::ptr::null_mut()
+    };
+    crate::util::guard(| | unsafe { enumerate_entry(root, postorder, out_len) }, default)
+}
+
+unsafe fn enumerate_entry(
+    root: *const c_char,
+    postorder: bool,
+    out_len: *mut usize,
+) -> *mut u8 {
     if root.is_null() || out_len.is_null() {
         return std::ptr::null_mut();
     }

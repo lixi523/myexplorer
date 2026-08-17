@@ -96,6 +96,74 @@ void main() {
       expect(registry.resolve('gbk-theme').name, '中文主题');
     });
 
+    test(
+      'seeds built-in theme ini files even when custom ones exist',
+      () async {
+        File(
+          '${dir.path}/midnight.ini',
+        ).writeAsStringSync(_iniFor('midnight', 'Midnight'));
+
+        final registry = AppThemeRegistry();
+        await registry.load(customThemesPath: dir.path);
+
+        for (final id in builtInIds) {
+          expect(File('${dir.path}/$id.ini').existsSync(), isTrue, reason: id);
+        }
+        expect(File('${dir.path}/midnight.ini').existsSync(), isTrue);
+      },
+    );
+
+    test(
+      'does not overwrite a built-in id already present as an ini',
+      () async {
+        File(
+          '${dir.path}/dark.ini',
+        ).writeAsStringSync(_iniFor('dark', 'Other Dark'));
+
+        final registry = AppThemeRegistry();
+        await registry.load(customThemesPath: dir.path);
+
+        expect(
+          File('${dir.path}/dark.ini').readAsStringSync(),
+          contains('name=Other Dark'),
+        );
+        expect(registry.resolve('dark').name, 'Other Dark');
+        expect(File('${dir.path}/light.ini').existsSync(), isTrue);
+      },
+    );
+
+    test('loads UTF-16 LE theme ini files with BOM', () async {
+      final content = _iniFor('utf16-theme', 'UTF16 主题');
+      final bytes = <int>[0xFF, 0xFE];
+      for (final unit in content.codeUnits) {
+        bytes
+          ..add(unit & 0xFF)
+          ..add((unit >> 8) & 0xFF);
+      }
+      File('${dir.path}/utf16-theme.ini').writeAsBytesSync(bytes);
+
+      final registry = AppThemeRegistry();
+      await registry.load(customThemesPath: dir.path);
+
+      expect(registry.resolve('utf16-theme').name, 'UTF16 主题');
+    });
+
+    test('loads UTF-16 BE theme ini files with BOM', () async {
+      final content = _iniFor('utf16be-theme', 'BE UTF16');
+      final bytes = <int>[0xFE, 0xFF];
+      for (final unit in content.codeUnits) {
+        bytes
+          ..add((unit >> 8) & 0xFF)
+          ..add(unit & 0xFF);
+      }
+      File('${dir.path}/utf16be-theme.ini').writeAsBytesSync(bytes);
+
+      final registry = AppThemeRegistry();
+      await registry.load(customThemesPath: dir.path);
+
+      expect(registry.resolve('utf16be-theme').name, 'BE UTF16');
+    });
+
     test('unknown ids resolve to dark and log once', () {
       final registry = AppThemeRegistry();
 

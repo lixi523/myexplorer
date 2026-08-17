@@ -39,3 +39,22 @@ pub(crate) fn mtime_ms(meta: &std::fs::Metadata) -> i64 {
         Err(_) => 0,
     }
 }
+
+pub(crate) fn null_with_len(out_len: *mut usize) -> *mut u8 {
+    if out_len.is_null() {
+        return std::ptr::null_mut();
+    }
+    unsafe {
+        *out_len = 0;
+    }
+    std::ptr::null_mut()
+}
+
+/// Runs [f] inside a panic barrier so a panic in FFI-exposed code returns
+/// [default] instead of unwinding across the C ABI (which is UB).
+pub(crate) fn guard<T>(f: impl FnOnce() -> T, default: T) -> T {
+    match std::panic::catch_unwind(std::panic::AssertUnwindSafe(f)) {
+        Ok(value) => value,
+        Err(_) => default,
+    }
+}

@@ -408,18 +408,20 @@ void copyWorker(List<dynamic> args) {
         );
       } else if (msg is ExecuteCommand) {
         resolutions = msg.resolutions;
-        executeCopy().catchError((e, st) {
-          mainSendPort.send(
-            TaskDoneMessage(
-              cancelled: cancelled,
-              errors: [
-                ...errors,
-                TaskError(path: '', message: _friendlyError(e)),
-              ],
-            ),
-          );
-          workerReceivePort.close();
-        });
+        unawaited(
+          executeCopy().catchError((e, st) {
+            mainSendPort.send(
+              TaskDoneMessage(
+                cancelled: cancelled,
+                errors: [
+                  ...errors,
+                  TaskError(path: '', message: _friendlyError(e)),
+                ],
+              ),
+            );
+            workerReceivePort.close();
+          }),
+        );
       } else if (msg is ConflictDecisionCommand) {
         if (msg.applyToAll) runtimeApplyAll = msg.resolution;
         runtimeResolutions[msg.sourcePath] = msg.resolution;
@@ -813,18 +815,20 @@ void moveWorker(List<dynamic> args) {
         );
       } else if (msg is ExecuteCommand) {
         resolutions = msg.resolutions;
-        executeMove().catchError((e, st) {
-          mainSendPort.send(
-            TaskDoneMessage(
-              cancelled: cancelled,
-              errors: [
-                ...errors,
-                TaskError(path: '', message: _friendlyError(e)),
-              ],
-            ),
-          );
-          workerReceivePort.close();
-        });
+        unawaited(
+          executeMove().catchError((e, st) {
+            mainSendPort.send(
+              TaskDoneMessage(
+                cancelled: cancelled,
+                errors: [
+                  ...errors,
+                  TaskError(path: '', message: _friendlyError(e)),
+                ],
+              ),
+            );
+            workerReceivePort.close();
+          }),
+        );
       } else if (msg is ConflictDecisionCommand) {
         if (msg.applyToAll) runtimeApplyAll = msg.resolution;
         runtimeResolutions[msg.sourcePath] = msg.resolution;
@@ -1422,18 +1426,20 @@ void extractWorker(List<dynamic> args) {
         );
       } else if (msg is ExecuteCommand) {
         resolutions = {...resolutions, ...msg.resolutions};
-        executeExtract().catchError((e, st) {
-          mainSendPort.send(
-            TaskDoneMessage(
-              cancelled: cancelled,
-              errors: [
-                ...errors,
-                TaskError(path: '', message: _friendlyError(e)),
-              ],
-            ),
-          );
-          workerReceivePort.close();
-        });
+        unawaited(
+          executeExtract().catchError((e, st) {
+            mainSendPort.send(
+              TaskDoneMessage(
+                cancelled: cancelled,
+                errors: [
+                  ...errors,
+                  TaskError(path: '', message: _friendlyError(e)),
+                ],
+              ),
+            );
+            workerReceivePort.close();
+          }),
+        );
       } else if (msg is ConflictDecisionCommand) {
         if (msg.applyToAll) runtimeApplyAll = msg.resolution;
         runtimeResolutions[msg.sourcePath] = msg.resolution;
@@ -2180,7 +2186,7 @@ void splitFileWorker(List<dynamic> args) {
               buffer.removeRange(0, partSize);
               partSink.add(head);
               await partSink.flush();
-              partSink.close();
+              await partSink.close();
               await partSink.done;
               partPaths.add(partFile.path);
               partIndex++;
@@ -2194,7 +2200,7 @@ void splitFileWorker(List<dynamic> args) {
           if (buffer.isNotEmpty) {
             partSink.add(buffer);
           }
-          partSink.close();
+          await partSink.close();
           await partSink.done;
           partPaths.add(partFile.path);
           processedFiles++;

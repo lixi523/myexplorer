@@ -71,7 +71,7 @@ class SftpCredentials {
 class LocationResolver {
   LocationResolver._();
 
-  /// Maps `smb://host[:port]/share` 鈫?gvfs physical mount root, populated
+  /// Maps `smb://host[:port]/share` → gvfs physical mount root, populated
   /// after a successful mount. Lets the UI keep working with logical URIs
   /// while FS operations use the physical mountpoint.
   static final Map<String, String> _logicalToPhysical = {};

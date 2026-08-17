@@ -109,7 +109,7 @@ class SftpFs implements FsBackend {
     }
     final controller = StreamController<List<int>>();
     controller.add(bytes);
-    controller.close();
+    await controller.close();
 
     return controller.stream;
   }

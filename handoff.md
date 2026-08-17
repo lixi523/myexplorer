@@ -18,13 +18,11 @@
 
 ## 2. 当前进度（2026-08-17）
 
-- ✅ **v2.7.0 版本号已更新**（pubspec `2.7.0+40`），本地构建通过
-- ✅ **竖快捷栏 4 个复制快捷方式**：`copySelectedNames`（文件名）/`copySelectedParentPaths`（所在目录路径）/`copySelectedPaths`（完整路径含文件名）/`copySelectedDetails`（详细信息文本）；`NavigationStore` 新增方法 + `ClipboardController.copyText` + 顶层纯函数 `buildEntryDetailsText`（可单测）
-- ✅ **慢速双击重命名**：列表行 `_ListRow` 与网格 `_GridTile` 的 `_handleTap` 增加 2x~3x 间隔分支 → 触发 `onMenuAction('rename')`；网格视图补齐 `onMenuAction` 传导链（FileGrid → _GridTile → pane_view）
-- ✅ **横快捷栏增强**：`Wrap` 自动换行（minHeight 36 自适应，右下固定按钮不换行）；移除内置列表视图/搜索按钮，配置按钮改齿轮图标 `gearSix`
-- ✅ **代码审查修复**（v2.7）：全部 `activePane.value!` 空值解引用加守卫（9 处）；`unawaited_futures` 扫描修复 20 处（await/unawaited）；sftp_task_executor 5 处静默 `catch(e){e.toString()}` 改 `log.warn`
-- ✅ **大文件拆分**（v2.7）：`preferences_view.dart`（1235→910）+ 新 `settings_widgets.dart`（345 行共享组件，7 个 pane 改 import）；`file_view.dart`（1549→1159）+ 新 part `file_view_columns.dart`（391 行列头/列配置）
-- ✅ 单元测试 **563 全过**（v2.6 的 553 + 10：buildEntryDetailsText/ClipboardController.copyText/file_sort 边界/慢双击）、integration 86 过 + 4 skip
+- ✅ **v2.8.0 已提交并推送**（pubspec `2.8.0+41`），本地 Release 构建通过，CI & Release 待 GitHub 验证
+- ✅ v2.8.0 内容 = v2.7.0 功能（竖快捷栏 4 个复制快捷方式 / 慢速双击重命名 / 横快捷栏换行精简 / 代码审查修复 / 大文件拆分）+ 本会话「风险点治理」 + 「全项目审查修复」
+- ✅ **风险点治理**（2026-08-17）：内置主题 ini 按 id 补缺导出（不再因存在自定义 ini 而跳过导出）、UTF-8/UTF-16LE/BE BOM 解码容错、导出 ini 注释提示半透明 8 位 `#AARRGGBB`、AppDirs 缓存行为锁定单测、Rust core 一致性检查脚本 `scripts/check_myexplorer_core_up_to_date.ps1` + CI build 护栏
+- ✅ **全项目审查修复**（2026-08-17）：快捷栏/终端命令移除 `runInShell`（`&` 等元字符按字面处理，shell 特性需显式 `cmd /c`）、启用 `unawaited_futures` lint 并修复 6 处丢 Future、`activeStore` 空值守卫、网格字号回退修复、location_resolver 注释乱码、Rust FFI panic 屏障（list/enumerate/trash×4/search 共 7 入口 `catch_unwind`）
+- ✅ 单元测试 **558 全过**、integration 86 过 + 4 skip、`flutter analyze` 0 issues、cargo build + vendored 同步、check 脚本绿灯
 - （v2.6 遗留完成项保留）横快捷栏编辑、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、README hero 截图
 
 ---
@@ -33,8 +31,8 @@
 
 | Commit | 说明 |
 |--------|------|
-| （未提交，工作区） | **v2.7.0**：竖快捷栏 4 复制按钮、慢速双击重命名、横快捷栏换行/精简（齿轮图标）、代码审查修复（activePane/await/unawaited/sftp 日志）、preferences_view/file_view 拆分、file_sort 边界测试等；**待用户确认后提交推送** |
-| `feat: v2.6.0 — shortcut bar editing, file splits, read-only fallback, GBK ini tolerance` | 横快捷栏编辑（update/右键菜单/编辑表单）、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、gbk_codec UAF 修复、README hero 截图等 |
+| `feat: v2.8.0 — risk-point fixes, code review hardening, lint enforcement, FFI panic guards` | **v2.8.0（已推送，2026-08-17）**：pubspec `2.8.0+41`；内置主题 ini 按 id 补缺、UTF-16 BOM 解码、导出注释；移除 runInShell×4；`unawaited_futures` lint + 6 处丢 Future 修复 + `activeStore` 守卫 + 网格字号回退 + 注释乱码；Rust FFI `catch_unwind` 屏障 7 入口；Rust core 一致性检查脚本 + CI 护栏；CHANGELOG/README/handoff v2.8.0 |
+| `feat: v2.7.0 — copy shortcuts, slow double-click rename, shortcut bar wrap, code review fixes` | 竖快捷栏 4 复制按钮、慢速双击重命名、横快捷栏换行/精简（齿轮图标）、代码审查修复、preferences_view/file_view 拆分（v2.8.0 一并推送） |
 | `fix: v2.5 code review — 16 bug fixes` | 路径穿越防护、编译错误、插件操作级联、快捷键 fall-through、DB 过度删除、搜索异常静默失败、git 监听泄漏、dispose 丢设置、首屏滚动、主题 seeding、SFTP session 验证、exit port 订阅、内存泄漏、缓存永 miss、i18n 标签修复 |
 | `feat: match Windows sort order (StrCmpLogicalW)` | 重写 `compareNatural`：点号断点、number<char、前导零多的排前（v01<v1）；压缩包列表排序同步 |
 | `feat: light mode text color RGB(60,65,75)` | `lightTheme.fg` 改 `0xFF3C414B` |
@@ -69,6 +67,8 @@
 | `lib/core/platform/gbk_codec.dart` | GBK(code 936) 编解码（FFI）；**encodeGbkBytes 已修复 UAF**（`Uint8List.fromList` 拷贝） |
 | `lib/app/myexplorer_shell/menus.dart` + `menus_plugin.dart` | 拆分的两个 part：菜单构建/分发 + 插件执行域（`_MyExplorerMenuMixin` / `_MyExplorerPluginMixin`） |
 | `lib/features/navigation/sidebar.dart` + `sidebar_*.dart` | 拆分：sidebar（主 State）+ edit/footer/header/operations 四个 part |
+| `scripts/build_myexplorer_core_windows.ps1` | 构建并 vendored Rust core + pdfium |
+| `scripts/check_myexplorer_core_up_to_date.ps1` | **Rust core 一致性检查（v2.8.0 新增）**：SHA256 对比本地构建与 vendored DLL，不一致 exit 1 提示重建；CI build job 护栏 |
 | `lib/ui/dialogs/shortcut_bar_config_dialog.dart` | 快捷栏配置：支持 `editingId` 预填编辑、保存/取消、行内编辑 |
 | `test/` | 544 单测 + 86 integration |
 
@@ -109,14 +109,14 @@
 
 ## 7. 当前风险点
 
-1. **首次启动自动导出内置 ini**：若 `themes/` 目录已非空（如用户只留一个自定义 ini），`load()` 会跳过导出内置 ini，导致 dark 等内置主题退回 const 兜底配色。默认/兜底用 const dark。
-2. **中文键 ini 编码**：解析已支持 UTF-8 优先 + GBK 回退（v2.6）；若第三方存为其它编码（如 UTF-16）仍会解析失败被跳过并记日志。
-3. **`shadowSubtle` 半透明**：输出为 8 位 ARGB（`33000000`），其余不透明输出 6 位 RGB；编辑时若用户只留 6 位会丢失阴影 alpha。
-4. **便携式写入权限**：exe 目录只读（Program Files）时自动降级 `%LOCALAPPDATA%\MyExplorer`（v2.6）；降级后与"便携"定位略有偏差，启动日志会提示。仍不理想：`support()` 解析在首次调用即决定 base，之后缓存。
-5. **Rust core 需单独构建**：integration 测试与发布依赖 `rust/myexplorer_core/target/release/myexplorer_core.dll`；改动 Rust 后需 `cargo build --release` 且同步 vendored。
-6. **CI 环境 GBK 测试**：`tc_bar_parser` GBK 解码依赖代码页 936，英文 runner 上不可用时 skip（不要删 skip 防护）。
-7. **`.inscode/` 工具目录**：不纳入版本控制（已加入 .gitignore）。
-8. **识图技能 `claude-vision-skill` 的 API 不可用**：默认网关对所有模型返回 503（`model_not_found`），需要时须在脚本目录 `.env` 配有效 key。
+1. **首次启动自动导出内置 ini**：~~若 `themes/` 目录已非空（如用户只留一个自定义 ini），`load()` 会跳过导出内置 ini，导致 dark 等内置主题退回 const 兜底配色。~~ ✅ **已处理（2026-08-17）**：`_seedBuiltInThemes*` 改为按内置 id 补缺（扫描现有 ini 收集 id，缺哪个补哪个），自定义同名 ini 不被覆盖；无新依赖，单测覆盖（`app_theme_registry_test.dart`）。
+2. **中文键 ini 编码**：解析已支持 UTF-8 优先 + GBK 回退（v2.6）。✅ **已处理（2026-08-17）**：`_decodeThemeBytes` 增加 BOM 检测（UTF-8 BOM / UTF-16LE `FF FE` / UTF-16BE `FE FF`），第三方存 UTF-16 的 ini 可正常解析；单测覆盖 LE/BE。
+3. **`shadowSubtle` 半透明**：输出为 8 位 ARGB（`33000000`），其余不透明输出 6 位 RGB。✅ **已处理（2026-08-17）**：`toIni()` 输出顶部加 `;` 注释提示「半透明颜色请保留 8 位 #AARRGGBB」（解析自动忽略 `;` 行，round-trip 单测仍过）；编辑外部脚本用记手写仍可能丢 alpha，属预期。
+4. **便携式写入权限**：exe 目录只读（Program Files）时自动降级 `%LOCALAPPDATA%\MyExplorer`（v2.6）；`support()` 解析在首次调用即决定 base，之后缓存（**缓存生命周期 = 进程生命周期**，属设计而非缺陷）。✅ **已锁定行为**（2026-08-17）：新增 `app_dirs_test.dart` 用例验证「改 exe 目录 → 缓存固定 → `debugReset` 后重新解析」。不做运行时迁移（成本高、竞态风险大）。
+5. **Rust core 需单独构建**：integration 测试与发布依赖 `rust/myexplorer_core/target/release/myexplorer_core.dll`；改动 Rust 后需 `cargo build --release` 且同步 vendored。✅ **已处理（2026-08-17）**：新增 `scripts/check_myexplorer_core_up_to_date.ps1`（SHA256 对比 target 与 vendored，不一致 exit 1 并提示跑 build 脚本；无本地构建时静默通过）；CI build job 在 ps1 后加一步同脚本作回归护栏；本地改 Rust 后先跑 ps1 再提交。
+6. **CI 环境 GBK 测试**：`tc_bar_parser` GBK 解码依赖代码页 936，不可用时 skip（**不要删 skip 防护**）。未改动；win32 936 转换在英文 Windows 上也可用，CI 走 windows-latest 实际不会 skip。
+7. **`.inscode/` 工具目录**：不纳入版本控制（已加入 .gitignore）。无需处理。
+8. **识图技能 `claude-vision-skill` 的 API 不可用**：默认网关对所有模型返回 503（`model_not_found`），需要时须在 `~/.config/inscode/skills/claude-vision-skill/.env` 配 `DASHSCOPE_API_KEY`/`DASHSCOPE_BASE_URL`/`VISION_MODEL`。待配有效凭据。
 
 ---
 
@@ -125,22 +125,22 @@
 | 测试项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 563 全过 |
+| `flutter test --exclude-tags=integration` | ✅ 558 全过 |
 | `flutter test --tags=integration` | ✅ 86 过 + 4 skip |
 | `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6/v2.7 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6 全绿；v2.7 待推送后验证 |
+| GitHub CI & Release | v2.5/v2.6 全绿；**v2.8.0 已推送，待验证** |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
-1. **v2.7.0 提交推送**：当前改动全部在工作区未提交（含版本号 2.7.0+40、README/CHANGELOG/handoff），用户确认后按惯例提交并推送，让 CI & Release 出 v2.7 产物。
-2. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
-3. **拆分收尾**：`lib/features/navigation/toolbar.dart`（1100+ 行路径栏/建议）、`file_system_workers.dart`（2478 行）、`navigation_store.dart`（1900 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
-4. **主题 ini 其它容错**：UTF-16 等编码仍会失败；可考虑 BOM 检测或编码选择提示。
-5. **README 动图**：docs/gifs/ 已有 13 个演示 gif，可考虑挑重点 2-4 个插入 README 对应特性段。
+1. **v2.8.0 CI & Release 验证**：已提交推送（`feat: v2.8.0 ...`），等 GitHub CI 全绿 + Release 出 v2.8 产物；若 CI 红按红项修。
+2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`。
+3. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
+4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2478 行）、`navigation_store.dart`（1900 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
+5. **主题 ini 其它容错**：UTF-16 无 BOM 仍未覆盖（当前 BOM 优先）；可考虑启发式探测。**Rust panic 屏障**：sftp/pty/pdf 等 session 型入口尚未包 `catch_unwind`，未来改动引入失败路径时补。
 
-**当前无遗留任务**，v2.7.0 功能与工程整理已完成，待提交推送。
+**当前无遗留任务**，v2.8.0 已提交推送，待 CI/Release 确认。
 
 ---
 
@@ -155,12 +155,12 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
-- MyExplorer v2.7.0（pubspec name: myexplorer，version 2.7.0+40）
-- v2.7 新功能：竖快捷栏 4 个复制快捷方式（文件名/目录路径/完整路径/详细信息）、慢速双击重命名（2~3 倍间隔）、横快捷栏自动换行 + 精简（齿轮图标）、代码审查修复（activePane 空守卫/await/unawaited/sftp 日志）、preferences_view/file_view 大文件拆分
-- v2.6 遗留：横快捷栏编辑、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、README hero 截图
+- MyExplorer **v2.8.0**（pubspec name: myexplorer，version 2.8.0+41，**已提交推送**）
+- v2.8.0 = v2.7.0 功能（竖快捷栏 4 复制快捷方式 / 慢速双击重命名 / 横快捷栏换行精简 / 大文件拆分）+ 风险点治理（主题 ini 按 id 补缺 + UTF-16 BOM 解码 + 导出注释 + AppDirs 行为锁定 + Rust core 一致性脚本）+ 全项目审查修复（移除 runInShell、unawaited_futures lint + 6 处修复、activeStore 守卫、Rust FFI catch_unwind 屏障、注释乱码）
+- 行为变化：快捷栏/终端命令不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
 - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
-- 单元测试 563 + integration 86 全绿，flutter analyze 通过；v2.7 本地 Release 构建成功，CI 待推送验证
-- v2.7 改动全部在工作区未提交（NEVER push，需用户确认）
+- 单元测试 558 + integration 86 全绿，flutter analyze 通过；v2.8 本地 Release 构建成功，CI 待验证
+- NEVER push 规则：v2.8.0 已由用户明确确认推送，后续新改动先确认再推
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

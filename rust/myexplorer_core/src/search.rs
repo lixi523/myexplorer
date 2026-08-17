@@ -136,6 +136,23 @@ pub unsafe extern "C" fn myexplorer_search(
     max_depth: u32,
     out_len: *mut usize,
 ) -> *mut u8 {
+    crate::util::guard(
+        || unsafe {
+            search_entry(root, query, include_hidden, mode, content, max_depth, out_len)
+        },
+        crate::util::null_with_len(out_len),
+    )
+}
+
+unsafe fn search_entry(
+    root: *const c_char,
+    query: *const c_char,
+    include_hidden: bool,
+    mode: u8,
+    content: bool,
+    max_depth: u32,
+    out_len: *mut usize,
+) -> *mut u8 {
     if root.is_null() || query.is_null() || out_len.is_null() {
         return std::ptr::null_mut();
     }

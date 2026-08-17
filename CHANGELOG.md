@@ -5,6 +5,27 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2026-08-17
+
+### Changed
+- Theme seeding backfills built-in theme ini files per id: missing built-ins are exported even when custom ini files already exist, and existing files (including same-id custom overrides) are never overwritten.
+- Theme ini decoding detects UTF-8 / UTF-16LE / UTF-16BE BOMs, so files saved as UTF-16 by third-party editors load correctly.
+- Exported theme ini files start with a comment reminding that translucent colors must keep 8-digit `#AARRGGBB`.
+- Shortcut-bar commands and custom terminal commands no longer run through `cmd.exe` (`runInShell` removed): shell metacharacters like `&` are literal argument characters now; shell features require an explicit `cmd /c` — matching Total Commander's native CreateProcess behaviour.
+- Enforced the `unawaited_futures` linter; fixed six real dropped-future sites (app bootstrap `runZonedGuarded`, SFTP read-stream close, split-task sink closes, copy/move worker error chains).
+- Rust FFI entry points (list / enumerate / trash ×4 / search) run inside a `catch_unwind` panic barrier instead of unwinding across the C ABI.
+- Added `scripts/check_myexplorer_core_up_to_date.ps1` that fails fast when the vendored native core drifts from the locally built DLL; wired into CI as a regression gate.
+
+### Fixed
+- `ShellBase._active` getter no longer force-unwraps the nullable `activeStore` signal (guarded fallback to the first tab).
+- Grid view no longer falls back to hardcoded font sizes when the text-style role font size is read off (`context.txt.row.fontSize` is authoritative).
+- Mojibake in a `location_resolver` doc comment (`鈫?` → `→`, leftover from a legacy encoding conversion).
+
+### Tests
+- Theme registry: per-id seeding backfill, no-overwrite of same-id built-in inis, UTF-16LE/BE BOM decoding (+4).
+- AppDirs: base directory stays pinned until `debugReset` even when the executable dir changes (+1).
+- 558 unit tests pass; `flutter analyze` is clean.
+
 ## [2.7.0] - 2026-08-17
 
 ### Added
