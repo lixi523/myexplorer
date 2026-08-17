@@ -58,7 +58,7 @@ void main(List<String> args) async {
         return true;
       };
 
-      LocaleSettings.useDeviceLocale();
+      await LocaleSettings.useDeviceLocale();
       try {
         await initializeDateFormatting();
       } catch (e, st) {

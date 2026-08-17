@@ -344,12 +344,26 @@ class _ListRowState extends State<_ListRow> {
 
   void _handleTap() {
     final now = DateTime.now();
-    if (_lastTap != null &&
-        now.difference(_lastTap!).inMilliseconds < _kDoubleTapMs) {
-      _lastTap = null;
-      widget.onOpen(widget.entry);
+    final lastTap = _lastTap;
+    if (lastTap != null) {
+      final elapsed = now.difference(lastTap).inMilliseconds;
+      if (elapsed < _kDoubleTapMs) {
+        _lastTap = null;
+        widget.onOpen(widget.entry);
 
-      return;
+        return;
+      }
+      // A slow double-click (2x-3x the normal double-click interval) enters
+      // rename mode instead of opening the item.
+      if (elapsed > _kDoubleTapMs * 2 && elapsed < _kDoubleTapMs * 3) {
+        _lastTap = null;
+        widget.onSelect(
+          FileSelectionEvent(entry: widget.entry, index: widget.index),
+        );
+        widget.onMenuAction?.call('rename');
+
+        return;
+      }
     }
     _lastTap = now;
     widget.onSelect(

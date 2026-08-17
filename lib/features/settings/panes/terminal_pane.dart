@@ -4,7 +4,7 @@ import 'package:signals/signals_flutter.dart';
 import '../../../core/settings/settings_registry.dart';
 import '../../../core/terminal/system_fonts.dart';
 import '../../../i18n/strings.g.dart';
-import '../preferences_view.dart';
+import '../settings_widgets.dart';
 
 class TerminalPane extends StatefulWidget {
   final PreferenceAnchors anchors;

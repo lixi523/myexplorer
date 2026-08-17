@@ -235,7 +235,7 @@ mixin _MyExplorerPluginMixin
         case 'notify':
           _notifyFromPlugin(contribution, effect);
         case 'refresh':
-          _active.refresh();
+          unawaited(_active.refresh());
         case 'log':
           log.warn('plugins', effect.message ?? '');
         case 'error':
@@ -258,7 +258,7 @@ mixin _MyExplorerPluginMixin
         case 'custom_operation_finish':
           _finishPluginCustomOperation(contribution, effect);
         case 'task':
-          _runPluginTask(contribution, effect);
+          unawaited(_runPluginTask(contribution, effect));
         case 'dialog':
           if (contribution is PluginContribution) {
             await _showPluginDialog(
@@ -491,7 +491,7 @@ mixin _MyExplorerPluginMixin
           accentColor: ok ? AppColors.success : AppColors.danger,
         ),
       );
-      if (ok) _active.refresh();
+      if (ok) unawaited(_active.refresh());
     } catch (e) {
       if (!mounted) return;
       _notificationStore.add(
@@ -593,7 +593,7 @@ mixin _MyExplorerPluginMixin
         cancelled: cancelled,
         error: ok ? '' : _pluginTaskError(exitCode, timedOut, stderrTail),
       );
-      if (ok) _active.refresh();
+      if (ok) unawaited(_active.refresh());
     } catch (e) {
       if (!mounted) return;
       _operationStore.finishPluginTask(

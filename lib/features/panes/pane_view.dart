@@ -273,6 +273,7 @@ class _TabContent extends StatelessWidget {
                 onSelect: store.onSelect,
                 onSecondarySelect: store.addToSelection,
                 onOpen: store.onOpen,
+                onMenuAction: onMenuAction,
                 onBackgroundTap: store.onBackgroundTap,
                 onBackgroundContextMenu: onBackgroundContextMenu,
                 onContextMenu: onContextMenu,

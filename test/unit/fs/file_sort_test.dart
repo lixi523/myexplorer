@@ -69,6 +69,34 @@ void main() {
       expect(compareNatural('a1', 'ab'), lessThan(0));
       expect(compareNatural('a.log', 'a.txt'), lessThan(0));
     });
+
+    test('handles empty and whitespace-only names', () {
+      expect(compareNatural('', 'a'), lessThan(0));
+      expect(compareNatural('', ''), 0);
+      expect(compareNatural(' ', '\t'), 1); // tab U+0009 < space U+0020
+    });
+
+    test('handles special characters and emoji deterministically', () {
+      expect(compareNatural('a!b', 'a b'), isNot(0));
+      expect(compareNatural('a😀b', 'a😁b'), isNot(0));
+      expect(compareNatural('café', 'cafe'), isNot(0));
+      expect(compareNatural('文件', '文档'), isNot(0));
+    });
+
+    test('handles long names and deep numeric runs', () {
+      final longA = 'prefix-${'x' * 500}-1';
+      final longB = 'prefix-${'x' * 500}-2';
+      expect(compareNatural(longA, longB), lessThan(0));
+      expect(compareNatural('a${'9' * 12}b', 'a${'9' * 12}c'), lessThan(0));
+    });
+
+    test('handles mixed separators and dotfiles deterministically', () {
+      expect(compareNatural('.hidden', 'a'), lessThan(0));
+      expect(compareNatural('.hidden', '.hidden'), 0);
+      expect(compareNatural('..', '.'), greaterThan(0));
+      expect(compareNatural('a/b', 'a-b'), isNot(0));
+      expect(compareNatural('a+b', 'a_b'), isNot(0));
+    });
   });
 
   group('sortEntries naturalSort', () {

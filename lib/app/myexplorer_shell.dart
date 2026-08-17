@@ -432,6 +432,26 @@ class _MyExplorerShellState extends State<MyExplorerShell>
         onTap: _confirmAndDelete,
       ),
       CenterShortcutButton(
+        icon: MyExplorerIconsRegular.clipboard,
+        tooltip: t.toolbar.copyNames,
+        onTap: store.copySelectedNames,
+      ),
+      CenterShortcutButton(
+        icon: MyExplorerIconsRegular.folder,
+        tooltip: t.toolbar.copyParentPath,
+        onTap: store.copySelectedParentPaths,
+      ),
+      CenterShortcutButton(
+        icon: MyExplorerIconsRegular.arrowSquareOut,
+        tooltip: t.toolbar.copyFullPath,
+        onTap: store.copySelectedPaths,
+      ),
+      CenterShortcutButton(
+        icon: MyExplorerIconsRegular.textAa,
+        tooltip: t.toolbar.copyDetails,
+        onTap: store.copySelectedDetails,
+      ),
+      CenterShortcutButton(
         icon: MyExplorerIconsRegular.treeStructure,
         tooltip: t.toolbar.treeView,
         isActive: () => viewMode.value == 'tree',

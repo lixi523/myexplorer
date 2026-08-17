@@ -199,7 +199,7 @@ mixin _MyExplorerKeyboardMixin
 
           return KeyEventResult.handled;
         }
-        _shell.activePane.value!.tabs.selectTab(digitIdx);
+        _shell.activePane.value?.tabs.selectTab(digitIdx);
 
         return KeyEventResult.handled;
       }

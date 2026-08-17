@@ -44,7 +44,7 @@ mixin NavigationRenameOps on NavigationStoreHost {
     }
 
     if (oldPath == kPendingCreatePath) {
-      _commitCreate(trimmed);
+      await _commitCreate(trimmed);
 
       return;
     }

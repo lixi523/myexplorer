@@ -20,6 +20,7 @@ import '../locations/location_uri.dart';
 import '../../core/settings/settings_store.dart';
 import '../../core/settings/color_rule_store.dart';
 import '../../i18n/strings.g.dart';
+import '../../utils/format.dart';
 import '../../ui/theme/app_theme.dart';
 import '../files/row_decorations.dart';
 import '../git/git_status_store.dart';
@@ -1007,7 +1008,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
           entries = await _listSmbHostShares(path, uri);
           if (token != _loadToken) return;
           _publishEntries(entries);
-          _restoreFolderStateIfMatches(path);
+          await _restoreFolderStateIfMatches(path);
           _watcher.stop();
 
           return;
@@ -1042,7 +1043,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
         entries = await _listWindowsUncShares(path, host);
         if (token != _loadToken) return;
         _publishEntries(entries);
-        _restoreFolderStateIfMatches(path);
+        await _restoreFolderStateIfMatches(path);
         _watcher.stop();
 
         return;
@@ -1051,7 +1052,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
       }
       if (token != _loadToken) return;
       _publishEntries(entries);
-      _restoreFolderStateIfMatches(path);
+      await _restoreFolderStateIfMatches(path);
       _applyPendingSelect();
       if (token == _loadToken) await _loadFileTags(entries);
       if (token != _loadToken) return;
@@ -1633,7 +1634,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
       return;
     }
-    FileSystemService.openWithDefaultApp(entry.realPath);
+    await FileSystemService.openWithDefaultApp(entry.realPath);
   }
 
   void openSelected() {
@@ -1719,6 +1720,33 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
   void copySelectedPaths() {
     _clipboardController.copySelectedPaths(selectedPaths.value);
+  }
+
+  /// Copies just the file/folder names of the selected entries, one per line.
+  void copySelectedNames() {
+    final names = selectedEntries.map((e) => e.name).toList();
+    if (names.isEmpty) return;
+    _clipboardController.copyText(names.join('\n'));
+  }
+
+  /// Copies the parent directory path of each selected entry, one per line
+  /// (a pure path, no file name).
+  void copySelectedParentPaths() {
+    final paths = selectedEntries
+        .map((e) => PlatformPaths.parentOf(e.path))
+        .toList();
+    if (paths.isEmpty) return;
+    _clipboardController.copyText(paths.join('\n'));
+  }
+
+  /// Copies a verbose text block for each selected entry: name, type, size,
+  /// modification time and full path.
+  void copySelectedDetails() {
+    final entries = selectedEntries;
+    if (entries.isEmpty) return;
+    _clipboardController.copyText(
+      entries.map(buildEntryDetailsText).join('\n\n'),
+    );
   }
 
   void onContextMenu(FileSelectionEvent event) =>
@@ -1871,4 +1899,21 @@ class _FolderState {
   final String? cursorPath;
 
   _FolderState({required this.selectedPaths, required this.cursorPath});
+}
+
+/// Builds the verbose "details" text block for a single entry, used by
+/// [NavigationStore.copySelectedDetails]. Kept as a top-level function so it
+/// can be unit-tested without a store instance.
+String buildEntryDetailsText(FileEntry e) {
+  final t0 = t.quickLook;
+  final type = e.type == FileItemType.folder ? t0.typeFolder : t0.typeFile;
+  final kind = e.extension.isEmpty ? type : '${t0.typeFile} (${e.extension})';
+
+  return [
+    '${t0.name}: ${e.name}',
+    '${t0.type}: $kind',
+    '${t0.size}: ${formatBytes(e.size)}',
+    '${t0.modified}: ${formatEntryDate(e.modified, 'iso')}',
+    '${t0.path}: ${e.path}',
+  ].join('\n');
 }

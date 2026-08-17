@@ -1009,7 +1009,11 @@
     "gridView": "网格视图",
     "more": "更多",
     "newFile": "新建文件",
-    "sync": "同步"
+    "sync": "同步",
+    "copyNames": "复制文件名",
+    "copyParentPath": "复制所在目录路径",
+    "copyFullPath": "复制完整路径",
+    "copyDetails": "复制详细信息"
   },
   "notifications": {
     "title": "通知",

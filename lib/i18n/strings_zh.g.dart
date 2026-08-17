@@ -785,6 +785,10 @@ class _Translations$toolbar$zh extends Translations$toolbar$en {
 	@override String get more => '更多';
 	@override String get newFile => '新建文件';
 	@override String get sync => '同步';
+	@override String get copyNames => '复制文件名';
+	@override String get copyParentPath => '复制所在目录路径';
+	@override String get copyFullPath => '复制完整路径';
+	@override String get copyDetails => '复制详细信息';
 }
 
 // Path: notifications
@@ -2982,6 +2986,10 @@ extension on TranslationsZh {
 			'toolbar.more' => '更多',
 			'toolbar.newFile' => '新建文件',
 			'toolbar.sync' => '同步',
+			'toolbar.copyNames' => '复制文件名',
+			'toolbar.copyParentPath' => '复制所在目录路径',
+			'toolbar.copyFullPath' => '复制完整路径',
+			'toolbar.copyDetails' => '复制详细信息',
 			'notifications.title' => '通知',
 			'notifications.empty' => '暂无通知',
 			'notifications.clear' => '清除',
@@ -3193,12 +3201,12 @@ extension on TranslationsZh {
 			'tasks.status.cancelling' => '正在取消...',
 			'tasks.status.completedWithErrors' => ({required Object count}) => '完成，${count} 个错误',
 			'tasks.status.completed' => '已完成',
+			_ => null,
+		} ?? switch (path) {
 			'tasks.status.failed' => '失败',
 			'tasks.status.cancelled' => '已取消',
 			'git.clean' => '干净',
 			'git.detachedHead' => '分离 HEAD',
-			_ => null,
-		} ?? switch (path) {
 			'git.merging' => '合并中',
 			'git.rebasing' => '变基中',
 			'git.cherryPicking' => '拣选中',

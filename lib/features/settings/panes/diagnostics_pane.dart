@@ -11,7 +11,7 @@ import '../../../ui/overlays/toast.dart';
 import '../../../ui/theme/app_theme.dart';
 import '../../../ui/theme/app_text_styles.dart';
 import '../../../ui/widgets/app_modal.dart';
-import '../preferences_view.dart';
+import '../settings_widgets.dart';
 
 Future<void> showDiagnosticsDialog(BuildContext context) {
   final size = MediaQuery.of(context).size;

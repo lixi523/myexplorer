@@ -682,7 +682,8 @@ mixin _MyExplorerMenuMixin
       case 'open_in_new_tab':
         final entries = store.selectedEntries;
         if (entries.length == 1 && entries.first.type == FileItemType.folder) {
-          _shell.activePane.value!.tabs.addTab(entries.first.path);
+          final pane = _shell.activePane.value;
+          if (pane != null) pane.tabs.addTab(entries.first.path);
         }
       case 'properties':
         _openPropertiesFromMenu(store);

@@ -1,11 +1,12 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v2.6.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v2.7.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
-- 自定义快捷栏（手写横快捷栏 INI + 中间 46px 竖快捷栏 17 按钮；**按钮支持右键编辑/删除**）
+- 自定义快捷栏（手写横快捷栏 INI + 中间 46px 竖快捷栏；**横快捷栏支持右键编辑/删除、超出宽度自动换行**；**竖快捷栏含 4 个复制快捷方式**）
+- **慢速双击重命名**：普通双击间隔的 2~3 倍间隔双击 → 进入重命名模式（列表/网格视图均支持）
 - 右键 NC 扩展选择模式（2 秒长按触发菜单，无加粗选中）
 - 深色主题：底色 RGB(70,75,85)、文字 RGB(223,233,233)
 - **便携式布局**：所有数据（数据库/日志/主题/插件/更新/缓存）在程序目录内，不写 %APPDATA%/%TEMP%；**只读目录（如 Program Files）自动降级到 %LOCALAPPDATA%\MyExplorer**
@@ -15,16 +16,16 @@
 
 ---
 
-## 2. 当前进度（2026-08-16）
+## 2. 当前进度（2026-08-17）
 
-- ✅ **v2.6.0 版本号已更新**（pubspec `2.6.0+39`），今日本地构建通过（Release exe 正常产出）
-- ✅ **横快捷栏编辑功能**：配置对话框支持编辑已有按钮（预填 + 保存/取消），快捷栏按钮右键菜单（编辑/移除）；`ShortcutBarStore.update` 已实现并持久化
-- ✅ **代码拆分**：`menus.dart`（1649 行）拆为 menus + menus_plugin（插件域独立 mixin）；`sidebar.dart`（1916 行）拆为 sidebar + sidebar_edit/footer/header/operations 四个 part
-- ✅ **Program Files 只读降级**：`AppDirs.selectBase` 检测 exe 目录可写性，不可写时回退 `%LOCALAPPDATA%\MyExplorer` 并在启动日志提示
-- ✅ **主题 ini GBK 容错**：`app_theme_registry` 读取改为 UTF-8 优先 → GBK 回退；**顺带修复 `gbk_codec.encodeGbkBytes` use-after-free**（返回 calloc 裸视图后即释放，字节带垃圾前缀），改为 `Uint8List.fromList` 拷贝
-- ✅ **README 恢复 hero 截图**：`docs/screenshots/hero.png`（最新 exe 实拍，旧 Waydir 截图 5d3c1bb 已删）
-- ✅ 单元测试 **544 全过**（v2.5 的 509 + 新增 35：operations/sftp/AppDirs/GBK 主题/shortcut update）、integration 86 过 + 4 skip
-- （v2.5 遗留完成项保留）代码审查 16 项修复、便携式布局、StrCmpLogicalW 排序、主题 ini 化、path_provider 移除
+- ✅ **v2.7.0 版本号已更新**（pubspec `2.7.0+40`），本地构建通过
+- ✅ **竖快捷栏 4 个复制快捷方式**：`copySelectedNames`（文件名）/`copySelectedParentPaths`（所在目录路径）/`copySelectedPaths`（完整路径含文件名）/`copySelectedDetails`（详细信息文本）；`NavigationStore` 新增方法 + `ClipboardController.copyText` + 顶层纯函数 `buildEntryDetailsText`（可单测）
+- ✅ **慢速双击重命名**：列表行 `_ListRow` 与网格 `_GridTile` 的 `_handleTap` 增加 2x~3x 间隔分支 → 触发 `onMenuAction('rename')`；网格视图补齐 `onMenuAction` 传导链（FileGrid → _GridTile → pane_view）
+- ✅ **横快捷栏增强**：`Wrap` 自动换行（minHeight 36 自适应，右下固定按钮不换行）；移除内置列表视图/搜索按钮，配置按钮改齿轮图标 `gearSix`
+- ✅ **代码审查修复**（v2.7）：全部 `activePane.value!` 空值解引用加守卫（9 处）；`unawaited_futures` 扫描修复 20 处（await/unawaited）；sftp_task_executor 5 处静默 `catch(e){e.toString()}` 改 `log.warn`
+- ✅ **大文件拆分**（v2.7）：`preferences_view.dart`（1235→910）+ 新 `settings_widgets.dart`（345 行共享组件，7 个 pane 改 import）；`file_view.dart`（1549→1159）+ 新 part `file_view_columns.dart`（391 行列头/列配置）
+- ✅ 单元测试 **563 全过**（v2.6 的 553 + 10：buildEntryDetailsText/ClipboardController.copyText/file_sort 边界/慢双击）、integration 86 过 + 4 skip
+- （v2.6 遗留完成项保留）横快捷栏编辑、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、README hero 截图
 
 ---
 
@@ -32,7 +33,8 @@
 
 | Commit | 说明 |
 |--------|------|
-| （未提交，工作区） | **v2.6.0**：横快捷栏编辑（update/右键菜单/编辑表单）、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、gbk_codec UAF 修复、README hero 截图、`ShortcutBarStore.update` 测试等；**待用户确认后提交推送** |
+| （未提交，工作区） | **v2.7.0**：竖快捷栏 4 复制按钮、慢速双击重命名、横快捷栏换行/精简（齿轮图标）、代码审查修复（activePane/await/unawaited/sftp 日志）、preferences_view/file_view 拆分、file_sort 边界测试等；**待用户确认后提交推送** |
+| `feat: v2.6.0 — shortcut bar editing, file splits, read-only fallback, GBK ini tolerance` | 横快捷栏编辑（update/右键菜单/编辑表单）、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、gbk_codec UAF 修复、README hero 截图等 |
 | `fix: v2.5 code review — 16 bug fixes` | 路径穿越防护、编译错误、插件操作级联、快捷键 fall-through、DB 过度删除、搜索异常静默失败、git 监听泄漏、dispose 丢设置、首屏滚动、主题 seeding、SFTP session 验证、exit port 订阅、内存泄漏、缓存永 miss、i18n 标签修复 |
 | `feat: match Windows sort order (StrCmpLogicalW)` | 重写 `compareNatural`：点号断点、number<char、前导零多的排前（v01<v1）；压缩包列表排序同步 |
 | `feat: light mode text color RGB(60,65,75)` | `lightTheme.fg` 改 `0xFF3C414B` |
@@ -123,22 +125,22 @@
 | 测试项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 544 全过 |
+| `flutter test --exclude-tags=integration` | ✅ 563 全过 |
 | `flutter test --tags=integration` | ✅ 86 过 + 4 skip |
-| `flutter build windows --release` | ✅ 成功（增量 ~17s-40s，首次 ~2-4min；v2.6 实测 147s 含插件警告但产物正常） |
-| GitHub CI & Release | v2.5 全绿；v2.6 待推送后验证 |
+| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6/v2.7 实测产物正常，super_native_extensions 插件警告无害） |
+| GitHub CI & Release | v2.5/v2.6 全绿；v2.7 待推送后验证 |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
-1. **v2.6.0 提交推送**：当前改动全部在工作区未提交（含版本号 2.6.0+39、README/CHANGELOG/handoff），用户确认后按惯例提交并推送，让 CI & Release 出 v2.6 产物。
+1. **v2.7.0 提交推送**：当前改动全部在工作区未提交（含版本号 2.7.0+40、README/CHANGELOG/handoff），用户确认后按惯例提交并推送，让 CI & Release 出 v2.7 产物。
 2. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
-3. **拆分收尾**：`lib/features/navigation/toolbar.dart`（1100+ 行路径栏/建议）等仍偏大，可按域继续拆分。
+3. **拆分收尾**：`lib/features/navigation/toolbar.dart`（1100+ 行路径栏/建议）、`file_system_workers.dart`（2478 行）、`navigation_store.dart`（1900 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
 4. **主题 ini 其它容错**：UTF-16 等编码仍会失败；可考虑 BOM 检测或编码选择提示。
 5. **README 动图**：docs/gifs/ 已有 13 个演示 gif，可考虑挑重点 2-4 个插入 README 对应特性段。
 
-**当前无遗留任务**，v2.6.0 功能与工程整理已完成，待提交推送。
+**当前无遗留任务**，v2.7.0 功能与工程整理已完成，待提交推送。
 
 ---
 
@@ -153,12 +155,12 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
-- MyExplorer v2.6.0（pubspec name: myexplorer，version 2.6.0+39）
-- v2.6 新功能：横快捷栏编辑（右键编辑/删除 + 配置对话框编辑表单）、menus/sidebar 大文件拆分、Program Files 只读目录降级（%LOCALAPPDATA%\MyExplorer）、主题 ini GBK 容错、gbk_codec UAF 修复、README hero 截图恢复
+- MyExplorer v2.7.0（pubspec name: myexplorer，version 2.7.0+40）
+- v2.7 新功能：竖快捷栏 4 个复制快捷方式（文件名/目录路径/完整路径/详细信息）、慢速双击重命名（2~3 倍间隔）、横快捷栏自动换行 + 精简（齿轮图标）、代码审查修复（activePane 空守卫/await/unawaited/sftp 日志）、preferences_view/file_view 大文件拆分
+- v2.6 遗留：横快捷栏编辑、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、README hero 截图
 - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
-- v2.5 遗留：代码审查 16 项修复已完成；文件排序 StrCmpLogicalW；主题全面 ini 化
-- 单元测试 544 + integration 86 全绿，flutter analyze 通过；v2.6 本地 Release 构建成功，CI 待推送验证
-- v2.6 改动全部在工作区未提交（NEVER push，需用户确认）
+- 单元测试 563 + integration 86 全绿，flutter analyze 通过；v2.7 本地 Release 构建成功，CI 待推送验证
+- v2.7 改动全部在工作区未提交（NEVER push，需用户确认）
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

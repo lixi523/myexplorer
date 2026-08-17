@@ -163,7 +163,8 @@ mixin _MyExplorerStateBase on State<MyExplorerShell> {
   }
 
   void _openInNewTab(String path) {
-    _shell.activePane.value!.tabs.addTab(path);
+    final pane = _shell.activePane.value;
+    if (pane != null) pane.tabs.addTab(path);
   }
 
   void _setShowHiddenGlobal(bool value) {

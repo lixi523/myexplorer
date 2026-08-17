@@ -15,7 +15,7 @@ import '../../../ui/theme/app_theme_definition.dart';
 import '../../../ui/theme/app_theme_registry.dart';
 import '../../../ui/widgets/app_modal.dart';
 import '../../../ui/widgets/app_text_field.dart';
-import '../preferences_view.dart';
+import '../settings_widgets.dart';
 
 class AppearancePane extends StatefulWidget {
   final PreferenceAnchors anchors;

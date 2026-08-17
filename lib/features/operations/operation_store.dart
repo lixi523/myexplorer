@@ -750,7 +750,7 @@ class OperationStore {
     _currentTaskId = null;
     _processing = false;
 
-    _processQueue();
+    unawaited(_processQueue());
   }
 
   Future<void> _executeTask(FileTask task) async {

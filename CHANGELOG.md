@@ -5,6 +5,25 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2026-08-17
+
+### Added
+- Vertical shortcut bar: four copy shortcuts — copy file names, copy parent folder path, copy full path, copy details.
+- Slow double-click (2x-3x the normal double-click interval) enters rename mode in both list and grid views.
+
+### Changed
+- Horizontal shortcut bar wraps to a second row when shortcuts overflow the width; the fixed right-side buttons stay on one row.
+- Horizontal shortcut bar: removed the built-in list-view and search buttons; the shortcut-bar config button now uses a gear icon.
+- Code review fixes: null-safe `activePane` access throughout the shell, awaited/unawaited future handling, detailed `log.warn` in SFTP executor instead of silent catches.
+- Split `preferences_view.dart` into `preferences_view.dart` + `settings_widgets.dart` (shared settings components); split `file_view.dart` into `file_view.dart` + `file_view_columns.dart` (list header / column config).
+- GBK/ANSI theme ini decoding tolerates legacy encodings.
+
+### Fixed
+- `gbk_codec.encodeGbkBytes` returned a view into freed calloc memory; bytes are now copied before the native buffer is released.
+
+### Tests
+- Added unit tests for `buildEntryDetailsText`, `ClipboardController.copyText`, file-sort boundary cases (empty names, emoji/CJK, long names, dotfiles), and slow-double-click helper behaviors (+10 tests, 563 total).
+
 ## [2.6.0] - 2026-08-16
 
 ### Added

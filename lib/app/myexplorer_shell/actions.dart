@@ -54,7 +54,7 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
     final entries = _active.selectedEntries;
     if (entries.isEmpty) return;
     if (_active.isTrashView) {
-      _active.deletePermanentlySelectedFromTrash();
+      await _active.deletePermanentlySelectedFromTrash();
 
       return;
     }
@@ -538,7 +538,7 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
     final dest = await store.resolveForOperation(store.currentPath.value);
     if (dest == null) return;
     final sources = entries.map((e) => e.realPath).toList();
-    _operationStore.enqueueDuplicate(sources, dest);
+    await _operationStore.enqueueDuplicate(sources, dest);
     if (!mounted) return;
     showToast(
       context: context,
@@ -561,11 +561,14 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
   }
 
   void _newTabHere() {
-    _shell.activePane.value!.tabs.addTab(_active.currentPath.value);
+    final pane = _shell.activePane.value;
+    if (pane != null) pane.tabs.addTab(_active.currentPath.value);
   }
 
   void _closeActiveTab() {
-    final tabsStore = _shell.activePane.value!.tabs;
+    final pane = _shell.activePane.value;
+    if (pane == null) return;
+    final tabsStore = pane.tabs;
     if (tabsStore.tabs.value.length > 1) {
       tabsStore.closeTab(tabsStore.activeTab.value.id);
 
@@ -579,7 +582,9 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
   }
 
   void _selectNextTab() {
-    final tabsStore = _shell.activePane.value!.tabs;
+    final pane = _shell.activePane.value;
+    if (pane == null) return;
+    final tabsStore = pane.tabs;
     final count = tabsStore.tabs.value.length;
     tabsStore.selectTab((tabsStore.activeIndex.value + 1) % count);
   }
@@ -654,7 +659,8 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
         item,
         context: ctx,
         navigateTo: (path) async {
-          _shell.activePane.value!.tabs.addTab(path);
+          final pane = _shell.activePane.value;
+          if (pane != null) pane.tabs.addTab(path);
         },
         openFile: OpenService.openDefault,
       );
@@ -664,7 +670,9 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
   }
 
   void _selectPrevTab() {
-    final tabsStore = _shell.activePane.value!.tabs;
+    final pane = _shell.activePane.value;
+    if (pane == null) return;
+    final tabsStore = pane.tabs;
     final count = tabsStore.tabs.value.length;
     tabsStore.selectTab((tabsStore.activeIndex.value - 1 + count) % count);
   }

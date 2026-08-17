@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/settings/settings_registry.dart';
 import '../../../i18n/strings.g.dart';
-import '../preferences_view.dart';
+import '../settings_widgets.dart';
 
 class GeneralPane extends StatelessWidget {
   final PreferenceAnchors anchors;

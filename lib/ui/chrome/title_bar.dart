@@ -485,63 +485,59 @@ class _ShortcutBarState extends State<ShortcutBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 36,
+      constraints: const BoxConstraints(minHeight: 36),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
         color: AppColors.bgSidebar,
         border: Border(bottom: BorderSide(color: AppColors.bgDivider)),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(width: 16),
-          SignalBuilder(
-            builder: (context) {
-              final customItems = _store.items.value;
+          const SizedBox(width: 8),
+          Expanded(
+            child: SignalBuilder(
+              builder: (context) {
+                final customItems = _store.items.value;
 
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final item in customItems)
-                    if (item.label.trim().isEmpty && item.target.trim().isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: SizedBox(
-                          width: 1,
-                          height: 20,
-                          child: ColoredBox(color: AppColors.bgDivider),
+                return Wrap(
+                  spacing: 2,
+                  runSpacing: 2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    for (final item in customItems)
+                      if (item.label.trim().isEmpty &&
+                          item.target.trim().isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: SizedBox(
+                            width: 1,
+                            height: 20,
+                            child: ColoredBox(color: AppColors.bgDivider),
+                          ),
+                        )
+                      else
+                        _ShortcutItemButton(
+                          item: item,
+                          tooltip: item.label.trim().isEmpty
+                              ? item.target
+                              : item.label,
+                          onTap: () => _openItem(item),
+                          onSecondaryTap: (position) =>
+                              _editItem(item, position),
                         ),
-                      )
-                    else
-                      _ShortcutItemButton(
-                        item: item,
-                        tooltip: item.label.trim().isEmpty
-                            ? item.target
-                            : item.label,
-                        onTap: () => _openItem(item),
-                        onSecondaryTap: (position) => _editItem(item, position),
-                      ),
-                ],
-              );
-            },
-          ),
-          const Spacer(),
-          _ShortcutButton(
-            icon: MyExplorerIconsRegular.list,
-            tooltip: t.toolbar.listView,
-            onTap: () => widget.onAction('toggle_view'),
+                  ],
+                );
+              },
+            ),
           ),
           const SizedBox(width: 8),
           _ShortcutButton(
-            icon: MyExplorerIconsRegular.magnifyingGlass,
-            tooltip: t.keybindings.search,
-            onTap: () => widget.onAction('search'),
-          ),
-          const SizedBox(width: 8),
-          _ShortcutButton(
-            icon: MyExplorerIconsRegular.plus,
+            icon: MyExplorerIconsRegular.gearSix,
             tooltip: t.preferences.shortcutBar.title,
             onTap: _openConfig,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
         ],
       ),
     );

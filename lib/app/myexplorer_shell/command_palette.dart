@@ -42,7 +42,7 @@ mixin _MyExplorerCommandPaletteMixin
     final store = _active;
     final dual = _shell.isDual.value;
     final hasTarget = _hasTarget(store);
-    final tabCount = _shell.activePane.value!.tabs.tabs.value.length;
+    final tabCount = _shell.activePane.value?.tabs.tabs.value.length ?? 0;
     final selected = store.selectedCount.value;
 
     return [

@@ -20,6 +20,12 @@ class ClipboardController {
     Clipboard.setData(ClipboardData(text: text));
   }
 
+  /// Copies arbitrary text (names, details, …) to the system clipboard.
+  void copyText(String text) {
+    if (text.isEmpty) return;
+    Clipboard.setData(ClipboardData(text: text));
+  }
+
   Future<void> copyEntries(List<FileEntry> entries) async {
     await _writeEntries(entries, ClipboardMode.copy);
   }

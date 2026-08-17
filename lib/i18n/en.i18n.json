@@ -1009,7 +1009,11 @@
     "gridView": "Grid view",
     "more": "More",
     "newFile": "New File",
-    "sync": "Sync"
+    "sync": "Sync",
+    "copyNames": "Copy File Names",
+    "copyParentPath": "Copy Parent Folder Path",
+    "copyFullPath": "Copy Full Path",
+    "copyDetails": "Copy Details"
   },
   "notifications": {
     "title": "Notifications",

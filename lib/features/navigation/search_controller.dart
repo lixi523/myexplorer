@@ -308,12 +308,14 @@ class SearchController {
 
         return;
       }
-      _runSftpRecursiveSearch(
-        token: token,
-        root: root,
-        includeHidden: showHidden(),
-        matcher: matcher,
-        filter: filter,
+      unawaited(
+        _runSftpRecursiveSearch(
+          token: token,
+          root: root,
+          includeHidden: showHidden(),
+          matcher: matcher,
+          filter: filter,
+        ),
       );
 
       return;

@@ -26,6 +26,7 @@ import 'file_view.dart'
         BackgroundContextMenuCallback,
         FileContextMenuCallback,
         FileDropCallback,
+        FileMenuActionCallback,
         FileOpenCallback,
         FileSelectCallback,
         OpenInNewTabCallback,
@@ -79,6 +80,7 @@ class FileGrid extends StatefulWidget {
   final FileSelectCallback? onSecondarySelect;
   final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
+  final FileMenuActionCallback? onMenuAction;
   final BackgroundContextMenuCallback? onBackgroundContextMenu;
   final FileContextMenuCallback? onContextMenu;
   final FileDropCallback? onDropFiles;
@@ -106,6 +108,7 @@ class FileGrid extends StatefulWidget {
     this.onSecondarySelect,
     this.secondarySelectedPaths = const {},
     required this.onOpen,
+    this.onMenuAction,
     this.onBackgroundContextMenu,
     this.onContextMenu,
     this.onDropFiles,
@@ -522,6 +525,7 @@ class _FileGridState extends State<FileGrid> {
                               secondarySelectedPaths:
                                   widget.secondarySelectedPaths,
                               onOpen: widget.onOpen,
+                              onMenuAction: widget.onMenuAction,
                               onContextMenu: widget.onContextMenu,
                               onOpenInNewTab: widget.onOpenInNewTab,
                             );
@@ -587,6 +591,7 @@ class _GridTile extends StatefulWidget {
   final FileSelectCallback onSelect;
   final Set<String> secondarySelectedPaths;
   final FileOpenCallback onOpen;
+  final FileMenuActionCallback? onMenuAction;
   final FileContextMenuCallback? onContextMenu;
   final OpenInNewTabCallback? onOpenInNewTab;
 
@@ -612,6 +617,7 @@ class _GridTile extends StatefulWidget {
     required this.onSelect,
     this.secondarySelectedPaths = const {},
     required this.onOpen,
+    this.onMenuAction,
     this.onContextMenu,
     this.onOpenInNewTab,
   });
@@ -698,12 +704,26 @@ class _GridTileState extends State<_GridTile> {
 
   void _handleTap() {
     final now = DateTime.now();
-    if (_lastTap != null &&
-        now.difference(_lastTap!).inMilliseconds < _kGridDoubleTapMs) {
-      _lastTap = null;
-      widget.onOpen(widget.entry);
+    final lastTap = _lastTap;
+    if (lastTap != null) {
+      final elapsed = now.difference(lastTap).inMilliseconds;
+      if (elapsed < _kGridDoubleTapMs) {
+        _lastTap = null;
+        widget.onOpen(widget.entry);
 
-      return;
+        return;
+      }
+      // A slow double-click (2x-3x the normal double-click interval) enters
+      // rename mode instead of opening the item.
+      if (elapsed > _kGridDoubleTapMs * 2 && elapsed < _kGridDoubleTapMs * 3) {
+        _lastTap = null;
+        widget.onSelect(
+          FileSelectionEvent(entry: widget.entry, index: widget.index),
+        );
+        widget.onMenuAction?.call('rename');
+
+        return;
+      }
     }
     _lastTap = now;
     widget.onSelect(

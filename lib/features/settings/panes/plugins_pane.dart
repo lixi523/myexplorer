@@ -13,7 +13,7 @@ import '../../plugins/plugin_form_dialog.dart';
 import '../../plugins/plugin_models.dart';
 import '../../plugins/plugin_settings_store.dart';
 import '../../plugins/plugin_store.dart';
-import '../preferences_view.dart';
+import '../settings_widgets.dart';
 
 Future<void> showPluginsDialog(BuildContext context) {
   final size = MediaQuery.of(context).size;

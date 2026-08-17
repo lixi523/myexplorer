@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import '../../core/fs/sftp_fs.dart';
 import '../../core/fs/sftp_session_manager.dart';
 import '../../core/fs/myexplorer_core_loader.dart';
+import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
 import '../../core/models/file_operation.dart';
 import '../../core/platform/platform_paths.dart';
@@ -452,8 +453,8 @@ void _seedSessionsFromOptions(Map<String, String> options) {
   try {
     final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     SftpSessionManager.seedRecords(list.map(SftpSessionRecord.fromJson));
-  } catch (e) {
-    e.toString();
+  } catch (e, st) {
+    log.warn('sftp', 'failed to seed worker sessions', error: e, stack: st);
   }
 }
 
@@ -590,14 +591,24 @@ Future<void> _ensureParentDir(String path, bool isSftp, SftpFs fs) async {
   if (isSftp) {
     try {
       await fs.mkdir(parent, recursive: true);
-    } catch (e) {
-      e.toString();
+    } catch (e, st) {
+      log.warn(
+        'sftp',
+        'ensure parent dir failed: $parent',
+        error: e,
+        stack: st,
+      );
     }
   } else {
     try {
       await Directory(parent).create(recursive: true);
-    } catch (e) {
-      e.toString();
+    } catch (e, st) {
+      log.warn(
+        'sftp',
+        'ensure parent dir failed: $parent',
+        error: e,
+        stack: st,
+      );
     }
   }
 }
@@ -606,8 +617,8 @@ Future<void> _ensureDirExists(String path, bool isSftp, SftpFs fs) async {
   if (isSftp) {
     try {
       await fs.mkdir(path, recursive: true);
-    } catch (e) {
-      e.toString();
+    } catch (e, st) {
+      log.warn('sftp', 'ensure dir failed: $path', error: e, stack: st);
     }
   } else {
     await Directory(path).create(recursive: true);
@@ -636,8 +647,8 @@ Future<void> _removeAny(String src, SftpFs fs) async {
 Future<void> _removeAnySafe(String src, SftpFs fs) async {
   try {
     await _removeAny(src, fs);
-  } catch (e) {
-    e.toString();
+  } catch (e, st) {
+    log.warn('sftp', 'remove failed: $src', error: e, stack: st);
   }
 }
 

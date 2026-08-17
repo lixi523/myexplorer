@@ -10,6 +10,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
   <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
 </p>
 
+> **V2.7**: 快捷栏与交互打磨 —— 竖快捷栏新增 4 个复制快捷方式（文件名/所在目录路径/完整路径/详细信息）；**慢速双击**（普通双击间隔的 2~3 倍）进入重命名；横快捷栏超出宽度自动换行；横快捷栏精简（移除内置列表视图/搜索按钮，配置按钮改齿轮图标）；代码审查修复（空值解引用、未处理 Future、SFTP 静默异常日志等）；`preferences_view`/`file_view` 大文件拆分。
+>
 > **V2.6**: 快捷栏编辑与工程整理 —— 横快捷栏支持**右键编辑/删除**快捷方式，配置对话框可直接修改已有按钮（预填表单 + 保存/取消）；代码审查相关：GBK 编码主题 ini 自动容错、Program Files 只读目录降级、`menus.dart`/`sidebar.dart` 按域拆分、新增 operations/sftp/AppDirs 单测等。
 >
 > **V2.5**: 代码审查修复 —— 路径穿越防护（archive_reader）、编译错误（operation_store）、插件操作级联（menus.dart）、快捷键绑定错误（keyboard_shortcuts）、数据库过度删除、搜索异常静默失败、git 监听泄漏等 16 项 bug 修复。
@@ -29,8 +31,9 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 ## 特性一览
 
 ### 界面与导航
-- **恒双窗格**布局（不可切回单窗格），中间 46px 竖型快捷栏（新建/查看/复制到对面/移动到对面/删除/三视图切换/选择组/反选/搜索/同步/批量重命名/隐藏切换/属性）
+- **恒双窗格**布局（不可切回单窗格），中间 46px 竖型快捷栏（新建/查看/复制到对面/移动到对面/删除/复制文件名/复制路径/复制完整路径/复制详细信息/三视图切换/选择组/反选/搜索/同步/批量重命名/隐藏切换/属性）
 - 每窗格多标签、列表/树形/网格三视图、侧边栏（书签/驱动器/树）
+- **慢速双击**（普通双击间隔的 2~3 倍）直接进入重命名模式；列表与网格视图均支持
 - **Ctrl+Q 快速查看面板**：对侧窗格底部常驻预览，随光标实时刷新（图片/PDF/Markdown/代码/属性）
 - Quick Look 弹窗（空格）支持代码高亮、图片、Markdown、PDF 预览与**压缩包内文件编辑**
 

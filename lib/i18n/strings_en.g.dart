@@ -1719,6 +1719,18 @@ class Translations$toolbar$en {
 
 	/// en: 'Sync'
 	String get sync => 'Sync';
+
+	/// en: 'Copy File Names'
+	String get copyNames => 'Copy File Names';
+
+	/// en: 'Copy Parent Folder Path'
+	String get copyParentPath => 'Copy Parent Folder Path';
+
+	/// en: 'Copy Full Path'
+	String get copyFullPath => 'Copy Full Path';
+
+	/// en: 'Copy Details'
+	String get copyDetails => 'Copy Details';
 }
 
 // Path: notifications
@@ -5125,6 +5137,10 @@ extension on Translations {
 			'toolbar.more' => 'More',
 			'toolbar.newFile' => 'New File',
 			'toolbar.sync' => 'Sync',
+			'toolbar.copyNames' => 'Copy File Names',
+			'toolbar.copyParentPath' => 'Copy Parent Folder Path',
+			'toolbar.copyFullPath' => 'Copy Full Path',
+			'toolbar.copyDetails' => 'Copy Details',
 			'notifications.title' => 'Notifications',
 			'notifications.empty' => 'No notifications yet',
 			'notifications.clear' => 'Clear',
@@ -5336,12 +5352,12 @@ extension on Translations {
 			'tasks.status.cancelling' => 'Cancelling...',
 			'tasks.status.completedWithErrors' => ({required Object count}) => 'Completed with ${count} errors',
 			'tasks.status.completed' => 'Completed',
+			_ => null,
+		} ?? switch (path) {
 			'tasks.status.failed' => 'Failed',
 			'tasks.status.cancelled' => 'Cancelled',
 			'git.clean' => 'clean',
 			'git.detachedHead' => 'detached HEAD',
-			_ => null,
-		} ?? switch (path) {
 			'git.merging' => 'MERGING',
 			'git.rebasing' => 'REBASING',
 			'git.cherryPicking' => 'CHERRY-PICK',
