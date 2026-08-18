@@ -22,6 +22,16 @@ void main() {
     });
   });
 
+  group('isPathEntry', () {
+    test('detects full-path entries', () {
+      expect(isPathEntry(r'D:\a\b.txt'), isTrue);
+      expect(isPathEntry('D:/a/b.txt'), isTrue);
+      expect(isPathEntry('desktop.ini'), isFalse);
+      expect(isPathEntry('node_modules'), isFalse);
+      expect(isPathEntry(''), isFalse);
+    });
+  });
+
   group('parseHiddenIni', () {
     test('parses paths under [Hidden] section', () {
       final paths = parseHiddenIni('[Hidden]\r\nD:\\a.txt\r\nD:\\b\\c\r\n');
@@ -113,6 +123,69 @@ void main() {
       await store.load();
       expect(store.paths.value, isEmpty);
       expect(store.isLoaded, isTrue);
+    });
+  });
+
+  group('HiddenListStore name vs path entries', () {
+    late Directory tempDir;
+    late HiddenListStore store;
+
+    setUp(() {
+      tempDir = Directory.systemTemp.createTempSync(
+        'myexplorer_hidden_mode_test',
+      );
+      store = HiddenListStore.instance;
+      store.directoryOverride = tempDir.path;
+    });
+
+    tearDown(() {
+      store.directoryOverride = null;
+      try {
+        tempDir.deleteSync(recursive: true);
+      } catch (_) {}
+    });
+
+    test('name entry hides the same file name anywhere', () async {
+      await store.load();
+      await store.addPaths(['desktop.ini']);
+
+      expect(store.isHidden(r'D:\a\desktop.ini'), isTrue);
+      expect(store.isHidden(r'C:\other\sub\Desktop.INI'), isTrue);
+      expect(store.isHidden(r'D:\a\desktop.txt'), isFalse);
+      expect(store.isHidden(r'D:\a\desktop.ini.bak'), isFalse);
+    });
+
+    test('name entry hides the same folder name anywhere', () async {
+      await store.load();
+      await store.addPaths(['node_modules']);
+
+      expect(store.isHidden(r'D:\proj\node_modules'), isTrue);
+      expect(store.isHidden(r'D:\proj\src\node_modules'), isTrue);
+      expect(store.isHidden('D:/proj/node_modules'), isTrue);
+      expect(store.isHidden(r'D:\proj\modules'), isFalse);
+    });
+
+    test('path entry still matches exactly, not by name', () async {
+      await store.load();
+      await store.addPaths([r'D:\only\this.txt']);
+
+      expect(store.isHidden(r'D:\only\this.txt'), isTrue);
+      expect(store.isHidden(r'E:\only\this.txt'), isFalse);
+      expect(store.isHidden('D:/only/this.txt'), isTrue);
+    });
+
+    test('name and path entries coexist in one list', () async {
+      await store.load();
+      await store.addPaths(['Thumbs.db', r'D:\keep\secret.txt']);
+
+      expect(store.isHidden(r'X:\pics\Thumbs.db'), isTrue);
+      expect(store.isHidden(r'D:\keep\secret.txt'), isTrue);
+      expect(store.isHidden(r'E:\other\secret.txt'), isFalse);
+
+      // round-trips through the ini file
+      await store.load();
+      expect(store.isHidden(r'X:\pics\Thumbs.db'), isTrue);
+      expect(store.isHidden(r'D:\keep\secret.txt'), isTrue);
     });
   });
 }

@@ -35,12 +35,21 @@ class HiddenListStore {
 
   bool get isLoaded => loaded.value;
 
-  /// Returns true when [path] matches an entry exactly (after normalization).
+  /// Returns true when [path] matches a hidden entry: path entries match the
+  /// exact full path, name entries match the file/folder name anywhere.
   bool isHidden(String path) {
     final norm = normalizeHiddenPath(path);
     if (norm.isEmpty) return false;
 
-    return paths.value.any((e) => normalizeHiddenPath(e) == norm);
+    for (final entry in paths.value) {
+      if (isPathEntry(entry)) {
+        if (normalizeHiddenPath(entry) == norm) return true;
+      } else if (normalizeHiddenPath(entry) == p.basename(norm)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /// Loads the INI file (or starts with an empty list when missing).

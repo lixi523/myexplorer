@@ -3,16 +3,30 @@
 /// Format:
 /// ```ini
 /// [Hidden]
+/// desktop.ini
 /// D:\path\to\file.txt
 /// D:\path\to\folder
 /// ; comment lines start with a semicolon
 /// ```
 ///
-/// Matching is an exact full-path match, case-insensitive and
-/// separator-normalized (Windows semantics). See [normalizeHiddenPath].
+/// Each entry has one of two matching modes, inferred from the entry itself:
+///
+/// * **Name entries** contain no path separator (`\` or `/`), e.g. `desktop.ini`.
+///   They hide any file or folder with that name anywhere (case-insensitive).
+/// * **Path entries** contain a separator, e.g. `D:\path\to\file.txt`. They
+///   hide exactly that full path (case-insensitive, separator-normalized).
+///
+/// Windows file names cannot contain `\` or `/`, so the two modes never
+/// overlap. Matching compares against [normalizeHiddenPath].
 library;
 
 import 'dart:convert';
+
+/// Whether [entry] is a full-path entry (contains a path separator) rather
+/// than a bare file/folder name entry.
+bool isPathEntry(String entry) {
+  return entry.contains('\\') || entry.contains('/');
+}
 
 /// Normalizes a path for comparison: trims whitespace, converts `/` to `\`,
 /// strips a trailing separator (except a bare drive root like `C:\`) and
