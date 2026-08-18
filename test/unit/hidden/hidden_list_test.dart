@@ -187,5 +187,36 @@ void main() {
       expect(store.isHidden(r'X:\pics\Thumbs.db'), isTrue);
       expect(store.isHidden(r'D:\keep\secret.txt'), isTrue);
     });
+
+    test('updatePath replaces an entry in a single save', () async {
+      await store.load();
+      await store.addPaths([r'D:\old.txt', r'D:\keep.txt']);
+
+      await store.updatePath(r'D:\old.txt', r'D:\new.txt');
+      expect(store.isHidden(r'D:\old.txt'), isFalse);
+      expect(store.isHidden(r'D:\new.txt'), isTrue);
+      expect(store.isHidden(r'D:\keep.txt'), isTrue);
+
+      await store.load();
+      expect(store.isHidden(r'D:\new.txt'), isTrue);
+      expect(store.isHidden(r'D:\old.txt'), isFalse);
+    });
+
+    test('updatePath normalizes case and keeps names', () async {
+      await store.load();
+      await store.addPaths(['desktop.ini']);
+
+      await store.updatePath('desktop.ini', 'Thumbs.db');
+      expect(store.isHidden(r'Z:\a\desktop.ini'), isFalse);
+      expect(store.isHidden(r'Z:\a\Thumbs.db'), isTrue);
+    });
+
+    test('updatePath with empty value just removes the entry', () async {
+      await store.load();
+      await store.addPaths([r'D:\gone.txt']);
+
+      await store.updatePath(r'D:\gone.txt', '   ');
+      expect(store.isHidden(r'D:\gone.txt'), isFalse);
+    });
   });
 }

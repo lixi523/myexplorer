@@ -1151,10 +1151,14 @@ class _Translations$hiddenList$zh extends Translations$hiddenList$en {
 
 	// Translations
 	@override String get title => '隐藏列表';
-	@override String get pathHint => '每行一个完整路径（支持粘贴多行）';
+	@override String get pathHint => '每行一个名称或完整路径（支持粘贴多行）';
 	@override String get add => '添加';
+	@override String get edit => '编辑';
+	@override String get save => '保存';
+	@override String get cancel => '取消';
 	@override String get empty => '暂无隐藏条目';
 	@override String added({required Object count}) => '已添加 ${count} 个条目';
+	@override String updated({required Object count}) => '已更新 ${count} 个条目';
 }
 
 // Path: preferences.categories
@@ -3241,10 +3245,14 @@ extension on TranslationsZh {
 			'openWith.unsupportedPlatform' => '不支持的平台',
 			'openWith.windowsDefaultDialogRequired' => '使用系统“打开方式”对话框更改 Windows 上的默认应用',
 			'hiddenList.title' => '隐藏列表',
-			'hiddenList.pathHint' => '每行一个完整路径（支持粘贴多行）',
+			'hiddenList.pathHint' => '每行一个名称或完整路径（支持粘贴多行）',
 			'hiddenList.add' => '添加',
+			'hiddenList.edit' => '编辑',
+			'hiddenList.save' => '保存',
+			'hiddenList.cancel' => '取消',
 			'hiddenList.empty' => '暂无隐藏条目',
 			'hiddenList.added' => ({required Object count}) => '已添加 ${count} 个条目',
+			'hiddenList.updated' => ({required Object count}) => '已更新 ${count} 个条目',
 			_ => null,
 		};
 	}

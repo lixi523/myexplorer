@@ -1330,10 +1330,15 @@
   },
   "hiddenList": {
     "title": "Hidden List",
-    "pathHint": "One full path per line (multi-line paste supported)",
+    "pathHint": "One name or full path per line (multi-line paste supported)",
     "add": "Add",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
     "empty": "No hidden items",
     "added(one)": "Added 1 item",
-    "added(other)": "Added $count items"
+    "added(other)": "Added $count items",
+    "updated(one)": "Updated 1 entry",
+    "updated(other)": "Updated $count entries"
   }
 }

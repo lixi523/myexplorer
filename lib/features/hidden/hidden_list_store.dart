@@ -93,6 +93,22 @@ class HiddenListStore {
     await _save();
   }
 
+  /// Replaces an existing entry with a new one in a single save. When the new
+  /// value is empty or already present, the entry is only removed.
+  Future<void> updatePath(String oldPath, String newPath) async {
+    final oldNorm = normalizeHiddenPath(oldPath);
+    final newNorm = normalizeHiddenPath(newPath);
+    if (oldNorm.isEmpty || oldNorm == newNorm) return;
+    final next = [...paths.value];
+    next.removeWhere((e) => normalizeHiddenPath(e) == oldNorm);
+    if (newNorm.isNotEmpty &&
+        !next.any((e) => normalizeHiddenPath(e) == newNorm)) {
+      next.add(newPath.trim());
+    }
+    paths.value = next;
+    await _save();
+  }
+
   /// Removes a single entry by exact path match and persists the file.
   Future<void> removePath(String path) async {
     final norm = normalizeHiddenPath(path);

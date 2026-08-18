@@ -2544,17 +2544,29 @@ class Translations$hiddenList$en {
 	/// en: 'Hidden List'
 	String get title => 'Hidden List';
 
-	/// en: 'One full path per line (multi-line paste supported)'
-	String get pathHint => 'One full path per line (multi-line paste supported)';
+	/// en: 'One name or full path per line (multi-line paste supported)'
+	String get pathHint => 'One name or full path per line (multi-line paste supported)';
 
 	/// en: 'Add'
 	String get add => 'Add';
+
+	/// en: 'Edit'
+	String get edit => 'Edit';
+
+	/// en: 'Save'
+	String get save => 'Save';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
 
 	/// en: 'No hidden items'
 	String get empty => 'No hidden items';
 
 	/// en: 'Added $count items'
 	String added({required Object count}) => 'Added ${count} items';
+
+	/// en: 'Updated $count entries'
+	String updated({required Object count}) => 'Updated ${count} entries';
 }
 
 // Path: preferences.categories
@@ -5392,10 +5404,14 @@ extension on Translations {
 			'openWith.unsupportedPlatform' => 'Unsupported platform',
 			'openWith.windowsDefaultDialogRequired' => 'Use the system "Open with" dialog to change the default on Windows',
 			'hiddenList.title' => 'Hidden List',
-			'hiddenList.pathHint' => 'One full path per line (multi-line paste supported)',
+			'hiddenList.pathHint' => 'One name or full path per line (multi-line paste supported)',
 			'hiddenList.add' => 'Add',
+			'hiddenList.edit' => 'Edit',
+			'hiddenList.save' => 'Save',
+			'hiddenList.cancel' => 'Cancel',
 			'hiddenList.empty' => 'No hidden items',
 			'hiddenList.added' => ({required Object count}) => 'Added ${count} items',
+			'hiddenList.updated' => ({required Object count}) => 'Updated ${count} entries',
 			_ => null,
 		};
 	}

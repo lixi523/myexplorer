@@ -1330,10 +1330,15 @@
   },
   "hiddenList": {
     "title": "隐藏列表",
-    "pathHint": "每行一个完整路径（支持粘贴多行）",
+    "pathHint": "每行一个名称或完整路径（支持粘贴多行）",
     "add": "添加",
+    "edit": "编辑",
+    "save": "保存",
+    "cancel": "取消",
     "empty": "暂无隐藏条目",
     "added(one)": "已添加 1 个条目",
-    "added(other)": "已添加 $count 个条目"
+    "added(other)": "已添加 $count 个条目",
+    "updated(one)": "已更新 1 个条目",
+    "updated(other)": "已更新 $count 个条目"
   }
 }
