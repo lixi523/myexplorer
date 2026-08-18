@@ -208,7 +208,17 @@
       "reload": "Reload plugins",
       "empty": "No plugins installed yet.",
       "disabled": "Disabled",
+      "errorLabel": "error",
       "loadError": "Load error: $message",
+      "errors": {
+        "manifestInvalid": "Invalid manifest: $error",
+        "apiVersionUnsupported": "api_version ${version} is not supported (this build: ${minApi}-${maxApi})",
+        "nativeCoreUnavailable": "Native core unavailable",
+        "loadResultInvalid": "Invalid load result: $error",
+        "unknownLoadError": "Unknown load error",
+        "unknownError": "Unknown error",
+        "invalidResponse": "Invalid plugin response"
+      },
       "actionsCount": "$count action(s)",
       "reloaded": "Reloaded $count plugin(s)",
       "taskRunning": "Running…",
@@ -1081,6 +1091,7 @@
     "zoomReset": "Reset zoom"
   },
   "dialog": {
+    "ok": "OK",
     "create": "Create",
     "cancel": "Cancel",
     "folderNameHint": "Folder name",

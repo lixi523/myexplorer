@@ -1,8 +1,8 @@
 {
   "id": "backup-copy",
-  "name": "Backup Copy",
+  "name": "备份副本",
   "version": "1.0.0",
   "author": "myexplorer",
-  "description": "Makes a .bak copy of each selected file.",
+  "description": "为每个选中的文件创建 .bak 副本。",
   "api_version": 2
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../i18n/strings.g.dart';
 import '../../ui/dialogs/dialog.dart';
 import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_text_styles.dart';
@@ -16,8 +17,8 @@ Future<Map<String, dynamic>?> showPluginFormDialog({
   required String title,
   required List<PluginFormField> fields,
   Map<String, dynamic> initialValues = const {},
-  String submitLabel = 'OK',
-  String cancelLabel = 'Cancel',
+  String? submitLabel,
+  String? cancelLabel,
 }) {
   return showDialog<Map<String, dynamic>>(
     context: context,
@@ -26,8 +27,8 @@ Future<Map<String, dynamic>?> showPluginFormDialog({
       title: title,
       fields: fields,
       initialValues: initialValues,
-      submitLabel: submitLabel,
-      cancelLabel: cancelLabel,
+      submitLabel: submitLabel ?? t.dialog.ok,
+      cancelLabel: cancelLabel ?? t.dialog.cancel,
     ),
   );
 }

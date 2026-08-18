@@ -3,6 +3,6 @@
   "name": "7-Zip",
   "version": "1.0.0",
   "author": "myexplorer",
-  "description": "Compress the selection or extract archives with 7-Zip.",
+  "description": "使用 7-Zip 压缩所选文件或解压压缩包。",
   "api_version": 2
 }

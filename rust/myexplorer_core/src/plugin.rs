@@ -30,7 +30,7 @@ fn new_sandbox() -> mlua::Result<Lua> {
         HookTriggers::new().every_nth_instruction(50_000),
         move |_lua, _debug| {
             if Instant::now() >= deadline {
-                Err(mlua::Error::RuntimeError("plugin timed out".into()))
+                Err(mlua::Error::RuntimeError("插件执行超时".into()))
             } else {
                 Ok(VmState::Continue)
             }
@@ -174,11 +174,11 @@ fn install_api(lua: &Lua, effects: &Effects) -> mlua::Result<Table> {
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .spawn()
-                .map_err(|error| err(format!("exec {cmd}: {error}")))?;
+                .map_err(|error| err(format!("执行命令 {cmd} 失败：{error}")))?;
 
             let status = match child
                 .wait_timeout(EXEC_TIMEOUT)
-                .map_err(|error| err(format!("exec {cmd}: {error}")))?
+                .map_err(|error| err(format!("执行命令 {cmd} 失败：{error}")))?
             {
                 Some(status) => status,
                 None => {
@@ -308,13 +308,13 @@ fn install_api(lua: &Lua, effects: &Effects) -> mlua::Result<Table> {
         "read_text",
         lua.create_function(move |_, path: String| {
             let meta =
-                std::fs::metadata(&path).map_err(|er| err(format!("read_text {path}: {er}")))?;
+                std::fs::metadata(&path).map_err(|er| err(format!("读取文件 {path} 失败：{er}")))?;
             if meta.len() > READ_TEXT_CAP {
                 return Err(err(format!(
-                    "read_text {path}: file exceeds {READ_TEXT_CAP} byte cap"
+                    "读取文件 {path} 失败：超过 {READ_TEXT_CAP} 字节上限"
                 )));
             }
-            std::fs::read_to_string(&path).map_err(|er| err(format!("read_text {path}: {er}")))
+            std::fs::read_to_string(&path).map_err(|er| err(format!("读取文件 {path} 失败：{er}")))
         })?,
     )?;
 
@@ -322,7 +322,7 @@ fn install_api(lua: &Lua, effects: &Effects) -> mlua::Result<Table> {
         "file_size",
         lua.create_function(move |_, path: String| {
             let meta =
-                std::fs::metadata(&path).map_err(|er| err(format!("file_size {path}: {er}")))?;
+                std::fs::metadata(&path).map_err(|er| err(format!("获取文件大小 {path} 失败：{er}")))?;
             Ok(meta.len())
         })?,
     )?;
@@ -330,14 +330,14 @@ fn install_api(lua: &Lua, effects: &Effects) -> mlua::Result<Table> {
     myexplorer.set(
         "write_text",
         lua.create_function(move |_, (path, content): (String, String)| {
-            std::fs::write(&path, content).map_err(|er| err(format!("write_text {path}: {er}")))
+            std::fs::write(&path, content).map_err(|er| err(format!("写入文件 {path} 失败：{er}")))
         })?,
     )?;
 
     myexplorer.set(
         "mkdir",
         lua.create_function(move |_, path: String| {
-            std::fs::create_dir_all(&path).map_err(|er| err(format!("mkdir {path}: {er}")))
+            std::fs::create_dir_all(&path).map_err(|er| err(format!("创建目录 {path} 失败：{er}")))
         })?,
     )?;
 
@@ -352,7 +352,7 @@ fn install_api(lua: &Lua, effects: &Effects) -> mlua::Result<Table> {
         "list",
         lua.create_function(move |lua, path: String| {
             let out = lua.create_table()?;
-            let rd = std::fs::read_dir(&path).map_err(|er| err(format!("list {path}: {er}")))?;
+            let rd = std::fs::read_dir(&path).map_err(|er| err(format!("列出目录 {path} 失败：{er}")))?;
             let mut i = 1;
             for entry in rd.flatten() {
                 let p = entry.path();
@@ -440,7 +440,7 @@ fn ctx_to_lua_table(lua: &Lua, ctx: &Json) -> mlua::Result<Table> {
 }
 
 fn load_impl(path: &str) -> mlua::Result<Json> {
-    let code = std::fs::read_to_string(path).map_err(|e| err(format!("read {path}: {e}")))?;
+    let code = std::fs::read_to_string(path).map_err(|e| err(format!("读取脚本 {path} 失败：{e}")))?;
     let lua = new_sandbox()?;
     let effects: Effects = Rc::new(RefCell::new(Vec::new()));
     let myexplorer = install_api(&lua, &effects)?;
@@ -542,8 +542,8 @@ fn load_impl(path: &str) -> mlua::Result<Json> {
 }
 
 fn invoke_impl(path: &str, action_id: &str, ctx_json: &str) -> mlua::Result<Json> {
-    let code = std::fs::read_to_string(path).map_err(|e| err(format!("read {path}: {e}")))?;
-    let ctx: Json = serde_json::from_str(ctx_json).map_err(|e| err(format!("ctx json: {e}")))?;
+    let code = std::fs::read_to_string(path).map_err(|e| err(format!("读取脚本 {path} 失败：{e}")))?;
+    let ctx: Json = serde_json::from_str(ctx_json).map_err(|e| err(format!("插件上下文无效：{e}")))?;
 
     let lua = new_sandbox()?;
     let effects: Effects = Rc::new(RefCell::new(Vec::new()));
@@ -573,7 +573,7 @@ fn invoke_impl(path: &str, action_id: &str, ctx_json: &str) -> mlua::Result<Json
     lua.load(&code).set_name(path).exec()?;
 
     let run = found.borrow_mut().take();
-    let run = run.ok_or_else(|| err(format!("action {action_id} not found")))?;
+    let run = run.ok_or_else(|| err(format!("未找到操作 {action_id}")))?;
 
     let ctx_tbl = ctx_to_lua_table(&lua, &ctx)?;
 
@@ -584,8 +584,8 @@ fn invoke_impl(path: &str, action_id: &str, ctx_json: &str) -> mlua::Result<Json
 }
 
 fn bar_update_impl(path: &str, bar_id: &str, ctx_json: &str) -> mlua::Result<Json> {
-    let code = std::fs::read_to_string(path).map_err(|e| err(format!("read {path}: {e}")))?;
-    let ctx: Json = serde_json::from_str(ctx_json).map_err(|e| err(format!("ctx json: {e}")))?;
+    let code = std::fs::read_to_string(path).map_err(|e| err(format!("读取脚本 {path} 失败：{e}")))?;
+    let ctx: Json = serde_json::from_str(ctx_json).map_err(|e| err(format!("插件上下文无效：{e}")))?;
 
     let lua = new_sandbox()?;
     let effects: Effects = Rc::new(RefCell::new(Vec::new()));
@@ -612,7 +612,7 @@ fn bar_update_impl(path: &str, bar_id: &str, ctx_json: &str) -> mlua::Result<Jso
     lua.load(&code).set_name(path).exec()?;
 
     let update = found.borrow_mut().take();
-    let update = update.ok_or_else(|| err(format!("bar {bar_id} update not found")))?;
+    let update = update.ok_or_else(|| err(format!("未找到状态栏 {bar_id} 的更新函数")))?;
     let state_value = update.call::<Value>(ctx_to_lua_table(&lua, &ctx)?)?;
     let state = match state_value {
         Value::Nil => Json::Null,
@@ -628,9 +628,9 @@ fn bar_click_impl(
     item_id: &str,
     ctx_json: &str,
 ) -> mlua::Result<Json> {
-    let code = std::fs::read_to_string(path).map_err(|e| err(format!("read {path}: {e}")))?;
+    let code = std::fs::read_to_string(path).map_err(|e| err(format!("读取脚本 {path} 失败：{e}")))?;
     let mut ctx: Json =
-        serde_json::from_str(ctx_json).map_err(|e| err(format!("ctx json: {e}")))?;
+        serde_json::from_str(ctx_json).map_err(|e| err(format!("插件上下文无效：{e}")))?;
     if let Some(obj) = ctx.as_object_mut() {
         obj.insert("item_id".into(), Json::String(item_id.to_string()));
     }
@@ -674,8 +674,8 @@ fn bar_click_impl(
 }
 
 fn column_compute_impl(path: &str, column_id: &str, ctx_json: &str) -> mlua::Result<Json> {
-    let code = std::fs::read_to_string(path).map_err(|e| err(format!("read {path}: {e}")))?;
-    let ctx: Json = serde_json::from_str(ctx_json).map_err(|e| err(format!("ctx json: {e}")))?;
+    let code = std::fs::read_to_string(path).map_err(|e| err(format!("读取脚本 {path} 失败：{e}")))?;
+    let ctx: Json = serde_json::from_str(ctx_json).map_err(|e| err(format!("插件上下文无效：{e}")))?;
 
     let lua = new_sandbox()?;
     let effects: Effects = Rc::new(RefCell::new(Vec::new()));
@@ -707,7 +707,7 @@ fn column_compute_impl(path: &str, column_id: &str, ctx_json: &str) -> mlua::Res
 
     let compute = found.borrow_mut().take();
     let compute =
-        compute.ok_or_else(|| err(format!("column {column_id} compute not found")))?;
+        compute.ok_or_else(|| err(format!("未找到列 {column_id} 的计算函数")))?;
     let value = compute.call::<Value>(ctx_to_lua_table(&lua, &ctx)?)?;
     let values = match value {
         Value::Nil => Json::Null,
@@ -721,7 +721,7 @@ fn to_cstring(value: Json) -> *mut c_char {
     let s = value.to_string();
     match CString::new(s) {
         Ok(c) => c.into_raw(),
-        Err(_) => CString::new("{\"ok\":false,\"error\":\"nul byte\"}")
+        Err(_) => CString::new("{\"ok\":false,\"error\":\"路径包含 NUL 字节\"}")
             .unwrap()
             .into_raw(),
     }

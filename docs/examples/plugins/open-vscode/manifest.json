@@ -1,8 +1,8 @@
 {
   "id": "open-vscode",
-  "name": "Open in VS Code",
+  "name": "在 VS Code 中打开",
   "version": "1.0.0",
   "author": "myexplorer",
-  "description": "Toolbar button that opens the current folder in VS Code (or any editor command).",
+  "description": "工具栏按钮，在 VS Code（或任意编辑器命令）中打开当前文件夹。",
   "api_version": 2
 }

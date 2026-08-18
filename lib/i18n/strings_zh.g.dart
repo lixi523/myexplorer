@@ -860,6 +860,7 @@ class _Translations$dialog$zh extends Translations$dialog$en {
 	final TranslationsZh _root; // ignore: unused_field
 
 	// Translations
+	@override String get ok => '确定';
 	@override String get create => '创建';
 	@override String get cancel => '取消';
 	@override String get folderNameHint => '文件夹名称';
@@ -1192,7 +1193,9 @@ class _Translations$preferences$plugins$zh extends Translations$preferences$plug
 	@override String get reload => '重新加载';
 	@override String get empty => '尚未安装插件。';
 	@override String get disabled => '已禁用';
+	@override String get errorLabel => '错误';
 	@override String loadError({required Object message}) => '加载错误：${message}';
+	@override late final _Translations$preferences$plugins$errors$zh errors = _Translations$preferences$plugins$errors$zh._(_root);
 	@override String actionsCount({required Object count}) => '${count} 个操作';
 	@override String reloaded({required Object count}) => '已重新加载 ${count} 个插件';
 	@override String get taskRunning => '正在运行…';
@@ -1639,6 +1642,22 @@ class _Translations$tasks$status$zh extends Translations$tasks$status$en {
 	@override String get completed => '已完成';
 	@override String get failed => '失败';
 	@override String get cancelled => '已取消';
+}
+
+// Path: preferences.plugins.errors
+class _Translations$preferences$plugins$errors$zh extends Translations$preferences$plugins$errors$en {
+	_Translations$preferences$plugins$errors$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String manifestInvalid({required Object error}) => '清单无效：${error}';
+	@override String apiVersionUnsupported({required Object version, required Object minApi, required Object maxApi}) => 'api_version ${version} 不受支持（本版本：${minApi}-${maxApi}）';
+	@override String get nativeCoreUnavailable => '原生核心不可用';
+	@override String loadResultInvalid({required Object error}) => '加载结果无效：${error}';
+	@override String get unknownLoadError => '未知的加载错误';
+	@override String get unknownError => '未知错误';
+	@override String get invalidResponse => '无效的插件响应';
 }
 
 // Path: help.groups.gettingStarted
@@ -2358,7 +2377,15 @@ extension on TranslationsZh {
 			'preferences.plugins.reload' => '重新加载',
 			'preferences.plugins.empty' => '尚未安装插件。',
 			'preferences.plugins.disabled' => '已禁用',
+			'preferences.plugins.errorLabel' => '错误',
 			'preferences.plugins.loadError' => ({required Object message}) => '加载错误：${message}',
+			'preferences.plugins.errors.manifestInvalid' => ({required Object error}) => '清单无效：${error}',
+			'preferences.plugins.errors.apiVersionUnsupported' => ({required Object version, required Object minApi, required Object maxApi}) => 'api_version ${version} 不受支持（本版本：${minApi}-${maxApi}）',
+			'preferences.plugins.errors.nativeCoreUnavailable' => '原生核心不可用',
+			'preferences.plugins.errors.loadResultInvalid' => ({required Object error}) => '加载结果无效：${error}',
+			'preferences.plugins.errors.unknownLoadError' => '未知的加载错误',
+			'preferences.plugins.errors.unknownError' => '未知错误',
+			'preferences.plugins.errors.invalidResponse' => '无效的插件响应',
 			'preferences.plugins.actionsCount' => ({required Object count}) => '${count} 个操作',
 			'preferences.plugins.reloaded' => ({required Object count}) => '已重新加载 ${count} 个插件',
 			'preferences.plugins.taskRunning' => '正在运行…',
@@ -2683,6 +2710,8 @@ extension on TranslationsZh {
 			'help.groups.customization.shortcuts.title' => '键盘快捷键',
 			'help.groups.customization.shortcuts.body' => '几乎所有操作都可以重新绑定为你选择的按键。\n\n- 打开 **设置 -> 键盘** 查看和编辑所有快捷键。\n- 冲突会被标记，两个操作不会争抢同一个按键。\n- 随时将单个绑定或全部绑定重置为默认值。',
 			'help.groups.customization.plugins.title' => '插件',
+			_ => null,
+		} ?? switch (path) {
 			'help.groups.customization.plugins.body' => '使用 Lua 编写的插件扩展 MyExplorer。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。',
 			'help.groups.customization.shortcutBar.title' => '快捷方式栏',
 			'help.groups.customization.shortcutBar.body' => '标题栏下方的快捷方式栏可一键启动文件夹、文件或命令，遵循 Total Commander 的惯例。\n\n- 右键按钮可编辑或删除；`+` 区域用于添加新按钮。\n- 按钮可以打开文件夹或文件、运行命令行，或使用 `CD <路径>` 跳转。\n- 支持内置命令，如 `cm_OpenDesktop`、`cm_OpenDrives` 和 `cm_OpenRecycled`。\n- 图标可来自文件（`icon.png`）、exe/dll（`app.exe,0`）或系统库中的索引（`shell32.dll,34`）。\n- 使用**导入 Total Commander 按钮栏...** 加载 `.bar` 文件（UTF-8 或 GBK）。\n- 留空条目可创建分隔符。',
@@ -2691,8 +2720,6 @@ extension on TranslationsZh {
 			'help.groups.resources.links.body' => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/lixi523/myexplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)。',
 			'tags.menuLabel' => '标签',
 			'tags.newTag' => '新建标签',
-			_ => null,
-		} ?? switch (path) {
 			'tags.newTagDots' => '新建标签…',
 			'tags.editTag' => '编辑标签',
 			'tags.deleteTag' => '删除标签',
@@ -3043,6 +3070,7 @@ extension on TranslationsZh {
 			'statusBar.zoomOut' => '缩小',
 			'statusBar.zoomIn' => '放大',
 			'statusBar.zoomReset' => '重置缩放',
+			'dialog.ok' => '确定',
 			'dialog.create' => '创建',
 			'dialog.cancel' => '取消',
 			'dialog.folderNameHint' => '文件夹名称',
@@ -3196,6 +3224,8 @@ extension on TranslationsZh {
 			'tasks.updatingArchive' => '正在更新压缩包',
 			'tasks.splittingSingle' => ({required Object name}) => '正在分割 ${name}',
 			'tasks.splittingMultiple' => ({required Object count}) => '正在分割 ${count} 个项目',
+			_ => null,
+		} ?? switch (path) {
 			'tasks.combiningSingle' => ({required Object name}) => '正在合并 ${name}',
 			'tasks.combiningMultiple' => ({required Object count}) => '正在合并 ${count} 个项目',
 			'tasks.status.waiting' => '等待中...',
@@ -3205,8 +3235,6 @@ extension on TranslationsZh {
 			'tasks.status.cancelling' => '正在取消...',
 			'tasks.status.completedWithErrors' => ({required Object count}) => '完成，${count} 个错误',
 			'tasks.status.completed' => '已完成',
-			_ => null,
-		} ?? switch (path) {
 			'tasks.status.failed' => '失败',
 			'tasks.status.cancelled' => '已取消',
 			'git.clean' => '干净',

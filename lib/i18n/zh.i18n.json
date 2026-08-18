@@ -208,7 +208,17 @@
       "reload": "重新加载",
       "empty": "尚未安装插件。",
       "disabled": "已禁用",
+      "errorLabel": "错误",
       "loadError": "加载错误：$message",
+      "errors": {
+        "manifestInvalid": "清单无效：$error",
+        "apiVersionUnsupported": "api_version ${version} 不受支持（本版本：${minApi}-${maxApi}）",
+        "nativeCoreUnavailable": "原生核心不可用",
+        "loadResultInvalid": "加载结果无效：$error",
+        "unknownLoadError": "未知的加载错误",
+        "unknownError": "未知错误",
+        "invalidResponse": "无效的插件响应"
+      },
       "actionsCount": "$count 个操作",
       "reloaded": "已重新加载 $count 个插件",
       "taskRunning": "正在运行…",
@@ -1081,6 +1091,7 @@
     "zoomReset": "重置缩放"
   },
   "dialog": {
+    "ok": "确定",
     "create": "创建",
     "cancel": "取消",
     "folderNameHint": "文件夹名称",

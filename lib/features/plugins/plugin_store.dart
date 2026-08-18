@@ -9,6 +9,7 @@ import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
 import '../../core/platform/app_dirs.dart';
+import '../../i18n/strings.g.dart';
 import 'plugin_ffi.dart';
 import 'plugin_models.dart';
 import 'plugin_settings_store.dart';
@@ -133,7 +134,7 @@ class PluginStore {
         enabled: false,
         contributions: const [],
         bars: const [],
-        error: 'manifest: $e',
+        error: t.preferences.plugins.errors.manifestInvalid(error: '$e'),
       );
     }
 
@@ -145,9 +146,11 @@ class PluginStore {
         enabled: false,
         contributions: const [],
         bars: const [],
-        error:
-            'api_version ${manifest.apiVersion} not supported '
-            '(this build: $minApiVersion-$maxApiVersion)',
+        error: t.preferences.plugins.errors.apiVersionUnsupported(
+          version: manifest.apiVersion,
+          minApi: minApiVersion,
+          maxApi: maxApiVersion,
+        ),
       );
     }
 
@@ -159,7 +162,7 @@ class PluginStore {
         enabled: false,
         contributions: const [],
         bars: const [],
-        error: 'native core unavailable',
+        error: t.preferences.plugins.errors.nativeCoreUnavailable,
       );
     }
 
@@ -173,7 +176,7 @@ class PluginStore {
         enabled: false,
         contributions: const [],
         bars: const [],
-        error: 'load result: $e',
+        error: t.preferences.plugins.errors.loadResultInvalid(error: '$e'),
       );
     }
 
@@ -184,7 +187,9 @@ class PluginStore {
         enabled: false,
         contributions: const [],
         bars: const [],
-        error: parsed['error']?.toString() ?? 'unknown load error',
+        error:
+            parsed['error']?.toString() ??
+            t.preferences.plugins.errors.unknownLoadError,
       );
     }
 
@@ -408,7 +413,9 @@ class PluginStore {
     );
     if (raw == null) {
       return [
-        PluginEffect('error', {'message': 'native core unavailable'}),
+        PluginEffect('error', {
+          'message': t.preferences.plugins.errors.nativeCoreUnavailable,
+        }),
       ];
     }
 
@@ -427,7 +434,9 @@ class PluginStore {
     );
     if (raw == null) {
       return PluginBarInvokeResult(
-        state: PluginBarState.error('native core unavailable'),
+        state: PluginBarState.error(
+          t.preferences.plugins.errors.nativeCoreUnavailable,
+        ),
         effects: const [],
       );
     }
@@ -449,7 +458,9 @@ class PluginStore {
     );
     if (raw == null) {
       return PluginBarInvokeResult(
-        state: PluginBarState.error('native core unavailable'),
+        state: PluginBarState.error(
+          t.preferences.plugins.errors.nativeCoreUnavailable,
+        ),
         effects: const [],
       );
     }
@@ -514,7 +525,9 @@ class PluginStore {
     try {
       final parsed = jsonDecode(raw) as Map<String, dynamic>;
       if (parsed['ok'] != true) {
-        final message = parsed['error']?.toString() ?? 'unknown error';
+        final message =
+            parsed['error']?.toString() ??
+            t.preferences.plugins.errors.unknownError;
         log.error('plugins', 'invoke failed: $message');
 
         return [
@@ -532,7 +545,9 @@ class PluginStore {
       log.error('plugins', 'invoke parse: $e');
 
       return [
-        PluginEffect('error', {'message': 'invalid plugin response'}),
+        PluginEffect('error', {
+          'message': t.preferences.plugins.errors.invalidResponse,
+        }),
       ];
     }
   }
@@ -541,7 +556,9 @@ class PluginStore {
     try {
       final parsed = jsonDecode(raw) as Map<String, dynamic>;
       if (parsed['ok'] != true) {
-        final message = parsed['error']?.toString() ?? 'unknown error';
+        final message =
+            parsed['error']?.toString() ??
+            t.preferences.plugins.errors.unknownError;
         log.error('plugins', 'bar invoke failed: $message');
 
         return PluginBarInvokeResult(
@@ -567,9 +584,13 @@ class PluginStore {
       log.error('plugins', 'bar invoke parse: $e');
 
       return PluginBarInvokeResult(
-        state: PluginBarState.error('invalid plugin response'),
+        state: PluginBarState.error(
+          t.preferences.plugins.errors.invalidResponse,
+        ),
         effects: [
-          PluginEffect('error', {'message': 'invalid plugin response'}),
+          PluginEffect('error', {
+            'message': t.preferences.plugins.errors.invalidResponse,
+          }),
         ],
       );
     }

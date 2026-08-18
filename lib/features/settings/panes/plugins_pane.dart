@@ -183,7 +183,10 @@ class _PluginRow extends StatelessWidget {
                       Text('v${m.version}', style: context.txt.muted),
                       if (hasError) ...[
                         const SizedBox(width: 6),
-                        _Pill(label: 'error', color: AppColors.danger),
+                        _Pill(
+                          label: t.preferences.plugins.errorLabel,
+                          color: AppColors.danger,
+                        ),
                       ] else if (!plugin.enabled || userDisabled) ...[
                         const SizedBox(width: 6),
                         _Pill(

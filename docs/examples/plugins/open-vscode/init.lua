@@ -18,11 +18,11 @@ end
 
 myexplorer.register({
   id = "open_vscode",
-  title = "Open in VS Code",
+  title = "在 VS Code 中打开",
   menu = "toolbar",
   icon = "icon.svg",
   settings = {
-    { id = "command", type = "text", label = "Editor command", default = "code" },
+    { id = "command", type = "text", label = "编辑器命令", default = "code" },
   },
   run = function(ctx)
     if not ctx.dir or ctx.dir == "" then
@@ -31,7 +31,7 @@ myexplorer.register({
     myexplorer.exec(editor_command(ctx), { ctx.dir })
     myexplorer.notify({
       title = "VS Code",
-      message = "Opening " .. ctx.dir,
+      message = "正在打开 " .. ctx.dir,
       level = "info",
     })
   end,
@@ -41,7 +41,7 @@ myexplorer.register({
 -- same bundled svg icon works in the context menu, just like the toolbar.
 myexplorer.register({
   id = "open_vscode_selection",
-  title = "Open in VS Code",
+  title = "在 VS Code 中打开",
   icon = "icon.svg",
   when = { types = { "folder" }, min = 1, max = 1 },
   run = function(ctx)

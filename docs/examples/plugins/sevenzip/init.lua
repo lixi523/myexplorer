@@ -3,7 +3,7 @@
 -- 7-Zip" submenu: quick .zip / .tar.gz plus "Add to archive…", which opens a
 -- modal for the name, format and compression level.
 
-local GROUP = "Compress with 7-Zip"
+local GROUP = "使用 7-Zip 压缩"
 local SELECTION = { min = 1, in_archive = false }
 
 local function basename(path)
@@ -25,7 +25,7 @@ local function run_7z(ctx, name, fmt, level)
     args[#args + 1] = path
   end
   myexplorer.run_task({
-    title = "7-Zip: " .. name .. "." .. fmt,
+    title = "7-Zip 压缩: " .. name .. "." .. fmt,
     cmd = "7z",
     args = args,
     cwd = ctx.dir,
@@ -39,7 +39,7 @@ local function run_targz(ctx, name)
     args[#args + 1] = basename(path)
   end
   myexplorer.run_task({
-    title = "tar: " .. name .. ".tar.gz",
+    title = "tar 压缩: " .. name .. ".tar.gz",
     cmd = "tar",
     args = args,
     cwd = ctx.dir,
@@ -50,7 +50,7 @@ end
 myexplorer.register({
   id = "zip",
   group = GROUP,
-  title = "Compress to .zip",
+  title = "压缩为 .zip",
   icon = "file-zip",
   when = SELECTION,
   run = function(ctx)
@@ -62,7 +62,7 @@ myexplorer.register({
 myexplorer.register({
   id = "targz",
   group = GROUP,
-  title = "Compress to .tar.gz",
+  title = "压缩为 .tar.gz",
   icon = "archive",
   when = SELECTION,
   run = function(ctx)
@@ -76,7 +76,7 @@ myexplorer.register({
 myexplorer.register({
   id = "custom",
   group = GROUP,
-  title = "Add to archive…",
+  title = "添加到压缩包…",
   icon = "sliders",
   when = SELECTION,
   run = function(ctx)
@@ -84,17 +84,17 @@ myexplorer.register({
 
     if not ctx.form then
       myexplorer.dialog({
-        title = "Add to archive",
+        title = "添加到压缩包",
         fields = {
-          { id = "name", type = "input", label = "Archive name",
+          { id = "name", type = "input", label = "压缩包名称",
             default = default_name(ctx) },
-          { id = "format", type = "select", label = "Format",
+          { id = "format", type = "select", label = "格式",
             options = { "7z", "zip", "tar", "tar.gz" }, default = "7z" },
-          { id = "level", type = "select", label = "Compression",
+          { id = "level", type = "select", label = "压缩级别",
             options = {
-              { value = "1", label = "Fastest" },
-              { value = "5", label = "Normal" },
-              { value = "9", label = "Ultra" },
+              { value = "1", label = "最快" },
+              { value = "5", label = "正常" },
+              { value = "9", label = "极限" },
             }, default = "5" },
         },
       })
@@ -116,14 +116,14 @@ myexplorer.register({
 -- Extract a selected archive into a folder next to it.
 myexplorer.register({
   id = "extract",
-  title = "Extract here with 7-Zip",
+  title = "在此解压（7-Zip）",
   icon = "archive",
   when = { extensions = { "7z", "zip", "rar", "tar", "gz", "bz2", "xz" }, min = 1 },
   run = function(ctx)
     for _, path in ipairs(ctx.paths) do
       local dest = ctx.dir .. "/" .. strip_ext(basename(path))
       myexplorer.run_task({
-        title = "Extract " .. basename(path),
+        title = "解压 " .. basename(path),
         cmd = "7z",
         args = { "x", path, "-o" .. dest, "-y" },
         cwd = ctx.dir,

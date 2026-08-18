@@ -1870,6 +1870,9 @@ class Translations$dialog$en {
 
 	// Translations
 
+	/// en: 'OK'
+	String get ok => 'OK';
+
 	/// en: 'Create'
 	String get create => 'Create';
 
@@ -2631,8 +2634,13 @@ class Translations$preferences$plugins$en {
 	/// en: 'Disabled'
 	String get disabled => 'Disabled';
 
+	/// en: 'error'
+	String get errorLabel => 'error';
+
 	/// en: 'Load error: $message'
 	String loadError({required Object message}) => 'Load error: ${message}';
+
+	late final Translations$preferences$plugins$errors$en errors = Translations$preferences$plugins$errors$en.internal(_root);
 
 	/// en: '$count action(s)'
 	String actionsCount({required Object count}) => '${count} action(s)';
@@ -3627,6 +3635,36 @@ class Translations$tasks$status$en {
 	String get cancelled => 'Cancelled';
 }
 
+// Path: preferences.plugins.errors
+class Translations$preferences$plugins$errors$en {
+	Translations$preferences$plugins$errors$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Invalid manifest: $error'
+	String manifestInvalid({required Object error}) => 'Invalid manifest: ${error}';
+
+	/// en: 'api_version ${version} is not supported (this build: ${minApi}-${maxApi})'
+	String apiVersionUnsupported({required Object version, required Object minApi, required Object maxApi}) => 'api_version ${version} is not supported (this build: ${minApi}-${maxApi})';
+
+	/// en: 'Native core unavailable'
+	String get nativeCoreUnavailable => 'Native core unavailable';
+
+	/// en: 'Invalid load result: $error'
+	String loadResultInvalid({required Object error}) => 'Invalid load result: ${error}';
+
+	/// en: 'Unknown load error'
+	String get unknownLoadError => 'Unknown load error';
+
+	/// en: 'Unknown error'
+	String get unknownError => 'Unknown error';
+
+	/// en: 'Invalid plugin response'
+	String get invalidResponse => 'Invalid plugin response';
+}
+
 // Path: help.groups.gettingStarted
 class Translations$help$groups$gettingStarted$en {
 	Translations$help$groups$gettingStarted$en.internal(this._root);
@@ -4517,7 +4555,15 @@ extension on Translations {
 			'preferences.plugins.reload' => 'Reload plugins',
 			'preferences.plugins.empty' => 'No plugins installed yet.',
 			'preferences.plugins.disabled' => 'Disabled',
+			'preferences.plugins.errorLabel' => 'error',
 			'preferences.plugins.loadError' => ({required Object message}) => 'Load error: ${message}',
+			'preferences.plugins.errors.manifestInvalid' => ({required Object error}) => 'Invalid manifest: ${error}',
+			'preferences.plugins.errors.apiVersionUnsupported' => ({required Object version, required Object minApi, required Object maxApi}) => 'api_version ${version} is not supported (this build: ${minApi}-${maxApi})',
+			'preferences.plugins.errors.nativeCoreUnavailable' => 'Native core unavailable',
+			'preferences.plugins.errors.loadResultInvalid' => ({required Object error}) => 'Invalid load result: ${error}',
+			'preferences.plugins.errors.unknownLoadError' => 'Unknown load error',
+			'preferences.plugins.errors.unknownError' => 'Unknown error',
+			'preferences.plugins.errors.invalidResponse' => 'Invalid plugin response',
 			'preferences.plugins.actionsCount' => ({required Object count}) => '${count} action(s)',
 			'preferences.plugins.reloaded' => ({required Object count}) => 'Reloaded ${count} plugin(s)',
 			'preferences.plugins.taskRunning' => 'Running…',
@@ -4842,6 +4888,8 @@ extension on Translations {
 			'help.groups.customization.shortcuts.title' => 'Keyboard Shortcuts',
 			'help.groups.customization.shortcuts.body' => 'Almost every action can be rebound to a key of your choosing.\n\n- Open **Preferences -> Keyboard** to see and edit all shortcuts.\n- Conflicts are flagged so two actions never fight over a key.\n- Reset a single binding, or all of them, back to the defaults at any time.',
 			'help.groups.customization.plugins.title' => 'Plugins',
+			_ => null,
+		} ?? switch (path) {
 			'help.groups.customization.plugins.body' => 'Extend MyExplorer with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.',
 			'help.groups.customization.shortcutBar.title' => 'Shortcut Bar',
 			'help.groups.customization.shortcutBar.body' => 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator.',
@@ -4850,8 +4898,6 @@ extension on Translations {
 			'help.groups.resources.links.body' => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md).',
 			'tags.menuLabel' => 'Tags',
 			'tags.newTag' => 'New Tag',
-			_ => null,
-		} ?? switch (path) {
 			'tags.newTagDots' => 'New tag…',
 			'tags.editTag' => 'Edit Tag',
 			'tags.deleteTag' => 'Delete Tag',
@@ -5202,6 +5248,7 @@ extension on Translations {
 			'statusBar.zoomOut' => 'Zoom out',
 			'statusBar.zoomIn' => 'Zoom in',
 			'statusBar.zoomReset' => 'Reset zoom',
+			'dialog.ok' => 'OK',
 			'dialog.create' => 'Create',
 			'dialog.cancel' => 'Cancel',
 			'dialog.folderNameHint' => 'Folder name',
@@ -5355,6 +5402,8 @@ extension on Translations {
 			'tasks.updatingArchive' => 'Updating archive',
 			'tasks.splittingSingle' => ({required Object name}) => 'Splitting ${name}',
 			'tasks.splittingMultiple' => ({required Object count}) => 'Splitting ${count} items',
+			_ => null,
+		} ?? switch (path) {
 			'tasks.combiningSingle' => ({required Object name}) => 'Combining ${name}',
 			'tasks.combiningMultiple' => ({required Object count}) => 'Combining ${count} items',
 			'tasks.status.waiting' => 'Waiting...',
@@ -5364,8 +5413,6 @@ extension on Translations {
 			'tasks.status.cancelling' => 'Cancelling...',
 			'tasks.status.completedWithErrors' => ({required Object count}) => 'Completed with ${count} errors',
 			'tasks.status.completed' => 'Completed',
-			_ => null,
-		} ?? switch (path) {
 			'tasks.status.failed' => 'Failed',
 			'tasks.status.cancelled' => 'Cancelled',
 			'git.clean' => 'clean',

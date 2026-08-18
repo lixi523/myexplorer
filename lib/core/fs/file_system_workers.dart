@@ -377,7 +377,7 @@ void copyWorker(List<dynamic> args) {
           mainSendPort.send(
             TaskDoneMessage(
               cancelled: true,
-              errors: [TaskError(path: '', message: 'missing destination')],
+              errors: [TaskError(path: '', message: '缺少目标位置')],
             ),
           );
           workerReceivePort.close();
@@ -784,7 +784,7 @@ void moveWorker(List<dynamic> args) {
           mainSendPort.send(
             TaskDoneMessage(
               cancelled: true,
-              errors: [TaskError(path: '', message: 'missing destination')],
+              errors: [TaskError(path: '', message: '缺少目标位置')],
             ),
           );
           workerReceivePort.close();
@@ -1375,7 +1375,7 @@ void extractWorker(List<dynamic> args) {
           mainSendPort.send(
             TaskDoneMessage(
               cancelled: true,
-              errors: [TaskError(path: '', message: 'missing destination')],
+              errors: [TaskError(path: '', message: '缺少目标位置')],
             ),
           );
           workerReceivePort.close();
@@ -1558,7 +1558,7 @@ void compressWorker(List<dynamic> args) {
           mainSendPort.send(
             TaskDoneMessage(
               cancelled: true,
-              errors: [TaskError(path: '', message: 'missing destination')],
+              errors: [TaskError(path: '', message: '缺少目标位置')],
             ),
           );
           workerReceivePort.close();
@@ -2249,7 +2249,7 @@ void splitFileWorker(List<dynamic> args) {
           mainSendPort.send(
             TaskDoneMessage(
               cancelled: true,
-              errors: [TaskError(path: '', message: 'missing destination')],
+              errors: [TaskError(path: '', message: '缺少目标位置')],
             ),
           );
           workerReceivePort.close();
@@ -2406,7 +2406,7 @@ void combineFileWorker(List<dynamic> args) {
           mainSendPort.send(
             TaskDoneMessage(
               cancelled: true,
-              errors: [TaskError(path: '', message: 'missing destination')],
+              errors: [TaskError(path: '', message: '缺少目标位置')],
             ),
           );
           workerReceivePort.close();

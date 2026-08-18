@@ -1,8 +1,8 @@
 {
   "id": "selection-count",
-  "name": "Selection Count",
+  "name": "选中计数",
   "version": "1.0.0",
   "author": "myexplorer",
-  "description": "Shows how many items you selected.",
+  "description": "显示当前选中的项目数量。",
   "api_version": 2
 }

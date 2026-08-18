@@ -7,12 +7,12 @@
 -- the chosen boilerplate with `fs`.
 
 local TEMPLATES = {
-  { id = "markdown", label = "Markdown document", ext = "md" },
-  { id = "text", label = "Plain text", ext = "txt" },
-  { id = "shell", label = "Shell script", ext = "sh" },
-  { id = "python", label = "Python script", ext = "py" },
-  { id = "html", label = "HTML page", ext = "html" },
-  { id = "json", label = "JSON file", ext = "json" },
+  { id = "markdown", label = "Markdown 文档", ext = "md" },
+  { id = "text", label = "纯文本", ext = "txt" },
+  { id = "shell", label = "Shell 脚本", ext = "sh" },
+  { id = "python", label = "Python 脚本", ext = "py" },
+  { id = "html", label = "HTML 页面", ext = "html" },
+  { id = "json", label = "JSON 文件", ext = "json" },
 }
 
 local SHELL = [[#!/usr/bin/env bash
@@ -86,13 +86,13 @@ local function create_from_template(ctx)
   local settings = ctx.settings or {}
   if not ctx.form then
     myexplorer.dialog({
-      title = "New from template",
+      title = "从模板新建",
       fields = {
-        { id = "name", type = "input", label = "File name", default = "untitled" },
+        { id = "name", type = "input", label = "文件名", default = "untitled" },
         {
           id = "template",
           type = "select",
-          label = "Template",
+          label = "模板",
           options = template_options(),
           default = settings.default or "markdown",
         },
@@ -110,8 +110,8 @@ local function create_from_template(ctx)
   local path = ctx.dir .. "/" .. name .. "." .. ext
   myexplorer.write_text(path, body(id, name, settings.author or ""))
   myexplorer.notify({
-    title = "New from Template",
-    message = "Created " .. name .. "." .. ext,
+    title = "从模板新建",
+    message = "已创建 " .. name .. "." .. ext,
     level = "success",
   })
   myexplorer.refresh()
@@ -120,16 +120,16 @@ end
 -- Primary entry: background menu + shortcut, and owns the settings schema.
 myexplorer.register({
   id = "new_from_template",
-  title = "New from template…",
+  title = "从模板新建…",
   where = { "background" },
   icon = "note",
   shortcut = "ctrl+alt+n",
   settings = {
-    { id = "author", type = "text", label = "Author (added to templates)", default = "" },
+    { id = "author", type = "text", label = "作者（写入模板）", default = "" },
     {
       id = "default",
       type = "select",
-      label = "Default template",
+      label = "默认模板",
       options = template_options(),
       default = "markdown",
     },
@@ -140,7 +140,7 @@ myexplorer.register({
 -- Toolbar button, next to New Folder. Uses the bundled icon.
 myexplorer.register({
   id = "new_from_template_toolbar",
-  title = "New from template…",
+  title = "从模板新建…",
   menu = "toolbar",
   icon = "icon.svg",
   run = create_from_template,
@@ -150,7 +150,7 @@ myexplorer.register({
 -- toolbar, or a named builtin glyph (see set_author below).
 myexplorer.register({
   id = "new_from_template_menubar",
-  title = "New from template…",
+  title = "从模板新建…",
   menu = "menubar",
   icon = "icon.svg",
   run = create_from_template,
@@ -159,18 +159,18 @@ myexplorer.register({
 -- A second menubar entry that edits this plugin's own setting.
 myexplorer.register({
   id = "set_author",
-  title = "Set template author…",
+  title = "设置模板作者…",
   menu = "menubar",
   icon = "pencil",
   run = function(ctx)
     if not ctx.form then
       myexplorer.dialog({
-        title = "Template author",
+        title = "模板作者",
         fields = {
           {
             id = "author",
             type = "input",
-            label = "Author name",
+            label = "作者名称",
             default = (ctx.settings or {}).author or "",
           },
         },
@@ -179,8 +179,8 @@ myexplorer.register({
     end
     myexplorer.set_setting("author", ctx.form.author or "")
     myexplorer.notify({
-      title = "New from Template",
-      message = "Author saved",
+      title = "从模板新建",
+      message = "作者已保存",
       level = "success",
     })
   end,

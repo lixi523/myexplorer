@@ -5,6 +5,24 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-08-18
+
+### Changed
+- Full UI localization (Simplified Chinese): file type names in list/grid columns, plugin dialog buttons, plugin error messages now display in Chinese when system locale is set to Chinese.
+- Example plugins (backup-copy, open-vscode, selection-count, sevenzip, templates): all user-facing titles, descriptions, dialog labels, and toast messages translated to Simplified Chinese.
+- i18n: added `dialog.ok`, `preferences.plugins.errorLabel`, `preferences.plugins.errors.*` translation keys.
+
+### Fixed
+- Plugin form dialog buttons defaulted to English "OK"/"Cancel" — now respect locale.
+- Plugin settings page showed "error" badge in English — now localized.
+- Plugin error messages (`native core unavailable`, `api_version not supported`, `invalid manifest`, etc.) were hardcoded in English — now translated via i18n.
+- Rust core plugin error messages (`plugin timed out`, `action not found`, `exec failed`, etc.) — now translated to Chinese.
+- Operation error "missing destination" was English — now localized.
+
+### Tests
+- 566 unit tests pass; `flutter analyze` is clean.
+- Rust core rebuilt and vendored DLL synced; consistency check passes.
+
 ## [2.9.0] - 2026-08-18
 
 ### Fixed

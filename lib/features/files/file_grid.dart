@@ -9,6 +9,7 @@ import 'package:signals/signals_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import '../../core/models/file_entry.dart';
+import '../../core/models/file_kind_names.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../core/settings/settings_store.dart';
 import '../../i18n/strings.g.dart';
@@ -970,8 +971,8 @@ class _GridTileState extends State<_GridTile> {
                   height: widget.captionBlock,
                   child: Text(
                     entry.type == FileItemType.folder
-                        ? entry.kind
-                        : '${entry.kind} · ${formatBytes(entry.size)}',
+                        ? _kindDisplay(entry.kind)
+                        : '${_kindDisplay(entry.kind)} · ${formatBytes(entry.size)}',
                     maxLines: 1,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
@@ -1119,3 +1120,6 @@ bool _isThumbnailable(FileEntry entry) {
       return false;
   }
 }
+
+String _kindDisplay(String kind) =>
+    LocaleSettings.currentLocale == AppLocale.zh ? kindZhLabel(kind) : kind;

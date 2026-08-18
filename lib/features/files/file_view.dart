@@ -13,6 +13,7 @@ import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import '../../i18n/strings.g.dart';
 import '../../core/fs/file_sort.dart';
 import '../../core/models/file_entry.dart';
+import '../../core/models/file_kind_names.dart';
 import '../../core/platform/platform_paths.dart';
 import '../../core/settings/settings_store.dart';
 import '../../ui/overlays/popup_overlay.dart';
@@ -125,7 +126,7 @@ String fileColumnText(
         recentDatesRelative: recentDatesRelative,
       );
     case FileColumn.kind:
-      return e.kind;
+      return _kindDisplay(e.kind);
     case FileColumn.created:
       return _formatDateBy(
         e.created,
@@ -1157,3 +1158,6 @@ class _FileListState extends State<FileList> {
     );
   }
 }
+
+String _kindDisplay(String kind) =>
+    LocaleSettings.currentLocale == AppLocale.zh ? kindZhLabel(kind) : kind;
