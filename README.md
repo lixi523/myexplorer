@@ -10,6 +10,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
   <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
 </p>
 
+> **V2.9**: 稳定性与隐藏列表 —— 修复插件操作（如 "Open in VS Code" 按钮）导致的闪退：Rust 发布配置改为 unwind、全部 21 个 FFI 入口加 `catch_unwind` panic 屏障，panic 信息记入 `%TEMP%\myexplorer_core_panic.log`，插件异常降级为错误提示而非杀进程；**隐藏列表支持"纯名称"与"完整路径"双模式匹配**（按条目是否含路径分隔符自动区分，如 `desktop.ini` 全局隐藏同名文件），隐藏列表对话框新增**行内编辑**（添加/编辑/删除完整闭环）。
+>
 > **V2.8**: 安全与工程加固 —— 快捷栏/终端命令不再隐式经 cmd.exe（`&` 等元字符按字面处理，对齐 TC 原生 CreateProcess 行为，shell 特性需显式 `cmd /c`）；Rust FFI 核心入口加 panic 屏障（`catch_unwind`）；**内置主题 ini 按 id 补缺导出**（不再因存在自定义 ini 而跳过）与 UTF-8/UTF-16 BOM 编码容错；启用 `unawaited_futures` lint 并修复 6 处真实丢 Future；新增 Rust core 与 vendored DLL 一致性检查脚本并接入 CI；全项目代码审查修复（activeStore 空值守卫、网格字号回退、注释乱码等）。
 >
 > **V2.7**: 快捷栏与交互打磨 —— 竖快捷栏新增 4 个复制快捷方式（文件名/所在目录路径/完整路径/详细信息）；**慢速双击**（普通双击间隔的 2~3 倍）进入重命名；横快捷栏超出宽度自动换行；横快捷栏精简（移除内置列表视图/搜索按钮，配置按钮改齿轮图标）；代码审查修复（空值解引用、未处理 Future、SFTP 静默异常日志等）；`preferences_view`/`file_view` 大文件拆分。

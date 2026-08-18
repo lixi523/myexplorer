@@ -5,6 +5,20 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-08-18
+
+### Fixed
+- Crash / instant quit when running plugin actions (e.g. the "Open in VS Code" toolbar button): a Rust panic in the plugin execution path called `abort()` (release profile was `panic = "abort"`) and fast-failed the whole process. The release profile now unwinds, all 21 FFI entry points (list / enumerate / trash ×4 / search / plugin ×5 / pdf ×2 / folder_scan ×4 / pty ×6) run inside `catch_unwind` barriers, and a caught panic message is written to `%TEMP%\myexplorer_core_panic.log` for diagnosis, so a plugin failure degrades to an error instead of killing the app.
+- `open-vscode` example documents that the official VS Code installer only puts `code.cmd` (a batch shim) on PATH, which native `CreateProcess` cannot launch — configure the command as `cmd /c code`.
+
+### Changed
+- Hidden list (`隐藏文件.ini`) entries now support two matching modes inferred from the entry itself: entries **without a path separator** hide any file/folder with that name anywhere (e.g. `desktop.ini`, `node_modules`); entries **with a separator** keep the existing exact full-path match. Existing lists need no changes.
+- Hidden list dialog gains inline **edit**: every entry shows an edit button that swaps the row to a text field with Save/Cancel; saving replaces the entry in a single atomic write (`HiddenListStore.updatePath`). The dialog now fully manages add / edit / remove.
+
+### Tests
+- Hidden list: name-vs-path matching (5 cases) and `updatePath` replace / normalize / empty-value semantics (3 cases).
+- 566 unit tests pass; `flutter analyze` is clean.
+
 ## [2.8.0] - 2026-08-17
 
 ### Changed

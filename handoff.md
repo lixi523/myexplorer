@@ -16,14 +16,15 @@
 
 ---
 
-## 2. 当前进度（2026-08-17）
+## 2. 当前进度（2026-08-18）
 
-- ✅ **v2.8.0 已提交并推送**（pubspec `2.8.0+41`），本地 Release 构建通过，CI & Release 待 GitHub 验证
-- ✅ v2.8.0 内容 = v2.7.0 功能（竖快捷栏 4 个复制快捷方式 / 慢速双击重命名 / 横快捷栏换行精简 / 代码审查修复 / 大文件拆分）+ 本会话「风险点治理」 + 「全项目审查修复」
-- ✅ **风险点治理**（2026-08-17）：内置主题 ini 按 id 补缺导出（不再因存在自定义 ini 而跳过导出）、UTF-8/UTF-16LE/BE BOM 解码容错、导出 ini 注释提示半透明 8 位 `#AARRGGBB`、AppDirs 缓存行为锁定单测、Rust core 一致性检查脚本 `scripts/check_myexplorer_core_up_to_date.ps1` + CI build 护栏
-- ✅ **全项目审查修复**（2026-08-17）：快捷栏/终端命令移除 `runInShell`（`&` 等元字符按字面处理，shell 特性需显式 `cmd /c`）、启用 `unawaited_futures` lint 并修复 6 处丢 Future、`activeStore` 空值守卫、网格字号回退修复、location_resolver 注释乱码、Rust FFI panic 屏障（list/enumerate/trash×4/search 共 7 入口 `catch_unwind`）
-- ✅ 单元测试 **558 全过**、integration 86 过 + 4 skip、`flutter analyze` 0 issues、cargo build + vendored 同步、check 脚本绿灯
-- （v2.6 遗留完成项保留）横快捷栏编辑、menus/sidebar 拆分、AppDirs 只读降级、主题 GBK 容错、README hero 截图
+- ✅ **v2.9.0 已提交并推送**（pubspec `2.9.0+42`），本地 Release 构建通过，CI & Release 待 GitHub 验证
+- ✅ **v2.9.0 内容（三部分）**：
+  1. **闪退修复**（`fix: FFI panic barriers with unwind`）：插件操作（"Open in VS Code" 按钮）触发 Rust panic → 因 release `panic = "abort"` 直接 abort 进程（WER 铁证：`c0000409 code 7 FAST_FAIL_FATAL_APP_EXIT`，fault offset 0x3985EB 反汇编 = `int 0x29`）。修复：`panic = "unwind"` + **全部 21 个 FFI 入口 catch_unwind**（list/enumerate/trash×4/search/plugin×5/pdf×2/folder_scan×4/pty×6）+ panic 消息写入 `%TEMP%\myexplorer_core_panic.log`
+  2. **隐藏列表双模式**（`feat: hidden list supports name-based matching`）：纯名称条目（无分隔符，如 `desktop.ini`）全局按名隐藏；含分隔符条目保持完整路径精确匹配；自动推断无需改 ini 格式
+  3. **隐藏列表对话框编辑**（行内编辑，添加/编辑/删除闭环，`updatePath` 原子替换）
+- ✅ 单元测试 **566 全过**、integration 86 过 + 4 skip、`flutter analyze` 0 issues、cargo build + vendored 同步、check 脚本绿灯
+- （遗留）sftp/ops.rs 15 个入口尚未包 catch_unwind（当前无 panic 面，触发面已全覆盖）
 
 ---
 
@@ -31,6 +32,10 @@
 
 | Commit | 说明 |
 |--------|------|
+| `feat: v2.9.0 — crash hardening, hidden-list modes & editing` | **v2.9.0（已推送，2026-08-18）**：pubspec `2.9.0+42`；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
+| `feat: hidden list inline editing` | 隐藏列表对话框行内编辑（每行编辑按钮 → 输入框 + 保存/取消）；`HiddenListStore.updatePath` 原子替换；i18n 新增 edit/save/cancel/updated；+3 单测 |
+| `feat: hidden list supports name-based matching` | 隐藏列表双模式：纯名称条目全局按名隐藏、含分隔符条目精确路径匹配（自动推断）；+5 单测 |
+| `fix: FFI panic barriers with unwind — plugin/crash hardening` | **闪退修复**：release `panic = "abort"` → `"unwind"`；pdf/folder_scan/pty 入口补 catch_unwind（累计 21 个 FFI 入口全屏障）；`guard` 记录 panic 到 `%TEMP%\myexplorer_core_panic.log`；open-vscode 示例注明 code.cmd；rust 侧 +2 guard 单测 |
 | `feat: v2.8.0 — risk-point fixes, code review hardening, lint enforcement, FFI panic guards` | **v2.8.0（已推送，2026-08-17）**：pubspec `2.8.0+41`；内置主题 ini 按 id 补缺、UTF-16 BOM 解码、导出注释；移除 runInShell×4；`unawaited_futures` lint + 6 处丢 Future 修复 + `activeStore` 守卫 + 网格字号回退 + 注释乱码；Rust FFI `catch_unwind` 屏障 7 入口；Rust core 一致性检查脚本 + CI 护栏；CHANGELOG/README/handoff v2.8.0 |
 | `feat: v2.7.0 — copy shortcuts, slow double-click rename, shortcut bar wrap, code review fixes` | 竖快捷栏 4 复制按钮、慢速双击重命名、横快捷栏换行/精简（齿轮图标）、代码审查修复、preferences_view/file_view 拆分（v2.8.0 一并推送） |
 | `fix: v2.5 code review — 16 bug fixes` | 路径穿越防护、编译错误、插件操作级联、快捷键 fall-through、DB 过度删除、搜索异常静默失败、git 监听泄漏、dispose 丢设置、首屏滚动、主题 seeding、SFTP session 验证、exit port 订阅、内存泄漏、缓存永 miss、i18n 标签修复 |
@@ -125,22 +130,22 @@
 | 测试项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 558 全过 |
+| `flutter test --exclude-tags=integration` | ✅ 566 全过 |
 | `flutter test --tags=integration` | ✅ 86 过 + 4 skip |
-| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6/v2.7 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6 全绿；**v2.8.0 已推送，待验证** |
+| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v2.9 实测产物正常，super_native_extensions 插件警告无害） |
+| GitHub CI & Release | v2.5/v2.6 全绿；**v2.9.0 已推送，待验证** |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
-1. **v2.8.0 CI & Release 验证**：已提交推送（`feat: v2.8.0 ...`），等 GitHub CI 全绿 + Release 出 v2.8 产物；若 CI 红按红项修。
-2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`。
+1. **v2.9.0 CI & Release 验证**：4 个提交已推送（含 v2.9.0 版本提交），等 GitHub CI 全绿 + Release 出 v2.9 产物；若 CI 红按红项修。
+2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`；插件 `exec` 同理（open-vscode 需 `cmd /c code`）。
 3. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
 4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2478 行）、`navigation_store.dart`（1900 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
-5. **主题 ini 其它容错**：UTF-16 无 BOM 仍未覆盖（当前 BOM 优先）；可考虑启发式探测。**Rust panic 屏障**：sftp/pty/pdf 等 session 型入口尚未包 `catch_unwind`，未来改动引入失败路径时补。
+5. **Rust panic 屏障收官**：sftp/ops.rs 15 个入口尚未包 `catch_unwind`（v2.9 已包 21 个，触发面全覆盖；sftp 无 panic 面，可下次补）。
 
-**当前无遗留任务**，v2.8.0 已提交推送，待 CI/Release 确认。
+**当前无遗留任务**，v2.9.0 已提交推送，待 CI/Release 确认。
 
 ---
 
@@ -155,12 +160,13 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
-- MyExplorer **v2.8.0**（pubspec name: myexplorer，version 2.8.0+41，**已提交推送**）
-- v2.8.0 = v2.7.0 功能（竖快捷栏 4 复制快捷方式 / 慢速双击重命名 / 横快捷栏换行精简 / 大文件拆分）+ 风险点治理（主题 ini 按 id 补缺 + UTF-16 BOM 解码 + 导出注释 + AppDirs 行为锁定 + Rust core 一致性脚本）+ 全项目审查修复（移除 runInShell、unawaited_futures lint + 6 处修复、activeStore 守卫、Rust FFI catch_unwind 屏障、注释乱码）
-- 行为变化：快捷栏/终端命令不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
+- MyExplorer **v2.9.0**（pubspec name: myexplorer，version 2.9.0+42，**已提交推送**）
+- v2.9.0 三部分：① 闪退修复（插件操作 Rust panic abrt → `panic=unwind` + 21 个 FFI 入口 catch_unwind + panic 日志写 %TEMP%）② 隐藏列表双模式（纯名称全局按名 / 完整路径精确匹配，自动推断）③ 隐藏列表对话框行内编辑（添加/编辑/删除闭环）
+- v2.8.0 前置：风险点治理（主题 ini 补缺 + UTF-16 BOM + 导出注释 + AppDirs 行为锁定 + Rust core 一致性脚本）+ 审查修复（移除 runInShell、unawaited lint、activeStore 守卫、FFI 屏障雏形）
+- 行为变化：快捷栏/终端/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
 - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
-- 单元测试 558 + integration 86 全绿，flutter analyze 通过；v2.8 本地 Release 构建成功，CI 待验证
-- NEVER push 规则：v2.8.0 已由用户明确确认推送，后续新改动先确认再推
+- 单元测试 566 + integration 86 全绿，flutter analyze 通过；v2.9 本地 Release 构建成功，CI 待验证
+- NEVER push 规则：v2.9.0 已由用户明确确认推送，后续新改动先确认再推
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

@@ -1,7 +1,7 @@
 name: myexplorer
 description: "MyExplorer - A fast, minimal desktop file manager built with Flutter. Custom dark theme, custom title bar, and keyboard-driven workflow."
 publish_to: 'none'
-version: 2.8.0+41
+version: 2.9.0+42
 
 homepage: https://github.com/lixi523/myexplorer
 repository: https://github.com/lixi523/myexplorer
