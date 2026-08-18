@@ -260,8 +260,10 @@ class SftpSessionManager {
   }
 
   static void debugReset() {
-    for (final rec in _byRoot.values) {
-      MyExplorerCoreLoader.sftpClose(rec.sessionId);
+    if (MyExplorerCoreLoader.load() != null) {
+      for (final rec in _byRoot.values) {
+        MyExplorerCoreLoader.sftpClose(rec.sessionId);
+      }
     }
     _byRoot.clear();
   }
