@@ -50,6 +50,19 @@ pub unsafe extern "C" fn myexplorer_pty_open(
     cols: u16,
     rows: u16,
 ) -> u64 {
+    crate::util::guard(
+        || unsafe { pty_open_entry(shell, cwd, args, cols, rows) },
+        0,
+    )
+}
+
+unsafe fn pty_open_entry(
+    shell: *const c_char,
+    cwd: *const c_char,
+    args: *const c_char,
+    cols: u16,
+    rows: u16,
+) -> u64 {
     let shell = cstr(shell)
         .filter(|s| !s.is_empty())
         .unwrap_or_else(default_shell);
@@ -146,6 +159,13 @@ pub unsafe extern "C" fn myexplorer_pty_open(
 /// `out_len` must be a writable pointer.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_pty_read(id: u64, out_len: *mut usize) -> *mut u8 {
+    crate::util::guard(
+        || unsafe { pty_read_entry(id, out_len) },
+        crate::util::null_with_len(out_len),
+    )
+}
+
+unsafe fn pty_read_entry(id: u64, out_len: *mut usize) -> *mut u8 {
     if !out_len.is_null() {
         *out_len = 0;
     }
@@ -180,6 +200,10 @@ pub unsafe extern "C" fn myexplorer_pty_read(id: u64, out_len: *mut usize) -> *m
 /// `data` must point to at least `len` readable bytes.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_pty_write(id: u64, data: *const u8, len: usize) -> i32 {
+    crate::util::guard(|| unsafe { pty_write_entry(id, data, len) }, -1)
+}
+
+unsafe fn pty_write_entry(id: u64, data: *const u8, len: usize) -> i32 {
     if data.is_null() || len == 0 {
         return 0;
     }
@@ -204,6 +228,10 @@ pub unsafe extern "C" fn myexplorer_pty_write(id: u64, data: *const u8, len: usi
 /// Resizes the pseudo-terminal. Returns 0 on success.
 #[no_mangle]
 pub extern "C" fn myexplorer_pty_resize(id: u64, cols: u16, rows: u16) -> i32 {
+    crate::util::guard(|| unsafe { pty_resize_entry(id, cols, rows) }, -1)
+}
+
+unsafe fn pty_resize_entry(id: u64, cols: u16, rows: u16) -> i32 {
     let map = match SESSIONS.lock() {
         Ok(m) => m,
         Err(_) => return -1,
@@ -228,6 +256,10 @@ pub extern "C" fn myexplorer_pty_resize(id: u64, cols: u16, rows: u16) -> i32 {
 /// Returns 1 while the shell process is running, 0 once it has exited.
 #[no_mangle]
 pub extern "C" fn myexplorer_pty_alive(id: u64) -> i32 {
+    crate::util::guard(|| unsafe { pty_alive_entry(id) }, 0)
+}
+
+unsafe fn pty_alive_entry(id: u64) -> i32 {
     let map = match SESSIONS.lock() {
         Ok(m) => m,
         Err(_) => return 0,
@@ -247,6 +279,10 @@ pub extern "C" fn myexplorer_pty_alive(id: u64) -> i32 {
 /// Kills the shell and releases the session.
 #[no_mangle]
 pub extern "C" fn myexplorer_pty_close(id: u64) {
+    crate::util::guard(|| unsafe { pty_close_entry(id) }, ());
+}
+
+unsafe fn pty_close_entry(id: u64) {
     let session = match SESSIONS.lock() {
         Ok(mut m) => m.remove(&id),
         Err(_) => return,

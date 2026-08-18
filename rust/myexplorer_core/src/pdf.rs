@@ -56,6 +56,17 @@ pub unsafe extern "C" fn myexplorer_pdf_page_sizes(
     pdf_path: *const c_char,
     out_len: *mut usize,
 ) -> *mut u8 {
+    crate::util::guard(
+        || unsafe { pdf_page_sizes_entry(lib_path, pdf_path, out_len) },
+        crate::util::null_with_len(out_len),
+    )
+}
+
+unsafe fn pdf_page_sizes_entry(
+    lib_path: *const c_char,
+    pdf_path: *const c_char,
+    out_len: *mut usize,
+) -> *mut u8 {
     if out_len.is_null() {
         return std::ptr::null_mut();
     }
@@ -95,6 +106,31 @@ pub unsafe extern "C" fn myexplorer_pdf_page_sizes(
 /// must be writable.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_pdf_render(
+    lib_path: *const c_char,
+    pdf_path: *const c_char,
+    page_index: i32,
+    target_width: i32,
+    out_width: *mut i32,
+    out_height: *mut i32,
+    out_len: *mut usize,
+) -> *mut u8 {
+    crate::util::guard(
+        || unsafe {
+            pdf_render_entry(
+                lib_path,
+                pdf_path,
+                page_index,
+                target_width,
+                out_width,
+                out_height,
+                out_len,
+            )
+        },
+        std::ptr::null_mut(),
+    )
+}
+
+unsafe fn pdf_render_entry(
     lib_path: *const c_char,
     pdf_path: *const c_char,
     page_index: i32,

@@ -19,6 +19,13 @@ pub struct FolderScanSession {
 /// `root` must be a valid NUL-terminated C string.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_folder_scan_start(root: *const c_char) -> *mut FolderScanSession {
+    crate::util::guard(
+        || unsafe { folder_scan_start_entry(root) },
+        std::ptr::null_mut(),
+    )
+}
+
+unsafe fn folder_scan_start_entry(root: *const c_char) -> *mut FolderScanSession {
     if root.is_null() {
         return std::ptr::null_mut();
     }
@@ -85,6 +92,18 @@ pub unsafe extern "C" fn myexplorer_folder_scan_poll(
     out_items: *mut usize,
     out_done: *mut i32,
 ) {
+    crate::util::guard(
+        || unsafe { folder_scan_poll_entry(session, out_bytes, out_items, out_done) },
+        (),
+    );
+}
+
+unsafe fn folder_scan_poll_entry(
+    session: *mut FolderScanSession,
+    out_bytes: *mut u64,
+    out_items: *mut usize,
+    out_done: *mut i32,
+) {
     if session.is_null() || out_bytes.is_null() || out_items.is_null() || out_done.is_null() {
         return;
     }
@@ -102,6 +121,10 @@ pub unsafe extern "C" fn myexplorer_folder_scan_poll(
 /// `session` must come from `myexplorer_folder_scan_start`.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_folder_scan_cancel(session: *mut FolderScanSession) {
+    crate::util::guard(|| unsafe { folder_scan_cancel_entry(session) }, ());
+}
+
+unsafe fn folder_scan_cancel_entry(session: *mut FolderScanSession) {
     if session.is_null() {
         return;
     }
@@ -112,6 +135,10 @@ pub unsafe extern "C" fn myexplorer_folder_scan_cancel(session: *mut FolderScanS
 /// `session` must come from `myexplorer_folder_scan_start` and be used exactly once.
 #[no_mangle]
 pub unsafe extern "C" fn myexplorer_folder_scan_free(session: *mut FolderScanSession) {
+    crate::util::guard(|| unsafe { folder_scan_free_entry(session) }, ());
+}
+
+unsafe fn folder_scan_free_entry(session: *mut FolderScanSession) {
     if session.is_null() {
         return;
     }

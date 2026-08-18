@@ -745,10 +745,13 @@ pub unsafe extern "C" fn myexplorer_plugin_load(path: *const c_char) -> *mut c_c
         Ok(s) => s,
         Err(e) => return to_cstring(err_json(e)),
     };
-    match load_impl(path) {
-        Ok(v) => to_cstring(v),
-        Err(e) => to_cstring(err_json(e)),
-    }
+    crate::util::guard(
+        || match load_impl(path) {
+            Ok(v) => to_cstring(v),
+            Err(e) => to_cstring(err_json(e)),
+        },
+        std::ptr::null_mut(),
+    )
 }
 
 /// Runs one registered action's `run` function in a fresh sandbox and returns
@@ -777,10 +780,13 @@ pub unsafe extern "C" fn myexplorer_plugin_invoke(
         Ok(s) => s,
         Err(e) => return to_cstring(err_json(e)),
     };
-    match invoke_impl(path, action_id, ctx_json) {
-        Ok(v) => to_cstring(v),
-        Err(e) => to_cstring(err_json(e)),
-    }
+    crate::util::guard(
+        || match invoke_impl(path, action_id, ctx_json) {
+            Ok(v) => to_cstring(v),
+            Err(e) => to_cstring(err_json(e)),
+        },
+        std::ptr::null_mut(),
+    )
 }
 
 #[no_mangle]
@@ -804,10 +810,13 @@ pub unsafe extern "C" fn myexplorer_plugin_bar_update(
         Ok(s) => s,
         Err(e) => return to_cstring(err_json(e)),
     };
-    match bar_update_impl(path, bar_id, ctx_json) {
-        Ok(v) => to_cstring(v),
-        Err(e) => to_cstring(err_json(e)),
-    }
+    crate::util::guard(
+        || match bar_update_impl(path, bar_id, ctx_json) {
+            Ok(v) => to_cstring(v),
+            Err(e) => to_cstring(err_json(e)),
+        },
+        std::ptr::null_mut(),
+    )
 }
 
 #[no_mangle]
@@ -836,10 +845,13 @@ pub unsafe extern "C" fn myexplorer_plugin_bar_click(
         Ok(s) => s,
         Err(e) => return to_cstring(err_json(e)),
     };
-    match bar_click_impl(path, bar_id, item_id, ctx_json) {
-        Ok(v) => to_cstring(v),
-        Err(e) => to_cstring(err_json(e)),
-    }
+    crate::util::guard(
+        || match bar_click_impl(path, bar_id, item_id, ctx_json) {
+            Ok(v) => to_cstring(v),
+            Err(e) => to_cstring(err_json(e)),
+        },
+        std::ptr::null_mut(),
+    )
 }
 
 /// Computes a registered column's values for a batch of files. `ctx_json`'s
@@ -869,10 +881,13 @@ pub unsafe extern "C" fn myexplorer_plugin_column_compute(
         Ok(s) => s,
         Err(e) => return to_cstring(err_json(e)),
     };
-    match column_compute_impl(path, column_id, ctx_json) {
-        Ok(v) => to_cstring(v),
-        Err(e) => to_cstring(err_json(e)),
-    }
+    crate::util::guard(
+        || match column_compute_impl(path, column_id, ctx_json) {
+            Ok(v) => to_cstring(v),
+            Err(e) => to_cstring(err_json(e)),
+        },
+        std::ptr::null_mut(),
+    )
 }
 
 /// Frees a string returned by `myexplorer_plugin_load` / `myexplorer_plugin_invoke`.

@@ -1,6 +1,12 @@
 -- A toolbar button that opens the current folder in VS Code. Needs the `code`
 -- CLI on PATH (set a different command - e.g. `code-insiders`, `codium`, or a
 -- flatpak wrapper - under Configure).
+--
+-- Windows note: the official VS Code installer puts `code.cmd` (a batch
+-- shim) on PATH, and `myexplorer.exec` launches processes natively
+-- (CreateProcess, no cmd.exe), which cannot start batch files. Configure the
+-- command as `cmd /c code` when your VS Code install only provides the batch
+-- shim.
 
 local function editor_command(ctx)
   local cmd = (ctx.settings or {}).command
