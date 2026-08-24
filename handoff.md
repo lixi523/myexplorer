@@ -1,7 +1,7 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v3.1.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v3.2.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
@@ -18,14 +18,18 @@
 
 ## 2. 当前进度（2026-08-24）
 
-- ✅ **v3.1.0 已更新**（pubspec `3.1.0+45`，**本地修改完成，待提交推送**）：稳定性大修 + 精简
+- ✅ **v3.2.0 已更新**（pubspec `3.2.0+46`，**本地修改完成，待提交推送**）：修复快捷栏图标缓存冲突
+  - **图标缓存键冲突修复**：缓存键由截断的 base64 编码（48 字符）改为 SHA256 哈希，解决不同应用路径前缀相同时共享同一缓存文件导致图标显示错误的问题（如阿里云盘/FluxDown/MinerU 共享 `C:\Users\shenl\AppData\Local\Program` 前缀）
+  - **SVG 路径解析不一致修复**：`_isSvg` 判断基于 `spec`（可能来自 target），但 SVG 路径从 `widget.item.icon`（explicit）获取，导致不一致；修复后统一使用 `_spec` 实例变量
+  - 单元测试 **561 全过**、`flutter analyze` 0 issues、`flutter build windows --release` 成功、CHANGELOG/README/handoff 已更新
+- ✅ **v3.1.0 已提交但未推送**（pubspec `3.1.0+45`）：稳定性大修 + 精简
   - **大文件复制取消即时 + 进度实时**：Rust 新增 `copy.rs`（线程内 CopyFileEx + 原子取消/进度，`myexplorer_copy_start/poll/cancel/free` 四个 FFI 入口全带 guard），Dart `native_copy.dart` 改 50ms 异步轮询
   - **QuickLook 压缩包内读取/保存移出 UI isolate**：`fs_worker_pool` 新增 `archiveRead`/`archiveMutate` op（2/5 分钟超时），`quick_look_io`/`code_editor` 改走 worker
   - **压缩覆盖不再误删原文件**：`ArchiveWriter.create` 用 `SafeFileReplace.replaceWithFile`（MoveFileEx 原子替换），worker 仅在本次产物生成后取消才删 dest
   - 其余修复：分割双重 openRead、插件 invoke 超时强杀 + worker 崩溃自愈、剪贴板 stdin 传参、冲突等待 5 分钟超时（本地 + SFTP）、FsWorkerPool 操作/握手超时、sftp FFI panic 屏障、`_uniqueName` 随机后缀、`isWritableDir` 探针缓存、启动清理 7z 残留
   - **新增**：横快捷栏配置对话框拖动排序（ReorderableListView → `ShortcutBarStore.reorder` 落盘）；**快捷栏图标修复**（TC"命令+参数"图标列、引号+索引规范、增删即时刷新 via key + didUpdateWidget、权限受限路径降级）；右键快捷栏菜单 Overlay.of 崩溃修复
   - **移除**：容器（侧边栏 WSL 发行版列表 + 终端下拉）与标签（Tags）功能全套（侧边栏分区/右键菜单/文件标签圆点/`tag://` 视图/`tag:` 过滤/联动），DB 表保留兼容迁移；`wsl_path.dart` 保留（WSL 路径导航/终端共用）
-  - 单元测试 **561 全过**（原 578 − 容器/标签测试 17 + 新增 1）、`flutter analyze` 0 issues、`flutter build windows --release` 成功、CHANGELOG/README/handoff 已更新
+  - 单元测试 **561 全过**（原 578 − 容器/标签测试 17 + 新增 1）、`flutter analyze` 0 issues
 - ✅ **v3.0.1 已提交并推送**（pubspec `3.0.1+44`），本地 Release 构建通过；**CI 全绿（Run #50，2026-08-24：Analyze & Format / Unit Tests / Integration Tests / Build & Package 4 job 全过），Release v3.0.1 已发布**（`MyExplorer-3.0.1+44-windows-setup.exe` / `.zip`）
 - ✅ **v3.0.1 内容（三部分）**：
   1. **书签/标签/侧栏 INI 化**（`feat: bookmarks, tags and sidebar prefs persist to INI files`）：书签.ini / 标签.ini / 侧栏.ini 存程序根目录（UTF-8 BOM），启动时加载（main.dart）；标签定义 + 文件关联全量在标签.ini；侧栏分区顺序/隐藏/折叠落盘；**一次性迁移**（INI 缺失时从 SQLite 导入）；新增通用 `lib/utils/ini_file.dart` + 12 个单测
@@ -39,7 +43,8 @@
 
 | Commit | 说明 |
 |--------|------|
-| `feat: v3.1.0 — copy cancel, archive-edit off UI thread, drag-reorder shortcuts, drop containers & tags` | **v3.1.0（待提交）**：pubspec `3.1.0+45`；Rust `copy.rs`（线程内 CopyFileEx + 原子取消/进度 + 4 FFI 入口）；QuickLook 包内读写移出 UI isolate（fs_worker_pool 新增 archiveRead/archiveMutate）；压缩覆盖误删修复；分割双读/插件超时/剪贴板 stdin/冲突超时/pool 超时/sftp panic 屏障/`_uniqueName` 加固/探针缓存/7z 残留清理；快捷栏配置拖动排序 + **图标修复**（命令+参数图标列/引号索引/增删即时刷新/右键菜单 Overlay 崩溃）；**移除容器与标签功能**（49+ 文件）；561 单测 + 图标/复制集成测试；CHANGELOG/README/handoff 更新 |
+| `feat: v3.2.0 — fix shortcut icon cache key collision, SVG path consistency` | **v3.2.0（待提交）**：pubspec `3.2.0+46`；缓存键由截断 base64 改为 SHA256 哈希（解决路径前缀相同导致图标共享冲突）；SVG 路径解析统一使用 `_spec` 实例变量；CHANGELOG/README/handoff 更新 |
+| `feat: v3.1.0 — copy cancel, archive-edit off UI thread, drag-reorder shortcuts, drop containers & tags` | **v3.1.0（已提交未推送）**：pubspec `3.1.0+45`；Rust `copy.rs`（线程内 CopyFileEx + 原子取消/进度 + 4 FFI 入口）；QuickLook 包内读写移出 UI isolate（fs_worker_pool 新增 archiveRead/archiveMutate）；压缩覆盖误删修复；分割双读/插件超时/剪贴板 stdin/冲突超时/pool 超时/sftp panic 屏障/`_uniqueName` 加固/探针缓存/7z 残留清理；快捷栏配置拖动排序 + **图标修复**（命令+参数图标列/引号索引/增删即时刷新/右键菜单 Overlay 崩溃）；**移除容器与标签功能**（49+ 文件）；561 单测 + 图标/复制集成测试；CHANGELOG/README/handoff 更新 |
 | `feat: v3.0.1 — INI persistence, bookmark drag reorder, copy fix` | **v3.0.1（已推送，2026-08-24）**：pubspec `3.0.1+44`；书签/标签/侧栏 INI 化（含迁移 + ini_file 工具 + 12 单测）；书签拖拽排序；`_randomHex` 控制字符 bug 修复（复制/移动恢复）；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
 | `fix: copy temp random suffix produced control chars` | **复制/移动修复**：`_randomHex` 用 `String.fromCharCodes(nextInt(16))` 生成控制字符（NUL/换行）而非 hex → 临时文件名非法 → Windows 拒绝复制（v2.5 引入）；改从 hex 字符表取字符；集成测试 5 个 copy 失败全修复 |
 | `feat: bookmarks, tags and sidebar prefs persist to INI files` | **INI 化**：书签.ini/标签.ini/侧栏.ini 程序根目录 + 启动加载 + 一次性 SQLite 迁移；标签定义+文件关联全量 INI；新增 `lib/utils/ini_file.dart`；+12 单测 |

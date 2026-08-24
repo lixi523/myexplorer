@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:crypto/crypto.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/painting.dart';
 import 'package:path/path.dart' as p;
@@ -22,6 +23,9 @@ import '../../core/platform/platform_paths.dart';
 ///
 /// Extraction uses `ExtractIconExW` + `GetDIBits` through raw FFI (same style
 /// as `win32_attributes.dart`); extracted PNGs are cached under %TEMP%.
+
+final _sha256 = sha256;
+
 
 const Set<String> _rasterExtensions = {
   '.png',
@@ -403,11 +407,9 @@ String _extractCacheKey(String file, int index) {
     fingerprint =
         '$file|$index|${stat.modified.millisecondsSinceEpoch}|${stat.size}';
   } catch (_) {}
-  final digest = base64Url
-      .encode(utf8.encode(fingerprint))
-      .replaceAll(RegExp(r'[^A-Za-z0-9]'), '_');
-
-  return digest.substring(0, digest.length.clamp(0, 48));
+  final bytes = utf8.encode(fingerprint);
+  final digest = _sha256.convert(bytes);
+  return digest.toString();
 }
 
 Future<String?> _doExtractIconPng(

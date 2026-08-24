@@ -565,6 +565,7 @@ class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
   bool _hovered = false;
   late bool _isSvg;
   late Future<ImageProvider?> _iconFuture;
+  late String? _spec;
 
   @override
   void initState() {
@@ -582,16 +583,14 @@ class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
   }
 
   void _reloadIcon() {
-    // When no icon is configured, fall back to extracting one from the
-    // target (e.g. an exe/dll) so buttons get a sensible glyph by default.
     final explicit = widget.item.icon;
-    final spec =
+    _spec =
         (explicit == null || explicit.isEmpty) &&
             widget.item.target.trim().isNotEmpty
         ? widget.item.target.trim()
         : explicit;
-    _isSvg = isSvgIconSpec(spec);
-    _iconFuture = resolveShortcutIcon(spec);
+    _isSvg = isSvgIconSpec(_spec);
+    _iconFuture = resolveShortcutIcon(_spec);
   }
 
   Widget _glyph() {
@@ -604,7 +603,7 @@ class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
 
   Widget _icon() {
     if (_isSvg) {
-      final path = svgIconPath(widget.item.icon);
+      final path = svgIconPath(_spec);
       if (path != null) {
         return SvgPicture.file(
           File(path),
