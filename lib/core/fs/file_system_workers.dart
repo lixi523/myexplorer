@@ -258,8 +258,21 @@ void copyWorker(List<dynamic> args) {
               runtimeResolutions[s] == null &&
               resolutions[s] == null,
         )) {
-      decisionWaker = Completer<void>();
-      await decisionWaker!.future;
+      final w = Completer<void>();
+      decisionWaker = w;
+      try {
+        await w.future.timeout(const Duration(minutes: 5));
+      } on TimeoutException {
+        for (final s in pendingConflicts.keys.toList()) {
+          if (runtimeApplyAll == null &&
+              runtimeResolutions[s] == null &&
+              resolutions[s] == null) {
+            resolutions[s] = ConflictResolution.skip;
+          }
+        }
+
+        break;
+      }
     }
 
     final permits = FileSystemService._copyConcurrency;
@@ -340,8 +353,19 @@ void copyWorker(List<dynamic> args) {
           )
           .toList();
       if (resolvable.isEmpty) {
-        decisionWaker = Completer<void>();
-        await decisionWaker!.future;
+        final w = Completer<void>();
+        decisionWaker = w;
+        try {
+          await w.future.timeout(const Duration(minutes: 5));
+        } on TimeoutException {
+          for (final s in pendingConflicts.keys.toList()) {
+            if (runtimeApplyAll == null &&
+                runtimeResolutions[s] == null &&
+                resolutions[s] == null) {
+              resolutions[s] = ConflictResolution.skip;
+            }
+          }
+        }
         continue;
       }
       for (final srcPath in resolvable) {
@@ -714,8 +738,21 @@ void moveWorker(List<dynamic> args) {
               runtimeResolutions[s] == null &&
               resolutions[s] == null,
         )) {
-      decisionWaker = Completer<void>();
-      await decisionWaker!.future;
+      final w = Completer<void>();
+      decisionWaker = w;
+      try {
+        await w.future.timeout(const Duration(minutes: 5));
+      } on TimeoutException {
+        for (final s in pendingConflicts.keys.toList()) {
+          if (runtimeApplyAll == null &&
+              runtimeResolutions[s] == null &&
+              resolutions[s] == null) {
+            resolutions[s] = ConflictResolution.skip;
+          }
+        }
+
+        break;
+      }
     }
 
     for (final srcPath in sourceRootOrder) {
@@ -748,8 +785,19 @@ void moveWorker(List<dynamic> args) {
           )
           .toList();
       if (resolvable.isEmpty) {
-        decisionWaker = Completer<void>();
-        await decisionWaker!.future;
+        final w = Completer<void>();
+        decisionWaker = w;
+        try {
+          await w.future.timeout(const Duration(minutes: 5));
+        } on TimeoutException {
+          for (final s in pendingConflicts.keys.toList()) {
+            if (runtimeApplyAll == null &&
+                runtimeResolutions[s] == null &&
+                resolutions[s] == null) {
+              resolutions[s] = ConflictResolution.skip;
+            }
+          }
+        }
         continue;
       }
       for (final srcPath in resolvable) {
@@ -1317,8 +1365,19 @@ void extractWorker(List<dynamic> args) {
       }
     }
     while (!cancelled && conflictKeys.any(unresolved)) {
-      decisionWaker = Completer<void>();
-      await decisionWaker!.future;
+      final w = Completer<void>();
+      decisionWaker = w;
+      try {
+        await w.future.timeout(const Duration(minutes: 5));
+      } on TimeoutException {
+        for (final key in conflictKeys.toList()) {
+          if (unresolved(key)) {
+            resolutions[key] = ConflictResolution.skip;
+          }
+        }
+
+        break;
+      }
     }
     if (cancelled) {
       mainSendPort.send(TaskDoneMessage(cancelled: true, errors: errors));
@@ -1496,6 +1555,7 @@ void compressWorker(List<dynamic> args) {
   }
 
   Future<void> executeCompress() async {
+    var created = false;
     try {
       ArchiveWriter.create(
         sources,
@@ -1521,6 +1581,7 @@ void compressWorker(List<dynamic> args) {
           maybeReport(name.split('/').last);
         },
       );
+      created = true;
     } catch (e) {
       final message = _friendlyError(e);
       errors.add(TaskError(path: destination ?? '', message: message));
@@ -1528,7 +1589,10 @@ void compressWorker(List<dynamic> args) {
         ErrorMessage(path: destination ?? '', message: message),
       );
     }
-    if (cancelled || errors.isNotEmpty) {
+    // Only remove the destination when this run actually produced it (the
+    // staged archive was swapped in). On failure the destination may be a
+    // pre-existing user file and must not be touched.
+    if (cancelled && created) {
       try {
         final f = File(destination!);
         if (f.existsSync()) f.deleteSync();
@@ -2031,7 +2095,14 @@ String _uniqueName(String path) {
     }
   }
 
-  return '$dir${Platform.pathSeparator}$name.${DateTime.now().microsecondsSinceEpoch}';
+  // Extremely unlikely fallback: microseconds can collide across concurrent
+  // workers, so add a random suffix to keep the name unique.
+  final suffix = List.generate(
+    6,
+    (_) => '0123456789abcdef'[math.Random().nextInt(16)],
+  ).join();
+
+  return '$dir${Platform.pathSeparator}$name.${DateTime.now().microsecondsSinceEpoch}-$suffix';
 }
 
 Future<T> _withTransientRetry<T>(
@@ -2175,7 +2246,6 @@ void splitFileWorker(List<dynamic> args) {
           p.join(base, '$name.${partIndex.toString().padLeft(3, '0')}'),
         );
         IOSink partSink = partFile.openWrite();
-        final subscription = File(src).openRead().listen(null);
         try {
           await for (final bytes in File(src).openRead()) {
             if (cancelled) break;
@@ -2205,7 +2275,9 @@ void splitFileWorker(List<dynamic> args) {
           partPaths.add(partFile.path);
           processedFiles++;
         } finally {
-          await subscription.cancel();
+          try {
+            await partSink.close();
+          } catch (_) {}
         }
 
         if (cancelled) {

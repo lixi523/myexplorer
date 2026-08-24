@@ -70,11 +70,9 @@ class _ItemRow extends StatefulWidget {
   final ValueChanged<String> onTap;
   final VoidCallback? onMiddleTap;
   final void Function(List<String> paths, {bool move}) onDropFiles;
-  final bool isTagTarget;
   final VoidCallback? onUnmount;
   final void Function(Offset position)? onContextMenu;
   final String? tooltip;
-  final Color? labelColor;
 
   const _ItemRow({
     super.key,
@@ -86,11 +84,9 @@ class _ItemRow extends StatefulWidget {
     required this.onTap,
     this.onMiddleTap,
     required this.onDropFiles,
-    this.isTagTarget = false,
     this.onUnmount,
     this.onContextMenu,
     this.tooltip,
-    this.labelColor,
   });
 
   @override
@@ -108,7 +104,6 @@ class _ItemRowState extends State<_ItemRow> {
       hitTestBehavior: HitTestBehavior.opaque,
       onDropOver: (event) {
         if (!_dragOver) setState(() => _dragOver = true);
-        if (widget.isTagTarget) return DropOperation.link;
 
         return DragHintController.instance.mode.value == DragMode.move
             ? DropOperation.move
@@ -166,10 +161,6 @@ class _ItemRowState extends State<_ItemRow> {
   }
 
   Color get _iconColor {
-    final brand = widget.item.iconColor;
-    if (brand != null) {
-      return widget.isMounted ? brand : brand.withValues(alpha: 0.55);
-    }
     if (widget.isSelected) return AppColors.fgAccent;
 
     return widget.isMounted
@@ -196,9 +187,7 @@ class _ItemRowState extends State<_ItemRow> {
               child: _SelectionAccent(),
             ),
           Center(
-            child:
-                widget.item.leading ??
-                Icon(widget.item.icon, size: _iconSize, color: _iconColor),
+            child: Icon(widget.item.icon, size: _iconSize, color: _iconColor),
           ),
         ],
       ),
@@ -208,21 +197,18 @@ class _ItemRowState extends State<_ItemRow> {
   Widget _expandedRow(BuildContext context) {
     final content = Row(
       children: [
-        widget.item.leading ??
-            Icon(widget.item.icon, size: _iconSize, color: _iconColor),
+        Icon(widget.item.icon, size: _iconSize, color: _iconColor),
         const SizedBox(width: _iconGap),
         Expanded(
           child: Text(
             widget.item.label,
             overflow: TextOverflow.ellipsis,
             style: context.txt.body.copyWith(
-              color:
-                  widget.labelColor ??
-                  (widget.isSelected
-                      ? AppColors.fg
-                      : (widget.isMounted
-                            ? AppColors.fg.withValues(alpha: 0.85)
-                            : AppColors.fgMuted)),
+              color: widget.isSelected
+                  ? AppColors.fg
+                  : (widget.isMounted
+                        ? AppColors.fg.withValues(alpha: 0.85)
+                        : AppColors.fgMuted),
               fontWeight: widget.isSelected
                   ? FontWeight.w500
                   : FontWeight.normal,

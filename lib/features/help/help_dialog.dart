@@ -148,10 +148,6 @@ final _groups = <_HelpGroup>[
         body: () => t.help.groups.files.openWith.body,
       ),
       _HelpPage(
-        title: () => t.help.groups.files.tags.title,
-        body: () => t.help.groups.files.tags.body,
-      ),
-      _HelpPage(
         title: () => t.help.groups.files.hiddenList.title,
         body: () => t.help.groups.files.hiddenList.body,
       ),

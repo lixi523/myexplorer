@@ -65,9 +65,15 @@ class FileClipboard {
     final escaped = paths.map((p) => "'${p.replaceAll("'", "''")}'").join(',');
     final process = await Process.start('powershell', [
       '-NoProfile',
+      '-NonInteractive',
       '-Command',
-      'Set-Clipboard -LiteralPath @($escaped)',
+      '-',
     ]);
+    try {
+      process.stdin.writeln('Set-Clipboard -LiteralPath @($escaped)');
+    } finally {
+      await process.stdin.close();
+    }
     await process.exitCode;
   }
 

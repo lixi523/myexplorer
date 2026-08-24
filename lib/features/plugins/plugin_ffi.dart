@@ -57,16 +57,64 @@ class PluginFfi {
 
   /// Runs a plugin action off the UI isolate. Returns the raw effects JSON.
   ///
-  /// Actions run on a fresh ephemeral isolate (not the shared worker): a user
-  /// action may legitimately call `myexplorer.exec` for up to a few seconds, and
-  /// keeping it off the worker stops one slow action from stalling status-bar
-  /// polling.
+  /// Actions run on a fresh ephemeral isolate: a user action may legitimately
+  /// call `myexplorer.exec` for up to a few seconds, and keeping it off the
+  /// shared worker stops one slow action from stalling status-bar polling.
+  /// The isolate is killed if it does not finish within [kInvokeTimeout], so
+  /// a runaway Lua loop can never hang the caller forever.
+  static const Duration kInvokeTimeout = Duration(minutes: 2);
+
   static Future<String?> invoke({
     required String initLuaPath,
     required String actionId,
     required String ctxJson,
-  }) {
-    return Isolate.run(() => _invokeSync(initLuaPath, actionId, ctxJson));
+  }) async {
+    final reply = ReceivePort();
+    final errorPort = ReceivePort();
+    final exitPort = ReceivePort();
+    late Isolate isolate;
+    try {
+      isolate = await Isolate.spawn(
+        _invokeEntry,
+        [reply.sendPort, initLuaPath, actionId, ctxJson],
+        errorsAreFatal: false,
+        onError: errorPort.sendPort,
+        onExit: exitPort.sendPort,
+      );
+    } catch (e, st) {
+      log.error(
+        'plugins',
+        'plugin invoke isolate spawn failed',
+        error: e,
+        stack: st,
+      );
+      reply.close();
+      errorPort.close();
+      exitPort.close();
+
+      return null;
+    }
+    try {
+      final result = await reply.first.timeout(
+        kInvokeTimeout,
+        onTimeout: () {
+          log.error('plugins', 'plugin invoke timed out, killing isolate');
+          isolate.kill(priority: Isolate.immediate);
+
+          return null;
+        },
+      );
+
+      return result as String?;
+    } catch (e, st) {
+      log.error('plugins', 'plugin invoke failed', error: e, stack: st);
+
+      return null;
+    } finally {
+      reply.close();
+      errorPort.close();
+      exitPort.close();
+    }
   }
 
   static Future<String?> barUpdate({
@@ -101,13 +149,37 @@ class PluginFfi {
   /// fresh isolate and re-opening the native library on every call is wasteful,
   /// so they share one persistent isolate that opens the library once and
   /// dispatches commands over a port.
+  ///
+  /// If the worker dies (uncaught exception, crash, timeout) all in-flight
+  /// requests are failed with null and the worker is respawned lazily on the
+  /// next call, so plugin functionality recovers instead of hanging forever.
+  static const Duration kWorkerRequestTimeout = Duration(minutes: 5);
+
   static Isolate? _workerIsolate;
   static Future<SendPort>? _commandPort;
+  static final _pendingReplies = <ReceivePort>{};
 
   static Future<SendPort> _ensureWorker() {
     return _commandPort ??= () async {
       final handshake = ReceivePort();
-      _workerIsolate = await Isolate.spawn(_workerMain, handshake.sendPort);
+      final errorPort = ReceivePort();
+      final exitPort = ReceivePort();
+      final isolate = await Isolate.spawn(
+        _workerMain,
+        handshake.sendPort,
+        errorsAreFatal: false,
+        onError: errorPort.sendPort,
+        onExit: exitPort.sendPort,
+      );
+      _workerIsolate = isolate;
+      errorPort.listen((err) {
+        log.error('plugins', 'plugin worker reported error: $err');
+        _onWorkerDied();
+      });
+      exitPort.listen((_) {
+        log.error('plugins', 'plugin worker exited unexpectedly');
+        _onWorkerDied();
+      });
       final port = await handshake.first as SendPort;
       handshake.close();
 
@@ -115,14 +187,41 @@ class PluginFfi {
     }();
   }
 
+  static void _onWorkerDied() {
+    _workerIsolate?.kill(priority: Isolate.immediate);
+    _workerIsolate = null;
+    _commandPort = null;
+    for (final reply in _pendingReplies.toList()) {
+      reply.sendPort.send(null);
+      reply.close();
+    }
+    _pendingReplies.clear();
+  }
+
   static Future<String?> _request(List<Object?> command) async {
     final port = await _ensureWorker();
     final reply = ReceivePort();
-    port.send([reply.sendPort, ...command]);
-    final result = await reply.first;
-    reply.close();
+    _pendingReplies.add(reply);
+    try {
+      port.send([reply.sendPort, ...command]);
+      final result = await reply.first.timeout(
+        kWorkerRequestTimeout,
+        onTimeout: () {
+          log.error(
+            'plugins',
+            'plugin worker request timed out: ${command[1]}',
+          );
+          _onWorkerDied();
 
-    return result as String?;
+          return null;
+        },
+      );
+
+      return result as String?;
+    } finally {
+      reply.close();
+      _pendingReplies.remove(reply);
+    }
   }
 
   /// Tears down the worker isolate. Used by tests so the process can exit; the
@@ -131,40 +230,72 @@ class PluginFfi {
     _workerIsolate?.kill(priority: Isolate.immediate);
     _workerIsolate = null;
     _commandPort = null;
+    for (final reply in _pendingReplies.toList()) {
+      reply.sendPort.send(null);
+      reply.close();
+    }
+    _pendingReplies.clear();
+  }
+
+  static void _invokeEntry(List<Object?> args) {
+    final reply = args[0] as SendPort;
+    final initLuaPath = args[1] as String;
+    final actionId = args[2] as String;
+    final ctxJson = args[3] as String;
+    String? result;
+    try {
+      result = _invokeSync(initLuaPath, actionId, ctxJson);
+    } catch (e, st) {
+      log.error('plugins', 'plugin invoke entry failed', error: e, stack: st);
+    }
+    reply.send(result);
   }
 
   static void _workerMain(SendPort handshake) {
     final commands = ReceivePort();
     handshake.send(commands.sendPort);
     commands.listen((message) {
-      final m = message as List;
-      final reply = m[0] as SendPort;
-      final op = m[1] as String;
-      String? result;
-      switch (op) {
-        case 'load':
-          result = _loadSync(m[2] as String);
-        case 'barUpdate':
-          result = _barUpdateSync(
-            m[2] as String,
-            m[3] as String,
-            m[4] as String,
-          );
-        case 'barClick':
-          result = _barClickSync(
-            m[2] as String,
-            m[3] as String,
-            m[4] as String,
-            m[5] as String,
-          );
-        case 'columnCompute':
-          result = _columnComputeSync(
-            m[2] as String,
-            m[3] as String,
-            m[4] as String,
-          );
+      try {
+        final m = message as List;
+        final reply = m[0] as SendPort;
+        final op = m[1] as String;
+        String? result;
+        switch (op) {
+          case 'load':
+            result = _loadSync(m[2] as String);
+          case 'barUpdate':
+            result = _barUpdateSync(
+              m[2] as String,
+              m[3] as String,
+              m[4] as String,
+            );
+          case 'barClick':
+            result = _barClickSync(
+              m[2] as String,
+              m[3] as String,
+              m[4] as String,
+              m[5] as String,
+            );
+          case 'columnCompute':
+            result = _columnComputeSync(
+              m[2] as String,
+              m[3] as String,
+              m[4] as String,
+            );
+        }
+        reply.send(result);
+      } catch (e, st) {
+        log.error(
+          'plugins',
+          'plugin worker dispatch failed',
+          error: e,
+          stack: st,
+        );
+        try {
+          final m = message as List;
+          (m[0] as SendPort).send(null);
+        } catch (_) {}
       }
-      reply.send(result);
     });
   }
 

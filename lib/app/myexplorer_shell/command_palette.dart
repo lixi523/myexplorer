@@ -272,7 +272,6 @@ mixin _MyExplorerCommandPaletteMixin
     if (q.length < _kMinDeepQuery ||
         root.isEmpty ||
         PlatformPaths.isNetworkPath(root) ||
-        store.isTagView ||
         store.isTrashView) {
       return;
     }

@@ -53,7 +53,6 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$appMenu$en appMenu = Translations$appMenu$en.internal(_root);
 	late final Translations$changelog$en changelog = Translations$changelog$en.internal(_root);
 	late final Translations$help$en help = Translations$help$en.internal(_root);
-	late final Translations$tags$en tags = Translations$tags$en.internal(_root);
 	late final Translations$keybindings$en keybindings = Translations$keybindings$en.internal(_root);
 	late final Translations$commandPalette$en commandPalette = Translations$commandPalette$en.internal(_root);
 	late final Translations$quickLook$en quickLook = Translations$quickLook$en.internal(_root);
@@ -854,36 +853,6 @@ class Translations$help$en {
 	late final Translations$help$groups$en groups = Translations$help$groups$en.internal(_root);
 }
 
-// Path: tags
-class Translations$tags$en {
-	Translations$tags$en.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// en: 'Tags'
-	String get menuLabel => 'Tags';
-
-	/// en: 'New Tag'
-	String get newTag => 'New Tag';
-
-	/// en: 'New tag…'
-	String get newTagDots => 'New tag…';
-
-	/// en: 'Edit Tag'
-	String get editTag => 'Edit Tag';
-
-	/// en: 'Delete Tag'
-	String get deleteTag => 'Delete Tag';
-
-	/// en: 'Clear Tags'
-	String get clear => 'Clear Tags';
-
-	/// en: 'Save'
-	String get save => 'Save';
-}
-
 // Path: keybindings
 class Translations$keybindings$en {
 	Translations$keybindings$en.internal(this._root);
@@ -1578,20 +1547,8 @@ class Translations$sidebar$en {
 	/// en: 'Network'
 	String get network => 'Network';
 
-	/// en: 'Containers'
-	String get containers => 'Containers';
-
-	/// en: 'Running'
-	String get containerRunning => 'Running';
-
 	/// en: 'Bookmarks'
 	String get bookmarks => 'Bookmarks';
-
-	/// en: 'Tags'
-	String get tags => 'Tags';
-
-	/// en: 'Tag files to see them here'
-	String get noTags => 'Tag files to see them here';
 
 	/// en: 'Drop folder to bookmark'
 	String get dropBookmark => 'Drop folder to bookmark';
@@ -3746,7 +3703,6 @@ class Translations$help$groups$files$en {
 	late final Translations$help$groups$files$multiRename$en multiRename = Translations$help$groups$files$multiRename$en.internal(_root);
 	late final Translations$help$groups$files$archives$en archives = Translations$help$groups$files$archives$en.internal(_root);
 	late final Translations$help$groups$files$openWith$en openWith = Translations$help$groups$files$openWith$en.internal(_root);
-	late final Translations$help$groups$files$tags$en tags = Translations$help$groups$files$tags$en.internal(_root);
 	late final Translations$help$groups$files$hiddenList$en hiddenList = Translations$help$groups$files$hiddenList$en.internal(_root);
 }
 
@@ -4111,21 +4067,6 @@ class Translations$help$groups$files$openWith$en {
 
 	/// en: 'Open a file in any installed application, not just the system default. - **Open With** from the context menu lists available apps. - Set a default app per file type so future opens go straight there. - Recently used apps appear at the top for quick access.'
 	String get body => 'Open a file in any installed application, not just the system default.\n\n- **Open With** from the context menu lists available apps.\n- Set a default app per file type so future opens go straight there.\n- Recently used apps appear at the top for quick access.';
-}
-
-// Path: help.groups.files.tags
-class Translations$help$groups$files$tags$en {
-	Translations$help$groups$files$tags$en.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// en: 'Color Tags'
-	String get title => 'Color Tags';
-
-	/// en: 'Mark files and folders with colored tags to find them again fast. Three tags - **Red**, **Green** and **Blue** - are ready out of the box. - Assign or remove tags from the **Tags** submenu in the context menu, or drag files onto a tag in the sidebar. - Tagged items show a colored dot in the file list, and an item can carry several tags at once. - Each tag appears in the **Tags** section of the sidebar; click one to list every file that carries it, wherever it lives. - In a tag view, use **Open Location** from the context menu to jump to a file's real folder. - Right-click a tag in the sidebar to rename, recolor or delete it; deleting a tag removes it from every file. - Tags apply to local files only - not to SFTP, network shares or items inside archives.'
-	String get body => 'Mark files and folders with colored tags to find them again fast. Three tags - **Red**, **Green** and **Blue** - are ready out of the box.\n\n- Assign or remove tags from the **Tags** submenu in the context menu, or drag files onto a tag in the sidebar.\n- Tagged items show a colored dot in the file list, and an item can carry several tags at once.\n- Each tag appears in the **Tags** section of the sidebar; click one to list every file that carries it, wherever it lives.\n- In a tag view, use **Open Location** from the context menu to jump to a file\'s real folder.\n- Right-click a tag in the sidebar to rename, recolor or delete it; deleting a tag removes it from every file.\n- Tags apply to local files only - not to SFTP, network shares or items inside archives.';
 }
 
 // Path: help.groups.files.hiddenList
@@ -4854,8 +4795,6 @@ extension on Translations {
 			'help.groups.files.archives.body' => 'Archives behave like browsable folders, so you can look inside before extracting anything.\n\n- `Enter` opens a supported archive and lets you walk its contents.\n- The context menu can extract here, extract into a named folder, or extract each archive separately.\n- **Compress** builds a new archive from the selection - pick the format and compression level.\n- Extraction and compression run in the background, so the file list stays responsive.',
 			'help.groups.files.openWith.title' => 'Open With & Default Apps',
 			'help.groups.files.openWith.body' => 'Open a file in any installed application, not just the system default.\n\n- **Open With** from the context menu lists available apps.\n- Set a default app per file type so future opens go straight there.\n- Recently used apps appear at the top for quick access.',
-			'help.groups.files.tags.title' => 'Color Tags',
-			'help.groups.files.tags.body' => 'Mark files and folders with colored tags to find them again fast. Three tags - **Red**, **Green** and **Blue** - are ready out of the box.\n\n- Assign or remove tags from the **Tags** submenu in the context menu, or drag files onto a tag in the sidebar.\n- Tagged items show a colored dot in the file list, and an item can carry several tags at once.\n- Each tag appears in the **Tags** section of the sidebar; click one to list every file that carries it, wherever it lives.\n- In a tag view, use **Open Location** from the context menu to jump to a file\'s real folder.\n- Right-click a tag in the sidebar to rename, recolor or delete it; deleting a tag removes it from every file.\n- Tags apply to local files only - not to SFTP, network shares or items inside archives.',
 			'help.groups.files.hiddenList.title' => 'Hidden List',
 			'help.groups.files.hiddenList.body' => 'Hide selected files and folders from every list view without touching the files themselves.\n\n- Select one or more items, right-click and choose **Add to Hidden List**.\n- Hidden items disappear from the file list, the tree, the sidebar and recent paths.\n- Entries are stored in `隐藏文件.ini` next to the executable.\n- To show an item again, open **View -> Hidden List...** and remove its entry.\n- Hiding a folder hides that folder itself; its contents remain visible when you open it.',
 			'help.groups.previewing.title' => 'Previewing',
@@ -4888,21 +4827,14 @@ extension on Translations {
 			'help.groups.customization.shortcuts.title' => 'Keyboard Shortcuts',
 			'help.groups.customization.shortcuts.body' => 'Almost every action can be rebound to a key of your choosing.\n\n- Open **Preferences -> Keyboard** to see and edit all shortcuts.\n- Conflicts are flagged so two actions never fight over a key.\n- Reset a single binding, or all of them, back to the defaults at any time.',
 			'help.groups.customization.plugins.title' => 'Plugins',
-			_ => null,
-		} ?? switch (path) {
 			'help.groups.customization.plugins.body' => 'Extend MyExplorer with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.',
 			'help.groups.customization.shortcutBar.title' => 'Shortcut Bar',
+			_ => null,
+		} ?? switch (path) {
 			'help.groups.customization.shortcutBar.body' => 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator.',
 			'help.groups.resources.title' => 'Resources',
 			'help.groups.resources.links.title' => 'Links & Resources',
 			'help.groups.resources.links.body' => 'More about MyExplorer and where to go next.\n\n- **Changelog** - what\'s new in each release (in the menu).\n- **Keyboard shortcuts** - the full reference in **Preferences -> Keyboard**.\n- **GitHub** - [source code, issues and releases](https://github.com/lixi523/myexplorer).\n- **Plugin guide** - [how to write your own plugins](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md).',
-			'tags.menuLabel' => 'Tags',
-			'tags.newTag' => 'New Tag',
-			'tags.newTagDots' => 'New tag…',
-			'tags.editTag' => 'Edit Tag',
-			'tags.deleteTag' => 'Delete Tag',
-			'tags.clear' => 'Clear Tags',
-			'tags.save' => 'Save',
 			'keybindings.title' => 'Keyboard Shortcuts',
 			'keybindings.menuLabel' => 'Shortcuts',
 			'keybindings.categories.navigation' => 'Navigation',
@@ -5133,11 +5065,7 @@ extension on Translations {
 			'sidebar.trash' => 'Trash',
 			'sidebar.root' => 'Root',
 			'sidebar.network' => 'Network',
-			'sidebar.containers' => 'Containers',
-			'sidebar.containerRunning' => 'Running',
 			'sidebar.bookmarks' => 'Bookmarks',
-			'sidebar.tags' => 'Tags',
-			'sidebar.noTags' => 'Tag files to see them here',
 			'sidebar.dropBookmark' => 'Drop folder to bookmark',
 			'sidebar.editLayout' => 'Edit sidebar',
 			'sidebar.editDone' => 'Done',
@@ -5402,8 +5330,6 @@ extension on Translations {
 			'tasks.updatingArchive' => 'Updating archive',
 			'tasks.splittingSingle' => ({required Object name}) => 'Splitting ${name}',
 			'tasks.splittingMultiple' => ({required Object count}) => 'Splitting ${count} items',
-			_ => null,
-		} ?? switch (path) {
 			'tasks.combiningSingle' => ({required Object name}) => 'Combining ${name}',
 			'tasks.combiningMultiple' => ({required Object count}) => 'Combining ${count} items',
 			'tasks.status.waiting' => 'Waiting...',
@@ -5417,6 +5343,8 @@ extension on Translations {
 			'tasks.status.cancelled' => 'Cancelled',
 			'git.clean' => 'clean',
 			'git.detachedHead' => 'detached HEAD',
+			_ => null,
+		} ?? switch (path) {
 			'git.merging' => 'MERGING',
 			'git.rebasing' => 'REBASING',
 			'git.cherryPicking' => 'CHERRY-PICK',

@@ -17,7 +17,6 @@ import '../../core/platform/platform_paths.dart';
 import '../../core/platform/trash_location.dart';
 import '../locations/location_resolver.dart';
 import '../locations/location_uri.dart';
-import '../tags/tag_store.dart';
 import '../../core/settings/settings_store.dart';
 import '../../core/settings/color_rule_store.dart';
 import '../../i18n/strings.g.dart';
@@ -27,7 +26,6 @@ import '../files/row_decorations.dart';
 import '../git/git_status_store.dart';
 import '../hidden/hidden_list_store.dart';
 import '../operations/operation_store.dart';
-import '../tags/tag_path.dart';
 import 'clipboard_controller.dart';
 import 'filter_query.dart';
 import 'folder_size_scanner.dart';
@@ -121,15 +119,12 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
   final foldersFirst = signal<bool>(true);
   final folderSizes = FolderSizeScanner();
   final decorations = RowDecorationStore();
-  final fileTags = signal<Map<String, Set<int>>>({});
   int _sortLoadToken = 0;
   void Function()? _sortDefaultsDisposer;
   void Function()? _gitStatusDisposer;
-  void Function()? _fileTagsDisposer;
 
   @override
   bool get isTrashView => isTrashPath(currentPath.value);
-  bool get isTagView => isTagPath(currentPath.value);
   bool get isTrashRoot => currentPath.value == kTrashPath;
 
   @override
@@ -183,9 +178,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     currentPath: () => currentPath.value,
     files: () => files.value,
     showHidden: () => showHidden.value,
-    isTagView: () => isTagView,
     resolvePhysicalDestination: _resolvePhysicalDestination,
-    filterByTags: _filterByTags,
     cursorIndex: cursorIndex,
     anchorIndex: anchorIndex,
   );
@@ -212,10 +205,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
         final filter = parsed.query;
         results = filter == null
             ? const []
-            : _filterByTags(
-                results.where((f) => filter.matches(f)).toList(),
-                filter,
-              );
+            : results.where((f) => filter.matches(f)).toList();
       }
       final sorted = sortEntries(
         results,
@@ -244,10 +234,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
         final parsed = parseFilterQuery(q);
         final filter = parsed.query;
         if (filter != null) {
-          list = _filterByTags(
-            list.where((f) => filter.matches(f)).toList(),
-            filter,
-          );
+          list = list.where((f) => filter.matches(f)).toList();
         } else {
           list = const [];
         }
@@ -371,32 +358,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     _setupShowHiddenEffect();
     _setupSortDefaultsEffect();
     _setupGitStatusEffect();
-    _setupTagsEffect();
-    _setupFileTagsEffect();
     _setupColorRuleLayer();
-  }
-
-  late final _tagDecorations = computed<Map<String, RowDecoration>>(() {
-    final assigned = fileTags.value;
-    final defs = TagStore.instance.tags.value;
-    final deco = <String, RowDecoration>{};
-    for (final entry in assigned.entries) {
-      final colors = <Color>[];
-      for (final def in defs) {
-        if (entry.value.contains(def.id)) colors.add(def.color);
-      }
-      if (colors.isEmpty) continue;
-      deco[entry.key] = RowDecoration(
-        tint: const Color(0x00000000),
-        badgeColors: colors,
-      );
-    }
-
-    return deco;
-  });
-
-  void _setupTagsEffect() {
-    decorations.addReactiveLayer(_tagDecorations);
   }
 
   late final _colorRuleDecorations = computed<Map<String, RowDecoration>>(() {
@@ -429,29 +391,6 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
   void _setupColorRuleLayer() {
     decorations.addReactiveLayer(_colorRuleDecorations);
-  }
-
-  void _setupFileTagsEffect() {
-    var first = true;
-    _fileTagsDisposer = effect(() {
-      TagStore.instance.fileTagsRevision.value;
-      if (first) {
-        first = false;
-
-        return;
-      }
-      unawaited(_refreshTagsForVisible());
-    });
-  }
-
-  Future<void> _loadFileTags(List<FileEntry> entries) async {
-    final all = TagStore.instance.fileTagsById;
-    final map = <String, Set<int>>{};
-    for (final e in entries) {
-      final tags = all[e.path];
-      if (tags != null && tags.isNotEmpty) map[e.path] = tags;
-    }
-    fileTags.value = map;
   }
 
   void _setupGitStatusEffect() {
@@ -716,11 +655,6 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     bool addToHistory = true,
     String? enteredPath,
   }) {
-    if (isTagPath(path)) {
-      _doNavigate(path, addToHistory: addToHistory, enteredPath: enteredPath);
-
-      return;
-    }
     final uri = LocationUri.parse(path);
     if (uri.scheme == LocationScheme.sftp) {
       _ensureSftpConnectedAndNavigate(
@@ -750,7 +684,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     bool addToHistory = true,
     String? enteredPath,
   }) {
-    final normalized = isTrashPath(resolved) || isTagPath(resolved)
+    final normalized = isTrashPath(resolved)
         ? resolved
         : PlatformPaths.normalize(resolved);
     final previous = currentPath.value;
@@ -998,9 +932,7 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     });
     try {
       final List<FileEntry> entries;
-      if (isTagPath(path)) {
-        entries = await _loadTagView(path);
-      } else if (isTrashPath(path)) {
+      if (isTrashPath(path)) {
         entries = await _loadTrash(path);
       } else if (PlatformPaths.isSmbUri(path)) {
         final uri = LocationUri.parse(path);
@@ -1054,11 +986,8 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
       _publishEntries(entries);
       await _restoreFolderStateIfMatches(path);
       _applyPendingSelect();
-      if (token == _loadToken) await _loadFileTags(entries);
       if (token != _loadToken) return;
-      if (isTagPath(path) ||
-          isTrashPath(path) ||
-          PlatformPaths.isNetworkPath(path)) {
+      if (isTrashPath(path) || PlatformPaths.isNetworkPath(path)) {
         _watcher.stop();
       } else {
         _watcher.watch(
@@ -1136,88 +1065,6 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
       return false;
     }
-  }
-
-  Future<List<FileEntry>> _loadTagView(String path) async {
-    final id = tagIdFromPath(path);
-    if (id == null) return const [];
-    final paths = await SettingsStore.instance.db.getPathsForTag(id);
-    final out = <FileEntry>[];
-    for (final p in paths) {
-      final type = FileSystemEntity.typeSync(p);
-      if (type == FileSystemEntityType.notFound) continue;
-      out.add(
-        FileEntry.fromFileSystemEntity(
-          type == FileSystemEntityType.directory ? Directory(p) : File(p),
-        ),
-      );
-    }
-
-    return out;
-  }
-
-  static bool isTaggablePath(String path) =>
-      !PlatformPaths.isRemoteUri(path) &&
-      !PlatformPaths.isNetworkPath(path) &&
-      !FileSystemService.isInsideArchive(path);
-
-  Future<void> toggleTag(Iterable<String> paths, int tagId) async {
-    final taggable = paths.where(isTaggablePath).toList();
-    if (taggable.isEmpty) return;
-    final allTagged = taggable.every(
-      (p) => fileTags.value[p]?.contains(tagId) ?? false,
-    );
-    for (final p in taggable) {
-      if (allTagged) {
-        await TagStore.instance.removeFileTag(p, tagId);
-      } else {
-        await TagStore.instance.addFileTag(p, tagId);
-      }
-    }
-    TagStore.instance.notifyFileTagsChanged();
-  }
-
-  Future<void> addTag(Iterable<String> paths, int tagId) async {
-    final taggable = paths.where(isTaggablePath).toList();
-    if (taggable.isEmpty) return;
-    for (final p in taggable) {
-      await TagStore.instance.addFileTag(p, tagId);
-    }
-    TagStore.instance.notifyFileTagsChanged();
-  }
-
-  Future<void> clearTags(Iterable<String> paths) async {
-    final taggable = paths.where(isTaggablePath).toList();
-    if (taggable.isEmpty) return;
-    for (final p in taggable) {
-      await TagStore.instance.clearFileTags(p);
-    }
-    TagStore.instance.notifyFileTagsChanged();
-  }
-
-  List<FileEntry> _filterByTags(List<FileEntry> list, FilterQuery filter) {
-    if (filter.tagNames.isEmpty) return list;
-    final ids = <int>{};
-    for (final def in TagStore.instance.tags.value) {
-      if (filter.tagNames.contains(def.name.toLowerCase())) ids.add(def.id);
-    }
-    if (ids.isEmpty) return const [];
-    final assigned = fileTags.value;
-
-    return list.where((f) {
-      final tags = assigned[f.path];
-
-      return tags != null && tags.any(ids.contains);
-    }).toList();
-  }
-
-  Future<void> _refreshTagsForVisible() async {
-    if (isTagView) {
-      await refresh();
-
-      return;
-    }
-    await _loadFileTags(files.value);
   }
 
   Future<List<FileEntry>> _loadTrash(String path) async {
@@ -1543,9 +1390,6 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     _sortDefaultsDisposer = null;
     _gitStatusDisposer?.call();
     _gitStatusDisposer = null;
-    _fileTagsDisposer?.call();
-    _fileTagsDisposer = null;
-    _tagDecorations.dispose();
     gitStatus.dispose();
     _searchController.dispose();
     _watcher.dispose();
@@ -1764,12 +1608,6 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
     String destination, {
     bool move = false,
   }) async {
-    if (isTagPath(destination)) {
-      final id = tagIdFromPath(destination);
-      if (id != null) await addTag(sourcePaths, id);
-
-      return;
-    }
     if (isTrashPath(destination)) return;
     final sep = PlatformPaths.isSftpUri(destination)
         ? '/'
@@ -1810,14 +1648,6 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
 
   void paste() async {
     if (isTrashView) return;
-    if (isTagView) {
-      final id = tagIdFromPath(currentPath.value);
-      if (id == null) return;
-      final paths = await _clipboardController.readAvailablePaths();
-      if (paths.isNotEmpty) await addTag(paths, id);
-
-      return;
-    }
     final paste = await _clipboardController.readPastePayload();
     final paths = paste.paths;
     if (paths.isEmpty) return;

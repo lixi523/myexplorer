@@ -18,7 +18,6 @@ import '../../core/settings/settings_store.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/overlays/notification_store.dart';
 import '../../ui/theme/app_theme.dart';
-import '../tags/tag_store.dart';
 import 'sftp_task_executor.dart';
 
 class _WorkerHandle {
@@ -96,34 +95,6 @@ class OperationStore {
   final _pluginCancelHandlers = <String, VoidCallback>{};
   Timer? _currentCancelWatchdog;
   void Function()? _completeCurrentAsCancelled;
-
-  Future<void> _followTags(FileTask task) async {
-    if (task.status != TaskStatus.completed) return;
-    final settings = SettingsStore.instance;
-    if (!settings.isLoaded) return;
-    switch (task.type) {
-      case TaskType.move:
-        final dest = task.destination;
-        if (dest == null) return;
-        for (final src in task.sources) {
-          await TagStore.instance.moveFileTags(
-            src,
-            p.join(dest, p.basename(src)),
-          );
-        }
-      case TaskType.delete:
-      case TaskType.trashDelete:
-        for (final src in task.sources) {
-          await TagStore.instance.clearFileTags(src);
-        }
-      case TaskType.trash:
-      case TaskType.trashRestore:
-        break;
-      default:
-        return;
-    }
-    TagStore.instance.notifyFileTagsChanged();
-  }
 
   void enqueueCopy(List<String> sources, String destination) =>
       _enqueueTransfer(TaskType.copy, sources, destination);
@@ -596,17 +567,6 @@ class OperationStore {
     if (task.type == TaskType.compress) {
       final dest = task.destination;
       if (dest != null && dest.isNotEmpty) {
-        try {
-          final f = File(dest);
-          if (f.existsSync()) f.deleteSync();
-        } catch (e, st) {
-          log.warn(
-            'operation',
-            'failed to remove cancelled archive',
-            error: e,
-            stack: st,
-          );
-        }
         _cleanupArchiveTempDirs(p.dirname(dest), '.myexplorer-archive-pack-');
       }
     } else if (task.type == TaskType.archiveEdit) {
@@ -835,7 +795,6 @@ class OperationStore {
         _updateTask(task);
         _dismissTaskConflictNotification(task.id);
         _showFinishNotification(task);
-        unawaited(_followTags(task));
         taskCompleted.value = task.id;
         _scheduleCleanup(task);
         handle.dispose();

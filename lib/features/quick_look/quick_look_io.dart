@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:exif/exif.dart';
 
 import '../../core/archive/archive_path.dart';
-import '../../core/archive/archive_reader.dart';
+import '../../core/fs/fs_worker_pool.dart';
 import '../../core/fs/sftp_fs.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/models/file_entry.dart';
@@ -38,13 +38,12 @@ Future<Uint8List> readHead(String path, int maxBytes) async {
   final archiveLoc = ArchivePath.resolve(path);
   Stream<List<int>> stream;
   if (archiveLoc != null) {
-    final bytes = ArchiveReader.readEntryBytes(
+    final bytes = await FsWorkerPool.instance.readArchiveBytes(
       archiveLoc.archivePath,
       archiveLoc.innerPath,
+      maxBytes,
     );
-    stream = Stream.value(
-      bytes.length > maxBytes ? bytes.sublist(0, maxBytes) : bytes,
-    );
+    stream = Stream.value(bytes);
   } else if (PlatformPaths.isSftpUri(path)) {
     stream = await const SftpFs().openRead(path, start: 0, end: maxBytes);
   } else {
@@ -107,15 +106,12 @@ Future<Probe> probeFile(FileEntry entry) async {
     final archiveLoc = ArchivePath.resolve(entry.realPath);
     Stream<List<int>> stream;
     if (archiveLoc != null) {
-      final bytes = ArchiveReader.readEntryBytes(
+      final bytes = await FsWorkerPool.instance.readArchiveBytes(
         archiveLoc.archivePath,
         archiveLoc.innerPath,
+        maxTextBytes + 1,
       );
-      stream = Stream.value(
-        bytes.length > maxTextBytes + 1
-            ? bytes.sublist(0, maxTextBytes + 1)
-            : bytes,
-      );
+      stream = Stream.value(bytes);
     } else if (PlatformPaths.isSftpUri(entry.realPath)) {
       stream = await const SftpFs().openRead(
         entry.realPath,

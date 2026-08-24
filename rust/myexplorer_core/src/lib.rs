@@ -6,6 +6,7 @@
 use std::ffi::c_char;
 
 mod codec;
+mod copy;
 mod enumerate;
 mod folder_scan;
 mod list;
@@ -17,6 +18,10 @@ mod sftp;
 mod trash;
 mod util;
 mod walker;
+
+pub use copy::{
+    myexplorer_copy_cancel, myexplorer_copy_free, myexplorer_copy_poll, myexplorer_copy_start,
+};
 
 pub use enumerate::myexplorer_enumerate;
 pub use folder_scan::{

@@ -454,10 +454,8 @@ class _ShortcutBarState extends State<ShortcutBar> {
   }
 
   void _editItem(ShortcutBarItem item, Offset position) {
-    final ctx = myexplorerNavigatorKey.currentContext;
-    if (ctx == null) return;
     showContextMenu(
-      context: ctx,
+      context: context,
       position: position,
       items: [
         ContextMenuItem(
@@ -476,7 +474,7 @@ class _ShortcutBarState extends State<ShortcutBar> {
         if (action != 'edit') {
           unawaited(_store.remove(item.id));
         } else {
-          showShortcutBarConfigDialog(ctx, editingId: item.id);
+          showShortcutBarConfigDialog(context, editingId: item.id);
         }
       },
     );
@@ -518,6 +516,7 @@ class _ShortcutBarState extends State<ShortcutBar> {
                         )
                       else
                         _ShortcutItemButton(
+                          key: ValueKey(item.id),
                           item: item,
                           tooltip: item.label.trim().isEmpty
                               ? item.target
@@ -551,6 +550,7 @@ class _ShortcutItemButton extends StatefulWidget {
   final void Function(Offset position) onSecondaryTap;
 
   const _ShortcutItemButton({
+    super.key,
     required this.item,
     required this.tooltip,
     required this.onTap,
@@ -563,12 +563,25 @@ class _ShortcutItemButton extends StatefulWidget {
 
 class _ShortcutItemButtonState extends State<_ShortcutItemButton> {
   bool _hovered = false;
-  late final bool _isSvg;
-  late final Future<ImageProvider?> _iconFuture;
+  late bool _isSvg;
+  late Future<ImageProvider?> _iconFuture;
 
   @override
   void initState() {
     super.initState();
+    _reloadIcon();
+  }
+
+  @override
+  void didUpdateWidget(_ShortcutItemButton old) {
+    super.didUpdateWidget(old);
+    if (old.item.icon != widget.item.icon ||
+        old.item.target != widget.item.target) {
+      _reloadIcon();
+    }
+  }
+
+  void _reloadIcon() {
     // When no icon is configured, fall back to extracting one from the
     // target (e.g. an exe/dll) so buttons get a sensible glyph by default.
     final explicit = widget.item.icon;

@@ -56,7 +56,6 @@ void main() {
       for (final id in [
         sidebarSectionFavorites,
         sidebarSectionDevices,
-        sidebarSectionContainers,
         sidebarSectionNetwork,
         sidebarSectionBookmarks,
       ]) {

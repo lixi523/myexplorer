@@ -95,8 +95,13 @@ void _trimCacheDir() {
   if (spec.isEmpty) return ('', 0);
   final match = _indexSuffix.firstMatch(spec);
   if (match != null) {
-    final file = spec.substring(0, match.start).trim();
+    var file = spec.substring(0, match.start).trim();
     final index = int.tryParse(match.group(1)!) ?? 0;
+    if (file.length >= 2 &&
+        ((file.startsWith('"') && file.endsWith('"')) ||
+            (file.startsWith("'") && file.endsWith("'")))) {
+      file = file.substring(1, file.length - 1).trim();
+    }
 
     return (file, index);
   }
@@ -138,20 +143,39 @@ String? svgIconPath(String? iconSpec) {
 /// Resolves [iconSpec] to an [ImageProvider], or null when no icon could be
 /// loaded (the caller then falls back to its default glyph).
 Future<ImageProvider?> resolveShortcutIcon(String? iconSpec) async {
-  final (file, index) = parseIconSpec(iconSpec);
-  if (file.isEmpty) return null;
-  final resolved = resolveIconFile(file);
-  if (!File(resolved).existsSync()) return null;
+  try {
+    final (file, index) = parseIconSpec(iconSpec);
+    if (file.isEmpty) return null;
+    var resolved = resolveIconFile(file);
+    if (!File(resolved).existsSync()) {
+      // TC-style "command with arguments" (e.g. `mstsc.exe /admin /v:`):
+      // use the executable token so its embedded icon still resolves.
+      final space = file.indexOf(' ');
+      if (space > 0) {
+        var head = file.substring(0, space).trim();
+        if (head.length >= 2 && head.startsWith('"') && head.endsWith('"')) {
+          head = head.substring(1, head.length - 1).trim();
+        }
+        final headResolved = resolveIconFile(head);
+        if (File(headResolved).existsSync()) resolved = headResolved;
+      }
+    }
+    if (!File(resolved).existsSync()) return null;
 
-  final ext = p.extension(resolved).toLowerCase();
-  if (_rasterExtensions.contains(ext)) {
-    return FileImage(File(resolved));
+    final ext = p.extension(resolved).toLowerCase();
+    if (_rasterExtensions.contains(ext)) {
+      return FileImage(File(resolved));
+    }
+    if (_svgExtensions.contains(ext)) return null;
+
+    final cached = await _extractIconPng(resolved, index);
+
+    return cached == null ? null : FileImage(File(cached));
+  } catch (_) {
+    // Unreadable/guarded paths (e.g. WindowsApps) or extraction failures
+    // degrade to the caller's default glyph.
+    return null;
   }
-  if (_svgExtensions.contains(ext)) return null;
-
-  final cached = await _extractIconPng(resolved, index);
-
-  return cached == null ? null : FileImage(File(cached));
 }
 
 /// ── Win32 icon extraction ────────────────────────────────────────────────

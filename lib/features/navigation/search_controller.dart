@@ -16,10 +16,7 @@ class SearchController {
   final String Function() currentPath;
   final List<FileEntry> Function() files;
   final bool Function() showHidden;
-  final bool Function() isTagView;
   final Future<String?> Function(String logical) resolvePhysicalDestination;
-  final List<FileEntry> Function(List<FileEntry> list, FilterQuery filter)
-  filterByTags;
   final Signal<int> cursorIndex;
   final Signal<int> anchorIndex;
 
@@ -45,9 +42,7 @@ class SearchController {
     required this.currentPath,
     required this.files,
     required this.showHidden,
-    required this.isTagView,
     required this.resolvePhysicalDestination,
-    required this.filterByTags,
     required this.cursorIndex,
     required this.anchorIndex,
   });
@@ -273,11 +268,6 @@ class SearchController {
 
       return;
     }
-    if (isTagView()) {
-      _searchTagView(query, mode);
-
-      return;
-    }
     final root = await resolvePhysicalDestination(currentPath());
     if (token != _searchToken) return;
     if (root == null) {
@@ -368,26 +358,6 @@ class SearchController {
         });
       },
     );
-  }
-
-  void _searchTagView(String query, SearchMode mode) {
-    final filter = SettingsStore.instance.searchMode.value == filterSearchMode
-        ? parseFilterQuery(query).query
-        : null;
-    final nameQuery = filter?.recursiveNameQuery ?? query;
-    final matcher = filter != null && nameQuery.isEmpty
-        ? (String _) => true
-        : localMatcher(nameQuery, mode);
-    var results = matcher == null
-        ? const <FileEntry>[]
-        : files().where((file) => matcher(file.name)).toList();
-    if (filter != null) {
-      results = filterByTags(results.where(filter.matches).toList(), filter);
-    }
-    batch(() {
-      searchResults.value = results;
-      isSearching.value = false;
-    });
   }
 
   Future<void> _runSftpRecursiveSearch({

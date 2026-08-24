@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -308,18 +309,39 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
               builder: (context) {
                 final items = _store.items.value;
 
-                return ListView(
+                return ReorderableListView.builder(
                   shrinkWrap: true,
-                  children: [
-                    for (final item in items)
-                      _ItemRow(
-                        label: item.label,
-                        target: item.target,
-                        editing: item.id == _editingId,
-                        onEdit: () => _startEdit(item.id),
-                        onDelete: () => _remove(item.id),
+                  buildDefaultDragHandles: false,
+                  itemCount: items.length,
+                  onReorder: (oldIndex, newIndex) {
+                    if (newIndex > oldIndex) newIndex -= 1;
+                    final copy = [...items];
+                    final moved = copy.removeAt(oldIndex);
+                    copy.insert(newIndex, moved);
+                    unawaited(
+                      _store.reorder([for (final item in copy) item.id]),
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+
+                    return _ItemRow(
+                      key: ValueKey(item.id),
+                      dragHandle: ReorderableDragStartListener(
+                        index: index,
+                        child: Icon(
+                          Icons.drag_indicator,
+                          size: 16,
+                          color: AppColors.fgMuted,
+                        ),
                       ),
-                  ],
+                      label: item.label,
+                      target: item.target,
+                      editing: item.id == _editingId,
+                      onEdit: () => _startEdit(item.id),
+                      onDelete: () => _remove(item.id),
+                    );
+                  },
                 );
               },
             ),
@@ -331,6 +353,7 @@ class _ShortcutBarConfigDialogState extends State<_ShortcutBarConfigDialog> {
 }
 
 class _ItemRow extends StatelessWidget {
+  final Widget dragHandle;
   final String label;
   final String target;
   final bool editing;
@@ -338,6 +361,8 @@ class _ItemRow extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _ItemRow({
+    super.key,
+    required this.dragHandle,
     required this.label,
     required this.target,
     required this.editing,
@@ -358,7 +383,7 @@ class _ItemRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.arrow_right, size: 16, color: AppColors.fgMuted),
+          dragHandle,
           const SizedBox(width: 6),
           Expanded(
             child: Column(

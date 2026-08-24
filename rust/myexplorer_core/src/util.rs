@@ -67,7 +67,7 @@ pub(crate) fn guard<T>(f: impl FnOnce() -> T, default: T) -> T {
 /// Records a caught panic payload (message or `&str`) so a swallowed panic can
 /// be diagnosed even when the app has no console. Best effort: logging a panic
 /// must never itself panic.
-fn log_panic(payload: Box<dyn std::any::Any + Send>) {
+pub(crate) fn log_panic(payload: Box<dyn std::any::Any + Send>) {
     let line = format!("myexplorer_core panic: {payload:?}\n");
     let mut err = std::io::stderr();
     let _ = err.write_all(line.as_bytes());

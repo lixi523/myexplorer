@@ -154,12 +154,6 @@ mixin _MyExplorerMenuMixin
         );
     final canCombine = isSingleFile && isSplitPartPath(entries.first.realPath);
     final isRecursive = store.searchActive.value && store.searchRecursive.value;
-    final canTag = entries.every(
-      (e) =>
-          !PlatformPaths.isRemoteUri(e.path) &&
-          !PlatformPaths.isNetworkPath(e.path) &&
-          !FileSystemService.isInsideArchive(e.realPath),
-    );
     final canHide =
         entries.isNotEmpty &&
         entries.every(
@@ -291,7 +285,7 @@ mixin _MyExplorerMenuMixin
       ...openWithItems,
       ?extractItem,
       ?compressItem,
-      if ((isRecursive || store.isTagView) && count == 1)
+      if (isRecursive && count == 1)
         ContextMenuItem(
           icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openLocation,
@@ -368,7 +362,6 @@ mixin _MyExplorerMenuMixin
           label: t.menu.combineParts,
           action: 'combine_parts',
         ),
-      if (count >= 1 && canTag) _tagsSubmenu(entries),
       if (canHide) ...[
         ContextMenuItem(
           icon: MyExplorerIconsRegular.prohibit,
@@ -425,50 +418,6 @@ mixin _MyExplorerMenuMixin
       position: position,
       items: items,
       onSelect: _handleMenuAction,
-    );
-  }
-
-  ContextMenuItem _tagsSubmenu(List<FileEntry> entries) {
-    final paths = [for (final e in entries) e.path];
-
-    return ContextMenuItem(
-      icon: MyExplorerIconsRegular.bookmarkSimple,
-      label: t.tags.menuLabel,
-      action: 'tags',
-      children: [
-        for (final tag in TagStore.instance.tags.value)
-          ContextMenuItem(
-            icon: MyExplorerIconsRegular.bookmarkSimple,
-            leading: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: tag.color,
-                shape: BoxShape.circle,
-              ),
-            ),
-            label: tag.name,
-            action: 'tag_toggle:${tag.id}',
-            isToggle: true,
-            toggleSignal: computed(() {
-              final assigned = _active.fileTags.value;
-
-              return paths.isNotEmpty &&
-                  paths.every((p) => assigned[p]?.contains(tag.id) ?? false);
-            }),
-          ),
-        ContextMenuItem.divider,
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.plus,
-          label: t.tags.newTagDots,
-          action: 'tag_new',
-        ),
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.x,
-          label: t.tags.clear,
-          action: 'tag_clear',
-        ),
-      ],
     );
   }
 
@@ -540,34 +489,6 @@ mixin _MyExplorerMenuMixin
 
   void _handleMenuAction(String action) {
     final store = _active;
-    if (action.startsWith('tag_toggle:')) {
-      final id = int.tryParse(action.substring('tag_toggle:'.length));
-      if (id != null) {
-        final paths = [for (final e in store.selectedEntries) e.path];
-        store.toggleTag(paths, id);
-      }
-
-      return;
-    }
-    if (action == 'tag_clear') {
-      final paths = [for (final e in store.selectedEntries) e.path];
-      store.clearTags(paths);
-
-      return;
-    }
-    if (action == 'tag_new') {
-      final paths = [for (final e in store.selectedEntries) e.path];
-      showTagEditDialog(context).then((created) {
-        if (!mounted) return;
-        _restoreFocus();
-        if (created && paths.isNotEmpty) {
-          final newest = TagStore.instance.tags.value.lastOrNull;
-          if (newest != null) store.toggleTag(paths, newest.id);
-        }
-      });
-
-      return;
-    }
     switch (action) {
       case 'open':
         store.openSelected();

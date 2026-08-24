@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
+import '../logging/app_logger.dart';
+
 /// Single source of truth for MyExplorer application directories.
 ///
 /// Preferred layout is portable: all state lives under the executable's own
@@ -24,6 +26,9 @@ class AppDirs {
   /// Test seam: overrides where the executable directory is reported to be.
   static String? debugExeDirOverride;
 
+  static String? _probeDir;
+  static bool? _probeResult;
+
   static String _exeDir() =>
       debugExeDirOverride ?? p.dirname(Platform.resolvedExecutable);
 
@@ -40,16 +45,23 @@ class AppDirs {
 
   /// Whether [dir] accepts writes right now. Used to detect read-only
   /// installs (`Program Files`, `C:\Windows`, ...) so the store can fall back.
+  /// The probe result is cached per directory since the writability of the
+  /// executable folder does not change at runtime.
   static bool isWritableDir(String dir) {
+    if (_probeDir == dir && _probeResult != null) return _probeResult!;
+    var result = false;
     try {
       final probe = File(p.join(dir, '.myexplorer-write-probe'));
       probe.writeAsBytesSync(const []);
       probe.deleteSync();
-
-      return true;
+      result = true;
     } catch (_) {
-      return false;
+      result = false;
     }
+    _probeDir = dir;
+    _probeResult = result;
+
+    return result;
   }
 
   /// Resolves the base support directory: the executable's folder when it is
@@ -113,5 +125,40 @@ class AppDirs {
     _plugins = null;
     _temp = null;
     _tempSync = null;
+    _probeDir = null;
+    _probeResult = null;
+  }
+
+  /// Removes stale scratch directories left in [tempSync] by a previous run
+  /// that crashed before its `finally` cleanup (e.g. 7z staging folders).
+  static void cleanupStaleTemp({Duration olderThan = const Duration(days: 1)}) {
+    final dir = Directory(tempSync());
+    if (!dir.existsSync()) return;
+    final cutoff = DateTime.now().subtract(olderThan);
+    try {
+      for (final entity in dir.listSync(followLinks: false)) {
+        if (entity is! Directory) continue;
+        if (!p.basename(entity.path).startsWith('myexplorer-7z-')) continue;
+        try {
+          if (entity.statSync().modified.isBefore(cutoff)) {
+            entity.deleteSync(recursive: true);
+          }
+        } catch (e, st) {
+          log.warn(
+            'app-dirs',
+            'failed to remove stale temp dir',
+            error: e,
+            stack: st,
+          );
+        }
+      }
+    } catch (e, st) {
+      log.warn(
+        'app-dirs',
+        'failed to scan stale temp dirs',
+        error: e,
+        stack: st,
+      );
+    }
   }
 }

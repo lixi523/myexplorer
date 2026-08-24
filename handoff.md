@@ -1,7 +1,7 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v3.0.1**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v3.1.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
@@ -18,7 +18,15 @@
 
 ## 2. 当前进度（2026-08-24）
 
-- ✅ **v3.0.1 已提交并推送**（pubspec `3.0.1+44`），本地 Release 构建通过，CI & Release 待 GitHub 验证
+- ✅ **v3.1.0 已更新**（pubspec `3.1.0+45`，**本地修改完成，待提交推送**）：稳定性大修 + 精简
+  - **大文件复制取消即时 + 进度实时**：Rust 新增 `copy.rs`（线程内 CopyFileEx + 原子取消/进度，`myexplorer_copy_start/poll/cancel/free` 四个 FFI 入口全带 guard），Dart `native_copy.dart` 改 50ms 异步轮询
+  - **QuickLook 压缩包内读取/保存移出 UI isolate**：`fs_worker_pool` 新增 `archiveRead`/`archiveMutate` op（2/5 分钟超时），`quick_look_io`/`code_editor` 改走 worker
+  - **压缩覆盖不再误删原文件**：`ArchiveWriter.create` 用 `SafeFileReplace.replaceWithFile`（MoveFileEx 原子替换），worker 仅在本次产物生成后取消才删 dest
+  - 其余修复：分割双重 openRead、插件 invoke 超时强杀 + worker 崩溃自愈、剪贴板 stdin 传参、冲突等待 5 分钟超时（本地 + SFTP）、FsWorkerPool 操作/握手超时、sftp FFI panic 屏障、`_uniqueName` 随机后缀、`isWritableDir` 探针缓存、启动清理 7z 残留
+  - **新增**：横快捷栏配置对话框拖动排序（ReorderableListView → `ShortcutBarStore.reorder` 落盘）；**快捷栏图标修复**（TC"命令+参数"图标列、引号+索引规范、增删即时刷新 via key + didUpdateWidget、权限受限路径降级）；右键快捷栏菜单 Overlay.of 崩溃修复
+  - **移除**：容器（侧边栏 WSL 发行版列表 + 终端下拉）与标签（Tags）功能全套（侧边栏分区/右键菜单/文件标签圆点/`tag://` 视图/`tag:` 过滤/联动），DB 表保留兼容迁移；`wsl_path.dart` 保留（WSL 路径导航/终端共用）
+  - 单元测试 **561 全过**（原 578 − 容器/标签测试 17 + 新增 1）、`flutter analyze` 0 issues、`flutter build windows --release` 成功、CHANGELOG/README/handoff 已更新
+- ✅ **v3.0.1 已提交并推送**（pubspec `3.0.1+44`），本地 Release 构建通过；**CI 全绿（Run #50，2026-08-24：Analyze & Format / Unit Tests / Integration Tests / Build & Package 4 job 全过），Release v3.0.1 已发布**（`MyExplorer-3.0.1+44-windows-setup.exe` / `.zip`）
 - ✅ **v3.0.1 内容（三部分）**：
   1. **书签/标签/侧栏 INI 化**（`feat: bookmarks, tags and sidebar prefs persist to INI files`）：书签.ini / 标签.ini / 侧栏.ini 存程序根目录（UTF-8 BOM），启动时加载（main.dart）；标签定义 + 文件关联全量在标签.ini；侧栏分区顺序/隐藏/折叠落盘；**一次性迁移**（INI 缺失时从 SQLite 导入）；新增通用 `lib/utils/ini_file.dart` + 12 个单测
   2. **书签拖拽排序**（同提交）：侧边栏书签区普通模式支持整行拖拽排序（`ReorderableListView` + `_BookmarkReorderList`），复用 `BookmarkStore.reorder` 落盘书签.ini
@@ -31,6 +39,7 @@
 
 | Commit | 说明 |
 |--------|------|
+| `feat: v3.1.0 — copy cancel, archive-edit off UI thread, drag-reorder shortcuts, drop containers & tags` | **v3.1.0（待提交）**：pubspec `3.1.0+45`；Rust `copy.rs`（线程内 CopyFileEx + 原子取消/进度 + 4 FFI 入口）；QuickLook 包内读写移出 UI isolate（fs_worker_pool 新增 archiveRead/archiveMutate）；压缩覆盖误删修复；分割双读/插件超时/剪贴板 stdin/冲突超时/pool 超时/sftp panic 屏障/`_uniqueName` 加固/探针缓存/7z 残留清理；快捷栏配置拖动排序 + **图标修复**（命令+参数图标列/引号索引/增删即时刷新/右键菜单 Overlay 崩溃）；**移除容器与标签功能**（49+ 文件）；561 单测 + 图标/复制集成测试；CHANGELOG/README/handoff 更新 |
 | `feat: v3.0.1 — INI persistence, bookmark drag reorder, copy fix` | **v3.0.1（已推送，2026-08-24）**：pubspec `3.0.1+44`；书签/标签/侧栏 INI 化（含迁移 + ini_file 工具 + 12 单测）；书签拖拽排序；`_randomHex` 控制字符 bug 修复（复制/移动恢复）；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
 | `fix: copy temp random suffix produced control chars` | **复制/移动修复**：`_randomHex` 用 `String.fromCharCodes(nextInt(16))` 生成控制字符（NUL/换行）而非 hex → 临时文件名非法 → Windows 拒绝复制（v2.5 引入）；改从 hex 字符表取字符；集成测试 5 个 copy 失败全修复 |
 | `feat: bookmarks, tags and sidebar prefs persist to INI files` | **INI 化**：书签.ini/标签.ini/侧栏.ini 程序根目录 + 启动加载 + 一次性 SQLite 迁移；标签定义+文件关联全量 INI；新增 `lib/utils/ini_file.dart`；+12 单测 |
@@ -71,7 +80,7 @@
 | `lib/features/navigation/navigation_store.dart` | **文件夹名颜色从 palette 读取**：深色用 `folderNameDark`、浅色用 `folderNameLight`（`_colorRuleDecorations`） |
 | `test/unit/theme/` | `app_theme_definition_test.dart`、`app_theme_registry_test.dart`（ini 解析/加载） |
 | `lib/core/fs/myexplorer_core_loader.dart` | Rust FFI 加载器 |
-| `lib/utils/ini_file.dart` | **通用 INI 工具（v3.0.1 新增）**：段/键值/注释/列表解析与序列化、UTF-8 BOM、原子写入；书签.ini/标签.ini/侧栏.ini 均基于它 |
+| `lib/utils/ini_file.dart` | **通用 INI 工具（v3.0.1 新增）**：段/键值/注释/列表解析与序列化、UTF-8 BOM、原子写入；书签.ini/侧栏.ini 基于它（标签.ini 随 v3.1.0 标签功能删除） |
 | `lib/core/platform/app_dirs.dart` | **便携目录解析 + 只读降级**：`selectBase`/`isWritableDir` 检测 exe 目录可写性，不可写回退 `%LOCALAPPDATA%\MyExplorer`；`debugExeDirOverride`/`debugReset` 测试 seam |
 | `lib/core/platform/gbk_codec.dart` | GBK(code 936) 编解码（FFI）；**encodeGbkBytes 已修复 UAF**（`Uint8List.fromList` 拷贝） |
 | `lib/app/myexplorer_shell/menus.dart` + `menus_plugin.dart` | 拆分的两个 part：菜单构建/分发 + 插件执行域（`_MyExplorerMenuMixin` / `_MyExplorerPluginMixin`） |
@@ -79,7 +88,7 @@
 | `scripts/build_myexplorer_core_windows.ps1` | 构建并 vendored Rust core + pdfium |
 | `scripts/check_myexplorer_core_up_to_date.ps1` | **Rust core 一致性检查（v2.8.0 新增）**：SHA256 对比本地构建与 vendored DLL，不一致 exit 1 提示重建；CI build job 护栏 |
 | `lib/ui/dialogs/shortcut_bar_config_dialog.dart` | 快捷栏配置：支持 `editingId` 预填编辑、保存/取消、行内编辑 |
-| `test/` | 544 单测 + 86 integration |
+| `test/` | 561 单测 + 集成（native_copy 3 个新增） |
 
 ---
 
@@ -134,21 +143,21 @@
 | 测试项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 578 全过 |
-| `flutter test --tags=integration` | ✅ 86 过 + 4 skip |
-| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.0.1 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6 全绿；**v3.0.1 已推送，待验证** |
+| `flutter test --exclude-tags=integration` | ✅ 561 全过（v3.1.0；v3.0.1 时为 578） |
+| `flutter test --tags=integration` | ✅ v3.0.1：86 过 + 4 skip；v3.1.0 相关子集（fs/operations/plugin/archive/navigation/database）全过 |
+| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.1.0 实测产物正常，super_native_extensions 插件警告无害） |
+| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.0.1 已验证（Run #50 全绿 + Release 已发布 2026-08-24）** |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
-1. **v3.0.1 CI & Release 验证**：3 个提交已推送（含 v3.0.1 版本提交），等 GitHub CI 全绿 + Release 出 v3.0.1 产物；若 CI 红按红项修。
+1. ~~**v3.0.1 CI & Release 验证**~~：✅ **已完成（2026-08-24）** —— Run #50 全绿（4 job），Release v3.0.1 已发布（setup.exe + zip）。
 2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`；插件 `exec` 同理（open-vscode 需 `cmd /c code`）。
 3. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
 4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2484 行）、`navigation_store.dart`（1900+ 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
-5. **Rust panic 屏障收官**：sftp/ops.rs 15 个入口尚未包 `catch_unwind`（v2.9 已包 21 个，触发面全覆盖；sftp 无 panic 面，可下次补）。
-6. **INI 化收尾**：`app_database.dart` 中 bookmarks/tags/file_tags/sidebar_prefs 表及 DAO 已无 store 调用方，可考虑后续清理（schema 保留以兼容旧数据迁移）。
+5. ~~**Rust panic 屏障收官**~~：✅ **已完成（v3.1.0）** —— `session::block` 统一包 `catch_unwind` + panic 日志（sftp 全部入口一处覆盖）。
+6. **INI/DB 收尾**：`app_database.dart` 中 bookmarks/file_tags/sidebar_prefs 表及 DAO 已无 store 调用方（tags 功能 v3.1.0 已删），schema 保留以兼容旧数据迁移，DAO 可考虑后续清理。
 
 ---
 
@@ -163,14 +172,13 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
- - MyExplorer **v3.0.1**（pubspec name: myexplorer，version 3.0.1+44，**已提交推送**）
- - v3.0.1 三部分：① 书签/标签/侧栏 INI 化（书签.ini/标签.ini/侧栏.ini 程序根目录 + 启动加载 + 一次性迁移）② 书签拖拽排序 ③ 复制/移动修复（v2.5 `_randomHex` 控制字符 bug）
+ - MyExplorer **v3.1.0**（pubspec name: myexplorer，version 3.1.0+45，**本次提交推送**）
+ - v3.1.0 内容：① 稳定性大修（大文件复制取消即时+进度实时 via Rust copy.rs；QuickLook 包内读写移出 UI isolate；压缩覆盖误删修复；插件超时/崩溃自愈；冲突等待超时；pool/握手超时；sftp panic 屏障；剪贴板 stdin；`_uniqueName` 加固；探针缓存；7z 残留清理）② 横快捷栏配置对话框拖动排序 + 图标修复（命令+参数图标列/引号索引/增删即时刷新/右键菜单崩溃）③ **移除容器（WSL 发行版列表）与标签（Tags）功能**（DB 表保留兼容迁移；`wsl_path.dart` 保留）
+ - v3.0.1 前置：INI 化（书签.ini/侧栏.ini）+ 书签拖拽排序 + 复制修复（已推送，CI 全绿，Release 已发布）
  - v3.0.0 前置：全界面汉化 + 插件/Rust 错误消息 i18n + 5 示例插件汉化
- - v2.9.0 前置：闪退修复（FFI panic barriers + unwind）、隐藏列表双模式、行内编辑
- - v2.8.0 前置：风险点治理（主题 ini 补缺 + UTF-16 BOM + 导出注释 + AppDirs 行为锁定 + Rust core 一致性脚本）+ 审查修复（移除 runInShell、unawaited lint、activeStore 守卫、FFI 屏障雏形）
  - 行为变化：快捷栏/终端/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
  - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
- - 单元测试 578 全过、integration 86 过 + 4 skip、flutter analyze 通过；v3.0.1 本地 Release 构建成功，CI 待验证
+ - 单元测试 561 全过、flutter analyze 通过、release 构建成功；v3.1.0 待提交推送（NEVER push，需用户确认）
  - NEVER push 规则：v3.0.1 已由用户明确确认推送，后续新改动先确认再推
 
 关键路径：

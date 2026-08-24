@@ -20,7 +20,6 @@ import 'features/navigation/sidebar_store.dart';
 import 'features/hidden/hidden_list_store.dart';
 import 'features/plugins/plugin_settings_store.dart';
 import 'features/plugins/plugin_store.dart';
-import 'features/tags/tag_store.dart';
 import 'i18n/strings.g.dart';
 import 'ui/theme/app_theme_registry.dart';
 
@@ -46,6 +45,7 @@ void main(List<String> args) async {
               'falling back to per-user data folder: $supportDir',
         );
       }
+      AppDirs.cleanupStaleTemp();
 
       FlutterError.onError = (details) {
         log.error('flutter', details.exceptionAsString(), stack: details.stack);
@@ -77,7 +77,6 @@ void main(List<String> args) async {
       await HiddenListStore.instance.load();
       await SidebarStore.instance.load();
       await PluginSettingsStore.instance.load(SettingsStore.instance.db);
-      await TagStore.instance.load();
       await AppInfo.init();
       if (LaunchArgs.options.showVersion) {
         stdout.writeln('MyExplorer ${AppInfo.version.value}');

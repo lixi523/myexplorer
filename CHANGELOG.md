@@ -5,6 +5,33 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-08-24
+
+### Added
+- Shortcut bar config dialog: items can now be reordered by dragging (previously add/edit/remove only); the new order persists to `快捷栏.ini` via the existing serialized save queue.
+- Toolbar icons: TC-style "command with arguments" icon specs (`mstsc.exe /admin /v:`) and quoted `"path",index` specs now resolve correctly; add/remove/edit of shortcuts refreshes the bar immediately (button keys + `didUpdateWidget` icon reload); unreadable paths (e.g. ACL-guarded WindowsApps) degrade cleanly instead of erroring.
+
+### Fixed
+- Large-file copy: cancel now takes effect immediately and progress updates live. `CopyFileEx` runs on a Rust worker thread with an atomic cancel flag and progress counter driven by its progress routine; Dart polls asynchronously, so the isolate event loop stays alive.
+- Quick Look archive editing no longer blocks the UI: reading archive entries (7z/zip) and saving in-archive edits now run on the FS worker pool instead of synchronously on the UI isolate (`Process.runSync` 7z calls previously froze the window).
+- Compressing over an existing target could delete the user's pre-existing file: the staged archive is now swapped in with an atomic `MoveFileEx` replace, and cancel/error paths only touch the destination when this run actually produced it.
+- Split-file task opened the source twice and read it once wastefully (a stray `openRead().listen(null)`); the redundant subscription is gone.
+- Plugin actions now time out and kill their isolate instead of hanging forever; the shared plugin worker respawns automatically after a crash and pending requests fail cleanly instead of hanging.
+- File-clipboard write no longer embeds paths in a `powershell -Command` string (8191-char limit): the script goes over stdin.
+- Conflict-resolution waits (copy/move/extract and SFTP transfers) time out after 5 minutes and skip unresolved entries instead of hanging the task forever.
+- FS worker pool operations and worker handshake now have timeouts, so a wedged worker is killed and respawned instead of hanging callers.
+- All SFTP FFI entry points are now behind a panic barrier (`catch_unwind` + panic log) like the main entry points.
+- `_uniqueName` fallback appends a random hex suffix, removing a concurrent rename collision window.
+- `isWritableDir` probe result is cached per directory (no repeated disk writes).
+- Startup now cleans stale `myexplorer-7z-*` scratch folders left by a crashed run.
+
+### Removed
+- Sidebar containers section (WSL distribution list with 8s polling) and the WSL distro dropdown in the terminal menu.
+- Tags feature: sidebar tags section, context-menu tags submenu, file-tag dots, `tag://` virtual views, `tag:` search filter, and tag bookkeeping on move/delete/rename. Related i18n keys and help pages removed. (DB tables retained for schema compatibility with existing installs.)
+
+### Tests
+- 561 unit tests pass; `flutter analyze` clean; new NativeCopy integration tests cover full copy + progress, mid-flight cancellation, and target-exists fallback.
+
 ## [3.0.1] - 2026-08-24
 
 ### Added

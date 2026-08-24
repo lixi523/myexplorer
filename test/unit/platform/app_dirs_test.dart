@@ -111,4 +111,41 @@ void main() {
       );
     });
   });
+
+  group('AppDirs cleanupStaleTemp', () {
+    test(
+      'removes stale 7z staging dirs but keeps fresh and unrelated ones',
+      () {
+        final dir = Directory.systemTemp.createTempSync(
+          'myexplorer_stale_test',
+        );
+        addTearDown(() {
+          try {
+            dir.deleteSync(recursive: true);
+          } catch (_) {}
+        });
+        AppDirs.debugReset();
+        AppDirs.debugExeDirOverride = dir.path;
+
+        final fresh = Directory('${dir.path}/.tmp/myexplorer-7z-fresh')
+          ..createSync(recursive: true);
+        final stale = Directory('${dir.path}/.tmp/myexplorer-7z-stale')
+          ..createSync(recursive: true);
+        final other = Directory('${dir.path}/.tmp/unrelated')
+          ..createSync(recursive: true);
+
+        Process.runSync('powershell', [
+          '-NoProfile',
+          '-Command',
+          "(Get-Item '${stale.path}').LastWriteTime = (Get-Date).AddDays(-2)",
+        ]);
+
+        AppDirs.cleanupStaleTemp();
+
+        expect(fresh.existsSync(), isTrue);
+        expect(stale.existsSync(), isFalse);
+        expect(other.existsSync(), isTrue);
+      },
+    );
+  });
 }

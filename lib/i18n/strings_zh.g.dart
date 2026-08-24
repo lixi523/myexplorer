@@ -52,7 +52,6 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$appMenu$zh appMenu = _Translations$appMenu$zh._(_root);
 	@override late final _Translations$changelog$zh changelog = _Translations$changelog$zh._(_root);
 	@override late final _Translations$help$zh help = _Translations$help$zh._(_root);
-	@override late final _Translations$tags$zh tags = _Translations$tags$zh._(_root);
 	@override late final _Translations$keybindings$zh keybindings = _Translations$keybindings$zh._(_root);
 	@override late final _Translations$commandPalette$zh commandPalette = _Translations$commandPalette$zh._(_root);
 	@override late final _Translations$quickLook$zh quickLook = _Translations$quickLook$zh._(_root);
@@ -423,22 +422,6 @@ class _Translations$help$zh extends Translations$help$en {
 	@override late final _Translations$help$groups$zh groups = _Translations$help$groups$zh._(_root);
 }
 
-// Path: tags
-class _Translations$tags$zh extends Translations$tags$en {
-	_Translations$tags$zh._(TranslationsZh root) : this._root = root, super.internal(root);
-
-	final TranslationsZh _root; // ignore: unused_field
-
-	// Translations
-	@override String get menuLabel => '标签';
-	@override String get newTag => '新建标签';
-	@override String get newTagDots => '新建标签…';
-	@override String get editTag => '编辑标签';
-	@override String get deleteTag => '删除标签';
-	@override String get clear => '清除标签';
-	@override String get save => '保存';
-}
-
 // Path: keybindings
 class _Translations$keybindings$zh extends Translations$keybindings$en {
 	_Translations$keybindings$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -724,11 +707,7 @@ class _Translations$sidebar$zh extends Translations$sidebar$en {
 	@override String get trash => '回收站';
 	@override String get root => '根目录';
 	@override String get network => '网络';
-	@override String get containers => '容器';
-	@override String get containerRunning => '运行中';
 	@override String get bookmarks => '书签';
-	@override String get tags => '标签';
-	@override String get noTags => '标记文件后它们会显示在这里';
 	@override String get dropBookmark => '拖放文件夹以添加书签';
 	@override String get editLayout => '编辑侧边栏';
 	@override String get editDone => '完成';
@@ -1726,7 +1705,6 @@ class _Translations$help$groups$files$zh extends Translations$help$groups$files$
 	@override late final _Translations$help$groups$files$multiRename$zh multiRename = _Translations$help$groups$files$multiRename$zh._(_root);
 	@override late final _Translations$help$groups$files$archives$zh archives = _Translations$help$groups$files$archives$zh._(_root);
 	@override late final _Translations$help$groups$files$openWith$zh openWith = _Translations$help$groups$files$openWith$zh._(_root);
-	@override late final _Translations$help$groups$files$tags$zh tags = _Translations$help$groups$files$tags$zh._(_root);
 	@override late final _Translations$help$groups$files$hiddenList$zh hiddenList = _Translations$help$groups$files$hiddenList$zh._(_root);
 }
 
@@ -2001,17 +1979,6 @@ class _Translations$help$groups$files$openWith$zh extends Translations$help$grou
 	// Translations
 	@override String get title => '打开方式与默认应用';
 	@override String get body => '在任何已安装的应用中打开文件，而不只是系统默认应用。\n\n- 右键菜单中的 **打开方式** 列出可用应用。\n- 为每种文件类型设置默认应用，以后直接打开。\n- 最近使用的应用显示在顶部，方便快速访问。';
-}
-
-// Path: help.groups.files.tags
-class _Translations$help$groups$files$tags$zh extends Translations$help$groups$files$tags$en {
-	_Translations$help$groups$files$tags$zh._(TranslationsZh root) : this._root = root, super.internal(root);
-
-	final TranslationsZh _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '颜色标签';
-	@override String get body => '用彩色标签标记文件和文件夹，方便快速找到它们。开箱即用提供三个标签 - **红**、**绿** 和 **蓝**。\n\n- 从右键菜单的 **标签** 子菜单分配或移除标签，或将文件拖到侧边栏的标签上。\n- 标记的项目在文件列表中显示彩色圆点，一个项目可以带多个标签。\n- 每个标签显示在侧边栏的 **标签** 分区中；点击即可列出所有带该标签的文件，无论它们在哪里。\n- 在标签视图中，使用右键菜单的 **打开位置** 跳转到文件的真实文件夹。\n- 右键点击侧边栏中的标签可重命名、更改颜色或删除；删除标签会从所有文件中移除。\n- 标签仅适用于本地文件 - 不适用于 SFTP、网络共享或压缩包内的项目。';
 }
 
 // Path: help.groups.files.hiddenList
@@ -2676,8 +2643,6 @@ extension on TranslationsZh {
 			'help.groups.files.archives.body' => '压缩包像可浏览的文件夹一样工作，可以在解压前查看内容。\n\n- `Enter` 打开支持的压缩包并浏览其内容。\n- 右键菜单可以解压到此处、解压到命名文件夹，或逐个解压每个压缩包。\n- **压缩** 从选择构建新压缩包 - 选择格式和压缩级别。\n- 解压和压缩在后台运行，文件列表保持响应。',
 			'help.groups.files.openWith.title' => '打开方式与默认应用',
 			'help.groups.files.openWith.body' => '在任何已安装的应用中打开文件，而不只是系统默认应用。\n\n- 右键菜单中的 **打开方式** 列出可用应用。\n- 为每种文件类型设置默认应用，以后直接打开。\n- 最近使用的应用显示在顶部，方便快速访问。',
-			'help.groups.files.tags.title' => '颜色标签',
-			'help.groups.files.tags.body' => '用彩色标签标记文件和文件夹，方便快速找到它们。开箱即用提供三个标签 - **红**、**绿** 和 **蓝**。\n\n- 从右键菜单的 **标签** 子菜单分配或移除标签，或将文件拖到侧边栏的标签上。\n- 标记的项目在文件列表中显示彩色圆点，一个项目可以带多个标签。\n- 每个标签显示在侧边栏的 **标签** 分区中；点击即可列出所有带该标签的文件，无论它们在哪里。\n- 在标签视图中，使用右键菜单的 **打开位置** 跳转到文件的真实文件夹。\n- 右键点击侧边栏中的标签可重命名、更改颜色或删除；删除标签会从所有文件中移除。\n- 标签仅适用于本地文件 - 不适用于 SFTP、网络共享或压缩包内的项目。',
 			'help.groups.files.hiddenList.title' => '隐藏列表',
 			'help.groups.files.hiddenList.body' => '无需改动文件本身，即可从所有列表视图中隐藏选中的文件和文件夹。\n\n- 选中一个或多个项目，右键并选择**加入隐藏列表**。\n- 隐藏的项目会从文件列表、树形视图、侧边栏和最近访问中消失。\n- 条目存储在可执行文件旁的 `隐藏文件.ini` 中。\n- 要重新显示某个项目，请打开**视图 -> 隐藏列表...** 并删除其条目。\n- 隐藏文件夹只隐藏该文件夹本身；打开它时其内容仍然可见。',
 			'help.groups.previewing.title' => '预览',
@@ -2710,21 +2675,14 @@ extension on TranslationsZh {
 			'help.groups.customization.shortcuts.title' => '键盘快捷键',
 			'help.groups.customization.shortcuts.body' => '几乎所有操作都可以重新绑定为你选择的按键。\n\n- 打开 **设置 -> 键盘** 查看和编辑所有快捷键。\n- 冲突会被标记，两个操作不会争抢同一个按键。\n- 随时将单个绑定或全部绑定重置为默认值。',
 			'help.groups.customization.plugins.title' => '插件',
-			_ => null,
-		} ?? switch (path) {
 			'help.groups.customization.plugins.body' => '使用 Lua 编写的插件扩展 MyExplorer。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。',
 			'help.groups.customization.shortcutBar.title' => '快捷方式栏',
+			_ => null,
+		} ?? switch (path) {
 			'help.groups.customization.shortcutBar.body' => '标题栏下方的快捷方式栏可一键启动文件夹、文件或命令，遵循 Total Commander 的惯例。\n\n- 右键按钮可编辑或删除；`+` 区域用于添加新按钮。\n- 按钮可以打开文件夹或文件、运行命令行，或使用 `CD <路径>` 跳转。\n- 支持内置命令，如 `cm_OpenDesktop`、`cm_OpenDrives` 和 `cm_OpenRecycled`。\n- 图标可来自文件（`icon.png`）、exe/dll（`app.exe,0`）或系统库中的索引（`shell32.dll,34`）。\n- 使用**导入 Total Commander 按钮栏...** 加载 `.bar` 文件（UTF-8 或 GBK）。\n- 留空条目可创建分隔符。',
 			'help.groups.resources.title' => '资源',
 			'help.groups.resources.links.title' => '链接与资源',
 			'help.groups.resources.links.body' => '更多关于 MyExplorer 的信息以及下一步。\n\n- **更新日志** - 每个版本的新内容（在菜单中）。\n- **键盘快捷键** - 完整参考位于 **设置 -> 键盘**。\n- **GitHub** - [源代码、问题和发布](https://github.com/lixi523/myexplorer)。\n- **插件指南** - [如何编写自己的插件](https://github.com/lixi523/myexplorer/blob/main/docs/plugins.md)。',
-			'tags.menuLabel' => '标签',
-			'tags.newTag' => '新建标签',
-			'tags.newTagDots' => '新建标签…',
-			'tags.editTag' => '编辑标签',
-			'tags.deleteTag' => '删除标签',
-			'tags.clear' => '清除标签',
-			'tags.save' => '保存',
 			'keybindings.title' => '键盘快捷键',
 			'keybindings.menuLabel' => '快捷键',
 			'keybindings.categories.navigation' => '导航',
@@ -2955,11 +2913,7 @@ extension on TranslationsZh {
 			'sidebar.trash' => '回收站',
 			'sidebar.root' => '根目录',
 			'sidebar.network' => '网络',
-			'sidebar.containers' => '容器',
-			'sidebar.containerRunning' => '运行中',
 			'sidebar.bookmarks' => '书签',
-			'sidebar.tags' => '标签',
-			'sidebar.noTags' => '标记文件后它们会显示在这里',
 			'sidebar.dropBookmark' => '拖放文件夹以添加书签',
 			'sidebar.editLayout' => '编辑侧边栏',
 			'sidebar.editDone' => '完成',
@@ -3224,8 +3178,6 @@ extension on TranslationsZh {
 			'tasks.updatingArchive' => '正在更新压缩包',
 			'tasks.splittingSingle' => ({required Object name}) => '正在分割 ${name}',
 			'tasks.splittingMultiple' => ({required Object count}) => '正在分割 ${count} 个项目',
-			_ => null,
-		} ?? switch (path) {
 			'tasks.combiningSingle' => ({required Object name}) => '正在合并 ${name}',
 			'tasks.combiningMultiple' => ({required Object count}) => '正在合并 ${count} 个项目',
 			'tasks.status.waiting' => '等待中...',
@@ -3239,6 +3191,8 @@ extension on TranslationsZh {
 			'tasks.status.cancelled' => '已取消',
 			'git.clean' => '干净',
 			'git.detachedHead' => '分离 HEAD',
+			_ => null,
+		} ?? switch (path) {
 			'git.merging' => '合并中',
 			'git.rebasing' => '变基中',
 			'git.cherryPicking' => '拣选中',

@@ -478,13 +478,6 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
     final otherStore =
         _shell.panes.value[1 - activeIdx].tabs.activeTab.value.store;
     final otherPath = otherStore.currentPath.value;
-    if (isTagPath(otherPath)) {
-      final id = tagIdFromPath(otherPath);
-      final paths = _dualPaneEntries(store).map((e) => e.path).toList();
-      if (id != null && paths.isNotEmpty) await otherStore.addTag(paths, id);
-
-      return;
-    }
     final sources = _dualPaneSources(store);
     if (sources.isEmpty) return;
     final dest = await otherStore.resolveForOperation(otherPath);

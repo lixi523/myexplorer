@@ -4,6 +4,7 @@ import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 
 import '../../i18n/strings.g.dart';
+import '../fs/safe_file_replace.dart';
 import '../logging/app_logger.dart';
 import 'archive_reader.dart' show ArchiveReadException, ArchiveReader;
 
@@ -377,15 +378,15 @@ class ArchiveWriter {
       }
 
       if (isCancelled != null && isCancelled()) return;
-      File(stagedPath).renameSync(destPath);
+      SafeFileReplace.replaceWithFile(stagedPath, destPath);
       ok = true;
     } catch (e) {
       throw ArchiveReadException(t.errors.archiveCreateFailed(error: e));
     } finally {
       if (!ok) {
         try {
-          final f = File(destPath);
-          if (f.existsSync() && f.path == stagedPath) f.deleteSync();
+          final staged = File(stagedPath);
+          if (staged.existsSync()) staged.deleteSync();
         } catch (e, st) {
           log.warn(
             'archive',

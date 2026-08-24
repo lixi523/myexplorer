@@ -172,5 +172,15 @@ pub(super) fn block<F, T>(f: F) -> T
 where
     F: std::future::Future<Output = T>,
 {
-    rt().block_on(f)
+    // Panic barrier for every SFTP FFI entry: a panic unwinding across the C
+    // ABI is UB. sftp call sites return heterogeneous types so we cannot
+    // produce a default value; log the panic and abort cleanly instead of
+    // corrupting memory.
+    match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| rt().block_on(f))) {
+        Ok(value) => value,
+        Err(payload) => {
+            crate::util::log_panic(payload);
+            std::process::abort();
+        }
+    }
 }

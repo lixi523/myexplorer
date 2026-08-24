@@ -119,19 +119,6 @@ mixin _MyExplorerTerminalMixin on State<MyExplorerShell>, _MyExplorerStateBase {
           action: 'shell:${shell.path}',
         ),
     ];
-    final distributions = containerStore.distributions.value;
-    if (distributions.isNotEmpty) {
-      items.add(ContextMenuItem.divider);
-      for (final dist in distributions) {
-        items.add(
-          ContextMenuItem(
-            icon: distroIconFor(dist.name),
-            label: dist.name,
-            action: 'wsl:${dist.name}',
-          ),
-        );
-      }
-    }
     showContextMenu(
       context: context,
       position: position,

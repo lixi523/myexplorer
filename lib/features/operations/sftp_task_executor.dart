@@ -360,8 +360,21 @@ void _runTransferWorker(List<dynamic> args, {required bool move}) {
               runtimeResolutions[c.sourcePath] == null &&
               resolutions[c.sourcePath] == null,
         )) {
-      decisionWaker = Completer<void>();
-      await decisionWaker!.future;
+      final w = Completer<void>();
+      decisionWaker = w;
+      try {
+        await w.future.timeout(const Duration(minutes: 5));
+      } on TimeoutException {
+        for (final c in conflicts) {
+          if (runtimeApplyAll == null &&
+              runtimeResolutions[c.sourcePath] == null &&
+              resolutions[c.sourcePath] == null) {
+            resolutions[c.sourcePath] = ConflictResolution.skip;
+          }
+        }
+
+        break;
+      }
     }
 
     for (final src in sources) {

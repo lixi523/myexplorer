@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import '../../i18n/strings.g.dart';
 import '../archive/archive_reader.dart';
 import '../archive/archive_service.dart';
+import '../archive/archive_writer.dart';
 import '../logging/app_logger.dart';
 import '../models/file_entry.dart';
 import '../platform/platform_paths.dart';
@@ -20,6 +21,8 @@ enum _Op {
   archiveList,
   archiveExtract,
   archiveExtractTree,
+  archiveRead,
+  archiveMutate,
 }
 
 class _Request {
@@ -150,7 +153,13 @@ class FsWorkerPool {
       rethrow;
     }
 
-    final commandPort = await workerReady.future;
+    final commandPort = await workerReady.future.timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        isolate.kill(priority: Isolate.immediate);
+        throw TimeoutException('FS worker handshake timed out');
+      },
+    );
     final replyPort = ReceivePort();
     commandPort.send(replyPort.sendPort);
 
@@ -184,7 +193,7 @@ class FsWorkerPool {
     return worker;
   }
 
-  Future<T> _run<T>(_Op op, List<dynamic> args) async {
+  Future<T> _run<T>(_Op op, List<dynamic> args, {Duration? timeout}) async {
     final slot = _rr;
     _rr = (_rr + 1) % _poolSize;
     final worker = await _ensureWorker(slot);
@@ -199,7 +208,22 @@ class FsWorkerPool {
     if (_workers[slot] != worker && !completer.isCompleted) {
       completer.completeError(StateError('FS worker died before dispatch'));
     }
-    final result = await completer.future;
+    final effective = timeout ?? const Duration(seconds: 60);
+    final result = await completer.future.timeout(
+      effective,
+      onTimeout: () {
+        worker.pending.remove(id);
+        _handleWorkerFailure(
+          slot,
+          TimeoutException(
+            'FS worker operation timed out after $effective: $op',
+          ),
+        );
+        throw TimeoutException(
+          'FS worker operation timed out after $effective',
+        );
+      },
+    );
 
     return result as T;
   }
@@ -256,6 +280,26 @@ class FsWorkerPool {
     innerPath,
     stagingDir,
   ]);
+
+  Future<Uint8List> readArchiveBytes(
+    String archivePath,
+    String innerPath,
+    int maxBytes,
+  ) => _run<Uint8List>(_Op.archiveRead, [
+    archivePath,
+    innerPath,
+    maxBytes,
+  ], timeout: const Duration(minutes: 2));
+
+  Future<void> mutateArchiveEntry(
+    String archivePath, {
+    required String replaceSource,
+    required String replaceInner,
+  }) => _run<void>(_Op.archiveMutate, [
+    archivePath,
+    replaceSource,
+    replaceInner,
+  ], timeout: const Duration(minutes: 5));
 
   void dispose() {
     for (var i = 0; i < _poolSize; i++) {
@@ -370,6 +414,25 @@ class FsWorkerPool {
           args[1] as String,
           args[2] as String,
         );
+      case _Op.archiveRead:
+        final bytes = ArchiveReader.readEntryBytes(
+          args.first as String,
+          args[1] as String,
+        );
+        final maxBytes = args[2] as int;
+        if (bytes.length > maxBytes) {
+          return bytes.sublist(0, maxBytes);
+        }
+
+        return bytes;
+      case _Op.archiveMutate:
+        ArchiveWriter.mutate(
+          args.first as String,
+          replaceSource: args[1] as String,
+          replaceInner: args[2] as String,
+        );
+
+        return null;
     }
   }
 }

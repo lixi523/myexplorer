@@ -10,6 +10,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
   <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
 </p>
 
+> **V3.1.0**: 稳定性大修 + 精简 —— **大文件复制取消即时生效、进度实时**（Rust 线程内跑 CopyFileEx，原子取消/进度 + Dart 异步轮询）；**QuickLook 压缩包内读取/保存移出 UI 线程**（7z 不再卡界面）；修复**压缩覆盖已存在目标会误删原文件**、分割任务双重读取、插件动作永久挂起、插件 worker 崩溃无恢复、SFTP 传输冲突死等、剪贴板命令长度限制等 14 项问题；启动自动清理残留 7z 临时目录；横快捷栏配置对话框支持**拖动排序**；**快捷栏图标修复**（支持 TC 式"命令+参数"图标列、引号+索引规范，增删/编辑快捷方式后图标与列表**即时刷新**不再需重启）；**移除容器（WSL 发行版列表）与标签（Tags）功能**（侧边栏分区、右键标签菜单、文件标签圆点、`tag://` 视图、`tag:` 搜索过滤全部移除，DB 表保留兼容迁移）。
+>
 > **V3.0.1**: 修复复制/移动失败 —— v2.5 引入的 `_randomHex` bug 把 0-15 直接转成控制字符（NUL/换行等）而非 hex 字符，导致复制临时文件名含非法字符、Windows 拒绝创建，"复制到对面窗口/移动到对面窗口"及所有复制操作失败；现已改为生成标准 hex 字符，复制功能恢复正常。
 >
 > **V3.0**: 中文界面全面汉化 —— 文件列表类型列与网格视图文件名描述、插件表单对话框按钮、插件加载/运行错误消息全部汉化；5 个示例插件（备份副本、在 VS Code 中打开、选中计数、7-Zip、从模板新建）菜单标题与用户提示汉化完成；Rust 原生核心插件错误消息（超时/未找到操作/命令执行失败等）汉化；新增 i18n 键 `dialog.ok`、`plugins.errorLabel`、`plugins.errors.*`；操作错误"missing destination"汉化。
@@ -71,7 +73,7 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
 
 ### 其他
 - 简体中文 / English 双语（自动检测）、可自定义快捷键、多主题
-- 隐藏列表（`隐藏文件.ini`）、标签系统、命令面板、文件夹大小扫描、自动更新（GitHub Release）
+- 隐藏列表（`隐藏文件.ini`）、命令面板、文件夹大小扫描、自动更新（GitHub Release）
 - 唯一实例、默认最大化启动、Rust 原生核心加速
 
 ---

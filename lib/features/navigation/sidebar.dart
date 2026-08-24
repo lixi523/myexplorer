@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:myexplorer/ui/icons/distro_icons.dart';
 import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
@@ -14,8 +13,6 @@ import 'sidebar_store.dart';
 import '../hidden/hidden_list_store.dart';
 import '../drives/drive_store.dart';
 import '../drives/drive_model.dart';
-import '../containers/container_store.dart';
-import '../containers/wsl_distribution.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
 import '../../ui/dialogs/password_dialog.dart';
@@ -36,9 +33,6 @@ import '../operations/drag_hint.dart';
 import '../operations/operation_store.dart';
 import '../operations/operations_panel.dart';
 import '../../core/models/file_operation.dart';
-import '../tags/tag_edit_dialog.dart';
-import '../tags/tag_path.dart';
-import '../tags/tag_store.dart';
 
 part 'sidebar_rows.dart';
 part 'sidebar_edit.dart';
@@ -61,16 +55,7 @@ class _SidebarItem {
   final IconData icon;
   final String path;
   final String? key;
-  final Color? iconColor;
-  final Widget? leading;
-  const _SidebarItem(
-    this.label,
-    this.icon,
-    this.path, {
-    this.key,
-    this.iconColor,
-    this.leading,
-  });
+  const _SidebarItem(this.label, this.icon, this.path, {this.key});
 }
 
 /// One row's full rendering inputs, shared by normal and edit-mode rendering.
@@ -84,10 +69,8 @@ class _SidebarEntry {
   final ValueChanged<String> onTap;
   final VoidCallback? onMiddleTap;
   final void Function(List<String> paths, {bool move})? onDropFiles;
-  final bool isTagTarget;
   final VoidCallback? onUnmount;
   final void Function(Offset position)? onContextMenu;
-  final Color? labelColor;
 
   const _SidebarEntry({
     required this.key,
@@ -99,10 +82,8 @@ class _SidebarEntry {
     required this.onTap,
     this.onMiddleTap,
     this.onDropFiles,
-    this.isTagTarget = false,
     this.onUnmount,
     this.onContextMenu,
-    this.labelColor,
   });
 }
 
@@ -573,9 +554,7 @@ class _SidebarState extends State<Sidebar> {
 
     final currentPath = widget.store.currentPath.value;
     final currentDrives = driveStore.drives.value;
-    final distributions = containerStore.distributions.value;
     final bookmarks = _bookmarkStore.bookmarks.value;
-    final tags = TagStore.instance.tags.value;
 
     final sectionOrder = store.sectionOrder.value;
     store.hiddenSections.value;
@@ -599,20 +578,10 @@ class _SidebarState extends State<Sidebar> {
         title: t.sidebar.devices,
         entries: _deviceEntries(devices, currentPath),
       ),
-      sidebarSectionContainers: _SidebarSection(
-        id: sidebarSectionContainers,
-        title: t.sidebar.containers,
-        entries: _containerEntries(distributions, currentPath),
-      ),
       sidebarSectionNetwork: _SidebarSection(
         id: sidebarSectionNetwork,
         title: t.sidebar.network,
         entries: _networkEntries(networkDrives, networkLocations, currentPath),
-      ),
-      sidebarSectionTags: _SidebarSection(
-        id: sidebarSectionTags,
-        title: t.sidebar.tags,
-        entries: _tagEntries(tags, currentPath, context),
       ),
       sidebarSectionBookmarks: _SidebarSection(
         id: sidebarSectionBookmarks,
@@ -639,8 +608,7 @@ class _SidebarState extends State<Sidebar> {
     );
   }
 
-  bool _sectionAlwaysShown(String id) =>
-      id != sidebarSectionNetwork && id != sidebarSectionContainers;
+  bool _sectionAlwaysShown(String id) => id != sidebarSectionNetwork;
 
   Widget _buildNormalList(List<_SidebarSection> sections, bool collapsed) {
     final store = SidebarStore.instance;
@@ -702,18 +670,6 @@ class _SidebarState extends State<Sidebar> {
           ),
         );
       }
-      if (section.id == sidebarSectionTags && visible.isEmpty && !collapsed) {
-        children.add(
-          Padding(
-            padding: const EdgeInsets.fromLTRB(_rowPadH, 2, _rowPadH, 8),
-            child: Text(
-              t.sidebar.noTags,
-              overflow: TextOverflow.ellipsis,
-              style: context.txt.caption.copyWith(color: AppColors.fgMuted),
-            ),
-          ),
-        );
-      }
     }
 
     children.add(const SizedBox(height: 12));
@@ -736,10 +692,8 @@ class _SidebarState extends State<Sidebar> {
       onTap: entry.onTap,
       onMiddleTap: entry.onMiddleTap,
       onDropFiles: entry.onDropFiles ?? (paths, {bool move = false}) {},
-      isTagTarget: entry.isTagTarget,
       onUnmount: entry.onUnmount,
       onContextMenu: entry.onContextMenu,
-      labelColor: entry.labelColor,
     );
   }
 
@@ -767,23 +721,6 @@ class _SidebarState extends State<Sidebar> {
   void _reorderItems(_SidebarSection section, int oldIndex, int newIndex) {
     if (section.id == sidebarSectionBookmarks) {
       _bookmarkStore.reorder(oldIndex, newIndex);
-
-      return;
-    }
-    if (section.id == sidebarSectionTags) {
-      final ids = section.entries
-          .map((e) => e.key)
-          .where((k) => k.startsWith('tag:'))
-          .map((k) => int.parse(k.substring(4)))
-          .toList();
-      if (oldIndex < 0 || oldIndex >= ids.length) return;
-      var to = newIndex;
-      if (to < 0) to = 0;
-      if (to > ids.length - 1) to = ids.length - 1;
-      if (to == oldIndex) return;
-      final moved = ids.removeAt(oldIndex);
-      ids.insert(to, moved);
-      TagStore.instance.reorder(ids);
 
       return;
     }
@@ -867,42 +804,6 @@ class _SidebarState extends State<Sidebar> {
 
     return SidebarStore.instance.orderItems(
       sidebarSectionDevices,
-      entries,
-      (e) => e.key,
-    );
-  }
-
-  List<_SidebarEntry> _containerEntries(
-    List<WslDistribution> distributions,
-    String currentPath,
-  ) {
-    final entries = distributions.map((dist) {
-      final path = dist.uncPath;
-
-      return _SidebarEntry(
-        key: 'wsl:${dist.name}',
-        item: _SidebarItem(
-          dist.name,
-          distroIconFor(dist.name),
-          path,
-          iconColor: distroColorFor(dist.name),
-        ),
-        isSelected: currentPath == path || currentPath.startsWith(path),
-        isMounted: dist.isRunning,
-        tooltip: dist.isRunning
-            ? '${dist.name}\n${t.sidebar.containerRunning}'
-            : dist.name,
-        onTap: widget.store.navigateTo,
-        onMiddleTap: widget.onOpenInNewTab != null
-            ? () => widget.onOpenInNewTab!(path)
-            : null,
-        onDropFiles: (paths, {bool move = false}) =>
-            widget.store.dropFiles(paths, path, move: move),
-      );
-    }).toList();
-
-    return SidebarStore.instance.orderItems(
-      sidebarSectionContainers,
       entries,
       (e) => e.key,
     );
@@ -1007,90 +908,6 @@ class _SidebarState extends State<Sidebar> {
     }).toList();
   }
 
-  List<_SidebarEntry> _tagEntries(
-    List<TagDef> tags,
-    String currentPath,
-    BuildContext context,
-  ) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    final tagLabelColor = isLight ? const Color(0xFF232323) : null;
-
-    return tags.map((tag) {
-      final path = tagPathFor(tag.id);
-
-      return _SidebarEntry(
-        key: 'tag:${tag.id}',
-        item: _SidebarItem(
-          tag.name,
-          MyExplorerIconsRegular.bookmarkSimple,
-          path,
-          leading: Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(color: tag.color, shape: BoxShape.circle),
-          ),
-        ),
-        isSelected: currentPath == path,
-        onTap: widget.store.navigateTo,
-        onMiddleTap: widget.onOpenInNewTab != null
-            ? () => widget.onOpenInNewTab!(path)
-            : null,
-        onDropFiles: (paths, {bool move = false}) =>
-            widget.store.addTag(paths, tag.id),
-        isTagTarget: true,
-        onContextMenu: (position) => _showTagMenu(tag, position),
-        labelColor: tagLabelColor,
-      );
-    }).toList();
-  }
-
-  void _showTagMenu(TagDef tag, Offset position) {
-    final path = tagPathFor(tag.id);
-    showContextMenu(
-      context: context,
-      position: position,
-      items: [
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.folderOpen,
-          label: t.menu.open,
-          action: 'open',
-        ),
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.arrowSquareOut,
-          label: t.menu.openInNewTab,
-          action: 'open_in_new_tab',
-        ),
-        ContextMenuItem.divider,
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.pencilSimple,
-          label: t.tags.editTag,
-          action: 'edit',
-        ),
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.trash,
-          label: t.tags.deleteTag,
-          action: 'delete',
-          danger: true,
-        ),
-      ],
-      onSelect: (action) async {
-        switch (action) {
-          case 'open':
-            widget.store.navigateTo(path);
-          case 'open_in_new_tab':
-            widget.onOpenInNewTab?.call(path);
-          case 'edit':
-            await showTagEditDialog(context, existing: tag);
-          case 'delete':
-            await TagStore.instance.deleteTag(tag.id);
-            if (widget.store.currentPath.value == path) {
-              widget.store.navigateTo(PlatformPaths.homePath);
-            }
-        }
-      },
-    );
-  }
-
   Future<void> _onDriveTap(Drive drive, String path) async {
     if (drive.isMounted) {
       widget.store.navigateTo(path);
@@ -1188,10 +1005,8 @@ class _BookmarkReorderList extends StatelessWidget {
           onTap: entry.onTap,
           onMiddleTap: entry.onMiddleTap,
           onDropFiles: entry.onDropFiles ?? (paths, {bool move = false}) {},
-          isTagTarget: entry.isTagTarget,
           onUnmount: entry.onUnmount,
           onContextMenu: entry.onContextMenu,
-          labelColor: entry.labelColor,
         );
       },
     );

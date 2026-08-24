@@ -10,24 +10,19 @@ import '../../utils/ini_file.dart';
 
 const sidebarSectionFavorites = 'favorites';
 const sidebarSectionDevices = 'devices';
-const sidebarSectionContainers = 'containers';
 const sidebarSectionNetwork = 'network';
 const sidebarSectionBookmarks = 'bookmarks';
-const sidebarSectionTags = 'tags';
 
 const _defaultSectionOrder = [
   sidebarSectionFavorites,
   sidebarSectionDevices,
-  sidebarSectionContainers,
   sidebarSectionNetwork,
-  sidebarSectionTags,
   sidebarSectionBookmarks,
 ];
 
 const _scopeSectionName = <String, String>{
   sidebarSectionFavorites: '收藏',
   sidebarSectionDevices: '设备',
-  sidebarSectionContainers: '容器',
   sidebarSectionNetwork: '网络',
 };
 

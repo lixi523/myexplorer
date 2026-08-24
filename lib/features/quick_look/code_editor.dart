@@ -12,7 +12,7 @@ import '../../core/platform/app_dirs.dart';
 import 'package:myexplorer/ui/icons/myexplorer_icons.dart';
 
 import '../../core/archive/archive_path.dart';
-import '../../core/archive/archive_writer.dart';
+import '../../core/fs/fs_worker_pool.dart';
 import '../../core/fs/sftp_fs.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/platform/platform_paths.dart';
@@ -122,7 +122,7 @@ class _CodeEditorState extends State<CodeEditor> {
         );
         try {
           await tmp.writeAsString(text, flush: true);
-          ArchiveWriter.mutate(
+          await FsWorkerPool.instance.mutateArchiveEntry(
             archiveLoc.archivePath,
             replaceSource: tmp.path,
             replaceInner: archiveLoc.innerPath,
