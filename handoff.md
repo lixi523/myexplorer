@@ -1,7 +1,7 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v3.0.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v3.0.1**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
@@ -16,17 +16,14 @@
 
 ---
 
-## 2. 当前进度（2026-08-18）
+## 2. 当前进度（2026-08-24）
 
-- ✅ **v3.0.0 已提交并推送**（pubspec `3.0.0+43`），本地 Release 构建通过，CI & Release 待 GitHub 验证
-- ✅ **v3.0.0 内容（汉化/国际化）**：
-  1. **全界面汉化**：文件列表类型列与网格视图文件名描述、插件表单对话框按钮、插件加载/运行错误消息全部汉化（按系统 locale 显示中文/英文，`file_kind_names.dart` 新增 180+ 条中文类型名映射 + 动态后缀规则）
-  2. **插件错误消息 i18n**：`plugin_store.dart` 中 `native core unavailable`、`api_version not supported`、`invalid manifest` 等 11 处错误消息改为 i18n 键（新增 `preferences.plugins.errors.*` 7 个键，中英双份）
-  3. **Rust 原生核心插件错误汉化**：`plugin.rs` 中 20 处错误消息（`plugin timed out`、`action not found`、`exec / read / mkdir` 等 API 前缀）全部汉化；cargo build --release + vendored DLL 同步 + 一致性检查通过
-  4. **示例插件汉化**：5 个示例插件（backup-copy、open-vscode、selection-count、sevenzip、templates）的 manifest name/description、action title、dialog 字段、toast/notify 消息全部汉化
-  5. **操作错误汉化**：`file_system_workers.dart` 的 `missing destination` 错误 6 处改为中文
-- 单元测试 **566 全过**、`flutter analyze` 0 issues、`flutter build windows --release` 成功
-- vendored DLL 一致性检查通过
+- ✅ **v3.0.1 已提交并推送**（pubspec `3.0.1+44`），本地 Release 构建通过，CI & Release 待 GitHub 验证
+- ✅ **v3.0.1 内容（三部分）**：
+  1. **书签/标签/侧栏 INI 化**（`feat: bookmarks, tags and sidebar prefs persist to INI files`）：书签.ini / 标签.ini / 侧栏.ini 存程序根目录（UTF-8 BOM），启动时加载（main.dart）；标签定义 + 文件关联全量在标签.ini；侧栏分区顺序/隐藏/折叠落盘；**一次性迁移**（INI 缺失时从 SQLite 导入）；新增通用 `lib/utils/ini_file.dart` + 12 个单测
+  2. **书签拖拽排序**（同提交）：侧边栏书签区普通模式支持整行拖拽排序（`ReorderableListView` + `_BookmarkReorderList`），复用 `BookmarkStore.reorder` 落盘书签.ini
+  3. **复制/移动修复**（`fix: copy temp random suffix control chars`）：**v2.5 引入的 `_randomHex` bug**——`String.fromCharCodes(nextInt(16))` 生成控制字符（NUL/换行）而非 hex，临时文件名非法导致 Windows 拒绝复制（Permission denied）；改从 hex 字符表取字符，复制/移动到对面窗口恢复
+- 单元测试 **578 全过**、integration **86 过 + 4 skip**、`flutter analyze` 0 issues、`flutter build windows --release` 成功
 
 ---
 
@@ -34,6 +31,9 @@
 
 | Commit | 说明 |
 |--------|------|
+| `feat: v3.0.1 — INI persistence, bookmark drag reorder, copy fix` | **v3.0.1（已推送，2026-08-24）**：pubspec `3.0.1+44`；书签/标签/侧栏 INI 化（含迁移 + ini_file 工具 + 12 单测）；书签拖拽排序；`_randomHex` 控制字符 bug 修复（复制/移动恢复）；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
+| `fix: copy temp random suffix produced control chars` | **复制/移动修复**：`_randomHex` 用 `String.fromCharCodes(nextInt(16))` 生成控制字符（NUL/换行）而非 hex → 临时文件名非法 → Windows 拒绝复制（v2.5 引入）；改从 hex 字符表取字符；集成测试 5 个 copy 失败全修复 |
+| `feat: bookmarks, tags and sidebar prefs persist to INI files` | **INI 化**：书签.ini/标签.ini/侧栏.ini 程序根目录 + 启动加载 + 一次性 SQLite 迁移；标签定义+文件关联全量 INI；新增 `lib/utils/ini_file.dart`；+12 单测 |
 | `feat: v3.0.0 — full UI localization, plugin & Rust core error i18n` | **v3.0.0（已推送，2026-08-18）**：pubspec `3.0.0+43`；文件类型名/插件错误消息/操作错误全汉化；Rust 插件错误消息 20 处汉化 + 重建 core；5 个示例插件汉化；i18n 新增 `dialog.ok`、`plugins.errorLabel`、`plugins.errors.*`；CHANGELOG/README/handoff 更新 |
 | `feat: v2.9.0 — crash hardening, hidden-list modes & editing` | **v2.9.0（已推送，2026-08-18）**：pubspec `2.9.0+42`；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
 | `feat: hidden list inline editing` | 隐藏列表对话框行内编辑（每行编辑按钮 → 输入框 + 保存/取消）；`HiddenListStore.updatePath` 原子替换；i18n 新增 edit/save/cancel/updated；+3 单测 |
@@ -71,6 +71,7 @@
 | `lib/features/navigation/navigation_store.dart` | **文件夹名颜色从 palette 读取**：深色用 `folderNameDark`、浅色用 `folderNameLight`（`_colorRuleDecorations`） |
 | `test/unit/theme/` | `app_theme_definition_test.dart`、`app_theme_registry_test.dart`（ini 解析/加载） |
 | `lib/core/fs/myexplorer_core_loader.dart` | Rust FFI 加载器 |
+| `lib/utils/ini_file.dart` | **通用 INI 工具（v3.0.1 新增）**：段/键值/注释/列表解析与序列化、UTF-8 BOM、原子写入；书签.ini/标签.ini/侧栏.ini 均基于它 |
 | `lib/core/platform/app_dirs.dart` | **便携目录解析 + 只读降级**：`selectBase`/`isWritableDir` 检测 exe 目录可写性，不可写回退 `%LOCALAPPDATA%\MyExplorer`；`debugExeDirOverride`/`debugReset` 测试 seam |
 | `lib/core/platform/gbk_codec.dart` | GBK(code 936) 编解码（FFI）；**encodeGbkBytes 已修复 UAF**（`Uint8List.fromList` 拷贝） |
 | `lib/app/myexplorer_shell/menus.dart` + `menus_plugin.dart` | 拆分的两个 part：菜单构建/分发 + 插件执行域（`_MyExplorerMenuMixin` / `_MyExplorerPluginMixin`） |
@@ -133,20 +134,21 @@
 | 测试项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 566 全过 |
-| `flutter test --tags=integration` | ✅ 81 过 + 4 skip（5 个预先存在的环境问题，非本版本引入） |
-| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.0 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6 全绿；**v3.0.0 已推送，待验证** |
+| `flutter test --exclude-tags=integration` | ✅ 578 全过 |
+| `flutter test --tags=integration` | ✅ 86 过 + 4 skip |
+| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.0.1 实测产物正常，super_native_extensions 插件警告无害） |
+| GitHub CI & Release | v2.5/v2.6 全绿；**v3.0.1 已推送，待验证** |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
-1. **v3.0.0 CI & Release 验证**：4 个提交已推送（含 v3.0.0 版本提交），等 GitHub CI 全绿 + Release 出 v3.0 产物；若 CI 红按红项修。
+1. **v3.0.1 CI & Release 验证**：3 个提交已推送（含 v3.0.1 版本提交），等 GitHub CI 全绿 + Release 出 v3.0.1 产物；若 CI 红按红项修。
 2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`；插件 `exec` 同理（open-vscode 需 `cmd /c code`）。
 3. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
-4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2478 行）、`navigation_store.dart`（1900 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
+4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2484 行）、`navigation_store.dart`（1900+ 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
 5. **Rust panic 屏障收官**：sftp/ops.rs 15 个入口尚未包 `catch_unwind`（v2.9 已包 21 个，触发面全覆盖；sftp 无 panic 面，可下次补）。
+6. **INI 化收尾**：`app_database.dart` 中 bookmarks/tags/file_tags/sidebar_prefs 表及 DAO 已无 store 调用方，可考虑后续清理（schema 保留以兼容旧数据迁移）。
 
 ---
 
@@ -161,14 +163,15 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
- - MyExplorer **v3.0.0**（pubspec name: myexplorer，version 3.0.0+43，**已提交推送**）
- - v3.0.0 五部分：① 全界面汉化（文件列表类型列、网格 caption、插件表单按钮、插件错误消息）② 插件错误消息 i18n（11 处改为 i18n 键，新增 plugins.errors.*）③ Rust 原生核心插件错误汉化（20 处，重建 core + 同步 vendored DLL）④ 5 个示例插件汉化 ⑤ 操作错误汉化（missing destination → 缺少目标位置）
+ - MyExplorer **v3.0.1**（pubspec name: myexplorer，version 3.0.1+44，**已提交推送**）
+ - v3.0.1 三部分：① 书签/标签/侧栏 INI 化（书签.ini/标签.ini/侧栏.ini 程序根目录 + 启动加载 + 一次性迁移）② 书签拖拽排序 ③ 复制/移动修复（v2.5 `_randomHex` 控制字符 bug）
+ - v3.0.0 前置：全界面汉化 + 插件/Rust 错误消息 i18n + 5 示例插件汉化
  - v2.9.0 前置：闪退修复（FFI panic barriers + unwind）、隐藏列表双模式、行内编辑
  - v2.8.0 前置：风险点治理（主题 ini 补缺 + UTF-16 BOM + 导出注释 + AppDirs 行为锁定 + Rust core 一致性脚本）+ 审查修复（移除 runInShell、unawaited lint、activeStore 守卫、FFI 屏障雏形）
  - 行为变化：快捷栏/终端/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
  - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
- - 单元测试 566 全过，flutter analyze 通过；v3.0 本地 Release 构建成功，CI 待验证
- - NEVER push 规则：v3.0.0 已由用户明确确认推送，后续新改动先确认再推
+ - 单元测试 578 全过、integration 86 过 + 4 skip、flutter analyze 通过；v3.0.1 本地 Release 构建成功，CI 待验证
+ - NEVER push 规则：v3.0.1 已由用户明确确认推送，后续新改动先确认再推
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

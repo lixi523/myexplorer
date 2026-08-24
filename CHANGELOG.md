@@ -5,6 +5,19 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2026-08-24
+
+### Added
+- Bookmarks, tags and sidebar layout now persist to plain INI files in the program root (`书签.ini`, `标签.ini`, `侧栏.ini`), loaded at startup — same pattern as `隐藏文件.ini`. One-time migration imports existing SQLite data when the INI files are missing; tag <-> file assignments live in `标签.ini` too.
+- Sidebar bookmarks can be reordered by dragging rows (previously edit-mode only).
+
+### Fixed
+- Copy/move operations failed on Windows ("Permission denied" / "invalid name") since v2.5: the temp-file random suffix generator `_randomHex` converted 0-15 directly to code points, producing control characters (NUL, newline, etc.) instead of hex chars. The sibling temp filename was therefore invalid on Windows and the copy was rejected. It now generates proper hex characters, restoring copy-to-other-pane, move-to-other-pane and all file copies.
+
+### Tests
+- Copy regression suite passes (5/5); full integration suite 86 passed + 4 skipped.
+- 578 unit tests pass; `flutter analyze` is clean.
+
 ## [3.0.0] - 2026-08-18
 
 ### Changed

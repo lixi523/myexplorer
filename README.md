@@ -10,6 +10,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
   <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
 </p>
 
+> **V3.0.1**: 修复复制/移动失败 —— v2.5 引入的 `_randomHex` bug 把 0-15 直接转成控制字符（NUL/换行等）而非 hex 字符，导致复制临时文件名含非法字符、Windows 拒绝创建，"复制到对面窗口/移动到对面窗口"及所有复制操作失败；现已改为生成标准 hex 字符，复制功能恢复正常。
+>
 > **V3.0**: 中文界面全面汉化 —— 文件列表类型列与网格视图文件名描述、插件表单对话框按钮、插件加载/运行错误消息全部汉化；5 个示例插件（备份副本、在 VS Code 中打开、选中计数、7-Zip、从模板新建）菜单标题与用户提示汉化完成；Rust 原生核心插件错误消息（超时/未找到操作/命令执行失败等）汉化；新增 i18n 键 `dialog.ok`、`plugins.errorLabel`、`plugins.errors.*`；操作错误"missing destination"汉化。
 >
 > **V2.9**: 稳定性与隐藏列表 —— 修复插件操作（如 "Open in VS Code" 按钮）导致的闪退：Rust 发布配置改为 unwind、全部 21 个 FFI 入口加 `catch_unwind` panic 屏障，panic 信息记入 `%TEMP%\myexplorer_core_panic.log`，插件异常降级为错误提示而非杀进程；**隐藏列表支持"纯名称"与"完整路径"双模式匹配**（按条目是否含路径分隔符自动区分，如 `desktop.ini` 全局隐藏同名文件），隐藏列表对话框新增**行内编辑**（添加/编辑/删除完整闭环）。
