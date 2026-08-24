@@ -52,7 +52,7 @@ Each feature has its own folder with views and store.
 
 ## Git
 
-- NEVER push
+- Push to https://github.com/lixi523/myexplorer (main branch)
 - Each feature on a separate branch
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`
 - Commit messages: title only, no body
