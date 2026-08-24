@@ -101,18 +101,20 @@ class OperationStore {
     if (task.status != TaskStatus.completed) return;
     final settings = SettingsStore.instance;
     if (!settings.isLoaded) return;
-    final db = settings.db;
     switch (task.type) {
       case TaskType.move:
         final dest = task.destination;
         if (dest == null) return;
         for (final src in task.sources) {
-          await db.moveFileTags(src, p.join(dest, p.basename(src)));
+          await TagStore.instance.moveFileTags(
+            src,
+            p.join(dest, p.basename(src)),
+          );
         }
       case TaskType.delete:
       case TaskType.trashDelete:
         for (final src in task.sources) {
-          await db.clearFileTags(src);
+          await TagStore.instance.clearFileTags(src);
         }
       case TaskType.trash:
       case TaskType.trashRestore:

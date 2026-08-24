@@ -676,8 +676,17 @@ class _SidebarState extends State<Sidebar> {
 
       if (sectionCollapsed) continue;
 
-      for (final entry in visible) {
-        children.add(_rowFor(entry, collapsed));
+      if (section.id == sidebarSectionBookmarks && !collapsed) {
+        children.add(
+          _BookmarkReorderList(
+            entries: visible,
+            onReorder: _bookmarkStore.reorder,
+          ),
+        );
+      } else {
+        for (final entry in visible) {
+          children.add(_rowFor(entry, collapsed));
+        }
       }
       if (section.id == sidebarSectionBookmarks &&
           visible.isEmpty &&
@@ -1149,5 +1158,42 @@ class _SidebarState extends State<Sidebar> {
     if (currentPath == path || currentPath.startsWith('$path/')) {
       widget.store.navigateTo(PlatformPaths.homePath);
     }
+  }
+}
+
+class _BookmarkReorderList extends StatelessWidget {
+  final List<_SidebarEntry> entries;
+  final void Function(int oldIndex, int newIndex) onReorder;
+
+  const _BookmarkReorderList({required this.entries, required this.onReorder});
+
+  @override
+  Widget build(BuildContext context) {
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      buildDefaultDragHandles: true,
+      itemCount: entries.length,
+      onReorder: onReorder,
+      itemBuilder: (context, index) {
+        final entry = entries[index];
+
+        return _ItemRow(
+          key: ValueKey(entry.key),
+          item: entry.item,
+          isSelected: entry.isSelected,
+          isMounted: entry.isMounted,
+          space: entry.space,
+          tooltip: entry.tooltip,
+          onTap: entry.onTap,
+          onMiddleTap: entry.onMiddleTap,
+          onDropFiles: entry.onDropFiles ?? (paths, {bool move = false}) {},
+          isTagTarget: entry.isTagTarget,
+          onUnmount: entry.onUnmount,
+          onContextMenu: entry.onContextMenu,
+          labelColor: entry.labelColor,
+        );
+      },
+    );
   }
 }

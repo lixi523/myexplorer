@@ -1,10 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
 import 'package:signals/signals.dart';
 
-import '../../core/database/app_database.dart';
+import '../../core/logging/app_logger.dart';
 import '../../core/settings/settings_store.dart';
+import '../../utils/ini_file.dart';
 
-/// Sidebar section ids in their default order. Bookmarks reorder through
-/// [BookmarkStore]; the other three also persist per-item order/visibility.
 const sidebarSectionFavorites = 'favorites';
 const sidebarSectionDevices = 'devices';
 const sidebarSectionContainers = 'containers';
@@ -21,16 +24,22 @@ const _defaultSectionOrder = [
   sidebarSectionBookmarks,
 ];
 
-const _sectionScope = 'section';
-const _collapsedScope = 'collapsed';
+const _scopeSectionName = <String, String>{
+  sidebarSectionFavorites: '收藏',
+  sidebarSectionDevices: '设备',
+  sidebarSectionContainers: '容器',
+  sidebarSectionNetwork: '网络',
+};
 
-/// User overrides for the sidebar layout: order and visibility of sections and
-/// of items within the favorites/devices/network sections. Backed by the
-/// `sidebar_prefs` table and exposed as signals so the sidebar reacts to edits.
 class SidebarStore {
   static final SidebarStore instance = SidebarStore._();
 
   SidebarStore._();
+
+  static const _areaSection = '区域';
+  static const _orderKey = '顺序';
+  static const _hiddenKey = '隐藏';
+  static const _collapsedKey = '折叠';
 
   final editing = signal<bool>(false);
   final sectionOrder = signal<List<String>>(_defaultSectionOrder);
@@ -39,44 +48,111 @@ class SidebarStore {
   final itemOrder = signal<Map<String, List<String>>>(const {});
   final hiddenItems = signal<Map<String, Set<String>>>(const {});
 
-  AppDatabase get _db => SettingsStore.instance.db;
+  @visibleForTesting
+  String? directoryOverride;
+
+  String get filePath {
+    final dir = directoryOverride ?? p.dirname(Platform.resolvedExecutable);
+
+    return p.join(dir, '侧栏.ini');
+  }
 
   Future<void> load() async {
-    final rows = await _db.getSidebarPrefs();
+    final ini = await IniFile.load(filePath);
+    if (ini == null) {
+      await _migrateFromDb();
 
-    final sectionRows = rows.where((r) => r.scope == _sectionScope).toList()
-      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-    final storedSections = sectionRows
-        .map((r) => r.itemKey)
-        .where(_defaultSectionOrder.contains)
-        .toList();
+      return;
+    }
+    _applyIni(ini);
+  }
+
+  void _applyIni(IniFile ini) {
+    final storedSections = ini.getList(_areaSection, _orderKey) ?? const [];
     sectionOrder.value = [
-      ...storedSections,
+      ...storedSections.where(_defaultSectionOrder.contains),
       ..._defaultSectionOrder.where((s) => !storedSections.contains(s)),
     ];
     hiddenSections.value = {
-      for (final r in sectionRows)
-        if (r.hidden) r.itemKey,
+      ...(ini.getList(_areaSection, _hiddenKey) ?? const []),
     };
     collapsedSections.value = {
-      for (final r in rows.where((r) => r.scope == _collapsedScope))
-        if (r.hidden) r.itemKey,
+      ...(ini.getList(_areaSection, _collapsedKey) ?? const []),
     };
 
     final order = <String, List<String>>{};
     final hidden = <String, Set<String>>{};
     for (final scope in _defaultSectionOrder) {
       if (scope == sidebarSectionBookmarks) continue;
-      final scopeRows = rows.where((r) => r.scope == scope).toList()
-        ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-      order[scope] = scopeRows.map((r) => r.itemKey).toList();
-      hidden[scope] = {
-        for (final r in scopeRows)
-          if (r.hidden) r.itemKey,
-      };
+      final sectionName = _scopeSectionName[scope]!;
+      order[scope] = ini.getList(sectionName, _orderKey) ?? const [];
+      hidden[scope] = {...(ini.getList(sectionName, _hiddenKey) ?? const [])};
     }
     itemOrder.value = order;
     hiddenItems.value = hidden;
+  }
+
+  Future<void> _migrateFromDb() async {
+    try {
+      final db = SettingsStore.instance.db;
+      final rows = await db.getSidebarPrefs();
+      if (rows.isEmpty) return;
+      final ini = IniFile();
+      final sectionRows = rows.where((r) => r.scope == 'section').toList()
+        ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+      ini.setList(_areaSection, _orderKey, sectionRows.map((r) => r.itemKey));
+      ini.setList(
+        _areaSection,
+        _hiddenKey,
+        sectionRows.where((r) => r.hidden).map((r) => r.itemKey),
+      );
+      ini.setList(
+        _areaSection,
+        _collapsedKey,
+        rows
+            .where((r) => r.scope == 'collapsed' && r.hidden)
+            .map((r) => r.itemKey),
+      );
+      for (final scope in _defaultSectionOrder) {
+        if (scope == sidebarSectionBookmarks) continue;
+        final scopeRows = rows.where((r) => r.scope == scope).toList()
+          ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+        final sectionName = _scopeSectionName[scope]!;
+        ini.setList(sectionName, _orderKey, scopeRows.map((r) => r.itemKey));
+        ini.setList(
+          sectionName,
+          _hiddenKey,
+          scopeRows.where((r) => r.hidden).map((r) => r.itemKey),
+        );
+      }
+      await ini.save(filePath);
+      _applyIni(ini);
+    } catch (e, st) {
+      log.error(
+        'sidebar',
+        'failed to migrate sidebar prefs',
+        error: e,
+        stack: st,
+      );
+    }
+  }
+
+  Future<void> _save() async {
+    final ini = IniFile();
+    ini.setList(_areaSection, _orderKey, sectionOrder.value);
+    ini.setList(_areaSection, _hiddenKey, hiddenSections.value);
+    ini.setList(_areaSection, _collapsedKey, collapsedSections.value);
+    for (final scope in _defaultSectionOrder) {
+      if (scope == sidebarSectionBookmarks) continue;
+      final sectionName = _scopeSectionName[scope]!;
+      ini.setList(sectionName, _orderKey, itemOrder.value[scope] ?? const []);
+      ini.setList(
+        sectionName,
+        _hiddenKey,
+        hiddenItems.value[scope] ?? const {},
+      );
+    }
+    await ini.save(filePath);
   }
 
   void toggleEditing() => editing.value = !editing.value;
@@ -93,12 +169,7 @@ class SidebarStore {
       next.remove(id);
     }
     collapsedSections.value = next;
-    await _db.setSidebarPref(
-      _collapsedScope,
-      id,
-      orderIndex: 0,
-      hidden: collapsed,
-    );
+    await _save();
   }
 
   bool isItemHidden(String scope, String key) =>
@@ -108,7 +179,7 @@ class SidebarStore {
     final next = _moved(sectionOrder.value, oldIndex, newIndex);
     if (next == null) return;
     sectionOrder.value = next;
-    await _db.setSidebarOrder(_sectionScope, next);
+    await _save();
   }
 
   Future<void> setSectionHidden(String id, bool hidden) async {
@@ -119,19 +190,9 @@ class SidebarStore {
       next.remove(id);
     }
     hiddenSections.value = next;
-    await _db.setSidebarOrder(_sectionScope, sectionOrder.value);
-    final idx = sectionOrder.value.indexOf(id);
-    await _db.setSidebarPref(
-      _sectionScope,
-      id,
-      orderIndex: idx < 0 ? 0 : idx,
-      hidden: hidden,
-    );
+    await _save();
   }
 
-  /// Projects [items] into the user's stored order for [scope]: known keys
-  /// first (by stored position), then any unknown items in their incoming
-  /// order. Does not filter hidden items — callers decide based on edit mode.
   List<T> orderItems<T>(String scope, List<T> items, String Function(T) keyOf) {
     final order = itemOrder.value[scope];
     if (order == null || order.isEmpty) return items;
@@ -157,7 +218,7 @@ class SidebarStore {
     final map = {...itemOrder.value};
     map[scope] = next;
     itemOrder.value = map;
-    await _db.setSidebarOrder(scope, next);
+    await _save();
   }
 
   Future<void> setItemHidden(
@@ -179,18 +240,9 @@ class SidebarStore {
     final order = {...itemOrder.value};
     order[scope] = currentKeys;
     itemOrder.value = order;
-    await _db.setSidebarOrder(scope, currentKeys);
-    final idx = currentKeys.indexOf(key);
-    await _db.setSidebarPref(
-      scope,
-      key,
-      orderIndex: idx < 0 ? 0 : idx,
-      hidden: hidden,
-    );
+    await _save();
   }
 
-  /// [newIndex] is the post-removal target index, as supplied by
-  /// `ReorderableListView.onReorderItem`.
   List<String>? _moved(List<String> source, int oldIndex, int newIndex) {
     if (oldIndex < 0 || oldIndex >= source.length) return null;
     var to = newIndex;

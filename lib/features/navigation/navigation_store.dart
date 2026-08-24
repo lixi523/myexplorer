@@ -17,6 +17,7 @@ import '../../core/platform/platform_paths.dart';
 import '../../core/platform/trash_location.dart';
 import '../locations/location_resolver.dart';
 import '../locations/location_uri.dart';
+import '../tags/tag_store.dart';
 import '../../core/settings/settings_store.dart';
 import '../../core/settings/color_rule_store.dart';
 import '../../i18n/strings.g.dart';
@@ -27,7 +28,6 @@ import '../git/git_status_store.dart';
 import '../hidden/hidden_list_store.dart';
 import '../operations/operation_store.dart';
 import '../tags/tag_path.dart';
-import '../tags/tag_store.dart';
 import 'clipboard_controller.dart';
 import 'filter_query.dart';
 import 'folder_size_scanner.dart';
@@ -445,11 +445,11 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
   }
 
   Future<void> _loadFileTags(List<FileEntry> entries) async {
-    final paths = [for (final e in entries) e.path];
-    final rows = await SettingsStore.instance.db.getFileTagsForPaths(paths);
+    final all = TagStore.instance.fileTagsById;
     final map = <String, Set<int>>{};
-    for (final row in rows) {
-      (map[row.path] ??= <int>{}).add(row.tagId);
+    for (final e in entries) {
+      final tags = all[e.path];
+      if (tags != null && tags.isNotEmpty) map[e.path] = tags;
     }
     fileTags.value = map;
   }
@@ -1164,15 +1164,14 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
   Future<void> toggleTag(Iterable<String> paths, int tagId) async {
     final taggable = paths.where(isTaggablePath).toList();
     if (taggable.isEmpty) return;
-    final db = SettingsStore.instance.db;
     final allTagged = taggable.every(
       (p) => fileTags.value[p]?.contains(tagId) ?? false,
     );
     for (final p in taggable) {
       if (allTagged) {
-        await db.removeFileTag(p, tagId);
+        await TagStore.instance.removeFileTag(p, tagId);
       } else {
-        await db.addFileTag(p, tagId);
+        await TagStore.instance.addFileTag(p, tagId);
       }
     }
     TagStore.instance.notifyFileTagsChanged();
@@ -1181,9 +1180,8 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
   Future<void> addTag(Iterable<String> paths, int tagId) async {
     final taggable = paths.where(isTaggablePath).toList();
     if (taggable.isEmpty) return;
-    final db = SettingsStore.instance.db;
     for (final p in taggable) {
-      await db.addFileTag(p, tagId);
+      await TagStore.instance.addFileTag(p, tagId);
     }
     TagStore.instance.notifyFileTagsChanged();
   }
@@ -1191,9 +1189,8 @@ class NavigationStore extends NavigationStoreHost with NavigationRenameOps {
   Future<void> clearTags(Iterable<String> paths) async {
     final taggable = paths.where(isTaggablePath).toList();
     if (taggable.isEmpty) return;
-    final db = SettingsStore.instance.db;
     for (final p in taggable) {
-      await db.clearFileTags(p);
+      await TagStore.instance.clearFileTags(p);
     }
     TagStore.instance.notifyFileTagsChanged();
   }

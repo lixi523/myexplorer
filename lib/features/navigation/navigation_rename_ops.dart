@@ -84,7 +84,7 @@ mixin NavigationRenameOps on NavigationStoreHost {
           renameError.value = null;
           selectedPaths.value = {logicalNew};
         });
-        await SettingsStore.instance.db.moveFileTags(oldPath, logicalNew);
+        await TagStore.instance.moveFileTags(oldPath, logicalNew);
         if (searchActive.value && searchRecursive.value) {
           final updated = searchResults.value.map((e) {
             if (e.path != oldPath) return e;

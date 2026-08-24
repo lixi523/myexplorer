@@ -77,6 +77,7 @@ class _ItemRow extends StatefulWidget {
   final Color? labelColor;
 
   const _ItemRow({
+    super.key,
     required this.item,
     required this.isSelected,
     this.isMounted = true,

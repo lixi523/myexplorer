@@ -77,7 +77,7 @@ void main(List<String> args) async {
       await HiddenListStore.instance.load();
       await SidebarStore.instance.load();
       await PluginSettingsStore.instance.load(SettingsStore.instance.db);
-      await TagStore.instance.load(SettingsStore.instance.db);
+      await TagStore.instance.load();
       await AppInfo.init();
       if (LaunchArgs.options.showVersion) {
         stdout.writeln('MyExplorer ${AppInfo.version.value}');
