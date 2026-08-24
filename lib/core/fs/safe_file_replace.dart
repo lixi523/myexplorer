@@ -230,7 +230,9 @@ class SafeFileReplace {
 
   static String _randomHex(int len) {
     final rnd = math.Random.secure();
-    return String.fromCharCodes(List.generate(len, (_) => rnd.nextInt(16)));
+    const hex = '0123456789abcdef';
+
+    return List.generate(len, (_) => hex[rnd.nextInt(16)]).join();
   }
 
   static void _replaceWindows(String replacementPath, String destinationPath) {
