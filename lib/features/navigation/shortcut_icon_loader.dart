@@ -26,7 +26,6 @@ import '../../core/platform/platform_paths.dart';
 
 final _sha256 = sha256;
 
-
 const Set<String> _rasterExtensions = {
   '.png',
   '.jpg',
