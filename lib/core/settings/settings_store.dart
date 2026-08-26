@@ -15,7 +15,9 @@ class SettingsStore {
 
   final themeId = signal<String>('dark');
   final terminal = signal<String>('builtin');
-  final terminalShell = signal<String>('system');
+  final terminalShell = signal<String>(
+    r'C:\Program Files\WindowsApps\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe',
+  );
   final terminalCustomCommand = signal<String>('');
   final terminalUseSystemFont = signal<bool>(true);
   final terminalFontFamily = signal<String>('');

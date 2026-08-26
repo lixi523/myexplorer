@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../features/locations/location_resolver.dart';
 import '../../features/locations/location_uri.dart';
 import '../platform/platform_paths.dart';
@@ -73,7 +75,9 @@ class TerminalLaunch {
   /// default (PowerShell on Windows, `$SHELL` on Unix).
   static String _localShell() {
     final pref = SettingsStore.instance.terminalShell.value;
-    if (pref.isNotEmpty && pref != 'system') return pref;
+    if (pref.isNotEmpty && pref != 'system') {
+      if (File(pref).existsSync()) return pref;
+    }
 
     return ShellDetector.defaultShellPath();
   }

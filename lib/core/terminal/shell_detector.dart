@@ -50,6 +50,10 @@ class ShellDetector {
 
     add('$programFiles\\PowerShell\\7\\pwsh.exe', 'PowerShell 7');
     add(
+      '$programFiles\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe',
+      'PowerShell 7',
+    );
+    add(
       '$sysRoot\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
       'Windows PowerShell',
     );

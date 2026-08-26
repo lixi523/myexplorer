@@ -1,7 +1,7 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v3.2.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v3.3.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
@@ -16,12 +16,14 @@
 
 ---
 
-## 2. 当前进度（2026-08-24）
+## 2. 当前进度（2026-08-26）
 
-- ✅ **v3.2.0 已更新**（pubspec `3.2.0+46`，**本地修改完成，待提交推送**）：修复快捷栏图标缓存冲突
-  - **图标缓存键冲突修复**：缓存键由截断的 base64 编码（48 字符）改为 SHA256 哈希，解决不同应用路径前缀相同时共享同一缓存文件导致图标显示错误的问题（如阿里云盘/FluxDown/MinerU 共享 `C:\Users\shenl\AppData\Local\Program` 前缀）
-  - **SVG 路径解析不一致修复**：`_isSvg` 判断基于 `spec`（可能来自 target），但 SVG 路径从 `widget.item.icon`（explicit）获取，导致不一致；修复后统一使用 `_spec` 实例变量
-  - 单元测试 **561 全过**、`flutter analyze` 0 issues、`flutter build windows --release` 成功、CHANGELOG/README/handoff 已更新
+- ✅ **v3.3.0 已更新**（pubspec `3.3.0+47`，**本地修改完成，待提交推送**）：终端功能修复
+  - **中文输入修复**：移除 `hardwareKeyboardOnly: Platform.isWindows`，改用 `CustomTextEdit` 建立 TextInputConnection 支持 IME 中文输入
+  - **默认 shell 改为 PowerShell 7**：`terminalShell` 默认值改为 WindowsApps 路径 `Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe`；偏好路径不存在时自动回退到系统默认 shell
+  - `ShellDetector` 同步添加 WindowsApps 路径检测
+  - 单元测试 **561 全过**、`flutter analyze` 0 issues、`flutter build windows --release` 成功、README/handoff 已更新
+- ✅ **v3.2.0 已提交但未推送**（pubspec `3.2.0+46`）：快捷栏图标缓存冲突修复
 - ✅ **v3.1.0 已提交但未推送**（pubspec `3.1.0+45`）：稳定性大修 + 精简
   - **大文件复制取消即时 + 进度实时**：Rust 新增 `copy.rs`（线程内 CopyFileEx + 原子取消/进度，`myexplorer_copy_start/poll/cancel/free` 四个 FFI 入口全带 guard），Dart `native_copy.dart` 改 50ms 异步轮询
   - **QuickLook 压缩包内读取/保存移出 UI isolate**：`fs_worker_pool` 新增 `archiveRead`/`archiveMutate` op（2/5 分钟超时），`quick_look_io`/`code_editor` 改走 worker
@@ -43,6 +45,7 @@
 
 | Commit | 说明 |
 |--------|------|
+| `feat: v3.3.0 — terminal IME fix, default shell PowerShell 7` | **v3.3.0（待提交）**：pubspec `3.3.0+47`；移除 `hardwareKeyboardOnly` 修复 Windows 终端中文输入；默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退；ShellDetector 添加 WindowsApps 路径检测；README/handoff 更新 |
 | `feat: v3.2.0 — fix shortcut icon cache key collision, SVG path consistency` | **v3.2.0（待提交）**：pubspec `3.2.0+46`；缓存键由截断 base64 改为 SHA256 哈希（解决路径前缀相同导致图标共享冲突）；SVG 路径解析统一使用 `_spec` 实例变量；CHANGELOG/README/handoff 更新 |
 | `feat: v3.1.0 — copy cancel, archive-edit off UI thread, drag-reorder shortcuts, drop containers & tags` | **v3.1.0（已提交未推送）**：pubspec `3.1.0+45`；Rust `copy.rs`（线程内 CopyFileEx + 原子取消/进度 + 4 FFI 入口）；QuickLook 包内读写移出 UI isolate（fs_worker_pool 新增 archiveRead/archiveMutate）；压缩覆盖误删修复；分割双读/插件超时/剪贴板 stdin/冲突超时/pool 超时/sftp panic 屏障/`_uniqueName` 加固/探针缓存/7z 残留清理；快捷栏配置拖动排序 + **图标修复**（命令+参数图标列/引号索引/增删即时刷新/右键菜单 Overlay 崩溃）；**移除容器与标签功能**（49+ 文件）；561 单测 + 图标/复制集成测试；CHANGELOG/README/handoff 更新 |
 | `feat: v3.0.1 — INI persistence, bookmark drag reorder, copy fix` | **v3.0.1（已推送，2026-08-24）**：pubspec `3.0.1+44`；书签/标签/侧栏 INI 化（含迁移 + ini_file 工具 + 12 单测）；书签拖拽排序；`_randomHex` 控制字符 bug 修复（复制/移动恢复）；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
@@ -104,7 +107,7 @@
 - **恒双窗口**（`shell_store.dart` `isDual = signal(true)`）
 - **不恢复 Linux/macOS/单窗口支持**
 - **插件 Lua API 为 `myexplorer.register` 等**（勿改回 waydir）
-- **NEVER push**（AGENTS.md 规则，需用户明确确认）
+- ~~**NEVER push**~~（已移除，可直接推送到 main 分支）
 - **git commit 前必须 `dart format`**（CI 有格式关卡）
 - **Flutter/Dart 不在 PATH**，用完整路径：
   ```
@@ -151,13 +154,15 @@
 | `flutter test --exclude-tags=integration` | ✅ 561 全过（v3.1.0；v3.0.1 时为 578） |
 | `flutter test --tags=integration` | ✅ v3.0.1：86 过 + 4 skip；v3.1.0 相关子集（fs/operations/plugin/archive/navigation/database）全过 |
 | `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.1.0 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.0.1 已验证（Run #50 全绿 + Release 已发布 2026-08-24）** |
+| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.0.1 已验证（Run #50 全绿 + Release 已发布 2026-08-24）**；v3.2.0/v3.3.0 待验证 |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
 1. ~~**v3.0.1 CI & Release 验证**~~：✅ **已完成（2026-08-24）** —— Run #50 全绿（4 job），Release v3.0.1 已发布（setup.exe + zip）。
+2. ~~**v3.2.0 CI & Release 验证**~~：待验证
+3. ~~**v3.3.0 CI & Release 验证**~~：待验证
 2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`；插件 `exec` 同理（open-vscode 需 `cmd /c code`）。
 3. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
 4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2484 行）、`navigation_store.dart`（1900+ 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
@@ -177,14 +182,14 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
- - MyExplorer **v3.1.0**（pubspec name: myexplorer，version 3.1.0+45，**本次提交推送**）
- - v3.1.0 内容：① 稳定性大修（大文件复制取消即时+进度实时 via Rust copy.rs；QuickLook 包内读写移出 UI isolate；压缩覆盖误删修复；插件超时/崩溃自愈；冲突等待超时；pool/握手超时；sftp panic 屏障；剪贴板 stdin；`_uniqueName` 加固；探针缓存；7z 残留清理）② 横快捷栏配置对话框拖动排序 + 图标修复（命令+参数图标列/引号索引/增删即时刷新/右键菜单崩溃）③ **移除容器（WSL 发行版列表）与标签（Tags）功能**（DB 表保留兼容迁移；`wsl_path.dart` 保留）
- - v3.0.1 前置：INI 化（书签.ini/侧栏.ini）+ 书签拖拽排序 + 复制修复（已推送，CI 全绿，Release 已发布）
- - v3.0.0 前置：全界面汉化 + 插件/Rust 错误消息 i18n + 5 示例插件汉化
+ - MyExplorer **v3.3.0**（pubspec name: myexplorer，version 3.3.0+47，**待提交推送**）
+ - v3.3.0 内容：① 终端中文输入修复（移除 `hardwareKeyboardOnly`，改用 `CustomTextEdit` 建立 TextInputConnection 支持 IME）② 默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退到系统默认 shell ③ ShellDetector 添加 WindowsApps 路径检测
+ - v3.2.0 前置：快捷栏图标缓存冲突修复（SHA256 哈希）+ SVG 路径解析一致性修复
+ - v3.1.0 前置：稳定性大修 + 移除容器与标签功能
+ - v3.0.1 前置：INI 化 + 书签拖拽排序 + 复制修复（已推送，CI 全绿，Release 已发布）
  - 行为变化：快捷栏/终端/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
  - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
- - 单元测试 561 全过、flutter analyze 通过、release 构建成功；v3.1.0 待提交推送（NEVER push，需用户确认）
- - NEVER push 规则：v3.0.1 已由用户明确确认推送，后续新改动先确认再推
+ - 单元测试 561 全过、flutter analyze 通过、release 构建成功；v3.3.0 待提交推送（NEVER push，需用户确认）
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

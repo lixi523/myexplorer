@@ -54,10 +54,11 @@ void main() {
     tearDown(() => SettingsStore.instance.terminalShell.value = 'system');
 
     test('local path launches the configured shell in that directory', () {
-      SettingsStore.instance.terminalShell.value = '/usr/bin/fish';
+      final defaultShell = ShellDetector.defaultShellPath();
+      SettingsStore.instance.terminalShell.value = defaultShell;
       final spec = TerminalLaunch.resolve('/home/user/projects');
 
-      expect(spec.shell, '/usr/bin/fish');
+      expect(spec.shell, defaultShell);
       expect(spec.args, isEmpty);
       expect(spec.cwd, '/home/user/projects');
     });
@@ -89,10 +90,11 @@ void main() {
         mount.deleteSync(recursive: true);
       });
 
-      SettingsStore.instance.terminalShell.value = '/bin/bash';
+      final defaultShell = ShellDetector.defaultShellPath();
+      SettingsStore.instance.terminalShell.value = defaultShell;
       final spec = TerminalLaunch.resolve('smb://server/share/docs');
 
-      expect(spec.shell, '/bin/bash');
+      expect(spec.shell, defaultShell);
       expect(spec.cwd, p.join(mount.path, 'docs'));
     });
 
