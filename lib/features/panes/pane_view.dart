@@ -1,9 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:signals/signals_flutter.dart';
-import '../../core/keyboard/keyboard_shortcuts.dart';
 import '../../core/settings/settings_store.dart';
 import '../../features/files/file_view.dart'
     show
@@ -26,7 +22,6 @@ import '../tabs/tab_strip.dart';
 import '../../ui/icons/myexplorer_icons.dart';
 import '../../ui/theme/app_theme.dart';
 import '../../ui/theme/app_text_styles.dart';
-import '../../ui/widgets/app_close_button.dart';
 import '../../i18n/strings.g.dart';
 import 'pane_store.dart';
 

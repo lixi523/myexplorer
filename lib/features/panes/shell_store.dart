@@ -3,8 +3,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:flutter/widgets.dart';
-import 'package:path/path.dart' as p;
 import 'package:signals/signals.dart';
 
 import '../../app/launch_args.dart';
@@ -17,7 +15,6 @@ import '../compare/compare_controller.dart';
 import '../navigation/navigation_store.dart';
 import '../operations/operation_store.dart';
 import '../../ui/overlays/notification_store.dart';
-import '../../i18n/strings.g.dart';
 import '../tabs/tabs_store.dart';
 import 'pane_store.dart';
 

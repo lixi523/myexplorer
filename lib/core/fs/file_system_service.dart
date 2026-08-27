@@ -18,7 +18,6 @@ import '../models/file_operation.dart';
 import '../open/open_service.dart';
 import '../platform/platform_paths.dart';
 import '../platform/trash_location.dart';
-import '../settings/settings_store.dart';
 import '../../i18n/strings.g.dart';
 import 'fs_worker_pool.dart';
 import 'sftp_fs.dart';

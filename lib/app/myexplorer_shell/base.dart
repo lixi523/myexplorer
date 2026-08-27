@@ -147,10 +147,6 @@ mixin _MyExplorerStateBase on State<MyExplorerShell> {
     });
   }
 
-  void _focusFiles() {
-    _focusNode.requestFocus();
-  }
-
   VoidCallback _activatePane(int index) {
     return () {
       _shell.setActivePane(index);

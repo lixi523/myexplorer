@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:myexplorer/core/platform/platform_paths.dart';
 import 'package:myexplorer/features/containers/wsl_path.dart';
 
 void main() {
