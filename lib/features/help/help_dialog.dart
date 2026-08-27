@@ -212,11 +212,6 @@ final _groups = <_HelpGroup>[
         body: () => t.help.groups.remote.network.body,
       ),
       _HelpPage(
-        title: () => t.help.groups.remote.terminal.title,
-        body: () => t.help.groups.remote.terminal.body,
-        assetPath: 'docs/gifs/terminal.gif',
-      ),
-      _HelpPage(
         title: () => t.help.groups.remote.git.title,
         body: () => t.help.groups.remote.git.body,
       ),

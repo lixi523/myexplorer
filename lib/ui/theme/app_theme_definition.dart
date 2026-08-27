@@ -2,25 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../i18n/strings.g.dart';
 
-const _terminalNames = <String, String>{
-  'black': '黑色',
-  'red': '红色',
-  'green': '绿色',
-  'yellow': '黄色',
-  'blue': '蓝色',
-  'magenta': '品红色',
-  'cyan': '青色',
-  'white': '白色',
-  'brightBlack': '亮黑色',
-  'brightRed': '亮红色',
-  'brightGreen': '亮绿色',
-  'brightYellow': '亮黄色',
-  'brightBlue': '亮蓝色',
-  'brightMagenta': '亮品红色',
-  'brightCyan': '亮青色',
-  'brightWhite': '亮白色',
-};
-
 const _paletteNames = <String, String>{
   'bg': '背景色',
   'bgSurface': '表面色',
@@ -59,120 +40,6 @@ const _paletteNames = <String, String>{
 };
 
 @immutable
-class TerminalColors {
-  final Color black;
-  final Color red;
-  final Color green;
-  final Color yellow;
-  final Color blue;
-  final Color magenta;
-  final Color cyan;
-  final Color white;
-  final Color brightBlack;
-  final Color brightRed;
-  final Color brightGreen;
-  final Color brightYellow;
-  final Color brightBlue;
-  final Color brightMagenta;
-  final Color brightCyan;
-  final Color brightWhite;
-
-  const TerminalColors({
-    required this.black,
-    required this.red,
-    required this.green,
-    required this.yellow,
-    required this.blue,
-    required this.magenta,
-    required this.cyan,
-    required this.white,
-    required this.brightBlack,
-    required this.brightRed,
-    required this.brightGreen,
-    required this.brightYellow,
-    required this.brightBlue,
-    required this.brightMagenta,
-    required this.brightCyan,
-    required this.brightWhite,
-  });
-
-  static const standard = TerminalColors(
-    black: Color(0xFF000000),
-    red: Color(0xFFCD3131),
-    green: Color(0xFF0DBC79),
-    yellow: Color(0xFFE5E510),
-    blue: Color(0xFF2472C8),
-    magenta: Color(0xFFBC3FBC),
-    cyan: Color(0xFF11A8CD),
-    white: Color(0xFFE5E5E5),
-    brightBlack: Color(0xFF666666),
-    brightRed: Color(0xFFF14C4C),
-    brightGreen: Color(0xFF23D18B),
-    brightYellow: Color(0xFFF5F543),
-    brightBlue: Color(0xFF3B8EEA),
-    brightMagenta: Color(0xFFD670D6),
-    brightCyan: Color(0xFF29B8DB),
-    brightWhite: Color(0xFFFFFFFF),
-  );
-
-  factory TerminalColors.fromIni(Map<String, String> ini) {
-    Color read(String key, Color fallback) {
-      final value = ini[key] ?? ini[_terminalNames[key] ?? ''];
-      if (value == null) return fallback;
-      try {
-        return parseThemeColor(value, key);
-      } catch (e) {
-        return fallback;
-      }
-    }
-
-    const d = standard;
-
-    return TerminalColors(
-      black: read('black', d.black),
-      red: read('red', d.red),
-      green: read('green', d.green),
-      yellow: read('yellow', d.yellow),
-      blue: read('blue', d.blue),
-      magenta: read('magenta', d.magenta),
-      cyan: read('cyan', d.cyan),
-      white: read('white', d.white),
-      brightBlack: read('brightBlack', d.brightBlack),
-      brightRed: read('brightRed', d.brightRed),
-      brightGreen: read('brightGreen', d.brightGreen),
-      brightYellow: read('brightYellow', d.brightYellow),
-      brightBlue: read('brightBlue', d.brightBlue),
-      brightMagenta: read('brightMagenta', d.brightMagenta),
-      brightCyan: read('brightCyan', d.brightCyan),
-      brightWhite: read('brightWhite', d.brightWhite),
-    );
-  }
-
-  String toIni() {
-    final b = StringBuffer();
-    b.writeln('[terminal]');
-    b.writeln('${_terminalNames['black']}=${_iniColor(black)}');
-    b.writeln('${_terminalNames['red']}=${_iniColor(red)}');
-    b.writeln('${_terminalNames['green']}=${_iniColor(green)}');
-    b.writeln('${_terminalNames['yellow']}=${_iniColor(yellow)}');
-    b.writeln('${_terminalNames['blue']}=${_iniColor(blue)}');
-    b.writeln('${_terminalNames['magenta']}=${_iniColor(magenta)}');
-    b.writeln('${_terminalNames['cyan']}=${_iniColor(cyan)}');
-    b.writeln('${_terminalNames['white']}=${_iniColor(white)}');
-    b.writeln('${_terminalNames['brightBlack']}=${_iniColor(brightBlack)}');
-    b.writeln('${_terminalNames['brightRed']}=${_iniColor(brightRed)}');
-    b.writeln('${_terminalNames['brightGreen']}=${_iniColor(brightGreen)}');
-    b.writeln('${_terminalNames['brightYellow']}=${_iniColor(brightYellow)}');
-    b.writeln('${_terminalNames['brightBlue']}=${_iniColor(brightBlue)}');
-    b.writeln('${_terminalNames['brightMagenta']}=${_iniColor(brightMagenta)}');
-    b.writeln('${_terminalNames['brightCyan']}=${_iniColor(brightCyan)}');
-    b.writeln('${_terminalNames['brightWhite']}=${_iniColor(brightWhite)}');
-
-    return b.toString();
-  }
-}
-
-@immutable
 class AppThemePalette {
   final Color bg;
   final Color bgSurface;
@@ -208,7 +75,6 @@ class AppThemePalette {
   final Color fileDefault;
   final Color folderNameDark;
   final Color folderNameLight;
-  final TerminalColors terminal;
 
   const AppThemePalette({
     required this.bg,
@@ -245,13 +111,9 @@ class AppThemePalette {
     required this.fileDefault,
     this.folderNameDark = const Color(0xFFE9E9E9),
     this.folderNameLight = const Color(0xFF3C414B),
-    this.terminal = TerminalColors.standard,
   });
 
-  factory AppThemePalette.fromIni(
-    Map<String, String> ini,
-    Map<String, String>? terminal,
-  ) {
+  factory AppThemePalette.fromIni(Map<String, String> ini) {
     Color read(String key) {
       final value = ini[key] ?? ini[_paletteNames[key] ?? ''];
       if (value == null) {
@@ -306,9 +168,6 @@ class AppThemePalette {
       fileDefault: read('fileDefault'),
       folderNameDark: readOpt('folderNameDark', const Color(0xFFE9E9E9)),
       folderNameLight: readOpt('folderNameLight', const Color(0xFF3C414B)),
-      terminal: terminal == null
-          ? TerminalColors.standard
-          : TerminalColors.fromIni(terminal),
     );
   }
 
@@ -359,8 +218,6 @@ class AppThemePalette {
     b.writeln(
       '${_paletteNames['folderNameLight']}=${_iniColor(folderNameLight)}',
     );
-    b.writeln();
-    b.write(terminal.toIni());
 
     return b.toString();
   }
@@ -406,7 +263,7 @@ class AppThemeDefinition {
       id: id.trim(),
       name: name.trim(),
       brightness: _parseBrightness(brightness),
-      palette: AppThemePalette.fromIni(palette, sections['terminal']),
+      palette: AppThemePalette.fromIni(palette),
     );
   }
 

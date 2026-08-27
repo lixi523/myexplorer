@@ -8,19 +8,6 @@ part 'app_database.g.dart';
 class AppSettings extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get themeMode => text().withDefault(const Constant('dark'))();
-  TextColumn get terminal => text().withDefault(const Constant('builtin'))();
-  TextColumn get terminalShell =>
-      text().withDefault(const Constant('system'))();
-  TextColumn get terminalCustomCommand =>
-      text().withDefault(const Constant(''))();
-  BoolColumn get terminalUseSystemFont =>
-      boolean().withDefault(const Constant(true))();
-  TextColumn get terminalFontFamily => text().withDefault(const Constant(''))();
-  IntColumn get terminalFontSize => integer().withDefault(const Constant(13))();
-  RealColumn get terminalLineHeight =>
-      real().withDefault(const Constant(1.2))();
-  TextColumn get terminalCopyPasteMode =>
-      text().withDefault(const Constant(''))();
   BoolColumn get isDual => boolean().withDefault(const Constant(false))();
   RealColumn get splitRatio => real().withDefault(const Constant(0.5))();
   IntColumn get activePaneIndex => integer().withDefault(const Constant(0))();
@@ -352,14 +339,6 @@ class AppDatabase extends _$AppDatabase {
       if (from < 17) {
         await m.createTable(recentEnteredPaths);
       }
-      if (from < 18) {
-        await addSettingColumn(appSettings.terminalFontFamily);
-        await addSettingColumn(appSettings.terminalFontSize);
-        await addSettingColumn(appSettings.terminalLineHeight);
-      }
-      if (from < 19) {
-        await addSettingColumn(appSettings.terminalUseSystemFont);
-      }
       if (from < 20) {
         await addSettingColumn(appSettings.fileListScale);
       }
@@ -368,9 +347,6 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 22) {
         await addSettingColumn(appSettings.naturalSort);
-      }
-      if (from < 23) {
-        await addSettingColumn(appSettings.terminalShell);
       }
       if (from < 24) {
         await addSettingColumn(appSettings.sidebarWidth);
@@ -430,9 +406,6 @@ class AppDatabase extends _$AppDatabase {
       if (from < 38) {
         await addSettingColumn(appSettings.columnWidthMode);
         await addSettingColumn(appSettings.columnWidths);
-      }
-      if (from < 39) {
-        await addSettingColumn(appSettings.terminalCopyPasteMode);
       }
       if (from < 40) {
         await addSettingColumn(appSettings.dragMovesByDefault);

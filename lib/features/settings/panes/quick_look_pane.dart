@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../../core/settings/settings_registry.dart';
-import '../../../core/terminal/system_fonts.dart';
 import '../../../i18n/strings.g.dart';
 import '../settings_widgets.dart';
 
@@ -16,20 +15,6 @@ class QuickLookPane extends StatefulWidget {
 }
 
 class _QuickLookPaneState extends State<QuickLookPane> {
-  @override
-  void initState() {
-    super.initState();
-    _loadFonts();
-  }
-
-  Future<void> _loadFonts() async {
-    final families = await SystemFonts.monospaceFamilies();
-    if (!mounted) return;
-    setState(
-      () => SettingsRegistry.instance.refreshQuickLookFontChoices(families),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final registry = SettingsRegistry.instance;

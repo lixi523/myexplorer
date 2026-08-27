@@ -40,7 +40,6 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 
 	// Translations
 	@override late final _Translations$app$zh app = _Translations$app$zh._(_root);
-	@override late final _Translations$terminal$zh terminal = _Translations$terminal$zh._(_root);
 	@override late final _Translations$menu$zh menu = _Translations$menu$zh._(_root);
 	@override late final _Translations$multiRename$zh multiRename = _Translations$multiRename$zh._(_root);
 	@override late final _Translations$compress$zh compress = _Translations$compress$zh._(_root);
@@ -56,7 +55,6 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$commandPalette$zh commandPalette = _Translations$commandPalette$zh._(_root);
 	@override late final _Translations$quickLook$zh quickLook = _Translations$quickLook$zh._(_root);
 	@override late final _Translations$toast$zh toast = _Translations$toast$zh._(_root);
-	@override late final _Translations$terminalInsert$zh terminalInsert = _Translations$terminalInsert$zh._(_root);
 	@override late final _Translations$selectionFile$zh selectionFile = _Translations$selectionFile$zh._(_root);
 	@override late final _Translations$dragHint$zh dragHint = _Translations$dragHint$zh._(_root);
 	@override late final _Translations$fileView$zh fileView = _Translations$fileView$zh._(_root);
@@ -92,16 +90,6 @@ class _Translations$app$zh extends Translations$app$en {
 	@override String get description => '一款基于 Flutter 构建的快速、键盘优先的桌面文件管理器。';
 }
 
-// Path: terminal
-class _Translations$terminal$zh extends Translations$terminal$en {
-	_Translations$terminal$zh._(TranslationsZh root) : this._root = root, super.internal(root);
-
-	final TranslationsZh _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '终端';
-}
-
 // Path: menu
 class _Translations$menu$zh extends Translations$menu$en {
 	_Translations$menu$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -134,7 +122,6 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get invertSelection => '反向选择';
 	@override String get saveSelection => '保存选择到文件…';
 	@override String get loadSelection => '从文件加载选择…';
-	@override String get openInTerminal => '在终端中打开';
 	@override String get rename => '重命名';
 	@override String get openLocation => '打开位置';
 	@override String get openInNewTab => '在新标签页中打开';
@@ -143,9 +130,6 @@ class _Translations$menu$zh extends Translations$menu$en {
 	@override String get eject => '弹出';
 	@override String get disconnect => '断开连接';
 	@override String get dualPaneMode => '双栏模式';
-	@override String get toggleTerminal => '切换终端';
-	@override String get newTerminalTab => '新建终端标签页';
-	@override String get closeTerminalTab => '关闭终端标签页';
 	@override String get properties => '属性';
 	@override String get openWith => '打开方式';
 	@override String openWithApp({required Object app}) => '使用 ${app} 打开';
@@ -326,7 +310,6 @@ class _Translations$preferences$zh extends Translations$preferences$en {
 	@override late final _Translations$preferences$categories$zh categories = _Translations$preferences$categories$zh._(_root);
 	@override late final _Translations$preferences$plugins$zh plugins = _Translations$preferences$plugins$zh._(_root);
 	@override late final _Translations$preferences$general$zh general = _Translations$preferences$general$zh._(_root);
-	@override late final _Translations$preferences$terminal$zh terminal = _Translations$preferences$terminal$zh._(_root);
 	@override late final _Translations$preferences$quickLook$zh quickLook = _Translations$preferences$quickLook$zh._(_root);
 	@override late final _Translations$preferences$appearance$zh appearance = _Translations$preferences$appearance$zh._(_root);
 	@override late final _Translations$preferences$bookmarks$zh bookmarks = _Translations$preferences$bookmarks$zh._(_root);
@@ -632,20 +615,6 @@ class _Translations$toast$zh extends Translations$toast$en {
 	@override String multiRenameInvalid({required Object count}) => '${count} 个无效名称';
 	@override String multiRenameOtherErrors({required Object count}) => '${count} 个错误';
 	@override String get multiRenameTrashBlocked => '回收站中无法使用批量重命名';
-}
-
-// Path: terminalInsert
-class _Translations$terminalInsert$zh extends Translations$terminalInsert$en {
-	_Translations$terminalInsert$zh._(TranslationsZh root) : this._root = root, super.internal(root);
-
-	final TranslationsZh _root; // ignore: unused_field
-
-	// Translations
-	@override String title({required Object count}) => '插入 ${count} 个选中项目';
-	@override String get separator => '分隔符';
-	@override String get customHint => '分隔符';
-	@override String get preview => '预览';
-	@override String get insert => '插入';
 }
 
 // Path: selectionFile
@@ -1150,7 +1119,6 @@ class _Translations$preferences$categories$zh extends Translations$preferences$c
 	// Translations
 	@override String get general => '常规';
 	@override String get appearance => '外观';
-	@override String get terminal => '终端';
 	@override String get quickLook => '快速预览';
 	@override String get bookmarks => '书签';
 	@override String get plugins => '插件';
@@ -1231,45 +1199,6 @@ class _Translations$preferences$general$zh extends Translations$preferences$gene
 	@override String get deleteKeyBehaviorHint => 'Delete 键的默认行为。Shift+Delete 始终执行永久删除。';
 	@override String get deleteKeyTrash => '移入回收站';
 	@override String get deleteKeyPermanent => '永久删除';
-	@override String get terminalSection => '终端';
-	@override String get terminalLabel => '默认终端';
-	@override String get terminalHint => '用于“在终端中打开”。';
-	@override String get terminalBuiltin => '内置终端';
-	@override String get terminalAuto => '外部（自动检测）';
-	@override String get terminalCustom => '自定义命令…';
-	@override String get terminalCustomLabel => '命令';
-	@override String get terminalCustomHint => '例如 wt -d {dir}';
-	@override String get terminalCustomHelp => '使用 {dir} 作为目录路径的占位符。';
-}
-
-// Path: preferences.terminal
-class _Translations$preferences$terminal$zh extends Translations$preferences$terminal$en {
-	_Translations$preferences$terminal$zh._(TranslationsZh root) : this._root = root, super.internal(root);
-
-	final TranslationsZh _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '终端';
-	@override String get subtitle => '内置终端字体和外部终端集成。';
-	@override String get appearanceSection => '外观';
-	@override String get useSystemFont => '使用系统字体';
-	@override String get useSystemFontHint => '使用系统等宽字体渲染终端。';
-	@override String get fontFamily => '字体';
-	@override String get fontFamilyHint => '选择已安装的等宽字体。';
-	@override String get fontSize => '字号';
-	@override String get fontSizeHint => '使用 Ctrl++、Ctrl+- 和 Ctrl+0 即时调整。';
-	@override String get lineHeight => '行高';
-	@override String get lineHeightHint => '终端行之间的垂直间距。';
-	@override String get shellSection => 'Shell';
-	@override String get shellLabel => 'Shell';
-	@override String get shellHint => '内置终端启动的程序。';
-	@override String get shellSystem => '系统默认';
-	@override String get externalSection => '在终端中打开';
-	@override String get behaviorSection => '行为';
-	@override String get copyPasteMode => '复制/粘贴修饰键';
-	@override String get copyPasteModeHint => '终端中复制和粘贴使用的组合键。';
-	@override String get copyPasteModeStandard => '标准（Ctrl+C / Ctrl+V）';
-	@override String get copyPasteModeShift => '加 Shift（Ctrl+Shift+C / Ctrl+Shift+V）';
 }
 
 // Path: preferences.quickLook
@@ -1754,7 +1683,6 @@ class _Translations$help$groups$remote$zh extends Translations$help$groups$remot
 	@override String get title => '远程与集成';
 	@override late final _Translations$help$groups$remote$sftp$zh sftp = _Translations$help$groups$remote$sftp$zh._(_root);
 	@override late final _Translations$help$groups$remote$network$zh network = _Translations$help$groups$remote$network$zh._(_root);
-	@override late final _Translations$help$groups$remote$terminal$zh terminal = _Translations$help$groups$remote$terminal$zh._(_root);
 	@override late final _Translations$help$groups$remote$git$zh git = _Translations$help$groups$remote$git$zh._(_root);
 }
 
@@ -2080,17 +2008,6 @@ class _Translations$help$groups$remote$network$zh extends Translations$help$grou
 	@override String get body => 'MyExplorer 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。';
 }
 
-// Path: help.groups.remote.terminal
-class _Translations$help$groups$remote$terminal$zh extends Translations$help$groups$remote$terminal$en {
-	_Translations$help$groups$remote$terminal$zh._(TranslationsZh root) : this._root = root, super.internal(root);
-
-	final TranslationsZh _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => '终端';
-	@override String get body => '每个面板都有自己的内置终端，在你查看的文件夹中打开。\n\n- `Ctrl` + 反引号打开或聚焦终端。\n- `Ctrl+Shift` + 反引号显示或隐藏终端面板。\n- `Ctrl+Shift+T` 新建终端标签页；`Ctrl+Shift+W` 关闭一个。\n- `Ctrl++` / `Ctrl+-` 调整字号，`Ctrl+0` 重置。\n- 更喜欢外部终端？在 **设置 -> 终端** 中选择一个。';
-}
-
 // Path: help.groups.remote.git
 class _Translations$help$groups$remote$git$zh extends Translations$help$groups$remote$git$en {
 	_Translations$help$groups$remote$git$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -2168,7 +2085,6 @@ extension on TranslationsZh {
 			'app.title' => 'MyExplorer',
 			'app.tagline' => '随心浏览你的文件。',
 			'app.description' => '一款基于 Flutter 构建的快速、键盘优先的桌面文件管理器。',
-			'terminal.title' => '终端',
 			'menu.view' => '视图',
 			'menu.open' => '打开',
 			'menu.openItems' => ({required Object count}) => '打开 ${count} 个项目',
@@ -2194,7 +2110,6 @@ extension on TranslationsZh {
 			'menu.invertSelection' => '反向选择',
 			'menu.saveSelection' => '保存选择到文件…',
 			'menu.loadSelection' => '从文件加载选择…',
-			'menu.openInTerminal' => '在终端中打开',
 			'menu.rename' => '重命名',
 			'menu.openLocation' => '打开位置',
 			'menu.openInNewTab' => '在新标签页中打开',
@@ -2203,9 +2118,6 @@ extension on TranslationsZh {
 			'menu.eject' => '弹出',
 			'menu.disconnect' => '断开连接',
 			'menu.dualPaneMode' => '双栏模式',
-			'menu.toggleTerminal' => '切换终端',
-			'menu.newTerminalTab' => '新建终端标签页',
-			'menu.closeTerminalTab' => '关闭终端标签页',
 			'menu.properties' => '属性',
 			'menu.openWith' => '打开方式',
 			'menu.openWithApp' => ({required Object app}) => '使用 ${app} 打开',
@@ -2331,7 +2243,6 @@ extension on TranslationsZh {
 			'preferences.comingSoon' => '即将推出',
 			'preferences.categories.general' => '常规',
 			'preferences.categories.appearance' => '外观',
-			'preferences.categories.terminal' => '终端',
 			'preferences.categories.quickLook' => '快速预览',
 			'preferences.categories.bookmarks' => '书签',
 			'preferences.categories.plugins' => '插件',
@@ -2400,36 +2311,6 @@ extension on TranslationsZh {
 			'preferences.general.deleteKeyBehaviorHint' => 'Delete 键的默认行为。Shift+Delete 始终执行永久删除。',
 			'preferences.general.deleteKeyTrash' => '移入回收站',
 			'preferences.general.deleteKeyPermanent' => '永久删除',
-			'preferences.general.terminalSection' => '终端',
-			'preferences.general.terminalLabel' => '默认终端',
-			'preferences.general.terminalHint' => '用于“在终端中打开”。',
-			'preferences.general.terminalBuiltin' => '内置终端',
-			'preferences.general.terminalAuto' => '外部（自动检测）',
-			'preferences.general.terminalCustom' => '自定义命令…',
-			'preferences.general.terminalCustomLabel' => '命令',
-			'preferences.general.terminalCustomHint' => '例如 wt -d {dir}',
-			'preferences.general.terminalCustomHelp' => '使用 {dir} 作为目录路径的占位符。',
-			'preferences.terminal.title' => '终端',
-			'preferences.terminal.subtitle' => '内置终端字体和外部终端集成。',
-			'preferences.terminal.appearanceSection' => '外观',
-			'preferences.terminal.useSystemFont' => '使用系统字体',
-			'preferences.terminal.useSystemFontHint' => '使用系统等宽字体渲染终端。',
-			'preferences.terminal.fontFamily' => '字体',
-			'preferences.terminal.fontFamilyHint' => '选择已安装的等宽字体。',
-			'preferences.terminal.fontSize' => '字号',
-			'preferences.terminal.fontSizeHint' => '使用 Ctrl++、Ctrl+- 和 Ctrl+0 即时调整。',
-			'preferences.terminal.lineHeight' => '行高',
-			'preferences.terminal.lineHeightHint' => '终端行之间的垂直间距。',
-			'preferences.terminal.shellSection' => 'Shell',
-			'preferences.terminal.shellLabel' => 'Shell',
-			'preferences.terminal.shellHint' => '内置终端启动的程序。',
-			'preferences.terminal.shellSystem' => '系统默认',
-			'preferences.terminal.externalSection' => '在终端中打开',
-			'preferences.terminal.behaviorSection' => '行为',
-			'preferences.terminal.copyPasteMode' => '复制/粘贴修饰键',
-			'preferences.terminal.copyPasteModeHint' => '终端中复制和粘贴使用的组合键。',
-			'preferences.terminal.copyPasteModeStandard' => '标准（Ctrl+C / Ctrl+V）',
-			'preferences.terminal.copyPasteModeShift' => '加 Shift（Ctrl+Shift+C / Ctrl+Shift+V）',
 			'preferences.quickLook.title' => '快速预览',
 			'preferences.quickLook.subtitle' => '快速预览中的编辑器字体、行号和模态编辑。',
 			'preferences.quickLook.fontSection' => '编辑器字体',
@@ -2665,8 +2546,6 @@ extension on TranslationsZh {
 			'help.groups.remote.sftp.body' => '直接在本地文件夹旁边使用 SFTP 服务器。\n\n- 从侧边栏使用 **连接到服务器** 添加远程位置。\n- 连接后，浏览远程文件夹与本地完全相同。\n- 常访问的文件夹添加书签，一键可达。\n- 选择、右键菜单和文件操作与本地一致 - 只有内容搜索在 SFTP 上不可用。',
 			'help.groups.remote.network.title' => '网络路径与 WSL',
 			'help.groups.remote.network.body' => 'MyExplorer 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。',
-			'help.groups.remote.terminal.title' => '终端',
-			'help.groups.remote.terminal.body' => '每个面板都有自己的内置终端，在你查看的文件夹中打开。\n\n- `Ctrl` + 反引号打开或聚焦终端。\n- `Ctrl+Shift` + 反引号显示或隐藏终端面板。\n- `Ctrl+Shift+T` 新建终端标签页；`Ctrl+Shift+W` 关闭一个。\n- `Ctrl++` / `Ctrl+-` 调整字号，`Ctrl+0` 重置。\n- 更喜欢外部终端？在 **设置 -> 终端** 中选择一个。',
 			'help.groups.remote.git.title' => 'Git 状态',
 			'help.groups.remote.git.body' => 'MyExplorer 为版本控制下的文件夹显示 Git 信息。\n\n- 列表中标记已更改、已暂存和未跟踪的文件。\n- 显示文件夹的当前分支。\n- 在仓库中工作时状态实时更新。',
 			'help.groups.customization.title' => '自定义',
@@ -2677,8 +2556,6 @@ extension on TranslationsZh {
 			'help.groups.customization.plugins.title' => '插件',
 			'help.groups.customization.plugins.body' => '使用 Lua 编写的插件扩展 MyExplorer。\n\n- 插件通过原生核心运行，可以添加新操作。\n- 在 **设置 -> 插件** 中启用或禁用已安装的插件。\n- 查看项目文档中的插件编写指南，构建你自己的插件。',
 			'help.groups.customization.shortcutBar.title' => '快捷方式栏',
-			_ => null,
-		} ?? switch (path) {
 			'help.groups.customization.shortcutBar.body' => '标题栏下方的快捷方式栏可一键启动文件夹、文件或命令，遵循 Total Commander 的惯例。\n\n- 右键按钮可编辑或删除；`+` 区域用于添加新按钮。\n- 按钮可以打开文件夹或文件、运行命令行，或使用 `CD <路径>` 跳转。\n- 支持内置命令，如 `cm_OpenDesktop`、`cm_OpenDrives` 和 `cm_OpenRecycled`。\n- 图标可来自文件（`icon.png`）、exe/dll（`app.exe,0`）或系统库中的索引（`shell32.dll,34`）。\n- 使用**导入 Total Commander 按钮栏...** 加载 `.bar` 文件（UTF-8 或 GBK）。\n- 留空条目可创建分隔符。',
 			'help.groups.resources.title' => '资源',
 			'help.groups.resources.links.title' => '链接与资源',
@@ -2717,6 +2594,8 @@ extension on TranslationsZh {
 			'keybindings.quickLookNextFileEdit' => '编辑时下一个文件',
 			'keybindings.quickLookSave' => '保存更改',
 			'keybindings.quickViewPanel' => '切换快速查看面板',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.cursorUp' => '上移',
 			'keybindings.cursorDown' => '下移',
 			'keybindings.pageUp' => '上翻一页',
@@ -2868,11 +2747,6 @@ extension on TranslationsZh {
 			'toast.multiRenameInvalid' => ({required Object count}) => '${count} 个无效名称',
 			'toast.multiRenameOtherErrors' => ({required Object count}) => '${count} 个错误',
 			'toast.multiRenameTrashBlocked' => '回收站中无法使用批量重命名',
-			'terminalInsert.title' => ({required Object count}) => '插入 ${count} 个选中项目',
-			'terminalInsert.separator' => '分隔符',
-			'terminalInsert.customHint' => '分隔符',
-			'terminalInsert.preview' => '预览',
-			'terminalInsert.insert' => '插入',
 			'selectionFile.saveTitle' => '保存选择',
 			'selectionFile.loadTitle' => '加载选择',
 			'selectionFile.pathLabel' => '文本文件',
@@ -3191,8 +3065,6 @@ extension on TranslationsZh {
 			'tasks.status.cancelled' => '已取消',
 			'git.clean' => '干净',
 			'git.detachedHead' => '分离 HEAD',
-			_ => null,
-		} ?? switch (path) {
 			'git.merging' => '合并中',
 			'git.rebasing' => '变基中',
 			'git.cherryPicking' => '拣选中',

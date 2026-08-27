@@ -41,7 +41,6 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 
 	// Translations
 	late final Translations$app$en app = Translations$app$en.internal(_root);
-	late final Translations$terminal$en terminal = Translations$terminal$en.internal(_root);
 	late final Translations$menu$en menu = Translations$menu$en.internal(_root);
 	late final Translations$multiRename$en multiRename = Translations$multiRename$en.internal(_root);
 	late final Translations$compress$en compress = Translations$compress$en.internal(_root);
@@ -97,18 +96,6 @@ class Translations$app$en {
 
 	/// en: 'A fast, keyboard-driven desktop file manager built with Flutter.'
 	String get description => 'A fast, keyboard-driven desktop file manager built with Flutter.';
-}
-
-// Path: terminal
-class Translations$terminal$en {
-	Translations$terminal$en.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// en: 'Terminal'
-	String get title => 'Terminal';
 }
 
 // Path: menu
@@ -194,9 +181,6 @@ class Translations$menu$en {
 	/// en: 'Load Selection from File…'
 	String get loadSelection => 'Load Selection from File…';
 
-	/// en: 'Open in Terminal'
-	String get openInTerminal => 'Open in Terminal';
-
 	/// en: 'Rename'
 	String get rename => 'Rename';
 
@@ -220,15 +204,6 @@ class Translations$menu$en {
 
 	/// en: 'Dual Pane Mode'
 	String get dualPaneMode => 'Dual Pane Mode';
-
-	/// en: 'Toggle Terminal'
-	String get toggleTerminal => 'Toggle Terminal';
-
-	/// en: 'New Terminal Tab'
-	String get newTerminalTab => 'New Terminal Tab';
-
-	/// en: 'Close Terminal Tab'
-	String get closeTerminalTab => 'Close Terminal Tab';
 
 	/// en: 'Properties'
 	String get properties => 'Properties';
@@ -656,7 +631,6 @@ class Translations$preferences$en {
 	late final Translations$preferences$categories$en categories = Translations$preferences$categories$en.internal(_root);
 	late final Translations$preferences$plugins$en plugins = Translations$preferences$plugins$en.internal(_root);
 	late final Translations$preferences$general$en general = Translations$preferences$general$en.internal(_root);
-	late final Translations$preferences$terminal$en terminal = Translations$preferences$terminal$en.internal(_root);
 	late final Translations$preferences$quickLook$en quickLook = Translations$preferences$quickLook$en.internal(_root);
 	late final Translations$preferences$appearance$en appearance = Translations$preferences$appearance$en.internal(_root);
 	late final Translations$preferences$bookmarks$en bookmarks = Translations$preferences$bookmarks$en.internal(_root);
@@ -2543,9 +2517,6 @@ class Translations$preferences$categories$en {
 	/// en: 'Appearance'
 	String get appearance => 'Appearance';
 
-	/// en: 'Terminal'
-	String get terminal => 'Terminal';
-
 	/// en: 'Quick Look'
 	String get quickLook => 'Quick Look';
 
@@ -2653,8 +2624,8 @@ class Translations$preferences$general$en {
 	/// en: 'General'
 	String get title => 'General';
 
-	/// en: 'Startup, file operations and terminal integration.'
-	String get subtitle => 'Startup, file operations and terminal integration.';
+	/// en: 'Startup and file operations.'
+	String get subtitle => 'Startup and file operations.';
 
 	/// en: 'Startup'
 	String get startupSection => 'Startup';
@@ -2748,105 +2719,6 @@ class Translations$preferences$general$en {
 
 	/// en: 'Delete Permanently'
 	String get deleteKeyPermanent => 'Delete Permanently';
-
-	/// en: 'Terminal'
-	String get terminalSection => 'Terminal';
-
-	/// en: 'Default terminal'
-	String get terminalLabel => 'Default terminal';
-
-	/// en: 'Used by "Open in Terminal".'
-	String get terminalHint => 'Used by "Open in Terminal".';
-
-	/// en: 'Built-in terminal'
-	String get terminalBuiltin => 'Built-in terminal';
-
-	/// en: 'External (auto-detect)'
-	String get terminalAuto => 'External (auto-detect)';
-
-	/// en: 'Custom command…'
-	String get terminalCustom => 'Custom command…';
-
-	/// en: 'Command'
-	String get terminalCustomLabel => 'Command';
-
-	/// en: 'e.g. kitty --working-directory={dir}'
-	String get terminalCustomHint => 'e.g. kitty --working-directory={dir}';
-
-	/// en: 'Use {dir} as a placeholder for the directory path.'
-	String get terminalCustomHelp => 'Use {dir} as a placeholder for the directory path.';
-}
-
-// Path: preferences.terminal
-class Translations$preferences$terminal$en {
-	Translations$preferences$terminal$en.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// en: 'Terminal'
-	String get title => 'Terminal';
-
-	/// en: 'Embedded terminal font and external terminal integration.'
-	String get subtitle => 'Embedded terminal font and external terminal integration.';
-
-	/// en: 'Appearance'
-	String get appearanceSection => 'Appearance';
-
-	/// en: 'Use system font'
-	String get useSystemFont => 'Use system font';
-
-	/// en: 'Render the terminal with the system monospace font.'
-	String get useSystemFontHint => 'Render the terminal with the system monospace font.';
-
-	/// en: 'Font family'
-	String get fontFamily => 'Font family';
-
-	/// en: 'Pick an installed monospace font.'
-	String get fontFamilyHint => 'Pick an installed monospace font.';
-
-	/// en: 'Font size'
-	String get fontSize => 'Font size';
-
-	/// en: 'Adjust on the fly with Ctrl++, Ctrl+- and Ctrl+0.'
-	String get fontSizeHint => 'Adjust on the fly with Ctrl++, Ctrl+- and Ctrl+0.';
-
-	/// en: 'Line height'
-	String get lineHeight => 'Line height';
-
-	/// en: 'Vertical spacing between terminal rows.'
-	String get lineHeightHint => 'Vertical spacing between terminal rows.';
-
-	/// en: 'Shell'
-	String get shellSection => 'Shell';
-
-	/// en: 'Shell'
-	String get shellLabel => 'Shell';
-
-	/// en: 'Program the built-in terminal launches.'
-	String get shellHint => 'Program the built-in terminal launches.';
-
-	/// en: 'System default'
-	String get shellSystem => 'System default';
-
-	/// en: 'Open in Terminal'
-	String get externalSection => 'Open in Terminal';
-
-	/// en: 'Behavior'
-	String get behaviorSection => 'Behavior';
-
-	/// en: 'Copy/paste modifier'
-	String get copyPasteMode => 'Copy/paste modifier';
-
-	/// en: 'Key combination used to copy and paste in the terminal.'
-	String get copyPasteModeHint => 'Key combination used to copy and paste in the terminal.';
-
-	/// en: 'Standard (Ctrl+C / Ctrl+V)'
-	String get copyPasteModeStandard => 'Standard (Ctrl+C / Ctrl+V)';
-
-	/// en: 'With Shift (Ctrl+Shift+C / Ctrl+Shift+V)'
-	String get copyPasteModeShift => 'With Shift (Ctrl+Shift+C / Ctrl+Shift+V)';
 }
 
 // Path: preferences.quickLook
@@ -3764,7 +3636,6 @@ class Translations$help$groups$remote$en {
 
 	late final Translations$help$groups$remote$sftp$en sftp = Translations$help$groups$remote$sftp$en.internal(_root);
 	late final Translations$help$groups$remote$network$en network = Translations$help$groups$remote$network$en.internal(_root);
-	late final Translations$help$groups$remote$terminal$en terminal = Translations$help$groups$remote$terminal$en.internal(_root);
 	late final Translations$help$groups$remote$git$en git = Translations$help$groups$remote$git$en.internal(_root);
 }
 
@@ -4204,21 +4075,6 @@ class Translations$help$groups$remote$network$en {
 	String get body => 'MyExplorer handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI.';
 }
 
-// Path: help.groups.remote.terminal
-class Translations$help$groups$remote$terminal$en {
-	Translations$help$groups$remote$terminal$en.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// en: 'Terminal'
-	String get title => 'Terminal';
-
-	/// en: 'Each pane has its own embedded terminal that opens in the folder you are viewing. - `Ctrl` + backtick opens or focuses the terminal. - `Ctrl+Shift` + backtick shows or hides the terminal panel. - `Ctrl+Shift+T` opens a new terminal tab; `Ctrl+Shift+W` closes one. - `Ctrl++` / `Ctrl+-` adjust the font size and `Ctrl+0` resets it. - Prefer an external terminal? Choose one in **Preferences -> Terminal**.'
-	String get body => 'Each pane has its own embedded terminal that opens in the folder you are viewing.\n\n- `Ctrl` + backtick opens or focuses the terminal.\n- `Ctrl+Shift` + backtick shows or hides the terminal panel.\n- `Ctrl+Shift+T` opens a new terminal tab; `Ctrl+Shift+W` closes one.\n- `Ctrl++` / `Ctrl+-` adjust the font size and `Ctrl+0` resets it.\n- Prefer an external terminal? Choose one in **Preferences -> Terminal**.';
-}
-
 // Path: help.groups.remote.git
 class Translations$help$groups$remote$git$en {
 	Translations$help$groups$remote$git$en.internal(this._root);
@@ -4320,7 +4176,6 @@ extension on Translations {
 			'app.title' => 'MyExplorer',
 			'app.tagline' => 'Navigate your files. Your way.',
 			'app.description' => 'A fast, keyboard-driven desktop file manager built with Flutter.',
-			'terminal.title' => 'Terminal',
 			'menu.view' => 'View',
 			'menu.open' => 'Open',
 			'menu.openItems' => ({required Object count}) => 'Open ${count} Items',
@@ -4346,7 +4201,6 @@ extension on Translations {
 			'menu.invertSelection' => 'Invert Selection',
 			'menu.saveSelection' => 'Save Selection to File…',
 			'menu.loadSelection' => 'Load Selection from File…',
-			'menu.openInTerminal' => 'Open in Terminal',
 			'menu.rename' => 'Rename',
 			'menu.openLocation' => 'Open Location',
 			'menu.openInNewTab' => 'Open in New Tab',
@@ -4355,9 +4209,6 @@ extension on Translations {
 			'menu.eject' => 'Eject',
 			'menu.disconnect' => 'Disconnect',
 			'menu.dualPaneMode' => 'Dual Pane Mode',
-			'menu.toggleTerminal' => 'Toggle Terminal',
-			'menu.newTerminalTab' => 'New Terminal Tab',
-			'menu.closeTerminalTab' => 'Close Terminal Tab',
 			'menu.properties' => 'Properties',
 			'menu.openWith' => 'Open With',
 			'menu.openWithApp' => ({required Object app}) => 'Open With ${app}',
@@ -4483,7 +4334,6 @@ extension on Translations {
 			'preferences.comingSoon' => 'Coming soon',
 			'preferences.categories.general' => 'General',
 			'preferences.categories.appearance' => 'Appearance',
-			'preferences.categories.terminal' => 'Terminal',
 			'preferences.categories.quickLook' => 'Quick Look',
 			'preferences.categories.bookmarks' => 'Bookmarks',
 			'preferences.categories.plugins' => 'Plugins',
@@ -4520,7 +4370,7 @@ extension on Translations {
 			'preferences.plugins.noSettings' => 'This plugin has no settings.',
 			'preferences.plugins.shortcutPrefix' => ({required Object name}) => 'Plugin: ${name}',
 			'preferences.general.title' => 'General',
-			'preferences.general.subtitle' => 'Startup, file operations and terminal integration.',
+			'preferences.general.subtitle' => 'Startup and file operations.',
 			'preferences.general.startupSection' => 'Startup',
 			'preferences.general.restoreSession' => 'Restore last session',
 			'preferences.general.restoreSessionHint' => 'Reopen previously open tabs and panes on launch.',
@@ -4552,36 +4402,6 @@ extension on Translations {
 			'preferences.general.deleteKeyBehaviorHint' => 'What the Delete key does by default. Shift+Delete always deletes permanently.',
 			'preferences.general.deleteKeyTrash' => 'Move to Trash',
 			'preferences.general.deleteKeyPermanent' => 'Delete Permanently',
-			'preferences.general.terminalSection' => 'Terminal',
-			'preferences.general.terminalLabel' => 'Default terminal',
-			'preferences.general.terminalHint' => 'Used by "Open in Terminal".',
-			'preferences.general.terminalBuiltin' => 'Built-in terminal',
-			'preferences.general.terminalAuto' => 'External (auto-detect)',
-			'preferences.general.terminalCustom' => 'Custom command…',
-			'preferences.general.terminalCustomLabel' => 'Command',
-			'preferences.general.terminalCustomHint' => 'e.g. kitty --working-directory={dir}',
-			'preferences.general.terminalCustomHelp' => 'Use {dir} as a placeholder for the directory path.',
-			'preferences.terminal.title' => 'Terminal',
-			'preferences.terminal.subtitle' => 'Embedded terminal font and external terminal integration.',
-			'preferences.terminal.appearanceSection' => 'Appearance',
-			'preferences.terminal.useSystemFont' => 'Use system font',
-			'preferences.terminal.useSystemFontHint' => 'Render the terminal with the system monospace font.',
-			'preferences.terminal.fontFamily' => 'Font family',
-			'preferences.terminal.fontFamilyHint' => 'Pick an installed monospace font.',
-			'preferences.terminal.fontSize' => 'Font size',
-			'preferences.terminal.fontSizeHint' => 'Adjust on the fly with Ctrl++, Ctrl+- and Ctrl+0.',
-			'preferences.terminal.lineHeight' => 'Line height',
-			'preferences.terminal.lineHeightHint' => 'Vertical spacing between terminal rows.',
-			'preferences.terminal.shellSection' => 'Shell',
-			'preferences.terminal.shellLabel' => 'Shell',
-			'preferences.terminal.shellHint' => 'Program the built-in terminal launches.',
-			'preferences.terminal.shellSystem' => 'System default',
-			'preferences.terminal.externalSection' => 'Open in Terminal',
-			'preferences.terminal.behaviorSection' => 'Behavior',
-			'preferences.terminal.copyPasteMode' => 'Copy/paste modifier',
-			'preferences.terminal.copyPasteModeHint' => 'Key combination used to copy and paste in the terminal.',
-			'preferences.terminal.copyPasteModeStandard' => 'Standard (Ctrl+C / Ctrl+V)',
-			'preferences.terminal.copyPasteModeShift' => 'With Shift (Ctrl+Shift+C / Ctrl+Shift+V)',
 			'preferences.quickLook.title' => 'Quick Look',
 			'preferences.quickLook.subtitle' => 'Editor font, line numbers and modal editing in the Quick Look preview.',
 			'preferences.quickLook.fontSection' => 'Editor font',
@@ -4817,8 +4637,6 @@ extension on Translations {
 			'help.groups.remote.sftp.body' => 'Work with SFTP servers right next to your local folders.\n\n- Use **Connect to Server** from the sidebar to add a remote location.\n- Once connected, open and browse remote folders exactly like local ones.\n- Bookmark folders you visit often so they stay one click away.\n- Selection, the context menu and file operations all behave the same as locally - only content search is unavailable over SFTP.',
 			'help.groups.remote.network.title' => 'Network Paths & WSL',
 			'help.groups.remote.network.body' => 'MyExplorer handles network shares and Windows Subsystem for Linux paths.\n\n- Browse mounted SMB / network shares like local folders.\n- On Windows, WSL distribution paths are recognised and openable.\n- Network locations are guarded so a slow share never freezes the UI.',
-			'help.groups.remote.terminal.title' => 'Terminal',
-			'help.groups.remote.terminal.body' => 'Each pane has its own embedded terminal that opens in the folder you are viewing.\n\n- `Ctrl` + backtick opens or focuses the terminal.\n- `Ctrl+Shift` + backtick shows or hides the terminal panel.\n- `Ctrl+Shift+T` opens a new terminal tab; `Ctrl+Shift+W` closes one.\n- `Ctrl++` / `Ctrl+-` adjust the font size and `Ctrl+0` resets it.\n- Prefer an external terminal? Choose one in **Preferences -> Terminal**.',
 			'help.groups.remote.git.title' => 'Git Status',
 			'help.groups.remote.git.body' => 'MyExplorer surfaces Git information for folders under version control.\n\n- Changed, staged and untracked files are marked in the list.\n- The current branch is shown for the folder.\n- Status updates as you work in the repository.',
 			'help.groups.customization.title' => 'Customization',
@@ -4829,8 +4647,6 @@ extension on Translations {
 			'help.groups.customization.plugins.title' => 'Plugins',
 			'help.groups.customization.plugins.body' => 'Extend MyExplorer with plugins written in Lua.\n\n- Plugins run through the native core and can add new actions.\n- Enable or disable installed plugins in **Preferences -> Plugins**.\n- See the plugin authoring guide in the project\'s docs to build your own.',
 			'help.groups.customization.shortcutBar.title' => 'Shortcut Bar',
-			_ => null,
-		} ?? switch (path) {
 			'help.groups.customization.shortcutBar.body' => 'The shortcut bar under the title bar launches folders, files or commands in one click, following Total Commander conventions.\n\n- Right-click a button to edit or remove it; the `+` area adds a new one.\n- A button can open a folder or file, run a command line, or jump with `CD <path>`.\n- Built-in commands like `cm_OpenDesktop`, `cm_OpenDrives` and `cm_OpenRecycled` are available.\n- Icons can come from a file (`icon.png`), an exe/dll (`app.exe,0`) or an index into a system library (`shell32.dll,34`).\n- Use **Import Total Commander button bar...** to load a `.bar` file (UTF-8 or GBK).\n- Leave an entry empty to create a separator.',
 			'help.groups.resources.title' => 'Resources',
 			'help.groups.resources.links.title' => 'Links & Resources',
@@ -4869,6 +4685,8 @@ extension on Translations {
 			'keybindings.quickLookNextFileEdit' => 'Next file while editing',
 			'keybindings.quickLookSave' => 'Save changes',
 			'keybindings.quickViewPanel' => 'Toggle quick view panel',
+			_ => null,
+		} ?? switch (path) {
 			'keybindings.cursorUp' => 'Move up',
 			'keybindings.cursorDown' => 'Move down',
 			'keybindings.pageUp' => 'Move up one page',
@@ -5343,8 +5161,6 @@ extension on Translations {
 			'tasks.status.cancelled' => 'Cancelled',
 			'git.clean' => 'clean',
 			'git.detachedHead' => 'detached HEAD',
-			_ => null,
-		} ?? switch (path) {
 			'git.merging' => 'MERGING',
 			'git.rebasing' => 'REBASING',
 			'git.cherryPicking' => 'CHERRY-PICK',
@@ -5383,6 +5199,8 @@ extension on Translations {
 			'hiddenList.add' => 'Add',
 			'hiddenList.edit' => 'Edit',
 			'hiddenList.save' => 'Save',
+			_ => null,
+		} ?? switch (path) {
 			'hiddenList.cancel' => 'Cancel',
 			'hiddenList.empty' => 'No hidden items',
 			'hiddenList.added' => ({required Object count}) => 'Added ${count} items',

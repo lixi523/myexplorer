@@ -12,7 +12,6 @@ import '../../ui/widgets/app_text_field.dart';
 import 'panes/appearance_pane.dart';
 import 'panes/general_pane.dart';
 import 'panes/quick_look_pane.dart';
-import 'panes/terminal_pane.dart';
 import 'settings_widgets.dart';
 
 Future<void> showPreferencesDialog(BuildContext context) {
@@ -24,7 +23,7 @@ Future<void> showPreferencesDialog(BuildContext context) {
   );
 }
 
-enum Category { general, appearance, terminal, quickLook }
+enum Category { general, appearance, quickLook }
 
 class CategoryMeta {
   final Category id;
@@ -44,11 +43,6 @@ final categories = <CategoryMeta>[
     Category.appearance,
     MyExplorerIconsRegular.palette,
     () => t.preferences.categories.appearance,
-  ),
-  CategoryMeta(
-    Category.terminal,
-    MyExplorerIconsRegular.terminal,
-    () => t.preferences.categories.terminal,
   ),
   CategoryMeta(
     Category.quickLook,
@@ -96,26 +90,6 @@ final preferenceNavSections = <PreferenceNavSection>[
     label: () => t.preferences.appearance.filesSection,
   ),
   PreferenceNavSection(
-    id: 'terminal.appearance',
-    category: Category.terminal,
-    label: () => t.preferences.terminal.appearanceSection,
-  ),
-  PreferenceNavSection(
-    id: 'terminal.behavior',
-    category: Category.terminal,
-    label: () => t.preferences.terminal.behaviorSection,
-  ),
-  PreferenceNavSection(
-    id: 'terminal.shell',
-    category: Category.terminal,
-    label: () => t.preferences.terminal.shellSection,
-  ),
-  PreferenceNavSection(
-    id: 'terminal.external',
-    category: Category.terminal,
-    label: () => t.preferences.terminal.externalSection,
-  ),
-  PreferenceNavSection(
     id: 'quickLook.font',
     category: Category.quickLook,
     label: () => t.preferences.quickLook.fontSection,
@@ -140,14 +114,6 @@ const _visibleSettingIds = <String>{
   'general.rememberFolderSort',
   'general.typeAheadBuffer',
   'general.deleteKeyBehavior',
-  'terminal.shell',
-  'terminal.external',
-  'terminal.externalCustomCommand',
-  'terminal.useSystemFont',
-  'terminal.fontFamily',
-  'terminal.fontSize',
-  'terminal.lineHeight',
-  'terminal.copyPasteMode',
   'appearance.theme',
   'appearance.showHiddenDefault',
   'appearance.rowDensity',
@@ -178,7 +144,6 @@ Category _categoryForSetting(SettingsCategory category) {
   return switch (category) {
     SettingsCategory.general => Category.general,
     SettingsCategory.appearance => Category.appearance,
-    SettingsCategory.terminal => Category.terminal,
     SettingsCategory.quickLook => Category.quickLook,
   };
 }
@@ -206,14 +171,6 @@ String? _sectionIdForSetting(String id) {
     'appearance.foldersFirst' ||
     'appearance.sortFolders' ||
     'appearance.naturalSort' => 'appearance.files',
-    'terminal.useSystemFont' ||
-    'terminal.fontFamily' ||
-    'terminal.fontSize' ||
-    'terminal.lineHeight' => 'terminal.appearance',
-    'terminal.copyPasteMode' => 'terminal.behavior',
-    'terminal.shell' => 'terminal.shell',
-    'terminal.external' ||
-    'terminal.externalCustomCommand' => 'terminal.external',
     'quickLook.useSystemFont' ||
     'quickLook.fontFamily' ||
     'quickLook.fontSize' ||
@@ -903,7 +860,6 @@ class _ContentPane extends StatelessWidget {
     return switch (category) {
       Category.general => GeneralPane(anchors: anchors),
       Category.appearance => AppearancePane(anchors: anchors),
-      Category.terminal => TerminalPane(anchors: anchors),
       Category.quickLook => QuickLookPane(anchors: anchors),
     };
   }

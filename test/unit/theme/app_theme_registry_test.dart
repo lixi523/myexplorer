@@ -39,7 +39,6 @@ void main() {
       expect(theme.name, 'One Dark');
       expect(theme.builtIn, isTrue);
       expect(theme.palette.bg.toARGB32(), 0xFF282C34);
-      expect(theme.palette.terminal.blue.toARGB32(), 0xFF61AFEF);
     });
 
     test('loads valid custom themes after built-ins', () async {

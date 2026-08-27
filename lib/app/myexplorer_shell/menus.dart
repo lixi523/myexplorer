@@ -8,7 +8,6 @@ mixin _MyExplorerMenuMixin
         State<MyExplorerShell>,
         _MyExplorerStateBase,
         _MyExplorerActionsMixin,
-        _MyExplorerTerminalMixin,
         _MyExplorerPluginMixin {
   Future<void> _handleBackgroundContextMenu(Offset position) async {
     final store = _active;
@@ -44,11 +43,6 @@ mixin _MyExplorerMenuMixin
         ),
         ContextMenuItem.divider,
       ],
-      ContextMenuItem(
-        icon: MyExplorerIconsRegular.terminal,
-        label: t.menu.openInTerminal,
-        action: 'open_in_terminal',
-      ),
       ContextMenuItem(
         icon: MyExplorerIconsRegular.folderPlus,
         label: t.toolbar.newFolder,
@@ -106,8 +100,6 @@ mixin _MyExplorerMenuMixin
         store.refresh();
       case 'select_all':
         store.selectAll();
-      case 'open_in_terminal':
-        _openInTerminal(store.currentPath.value);
       case 'properties':
         _openFolderProperties(store.currentPath.value);
     }
@@ -291,18 +283,12 @@ mixin _MyExplorerMenuMixin
           label: t.menu.openLocation,
           action: 'open_location',
         ),
-      if (isSingleFolder) ...[
+      if (isSingleFolder)
         ContextMenuItem(
           icon: MyExplorerIconsRegular.arrowSquareOut,
           label: t.menu.openInNewTab,
           action: 'open_in_new_tab',
         ),
-        ContextMenuItem(
-          icon: MyExplorerIconsRegular.terminal,
-          label: t.menu.openInTerminal,
-          action: 'open_in_terminal',
-        ),
-      ],
       ContextMenuItem.divider,
       ContextMenuItem(
         icon: MyExplorerIconsRegular.copy,
@@ -590,11 +576,6 @@ mixin _MyExplorerMenuMixin
         _hideSelectedFromList();
       case 'delete_permanent_bin':
         store.deletePermanentlySelectedFromTrash();
-      case 'open_in_terminal':
-        final entries = store.selectedEntries;
-        if (entries.length == 1 && entries.first.type == FileItemType.folder) {
-          _openInTerminal(entries.first.path);
-        }
       case 'open_location':
         final entries = store.selectedEntries;
         if (entries.length == 1) {
@@ -760,54 +741,6 @@ mixin _MyExplorerMenuMixin
                 ),
               ],
               onSelect: _handleSelectionMenuAction,
-            ),
-            TitleMenuButton(
-              label: t.keybindings.categories.terminal,
-              items: [
-                ContextMenuItem(
-                  icon: MyExplorerIconsRegular.terminal,
-                  label: t.menu.toggleTerminal,
-                  action: 'terminal_toggle',
-                  shortcut: AppShortcuts.getById('toggle_terminal').displayKeys,
-                  isToggle: true,
-                  toggleSignal: computed(
-                    () =>
-                        _shell.ready.value &&
-                        _shell
-                            .terminalVisible
-                            .value[_terminalSlotForActivePane()],
-                  ),
-                ),
-                ContextMenuItem(
-                  icon: MyExplorerIconsRegular.plus,
-                  label: t.menu.newTerminalTab,
-                  action: 'terminal_new_tab',
-                  shortcut: AppShortcuts.getById(
-                    'new_terminal_tab',
-                  ).displayKeys,
-                ),
-                ContextMenuItem(
-                  icon: MyExplorerIconsRegular.x,
-                  label: t.menu.closeTerminalTab,
-                  action: 'terminal_close_tab',
-                  shortcut: AppShortcuts.getById(
-                    'close_terminal_tab',
-                  ).displayKeys,
-                ),
-              ],
-              onSelect: (action) {
-                if (!_shell.ready.value) return;
-                final slot = _terminalSlotForActivePane();
-                switch (action) {
-                  case 'terminal_toggle':
-                    _toggleTerminalSlot(slot);
-                  case 'terminal_new_tab':
-                    _newTerminalTab(slot);
-                  case 'terminal_close_tab':
-                    final tab = _shell.activeTerminalForSlot(slot);
-                    if (tab != null) _closeTerminalTab(tab.id);
-                }
-              },
             ),
           ],
         );

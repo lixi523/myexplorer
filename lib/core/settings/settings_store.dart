@@ -14,16 +14,6 @@ class SettingsStore {
   SettingsStore._();
 
   final themeId = signal<String>('dark');
-  final terminal = signal<String>('builtin');
-  final terminalShell = signal<String>(
-    r'C:\Program Files\WindowsApps\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe',
-  );
-  final terminalCustomCommand = signal<String>('');
-  final terminalUseSystemFont = signal<bool>(true);
-  final terminalFontFamily = signal<String>('');
-  final terminalFontSize = signal<int>(13);
-  final terminalLineHeight = signal<double>(1.2);
-  final terminalCopyPasteMode = signal<String>(_defaultCopyPasteMode());
   final sessionIsDual = signal<bool>(false);
   final sessionSplitRatio = signal<double>(0.5);
   final sessionActivePaneIndex = signal<int>(0);
@@ -81,12 +71,12 @@ class SettingsStore {
   final quickLookShowStatistics = signal<bool>(true);
   final shortcutBindings = signal<Map<String, KeyChord>>({});
 
+  static const quickLookFontSizes = [8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20];
+
   late final AppDatabase _db;
   bool _loaded = false;
   Timer? _saveDebounce;
   final _disposers = <void Function()>[];
-
-  static String _defaultCopyPasteMode() => 'standard';
 
   AppDatabase get db => _db;
   bool get isLoaded => _loaded;
@@ -102,16 +92,6 @@ class SettingsStore {
   Future<void> _loadFromDb() async {
     final row = await _db.getSettings();
     themeId.value = row.themeMode == 'system' ? 'dark' : row.themeMode;
-    terminal.value = row.terminal;
-    terminalShell.value = row.terminalShell;
-    terminalCustomCommand.value = row.terminalCustomCommand;
-    terminalUseSystemFont.value = row.terminalUseSystemFont;
-    terminalFontFamily.value = row.terminalFontFamily;
-    terminalFontSize.value = row.terminalFontSize;
-    terminalLineHeight.value = row.terminalLineHeight;
-    terminalCopyPasteMode.value = row.terminalCopyPasteMode.isEmpty
-        ? _defaultCopyPasteMode()
-        : row.terminalCopyPasteMode;
     sessionIsDual.value = row.isDual;
     sessionSplitRatio.value = row.splitRatio;
     sessionActivePaneIndex.value = row.activePaneIndex;
@@ -219,14 +199,6 @@ class SettingsStore {
     _disposers.add(
       effect(() {
         themeId.value;
-        terminal.value;
-        terminalShell.value;
-        terminalCustomCommand.value;
-        terminalUseSystemFont.value;
-        terminalFontFamily.value;
-        terminalFontSize.value;
-        terminalLineHeight.value;
-        terminalCopyPasteMode.value;
         sessionIsDual.value;
         sessionSplitRatio.value;
         sessionActivePaneIndex.value;
@@ -291,14 +263,6 @@ class SettingsStore {
       await _db.updateSettings(
         AppSettingsCompanion(
           themeMode: Value(themeId.value),
-          terminal: Value(terminal.value),
-          terminalShell: Value(terminalShell.value),
-          terminalCustomCommand: Value(terminalCustomCommand.value),
-          terminalUseSystemFont: Value(terminalUseSystemFont.value),
-          terminalFontFamily: Value(terminalFontFamily.value),
-          terminalFontSize: Value(terminalFontSize.value),
-          terminalLineHeight: Value(terminalLineHeight.value),
-          terminalCopyPasteMode: Value(terminalCopyPasteMode.value),
           isDual: Value(sessionIsDual.value),
           splitRatio: Value(sessionSplitRatio.value),
           activePaneIndex: Value(sessionActivePaneIndex.value),
@@ -354,28 +318,6 @@ class SettingsStore {
     } catch (e, st) {
       log.error('settings', 'failed to save settings', error: e, stack: st);
     }
-  }
-
-  static const terminalFontSizes = [10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24];
-  static const defaultTerminalFontSize = 13;
-
-  void increaseTerminalFontSize() => _stepTerminalFontSize(1);
-
-  void decreaseTerminalFontSize() => _stepTerminalFontSize(-1);
-
-  void resetTerminalFontSize() =>
-      terminalFontSize.value = defaultTerminalFontSize;
-
-  void _stepTerminalFontSize(int direction) {
-    final sizes = terminalFontSizes;
-    final current = terminalFontSize.value;
-    var index = sizes.indexOf(current);
-    if (index < 0) {
-      index = sizes.indexWhere((s) => s >= current);
-      if (index < 0) index = sizes.length - 1;
-    }
-    final next = (index + direction).clamp(0, sizes.length - 1);
-    terminalFontSize.value = sizes[next];
   }
 
   static const fileListScaleMin = 0.5;

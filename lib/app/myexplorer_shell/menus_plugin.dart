@@ -4,11 +4,7 @@ part of '../myexplorer_shell.dart';
 /// effects, driving plugin-initiated file operations and long-running tasks.
 /// Split out of `menus.dart` so menu construction stays focused on the UI.
 mixin _MyExplorerPluginMixin
-    on
-        State<MyExplorerShell>,
-        _MyExplorerStateBase,
-        _MyExplorerActionsMixin,
-        _MyExplorerTerminalMixin {
+    on State<MyExplorerShell>, _MyExplorerStateBase, _MyExplorerActionsMixin {
   final Map<String, String> _pluginCustomOperationIds = {};
 
   List<ContextMenuItem> _backgroundPluginItems() {

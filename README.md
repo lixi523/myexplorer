@@ -10,6 +10,8 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
   <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
 </p>
 
+> **V3.4.0**: 移除内置终端功能模块 —— 删除 `lib/core/terminal/` 终端服务、`pane_view.dart` 终端面板 UI、`TerminalColors` 主题配色、终端设置分类与快捷键绑定、`myexplorer_term` 依赖；移除主菜单"终端"菜单项；清理所有终端相关 i18n 翻译键。
+
 > **V3.3.0**: 终端功能修复 —— 修复 Windows 终端无法输入中文（移除 `hardwareKeyboardOnly`，改用 `CustomTextEdit` 建立 TextInputConnection 支持 IME）；终端默认 shell 改为 PowerShell 7（WindowsApps 路径 `Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe`），偏好路径不存在时自动回退到系统默认 shell。
 >
 > **V3.1.0**: 稳定性大修 + 精简 —— **大文件复制取消即时生效、进度实时**（Rust 线程内跑 CopyFileEx，原子取消/进度 + Dart 异步轮询）；**QuickLook 压缩包内读取/保存移出 UI 线程**（7z 不再卡界面）；修复**压缩覆盖已存在目标会误删原文件**、分割任务双重读取、插件动作永久挂起、插件 worker 崩溃无恢复、SFTP 传输冲突死等、剪贴板命令长度限制等 14 项问题；启动自动清理残留 7z 临时目录；横快捷栏配置对话框支持**拖动排序**；**快捷栏图标修复**（支持 TC 式"命令+参数"图标列、引号+索引规范，增删/编辑快捷方式后图标与列表**即时刷新**不再需重启）；**移除容器（WSL 发行版列表）与标签（Tags）功能**（侧边栏分区、右键标签菜单、文件标签圆点、`tag://` 视图、`tag:` 搜索过滤全部移除，DB 表保留兼容迁移）。

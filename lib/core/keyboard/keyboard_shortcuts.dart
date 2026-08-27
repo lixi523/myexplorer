@@ -8,7 +8,6 @@ enum ShortcutGroup {
   view,
   tabs,
   panes,
-  terminal,
   fileOps,
   selection,
   search,
@@ -174,9 +173,6 @@ class AppShortcuts {
     return pressed.contains(LogicalKeyboardKey.controlLeft) ||
         pressed.contains(LogicalKeyboardKey.controlRight);
   }
-
-  static PhysicalKeyboardKey get terminalTogglePhysicalKey =>
-      PhysicalKeyboardKey.backquote;
 
   static bool get isShift =>
       HardwareKeyboard.instance.logicalKeysPressed.contains(
@@ -468,80 +464,6 @@ class AppShortcuts {
       group: ShortcutGroup.panes,
       key: LogicalKeyboardKey.tab,
       editable: false,
-    ),
-    ShortcutDef(
-      id: 'focus_terminal',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.backquote,
-      ctrl: true,
-      customKeyDisplay: '`',
-    ),
-    ShortcutDef(
-      id: 'toggle_terminal',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.backquote,
-      ctrl: true,
-      shift: true,
-      customKeyDisplay: '`',
-    ),
-    ShortcutDef(
-      id: 'new_terminal_tab',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.keyT,
-      ctrl: true,
-      shift: true,
-    ),
-    ShortcutDef(
-      id: 'close_terminal_tab',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.keyW,
-      ctrl: true,
-      shift: true,
-    ),
-    ShortcutDef(
-      id: 'insert_relative_paths',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.enter,
-      ctrl: true,
-      editable: false,
-    ),
-    ShortcutDef(
-      id: 'insert_absolute_paths',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.enter,
-      ctrl: true,
-      shift: true,
-      editable: false,
-    ),
-    ShortcutDef(
-      id: 'terminal_font_increase',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.equal,
-      ctrl: true,
-      customKeyDisplay: '+',
-    ),
-    ShortcutDef(
-      id: 'terminal_font_decrease',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.minus,
-      ctrl: true,
-      customKeyDisplay: '-',
-    ),
-    ShortcutDef(
-      id: 'terminal_font_reset',
-      label: () => '',
-      group: ShortcutGroup.terminal,
-      key: LogicalKeyboardKey.digit0,
-      ctrl: true,
-      customKeyDisplay: '0',
     ),
     ShortcutDef(
       id: 'file_list_zoom_in',

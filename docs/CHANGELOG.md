@@ -1,0 +1,697 @@
+# Changelog
+
+All notable changes to MyExplorer will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.1.0] - 2026-08-24
+
+### Added
+- Shortcut bar config dialog: items can now be reordered by dragging (previously add/edit/remove only); the new order persists to `快捷栏.ini` via the existing serialized save queue.
+- Toolbar icons: TC-style "command with arguments" icon specs (`mstsc.exe /admin /v:`) and quoted `"path",index` specs now resolve correctly; add/remove/edit of shortcuts refreshes the bar immediately (button keys + `didUpdateWidget` icon reload); unreadable paths (e.g. ACL-guarded WindowsApps) degrade cleanly instead of erroring.
+
+### Fixed
+- Large-file copy: cancel now takes effect immediately and progress updates live. `CopyFileEx` runs on a Rust worker thread with an atomic cancel flag and progress counter driven by its progress routine; Dart polls asynchronously, so the isolate event loop stays alive.
+- Quick Look archive editing no longer blocks the UI: reading archive entries (7z/zip) and saving in-archive edits now run on the FS worker pool instead of synchronously on the UI isolate (`Process.runSync` 7z calls previously froze the window).
+- Compressing over an existing target could delete the user's pre-existing file: the staged archive is now swapped in with an atomic `MoveFileEx` replace, and cancel/error paths only touch the destination when this run actually produced it.
+- Split-file task opened the source twice and read it once wastefully (a stray `openRead().listen(null)`); the redundant subscription is gone.
+- Plugin actions now time out and kill their isolate instead of hanging forever; the shared plugin worker respawns automatically after a crash and pending requests fail cleanly instead of hanging.
+- File-clipboard write no longer embeds paths in a `powershell -Command` string (8191-char limit): the script goes over stdin.
+- Conflict-resolution waits (copy/move/extract and SFTP transfers) time out after 5 minutes and skip unresolved entries instead of hanging the task forever.
+- FS worker pool operations and worker handshake now have timeouts, so a wedged worker is killed and respawned instead of hanging callers.
+- All SFTP FFI entry points are now behind a panic barrier (`catch_unwind` + panic log) like the main entry points.
+- `_uniqueName` fallback appends a random hex suffix, removing a concurrent rename collision window.
+- `isWritableDir` probe result is cached per directory (no repeated disk writes).
+- Startup now cleans stale `myexplorer-7z-*` scratch folders left by a crashed run.
+
+### Removed
+- Sidebar containers section (WSL distribution list with 8s polling) and the WSL distro dropdown in the terminal menu.
+- Tags feature: sidebar tags section, context-menu tags submenu, file-tag dots, `tag://` virtual views, `tag:` search filter, and tag bookkeeping on move/delete/rename. Related i18n keys and help pages removed. (DB tables retained for schema compatibility with existing installs.)
+
+### Tests
+- 561 unit tests pass; `flutter analyze` clean; new NativeCopy integration tests cover full copy + progress, mid-flight cancellation, and target-exists fallback.
+
+## [3.0.1] - 2026-08-24
+
+### Added
+- Bookmarks, tags and sidebar layout now persist to plain INI files in the program root (`书签.ini`, `标签.ini`, `侧栏.ini`), loaded at startup — same pattern as `隐藏文件.ini`. One-time migration imports existing SQLite data when the INI files are missing; tag <-> file assignments live in `标签.ini` too.
+- Sidebar bookmarks can be reordered by dragging rows (previously edit-mode only).
+
+### Fixed
+- Copy/move operations failed on Windows ("Permission denied" / "invalid name") since v2.5: the temp-file random suffix generator `_randomHex` converted 0-15 directly to code points, producing control characters (NUL, newline, etc.) instead of hex chars. The sibling temp filename was therefore invalid on Windows and the copy was rejected. It now generates proper hex characters, restoring copy-to-other-pane, move-to-other-pane and all file copies.
+
+### Tests
+- Copy regression suite passes (5/5); full integration suite 86 passed + 4 skipped.
+- 578 unit tests pass; `flutter analyze` is clean.
+
+## [3.0.0] - 2026-08-18
+
+### Changed
+- Full UI localization (Simplified Chinese): file type names in list/grid columns, plugin dialog buttons, plugin error messages now display in Chinese when system locale is set to Chinese.
+- Example plugins (backup-copy, open-vscode, selection-count, sevenzip, templates): all user-facing titles, descriptions, dialog labels, and toast messages translated to Simplified Chinese.
+- i18n: added `dialog.ok`, `preferences.plugins.errorLabel`, `preferences.plugins.errors.*` translation keys.
+
+### Fixed
+- Plugin form dialog buttons defaulted to English "OK"/"Cancel" — now respect locale.
+- Plugin settings page showed "error" badge in English — now localized.
+- Plugin error messages (`native core unavailable`, `api_version not supported`, `invalid manifest`, etc.) were hardcoded in English — now translated via i18n.
+- Rust core plugin error messages (`plugin timed out`, `action not found`, `exec failed`, etc.) — now translated to Chinese.
+- Operation error "missing destination" was English — now localized.
+
+### Tests
+- 566 unit tests pass; `flutter analyze` is clean.
+- Rust core rebuilt and vendored DLL synced; consistency check passes.
+
+## [2.9.0] - 2026-08-18
+
+### Fixed
+- Crash / instant quit when running plugin actions (e.g. the "Open in VS Code" toolbar button): a Rust panic in the plugin execution path called `abort()` (release profile was `panic = "abort"`) and fast-failed the whole process. The release profile now unwinds, all 21 FFI entry points (list / enumerate / trash ×4 / search / plugin ×5 / pdf ×2 / folder_scan ×4 / pty ×6) run inside `catch_unwind` barriers, and a caught panic message is written to `%TEMP%\myexplorer_core_panic.log` for diagnosis, so a plugin failure degrades to an error instead of killing the app.
+- `open-vscode` example documents that the official VS Code installer only puts `code.cmd` (a batch shim) on PATH, which native `CreateProcess` cannot launch — configure the command as `cmd /c code`.
+
+### Changed
+- Hidden list (`隐藏文件.ini`) entries now support two matching modes inferred from the entry itself: entries **without a path separator** hide any file/folder with that name anywhere (e.g. `desktop.ini`, `node_modules`); entries **with a separator** keep the existing exact full-path match. Existing lists need no changes.
+- Hidden list dialog gains inline **edit**: every entry shows an edit button that swaps the row to a text field with Save/Cancel; saving replaces the entry in a single atomic write (`HiddenListStore.updatePath`). The dialog now fully manages add / edit / remove.
+
+### Tests
+- Hidden list: name-vs-path matching (5 cases) and `updatePath` replace / normalize / empty-value semantics (3 cases).
+- 566 unit tests pass; `flutter analyze` is clean.
+
+## [2.8.0] - 2026-08-17
+
+### Changed
+- Theme seeding backfills built-in theme ini files per id: missing built-ins are exported even when custom ini files already exist, and existing files (including same-id custom overrides) are never overwritten.
+- Theme ini decoding detects UTF-8 / UTF-16LE / UTF-16BE BOMs, so files saved as UTF-16 by third-party editors load correctly.
+- Exported theme ini files start with a comment reminding that translucent colors must keep 8-digit `#AARRGGBB`.
+- Shortcut-bar commands and custom terminal commands no longer run through `cmd.exe` (`runInShell` removed): shell metacharacters like `&` are literal argument characters now; shell features require an explicit `cmd /c` — matching Total Commander's native CreateProcess behaviour.
+- Enforced the `unawaited_futures` linter; fixed six real dropped-future sites (app bootstrap `runZonedGuarded`, SFTP read-stream close, split-task sink closes, copy/move worker error chains).
+- Rust FFI entry points (list / enumerate / trash ×4 / search) run inside a `catch_unwind` panic barrier instead of unwinding across the C ABI.
+- Added `scripts/check_myexplorer_core_up_to_date.ps1` that fails fast when the vendored native core drifts from the locally built DLL; wired into CI as a regression gate.
+
+### Fixed
+- `ShellBase._active` getter no longer force-unwraps the nullable `activeStore` signal (guarded fallback to the first tab).
+- Grid view no longer falls back to hardcoded font sizes when the text-style role font size is read off (`context.txt.row.fontSize` is authoritative).
+- Mojibake in a `location_resolver` doc comment (`鈫?` → `→`, leftover from a legacy encoding conversion).
+
+### Tests
+- Theme registry: per-id seeding backfill, no-overwrite of same-id built-in inis, UTF-16LE/BE BOM decoding (+4).
+- AppDirs: base directory stays pinned until `debugReset` even when the executable dir changes (+1).
+- 558 unit tests pass; `flutter analyze` is clean.
+
+## [2.7.0] - 2026-08-17
+
+### Added
+- Vertical shortcut bar: four copy shortcuts — copy file names, copy parent folder path, copy full path, copy details.
+- Slow double-click (2x-3x the normal double-click interval) enters rename mode in both list and grid views.
+
+### Changed
+- Horizontal shortcut bar wraps to a second row when shortcuts overflow the width; the fixed right-side buttons stay on one row.
+- Horizontal shortcut bar: removed the built-in list-view and search buttons; the shortcut-bar config button now uses a gear icon.
+- Code review fixes: null-safe `activePane` access throughout the shell, awaited/unawaited future handling, detailed `log.warn` in SFTP executor instead of silent catches.
+- Split `preferences_view.dart` into `preferences_view.dart` + `settings_widgets.dart` (shared settings components); split `file_view.dart` into `file_view.dart` + `file_view_columns.dart` (list header / column config).
+- GBK/ANSI theme ini decoding tolerates legacy encodings.
+
+### Fixed
+- `gbk_codec.encodeGbkBytes` returned a view into freed calloc memory; bytes are now copied before the native buffer is released.
+
+### Tests
+- Added unit tests for `buildEntryDetailsText`, `ClipboardController.copyText`, file-sort boundary cases (empty names, emoji/CJK, long names, dotfiles), and slow-double-click helper behaviors (+10 tests, 563 total).
+
+## [2.6.0] - 2026-08-16
+
+### Added
+- Shortcut bar editing: right-click a shortcut button for Edit/Remove, and the shortcut bar config dialog now supports editing existing shortcuts (pre-filled form with Save/Cancel).
+
+### Changed
+- Split `menus.dart` (1649 lines) into `menus.dart` + `menus_plugin.dart` by domain (menu construction vs plugin execution).
+- Split `sidebar.dart` (1916 lines) into `sidebar.dart` + `sidebar_edit.dart`, `sidebar_footer.dart`, `sidebar_header.dart`, `sidebar_operations.dart`.
+- Portable layout hardening: when the program folder is read-only (e.g. `Program Files`), app data falls back to `%LOCALAPPDATA%\MyExplorer` instead of failing silently; the fallback is logged at startup.
+- Theme INI fallback decode: theme files saved as GBK/ANSI (legacy Windows codepage) are decoded via the GBK codec when they are not valid UTF-8.
+
+### Fixed
+- `encodeGbkBytes` returned a view into freed calloc memory; bytes are now copied before the native buffer is released, so GBK fixtures (and TC bar round-trips) no longer carry garbage prefixes.
+
+### Tests
+- Added unit tests for `OperationStore` plugin tasks, `SftpTaskExecutor` path detection/session serialization, `SftpSessionManager` URI mapping, `AppDirs` read-only fallback, GBK theme loading, and `ShortcutBarStore.update` (+35 tests).
+
+## [2.5.0] - 2026-08-12
+
+### Fixed
+- Code review fixes: path traversal protection (`archive_reader`), compile error (`operation_store`), plugin action cascade (`menus`), shortcut binding (`keyboard_shortcuts`), database over-deletion, silent search failures, git listener leaks, and 10 more.
+
+## [2.4.0] - 2026-08-10
+
+### Changed
+- Portable layout: database, logs, themes, plugins, update downloads, archive scratch and icon cache all live under the program directory; the app no longer writes to %APPDATA% or %TEMP%.
+- Dropped the unused `path_provider` dependency.
+
+### Fixed
+- Fully transparent row decorations (e.g. tagged rows) no longer draw an 18% black overlay, keeping file rows on the window background in both list and grid views.
+
+### Style
+- Tag labels use RGB(35,35,35) in light mode.
+
+## [2.3.0] - 2026-08-10
+
+### Fixed
+- Shortcut bar saves are serialized: rapid add/remove/reorder no longer race on the shared temp file and silently drop edits.
+- File operation workers guard against a missing destination instead of crashing on a null assertion.
+- Changelog now matches the actual 2 s right-button long-press delay.
+
+### Performance
+- Git status caching: the repo-root lookup skips parent-directory walks once a repository is known, and the git command timeout is relaxed to 8 s for large repositories.
+
+## [2.2.0] - 2026-08-10
+
+### Added
+- Shortcut bar icons: when no icon is configured the button auto-extracts one from the target exe; explicit `path,index` specs (e.g. `shell32.dll,34`) are supported via `SHDefExtractIconW`.
+
+### Changed
+- Dark theme palette: background RGB(70,75,85), primary text RGB(223,233,233).
+- Tagged file rows no longer tint the whole row background; tags remain visible as badge dots.
+- Repository links (About pane, toolbar, help, update checker) point at the actual GitHub repo.
+
+### Fixed
+- Icon extraction now uses `SHGetFileInfoW` (some Windows hosts lack `ExtractIconExW`).
+- Integration test fixtures no longer depend on an external `zip` binary.
+
+## [2.1.0] - 2026-08-09
+
+### Changed
+- Re-branded from waydir to MyExplorer: package name, native core, CLI, plugin API and environment variables all renamed consistently.
+- File coloring now tints the file name text (by extension rules, folders fixed blue) instead of the row background; the row background stays unchanged.
+- Right-button (NC mode) selection: right-click adds to the selection (multi-select, highlighted but not bold), right-drag sweeps and selects every row passed over (with edge auto-scroll), and a 2 s right-button long-press opens the context menu. Matches Total Commander's extended selection behavior.
+
+## [2.0.0] - 2026-08-08
+
+### Added
+- Center shortcut bar: new "Quick Look" button (first position, fileTxt icon) that opens the quick preview for the selected file, completing the TC F3-equivalent action set in the bar.
+- TC-style quick view panel (Ctrl+Q): a persistent preview strip at the bottom of the opposite pane that follows the cursor in the active pane, reusing the Quick Look renderers (image / pdf / markdown / code / properties).
+- Pause/resume for queued file operations (TC queue parity): queued tasks can be paused and resumed from the operations panel.
+- Checksum manifest files: create `.md5` / `.sha256` manifests for selected files (GNU coreutils format, one per folder), and verify an existing manifest in batch with a per-file result list.
+- Split/combine files (TC parity): split a file into numbered parts (`.001`, `.002`, …) with a `.crc` MD5 manifest, and combine parts back via the context menu. Preset sizes (floppy / 100 MB / CD / DVD) plus custom byte size.
+- Automatic conflict policies (TC parity): settings to auto-overwrite when the source is newer (skip when older) and to auto-skip files with identical sizes during copy. Runtime-only for now (DB persistence deferred until codegen is available locally).
+- Duplicate file finder (View menu): recursive size-then-hash scan in a background isolate, grouped results with per-file checkboxes (one copy kept by default), trash/delete selected duplicates, recoverable-bytes summary.
+- Multi-rename enhancements: `[C]` counter with start/step/digit-padding controls, `[N1-3]` / `[N-2]` name slicing (1-based, negative from end), `[P]` parent folder name.
+- File coloring rules (View menu → File Coloring…): extension → color rules tint matching file rows, with a built-in default palette (executables red, images purple, archives brown, docs blue, media green, text cyan), add/remove/reset UI. Runtime-only for now (persistence deferred until codegen is available).
+- TC parameter macros in shortcut bar: `%P`/`%N`/`%T`/`%M`/`%L`/`%S` (and lowercase raw variants) expand against the active pane's path and selection when running a button, matching Total Commander semantics.
+- In-archive edit (zip/tar): Quick Look can now open and save text files inside archives — `readEntryBytes` reads entries without extracting, and `ArchiveWriter.mutate` gained a `replaceSource`/`replaceInner` in-place replace (with a Windows file-lock fix: decode via bytes instead of an open stream, and delete-before-rename).
+- 7z browsing & extraction: `.7z` archives are recognized and browsable as folders, entries can be extracted and previewed, via the system 7-Zip binary (auto-detected next to the app, in PATH, standard install dirs, or scoop/chocolatey). Creating 7z archives is not supported yet (zip/tar remain the write formats).
+
+## [1.5.0] - 2026-08-07
+
+### Added
+- Vertical center shortcut bar between the two panes in dual-pane mode (new file, new folder, copy/move to other pane, delete, tree/list/grid view, select/deselect by pattern, invert selection, search, sync, multi rename, toggle hidden, properties).
+- "New File" support: `startCreate` can now create an empty file (local and SFTP).
+- "Deselect by pattern" support for un-selecting a group of files by glob.
+
+### Changed
+- The app is now permanently in dual-pane mode; the single-pane layout and the toggle entry (menu / shortcut / command palette) were removed.
+- Horizontal shortcut bar (title bar) trimmed: removed back/forward/up/refresh/new folder/copy/cut/paste/delete/properties buttons; the center shortcut bar now hosts these actions.
+- Dialog primary buttons (hidden list "Add", shortcut bar "Add") now use the same muted styling as the other buttons.
+
+## [1.2.0] - 2026-08-07
+
+### Added
+- Hidden list (`隐藏文件.ini`): hide selected files and folders from every list view via the right-click menu, with an editable hidden list dialog under the View menu.
+- Single-instance enforcement: launching the app again focuses the existing window instead of starting a second copy.
+- Open maximized by default on startup.
+
+### Changed
+- Renamed the application to **MyExplorer** (window title, executable name, installer and product metadata).
+
+## [0.50.0] - 2026-08-04
+
+### Added
+- Total Commander-style shortcut bar: import `.bar` button bars (UTF-8 and GBK), app icons from `path,index` specs or embedded exe/dll icons, separators, `CD <path>` folder navigation and `cm_` built-in commands (`cm_OpenDesktop`, `cm_OpenRecycled`, `cm_OpenDrives`).
+- Simplified Chinese localization, auto-detected on Chinese systems.
+- Optional icon field when adding shortcut bar items.
+
+### Changed
+- Windows-only: Linux and macOS support, directories, CI jobs and platform-specific code removed.
+- CI rebuilt around `windows-latest` runners; the Rust core is built and vendored in the pipeline.
+- Integration tests no longer require a live SMB server (live cases are gated behind the `MYEXPLORER_LIVE_SMB` compile-time flag and skipped by default).
+- `sqlite3` pinned to 3.1.7 to avoid the native-assets build hook.
+
+### Fixed
+- Integration tests hanging on CI when no SMB server is present.
+- Integration tests on Windows runners.
+
+## [0.23.0] - 2026-07-18
+
+### Added
+- Tree view for browsing folders inline from the file list.
+
+### Fixed
+- Grid navigation in Quick Look.
+- Cmd+W can close the last macOS window.
+- Extracted files keep their original modified dates.
+- Delete operation edge cases and safe file replace.
+
+## [0.22.0] - 2026-06-29
+
+### Added
+- Duplicate selected files and folders in place with `Ctrl+Shift+D`, available from the keyboard, command palette and context menu.
+
+### Changed
+- Faster file copying, especially on Windows and when copying lots of small files.
+- Renamed the "Kind" column to "Format".
+
+## [0.21.0] - 2026-06-22
+
+### Added
+- Command palette (`Ctrl+P`) to fuzzy-search and run actions, jump to bookmarks, drives, recent locations and files, and run plugin actions.
+
+### Changed
+- Removed the toast notification shown when a new version is available.
+
+## [0.20.1] - 2026-06-22
+
+### Fixed
+- Settings dialogs no longer fail to render their modals.
+
+## [0.20.0] - 2026-06-22
+
+### Added
+- Plugins: actions can read the other pane through `ctx.other_pane` and every pane through `ctx.panes`, enabling copy-to-other-pane, compare and sync workflows.
+- Plugins: reactive `navigate` and `selection_change` event handlers via the `event` field.
+- Folder compare and sync between panes.
+- Color tags for files, with a sidebar section and filtering.
+- Setting to make dragging move files by default (Alt copies). ([#184](https://github.com/MyExplorer/MyExplorer/issues/184))
+- Menu bar: dedicated Help menu with in-app tutorial, keybindings, diagnostics, repository and bug report links.
+- Preferences: in-dialog search to jump to any setting.
+
+### Changed
+- Reworked the Help dialog.
+- Plugins now run with full trust: the `exec`/`fs` permission system was removed. Existing plugins keep working; any `permissions` field in a manifest is ignored.
+- Plugins load and status bars refresh on a shared background isolate instead of spawning one per call, keeping startup and panes smooth.
+
+### Fixed
+- `myexplorer.exec` is now bounded to 5 seconds, so a hung external command can no longer wedge a plugin.
+
+## [0.19.0] - 2026-06-20
+
+### Added
+- Quick Look: Markdown preview for `.md` and `.markdown` files.
+- More shortcuts are now customizable: Delete, Rename, New Folder, and dual-pane Copy/Move.
+- Customizable shortcut for permanent delete (defaults to `Ctrl+Delete`), now separate from move-to-trash.
+- Resizable columns in the file list (toggle in Appearance).
+- Collapsible sidebar sections.
+- Terminal: configurable copy/paste modifier (Standard `Ctrl+C`/`Ctrl+V` vs. `Ctrl+Shift+C`/`Ctrl+Shift+V`, platform-aware default) in Terminal preferences.
+
+### Fixed
+- Renaming the same item repeatedly no longer loses focus.
+- Spacing between list view columns cleaned up.
+
+## [0.18.0] - 2026-06-16
+
+### Added
+- macOS: "Date added" column showing when a file appeared in its current folder. ([#173](https://github.com/MyExplorer/MyExplorer/issues/173)) ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: closing the window now keeps the app in the dock instead of quitting, and reopening it (dock click or Cmd+N) brings the window back. ([@fwitkowski17](https://github.com/fwitkowski17))
+- Windows: WSL support. Browse WSL distributions from the sidebar.
+- Terminal: the new-tab dropdown lets you pick any shell, or a WSL distribution, to launch the next terminal session.
+- Terminal: Ctrl+Enter inserts relative paths and Ctrl+Shift+Enter inserts absolute paths for the current file selection.
+- Menu bar: View menu now marks the active layout (list/grid), and a new Terminal menu toggles the panel and manages terminal tabs.
+- Selection: Invert selection (`Ctrl+I`).
+- Navigation: `Home`/`End` jump to the first/last item (Shift extends the selection).
+- Calculate folder sizes (`Alt+S`); sizes show live in the Size column and sort with it.
+
+### Fixed
+- "Show folders before files" preference now applies; removed the duplicate toggle from the sort menu.
+- Sort by size now treats folders as size 0 and keeps them name-ascending, instead of using the directory inode size.
+- PDF preview crash when rapidly switching between files ([#175](https://github.com/MyExplorer/MyExplorer/issues/175)).
+- "Date created" now uses real birth time instead of ctime ([#174](https://github.com/MyExplorer/MyExplorer/issues/174)).
+- File operations now report a clean "Permission denied" message (instead of a raw error string) across more cases, including SFTP/SMB transfers and Windows access-denied errors.
+- Quick Look: line numbers now have more room before the editor content.
+- Insert now starts keyboard selection from the current file instead of clearing it on the first press.
+
+## [0.17.0] - 2026-06-14
+
+### Added
+- Quick Look: PDF preview.
+- Sort menu (status bar button and right-click), so sorting works in grid view too.
+- Appearance: "Show folders before files" toggle.
+- Type-ahead jump: quickly typed letters combine into a search string (toggle in General settings).
+- Jump to bookmarks with Ctrl/Cmd+Shift+1..9.
+
+### Fixed
+- Grid view now supports left/right arrow navigation, drag selection, file dragging and Appearance spacing/density settings.
+- Updates now verify downloaded files before installing.
+
+## [0.16.0] - 2026-06-13
+
+### Added
+- Grid view with image thumbnails.
+- Search now has a Filter mode with query suggestions for kind, extension, size, date and hidden-file filters.
+- Quick Look: prompts to save, discard or cancel when closing the editor with unsaved changes.
+- Quick Look: relative line numbers option, showing distance from the current line.
+- Quick Look: option to turn off the statistics panel for multi-selection properties.
+- The path bar now expands environment variables: `%VAR%` on Windows and `$VAR`/`${VAR}` on Linux and macOS. ([#163](https://github.com/MyExplorer/MyExplorer/issues/163))
+- Command-line support: launch MyExplorer with folder paths and options to open straight to a location. Run `myexplorer --help` for details. ([#164](https://github.com/MyExplorer/MyExplorer/issues/164))
+
+### Changed
+- The file list now shows descriptive Kind labels by default, with the default column order set to Name, Kind, Size, then Date.
+- Quick Look editor now uses a viewport-virtualized engine (re_editor), so editing stays fast even on very large files.
+- Quick Look now previews text files up to 32 MB (was 4 MB); syntax highlighting is skipped above 1 MB to keep large files instant.
+- The changelog viewer now shows only released versions with cleaner headings.
+- Quick Look now shows a Created date and formats dates using your date-format preference.
+
+### Fixed
+- Terminal: text lines no longer bleed above the panel into the widgets above it.
+- Terminal: Alt+letter shortcuts now send the lowercase key (for example Alt+v sends `ESC v`), so meta keybindings work.
+- Terminal: Ctrl+V now passes through to the running app when the clipboard holds an image, so it can handle the image paste itself.
+- Quick Look: Ctrl+S (Cmd+S) now saves edits in the editor.
+- Quick Look: the line-number gutter now always widens to fit the longest number.
+- Quick Look: line numbers now align with their lines on Windows.
+- Windows: the Permissions and Owner columns and the Quick Look permissions row, which are POSIX-only, are no longer shown.
+
+## [0.15.0] - 2026-06-11
+
+### Added
+- Changelog viewer: open it from the MyExplorer menu to read all release notes rendered as Markdown.
+- Quick Look preferences: choose the editor font and line height, show line numbers, toggle line wrapping and enable a basic Vim mode for editing previews.
+- File list columns can be configured: toggle Size, Date modified, Kind, Date created, Permissions and Owner on or off, and drag to reorder them. Every column is sortable.
+- The path bar now expands `~` to the home folder. ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: MyExplorer now prompts for Full Disk Access when needed. ([@fwitkowski17](https://github.com/fwitkowski17))
+
+### Fixed
+- Copying, pasting and dragging files into an empty folder now works. ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: the Videos location now opens the Movies folder. ([@fwitkowski17](https://github.com/fwitkowski17))
+- macOS: files copied in Finder can now be pasted in MyExplorer, and MyExplorer's own copies are recognized by Finder. ([@fwitkowski17](https://github.com/fwitkowski17))
+
+## [0.14.0] - 2026-06-10
+
+### Added
+- Sidebar edit mode: reorder sections and items by dragging, and hide ones you don't use. Every item now has a right-click menu (open, copy path, properties, eject, and more).
+- File and terminal tabs can now be reordered by dragging.
+- One Dark is now available as a built-in theme.
+
+### Changed
+- Reworked sidebar spacing for consistent alignment, and renamed the Favorites section to Places.
+- Multi Rename now appears in Operations with progress while files are being renamed.
+
+### Fixed
+- Operation cancellation no longer gets stuck in the cancelling state.
+- Terminal text selection now auto-scrolls and keeps the selected range correct.
+
+## [0.13.0] - 2026-06-10
+
+### Added
+- Debian/Ubuntu and Fedora/RHEL/openSUSE package repositories: install MyExplorer from an apt or dnf/zypper repository and receive new releases through your regular package manager updates.
+
+### Changed
+- deb and rpm builds no longer install updates from within the app. When MyExplorer runs from a package, the updater now points you to your package manager (`apt upgrade` / `dnf upgrade`), which the repository keeps up to date.
+
+## [0.12.0] - 2026-06-09
+
+### Added
+- Quick Look shortcuts now have their own section in the keyboard shortcuts, and a hint bar at the bottom of the Quick Look window shows the available keys. The close key can be remapped (defaults to Space).
+- Plugins can register global and per-pane status bars with periodically refreshed text, badges, icons and buttons.
+
+### Fixed
+- Quick Look: arrow keys keep moving between files even when an editable file is open; Ctrl/⌥ + arrows switch files while editing.
+- The rename shortcut now starts multi-rename when several files are selected.
+- A failing plugin action now shows an error notification instead of crashing the app.
+- Plugin enable/disable state now updates immediately in Preferences.
+
+## [0.11.0] - 2026-06-09
+
+### Added
+- Plugins can create and update custom entries in the Operations panel with `myexplorer.operation_start`, `myexplorer.operation_update`, and `myexplorer.operation_finish`.
+- Plugin `run_task` can show long-running external commands in Operations with optional regex-based progress parsing.
+- Plugins can query local file sizes with `myexplorer.file_size`.
+
+## [0.10.1] - 2026-06-08
+
+### Changed
+- Plugins: `myexplorer.exec` now returns the command's stdout, stderr, and exit code.
+
+## [0.10.0] - 2026-06-08
+
+### Added
+- Windows: entering a bare server (`\\computername`) now lists its shared folders, the way Explorer does.
+- Confirm button in the editable path bar.
+- Plugin system: extend MyExplorer with small Lua plugins that add context-menu, menu bar, toolbar, and keyboard-shortcut actions. Manage and configure them in Preferences → Plugins. See [docs/plugins.md](docs/plugins.md) for the guide and example plugins.
+- Preferences option to sort only files and keep folders in their default order.
+
+### Fixed
+- SMB: listing a host's shares now prompts for a password when one is required.
+- Restoring a session no longer hangs on startup when the last folder was a network path; on any restore failure MyExplorer falls back to the home folder and logs the error.
+- Cancel now stops a copy or move immediately during scanning.
+- Sidebar scrollbar no longer overlaps the resize edge, so both are easy to grab.
+- Root path `/` now shows in the path bar.
+- macOS: files and folders now show up reliably (the native core is shipped as a universal binary).
+- macOS: drive size and usage in tooltips are no longer doubled.
+- Linux: the AppImage now uses a gzip-compressed squashfs and a statically linked runtime, so it runs on older squashfuse / AppImageLauncher and on fuse3-only systems without libfuse2.
+
+### Changed
+- Windows: drive names now read `Local Disk (C:)`, and network drives show the share name like `share (Z:)`.
+- Shortcuts modal grouped into clearer categories (separate View, Terminal, and General sections).
+
+## [0.9.1] - 2026-06-02
+
+### Changed
+- macOS: menus moved to the native menu bar.
+
+### Fixed
+- AppImage now links to the download instead of failing an in-place update.
+
+## [0.9.0] - 2026-06-02
+
+### Added
+- The sidebar can be resized by dragging its edge, and collapses to an icon-only rail when narrowed past a threshold; the width is remembered.
+- Linux builds are now also published as an AppImage (portable, no install).
+- Page Up / Page Down move the cursor by a page in the file list (Shift extends the selection).
+- Shell selection for the built-in terminal.
+- "Open in Terminal" lists the external terminals detected on the system instead of only auto-detect.
+
+### Changed
+- "Open in Terminal" now opens the built-in terminal by default; the external terminal stays available in Preferences.
+
+### Fixed
+- Windows network breadcrumbs split the server and share, so you can click the server to browse its shares.
+- Shift + arrow keys now extend the selection in the file list.
+- Terminal tabs and the new-tab/close buttons now show hover feedback.
+- Resizing the terminal panel is now smooth (the drag no longer rebuilds the whole pane on every frame).
+- The split between dual panes is easier to grab (wider, reliable drag target).
+
+## [0.8.0] - 2026-06-01
+
+### Added
+- Natural sort order (enabled by default): numbers in file names sort by value, so "file2" comes before "file10". Can be toggled in Preferences → Appearance.
+- Sidebar network entries now show a tooltip with the full name (and remote target) when the label is truncated.
+
+### Fixed
+- New folders no longer briefly appear twice before a refresh.
+- After creating a folder you can open it with Enter right away, without clicking the list first.
+- Windows network drives now show the drive letter first in the label.
+- Windows: listing a bare network share root (`\\server\share`) now works.
+
+### Changed
+- Network drives no longer show an eject button (SFTP/SMB connections keep their disconnect action).
+
+## [0.7.0] - 2026-05-31
+
+### Added
+- Features dialog with short guides and demo clips for the main features.
+- Embedded terminal in each pane with remote connections support.
+- Terminal preferences: font, size, line height and system font picker.
+- Content search: a "Content" toggle in the search bar matches inside file contents.
+- Keyboard shortcut (Ctrl+L) to focus the path bar.
+- Tokyo Night built-in theme.
+- Gruvbox built-in theme (dark and light).
+- Dracula built-in theme.
+- Solarized built-in theme (dark and light).
+- Catppuccin built-in theme (Mocha and Latte).
+
+### Changed
+- Terminal keyboard shortcuts are now customizable.
+- Window title now follows the active folder.
+
+### Fixed
+- Portable updates on Windows now apply correctly.
+- Various small UI fixes and polish.
+
+## [0.6.1] - 2026-05-28
+
+### Fixed
+- Breadcrumb path suggestions now scroll to the highlighted item when navigating with arrow keys.
+
+## [0.6.0] - 2026-05-27
+
+### Added
+- Breadcrumb path entry now suggests folders and recent paths.
+- File checksums can now be calculated and verified with MD5 and SHA-256.
+- File list horizontal and vertical spacing can now be adjusted in Preferences.
+- Properties now shows statistics for selected files and folders.
+- Leave the Share field empty when connecting to SMB to browse the server's shared folders.
+- MyExplorer now remembers the selection, cursor and sort order for each folder. Both can be toggled off in Preferences.
+
+### Changed
+- File list scrollbar is now always visible and reserves space at the right edge.
+- Breadcrumb bar rebuilt with better overflow handling for long folder names.
+- Toolbar buttons collapse into a menu when the pane is narrow.
+
+### Fixed
+- Window resize hit area is now tighter on Linux and Windows.
+
+## [0.5.1] - 2026-05-25
+
+### Fixed
+- UI fixes.
+- Archive creation and browsing fixes.
+- UI no longer freezes when enqueuing copy/move from mapped network drives on Windows.
+
+## [0.5.0] - 2026-05-25
+
+### Added
+- Devices tooltip now shows numeric disk usage details.
+- Trash restore and permanent delete operations now show titles and progress in the operations panel.
+- Jump to files by typing a letter. Press the same letter again to cycle through matches.
+- Selection and cursor position are now restored when going back/forward and preserved across file operations.
+- Selection can now be saved to a text file and loaded back by matching visible item names in the current view.
+- Search supports regex and glob patterns alongside substring matching. Switch between modes from the new segmented toggle in the search bar.
+- File operations now show current transfer speed and ETA in the operations panel.
+- Connect to network drives over SMB and SFTP from the sidebar's Network section. Browse, open, copy, move, and delete remote files like local ones.
+
+### Changed
+- UI improvements.
+- Properties view no longer shows read-error messages; it always displays the available details.
+- Recursive search results now use the normal file list layout with size, modified date, and a shortened location column.
+
+### Fixed
+- Pressing D no longer toggles dual pane.
+- Properties for recursive search results now show correct file size and modified date.
+- Dismissing a file operation while waiting for conflict resolution now skips the remaining conflicts and resumes the task instead of leaving it stuck.
+
+## [0.4.1] - 2026-05-21
+
+### Changed
+- Removed the 5,000 result cap on recursive search. Results stream in faster on fast drives.
+
+### Fixed
+- Search result counter now updates with the query.
+- Archive name no longer ends up empty at filesystem root; uses the drive letter on Windows or `archive` otherwise. Empty names are also blocked in the compress dialog.
+- Cancel button now actually stops archive operations.
+- Windows: maximized window no longer overflows past the screen edges.
+
+## [0.4.0] - 2026-05-20
+
+### Added
+- Confirmation dialogs before copying and moving files, with per-action toggles in Preferences (off for copy, on for move by default).
+- Confirmation dialogs can now be accepted with Enter or dismissed with Esc.
+- Light and Nord built-in themes.
+- Custom theme management: create, edit, and delete your own themes via JSON files in Preferences.
+- Ctrl+H shortcut to toggle hidden files.
+- Ctrl+S shortcut to select files by a pattern (e.g. `*.jpg`).
+- Quick Look now shows a combined summary (total size and item count) when multiple files and folders are selected.
+- Recursive search now streams results as they are found, with a live counter of scanned entries instead of waiting for the full scan to complete.
+- Devices in the sidebar now show mounted disk usage with a thin color-coded bar.
+
+### Changed
+- Replaced old file icons with beautiful new SVG Material icons.
+- Completely rebuilt Quick Look for a cleaner preview experience with better file details, image viewing, and text/code editing.
+- Holding Up/Down now moves through files continuously at a controlled pace.
+- Faster directory scanning in large folders thanks to improved parallel walk.
+
+### Fixed
+- Windows: entering a drive without a trailing backslash (e.g. `X:`) no longer chops the first letter from breadcrumb segments and subpaths.
+- Right-click context menu on files now opens instantly instead of briefly hanging while resolving the default app.
+- Cascading context submenus now close when the pointer leaves both the parent item and the submenu.
+- Fixed archives not working on Windows.
+
+### Removed
+- Command palette (Ctrl+P).
+
+## [0.3.1] - 2026-05-17
+
+### Fixed
+- Linux RPM no longer fails to install on Fedora and other non-Debian distros due to an unresolvable `libbz2.so.1.0` dependency.
+
+## [0.3.0] - 2026-05-17
+
+### Added
+- Archive support: browse, extract, compress, and edit archives (ZIP, TAR, 7z, RAR, and more) like regular folders.
+- File preview with Space (Quick Look) for images, text, and code.
+- Open files with a chosen app and manage default apps per file type.
+- Sidebar bookmarks.
+- Preferences dialog with General, Appearance, and About sections.
+- Command palette opened with Ctrl+P for quick app actions.
+- Keyboard shortcut for opening Preferences with Ctrl+,.
+- Git status bar with branch switching, stash management, and repository state.
+- Refresh the current folder with Ctrl+R.
+
+### Changed
+- Much faster directory listing, recursive search, and delete scans, especially in very large folders, thanks to a new native core.
+- Show Hidden Files from the View menu now applies globally to all open panes and tabs.
+- Simplified the sidebar collapse button to an icon-only control.
+
+## [0.2.0] - 2026-05-13
+
+### Added
+- Dynamic drive management with real-time detection of connected drives.
+- Mount and unmount drives directly from the sidebar.
+- Mouse drag selection (lasso) to easily select multiple files.
+- Windows support (paths, drives, breadcrumbs, system file filtering, native file opening).
+- View menu with dual-pane and hidden-file toggles.
+- Notification history access from the status bar.
+- Active operation progress shortcut in the sidebar.
+
+### Changed
+- Polished the main layout, sidebar, status bar, title bar, and notification surfaces.
+- Moved operation and notification controls out of the pane toolbar for a cleaner file view.
+- Improved file operation conflict notifications with apply-to-all actions.
+- Migrated settings persistence from JSON file to SQLite via Drift.
+- Removed `scaled_app` and custom UI scaling system.
+
+### Fixed
+- Safer file replacement during copy operations, including Windows replace handling and temporary-file cleanup.
+- More resilient filesystem worker startup, failure handling, and disposal.
+- Operation conflict handling now correctly waits for user resolution and keeps conflict state in sync.
+- Double title bar on Windows.
+- Remove autostart from Windows installer.
+- Disable macOS app sandbox to allow full filesystem access.
+
+## [0.1.1] - 2026-05-09
+
+### Fixed
+- UI scaling across the app via `scaled_app` integration.
+
+## [0.1.0] - 2026-05-09
+
+### Added
+- Initial public release.
+- Dual-pane file browsing with tabs.
+- Keyboard-driven workflow with custom shortcuts.
+- File operations (copy, move, delete) with progress panel and notifications.
+- Custom dark theme and custom title bar.
+- Settings store with persistent user preferences.
+
+[Unreleased]: https://github.com/MyExplorer/MyExplorer/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.19.0...v0.20.0
+[0.19.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.18.0...v0.19.0
+[0.18.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.16.0...v0.17.0
+[0.16.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.10.1...v0.11.0
+[0.10.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.10.0...v0.10.1
+[0.10.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.5.1...v0.6.0
+[0.5.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.4.1...v0.5.0
+[0.4.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.3.1...v0.4.0
+[0.3.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/MyExplorer/MyExplorer/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/MyExplorer/MyExplorer/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/MyExplorer/MyExplorer/releases/tag/v0.1.0

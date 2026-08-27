@@ -22,8 +22,6 @@ import '../core/models/app_notification.dart';
 import '../core/models/file_entry.dart';
 import '../core/models/file_operation.dart';
 import '../core/settings/settings_store.dart';
-import '../core/terminal/shell_detector.dart';
-import '../core/terminal/terminal_launch.dart';
 import '../features/containers/wsl_path.dart';
 import '../features/checksum/checksum_dialog.dart';
 import '../features/checksum/checksum_manifest_dialog.dart';
@@ -48,7 +46,6 @@ import '../features/panes/pane_view.dart';
 import '../features/panes/pane_divider.dart';
 import '../features/panes/center_shortcut_bar.dart';
 import '../features/panes/shell_store.dart';
-import '../features/panes/terminal_tab.dart';
 import '../features/plugins/plugin_bar.dart';
 import '../features/plugins/plugin_form_dialog.dart';
 import '../features/plugins/plugin_icons.dart';
@@ -79,7 +76,6 @@ import '../ui/window/window.dart';
 
 part 'myexplorer_shell/base.dart';
 part 'myexplorer_shell/actions.dart';
-part 'myexplorer_shell/terminal.dart';
 part 'myexplorer_shell/menus.dart';
 part 'myexplorer_shell/menus_plugin.dart';
 part 'myexplorer_shell/command_palette.dart';
@@ -96,7 +92,6 @@ class _MyExplorerShellState extends State<MyExplorerShell>
     with
         _MyExplorerStateBase,
         _MyExplorerActionsMixin,
-        _MyExplorerTerminalMixin,
         _MyExplorerPluginMixin,
         _MyExplorerMenuMixin,
         _MyExplorerCommandPaletteMixin,
@@ -199,7 +194,6 @@ class _MyExplorerShellState extends State<MyExplorerShell>
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
             if (_isEditableFocused()) return;
-            if (_isTerminalFocused()) return;
             _focusNode.requestFocus();
           });
         }
@@ -250,6 +244,7 @@ class _MyExplorerShellState extends State<MyExplorerShell>
   }) {
     return PaneView(
       pane: _shell.panes.value[slot],
+      isSingleMode: isSingleMode,
       isActive: isActive,
       onActivate: onActivate,
       onBackgroundContextMenu: _handleBackgroundContextMenu,
@@ -259,22 +254,6 @@ class _MyExplorerShellState extends State<MyExplorerShell>
       onPluginToolbarAction: (id) => _runPluginAction(id, background: true),
       onPluginBarEffects: (effects, target) =>
           _applyPluginEffects(effects, target, background: true),
-      terminalSlot: slot,
-      terminalTabs: _shell.terminalsForSlot(slot),
-      activeTerminal: _shell.activeTerminalForSlot(slot),
-      terminalVisible: _shell.terminalVisible.value[slot],
-      terminalHeight: _shell.terminalHeight.value[slot],
-      isSingleMode: isSingleMode,
-      onToggleTerminal: _toggleTerminalSlot,
-      onTerminalActivate: _activateTerminal,
-      onSelectTerminalTab: _selectTerminalTab,
-      onCloseTerminalTab: _closeTerminalTab,
-      onNewTerminalTab: _newTerminalTab,
-      onNewTerminalTabMenu: _newTerminalTabMenu,
-      onCycleTerminalTab: _cycleTerminalTab,
-      onReorderTerminalTab: _shell.reorderTerminalTab,
-      onTerminalHeightChanged: _setTerminalHeight,
-      onReturnFocusToFiles: _focusFiles,
     );
   }
 

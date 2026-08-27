@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:myexplorer/core/platform/platform_paths.dart';
-import 'package:myexplorer/core/terminal/terminal_launch.dart';
 import 'package:myexplorer/features/containers/wsl_path.dart';
 
 void main() {
@@ -38,21 +37,6 @@ void main() {
       expect(parseWslPath(r'C:\Users\bob'), isNull);
       expect(parseWslPath('/home/bob'), isNull);
       expect(parseWslPath(r'\\wsl.localhost\'), isNull);
-    });
-  });
-
-  group('auto WSL launch from a files path', () {
-    setUp(() => PlatformPaths.homePathOverrideForTesting = r'C:\Users\bob');
-    tearDown(() => PlatformPaths.homePathOverrideForTesting = null);
-
-    test('a WSL path resolves to a wsl.exe launch in that distro', () {
-      const path = r'\\wsl.localhost\Ubuntu\home\bob\src';
-      final wsl = parseWslPath(path);
-      expect(wsl, isNotNull);
-      final spec = TerminalLaunch.forWsl(wsl!.distro, path);
-      expect(spec.shell, 'wsl.exe');
-      expect(spec.args, ['-d', 'Ubuntu', '--cd', path]);
-      expect(spec.cwd, r'C:\Users\bob');
     });
   });
 }

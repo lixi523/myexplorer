@@ -27,7 +27,6 @@ mixin _MyExplorerStateBase on State<MyExplorerShell> {
   Timer? _navEventTimer;
   Timer? _selectionEventTimer;
   DateTime? _lastCursorRepeatAt;
-  DateTime? _terminalInteractionAt;
 
   String _typeAheadBuffer = '';
   int _typeAheadIndex = -1;
@@ -140,23 +139,10 @@ mixin _MyExplorerStateBase on State<MyExplorerShell> {
     return navigator != null && navigator.canPop();
   }
 
-  bool _isTerminalFocused() {
-    for (final tab in _shell.terminals.value) {
-      if (tab.focusNode.hasFocus) return true;
-    }
-
-    return false;
-  }
-
   void _restoreFocus() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_isEditableFocused()) return;
-      final ti = _terminalInteractionAt;
-      if (ti != null &&
-          DateTime.now().difference(ti) < const Duration(milliseconds: 300)) {
-        return;
-      }
       _focusNode.requestFocus();
     });
   }

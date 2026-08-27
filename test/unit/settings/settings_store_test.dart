@@ -4,80 +4,6 @@ import 'package:myexplorer/core/settings/settings_store.dart';
 void main() {
   final store = SettingsStore.instance;
 
-  group('SettingsStore terminal font size stepping', () {
-    setUp(() {
-      store.terminalFontSize.value = SettingsStore.defaultTerminalFontSize;
-    });
-
-    tearDown(() {
-      store.terminalFontSize.value = SettingsStore.defaultTerminalFontSize;
-    });
-
-    test('increase steps to the next size', () {
-      store.terminalFontSize.value = 13;
-      store.increaseTerminalFontSize();
-      expect(store.terminalFontSize.value, 14);
-    });
-
-    test('decrease steps to the previous size', () {
-      store.terminalFontSize.value = 13;
-      store.decreaseTerminalFontSize();
-      expect(store.terminalFontSize.value, 12);
-    });
-
-    test('increase clamps at the maximum size', () {
-      store.terminalFontSize.value = SettingsStore.terminalFontSizes.last;
-      store.increaseTerminalFontSize();
-      expect(
-        store.terminalFontSize.value,
-        SettingsStore.terminalFontSizes.last,
-      );
-    });
-
-    test('decrease clamps at the minimum size', () {
-      store.terminalFontSize.value = SettingsStore.terminalFontSizes.first;
-      store.decreaseTerminalFontSize();
-      expect(
-        store.terminalFontSize.value,
-        SettingsStore.terminalFontSizes.first,
-      );
-    });
-
-    test('reset returns to the default size', () {
-      store.terminalFontSize.value = 22;
-      store.resetTerminalFontSize();
-      expect(
-        store.terminalFontSize.value,
-        SettingsStore.defaultTerminalFontSize,
-      );
-    });
-
-    test('increase from a value between steps snaps to next valid size', () {
-      store.terminalFontSize.value = 17;
-      store.increaseTerminalFontSize();
-      expect(store.terminalFontSize.value, 20);
-    });
-
-    test(
-      'decrease from a value between steps snaps to previous valid size',
-      () {
-        store.terminalFontSize.value = 17;
-        store.decreaseTerminalFontSize();
-        expect(store.terminalFontSize.value, 16);
-      },
-    );
-
-    test(
-      'decrease from a value above the list maximum snaps to second-to-last',
-      () {
-        store.terminalFontSize.value = 99;
-        store.decreaseTerminalFontSize();
-        final sizes = SettingsStore.terminalFontSizes;
-        expect(store.terminalFontSize.value, sizes[sizes.length - 2]);
-      },
-    );
-  });
-
   group('SettingsStore file list scale stepping', () {
     setUp(() {
       store.fileListScale.value = SettingsStore.defaultFileListScale;
@@ -162,13 +88,6 @@ void main() {
 
     test('fileListScale defaults to 1.0', () {
       expect(store.fileListScale.value, closeTo(1.0, 0.001));
-    });
-
-    test('terminalFontSize defaults to 13', () {
-      expect(
-        store.terminalFontSize.value,
-        SettingsStore.defaultTerminalFontSize,
-      );
     });
   });
 }

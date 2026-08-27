@@ -17,7 +17,6 @@ mixin _MyExplorerKeyboardMixin
         State<MyExplorerShell>,
         _MyExplorerStateBase,
         _MyExplorerActionsMixin,
-        _MyExplorerTerminalMixin,
         _MyExplorerMenuMixin,
         _MyExplorerCommandPaletteMixin {
   bool _acceptCursorRepeat() {
@@ -61,20 +60,7 @@ mixin _MyExplorerKeyboardMixin
       return KeyEventResult.handled;
     }
 
-    if (!_isModalRouteOnTop() &&
-        ctrl &&
-        !alt &&
-        event.physicalKey == AppShortcuts.terminalTogglePhysicalKey) {
-      if (shift) {
-        _toggleTerminal();
-      } else {
-        _focusTerminal();
-      }
-
-      return KeyEventResult.handled;
-    }
-
-    if (_isEditableFocused() || _isModalRouteOnTop() || _isTerminalFocused()) {
+    if (_isEditableFocused() || _isModalRouteOnTop()) {
       return KeyEventResult.ignored;
     }
 
@@ -342,18 +328,6 @@ mixin _MyExplorerKeyboardMixin
 
     if (ctrl && !shift && !alt && key == LogicalKeyboardKey.enter) {
       if (store.toggleTreeCursorFolder()) return KeyEventResult.handled;
-    }
-
-    if (AppShortcuts.matches('insert_relative_paths', key)) {
-      unawaited(_insertPathsIntoTerminal(absolute: false));
-
-      return KeyEventResult.handled;
-    }
-
-    if (AppShortcuts.matches('insert_absolute_paths', key)) {
-      unawaited(_insertPathsIntoTerminal(absolute: true));
-
-      return KeyEventResult.handled;
     }
 
     if (AppShortcuts.matches('open_item', key)) {

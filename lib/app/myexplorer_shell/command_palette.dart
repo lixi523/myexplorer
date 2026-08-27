@@ -5,7 +5,6 @@ mixin _MyExplorerCommandPaletteMixin
         State<MyExplorerShell>,
         _MyExplorerStateBase,
         _MyExplorerActionsMixin,
-        _MyExplorerTerminalMixin,
         _MyExplorerMenuMixin {
   bool _hasTarget(NavigationStore s) {
     if (s.selectedCount.value > 0) return true;
@@ -135,7 +134,6 @@ mixin _MyExplorerCommandPaletteMixin
       _cmd('file_list_zoom_in', SettingsStore.instance.increaseFileListScale),
       _cmd('file_list_zoom_out', SettingsStore.instance.decreaseFileListScale),
       _cmd('file_list_zoom_reset', SettingsStore.instance.resetFileListScale),
-      _cmd('toggle_terminal', _toggleTerminal),
       _cmd('preferences', _openPreferences),
       _cmd('help', _openHelp),
       ..._goToCommands(recentPaths),

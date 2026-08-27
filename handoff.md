@@ -16,8 +16,19 @@
 
 ---
 
-## 2. 当前进度（2026-08-26）
+## 2. 当前进度（2026-08-27）
 
+- ✅ **v3.4.0 已更新**（pubspec `3.4.0`，**本地修改完成，待提交推送**）：移除内置终端功能模块
+  - **删除 `lib/core/terminal/` 目录**：终端服务（`terminal.dart`）、shell 检测（`shell_detector.dart`）、终端启动（`terminal_launch.dart`）、系统字体（`system_fonts.dart`）
+  - **删除终端面板 UI**：`pane_view.dart` 中移除 `_TerminalPanel`、`_TerminalHeader`、`_TerminalTabChip`、`_TerminalIconButton`、`_TerminalResizeHandle` 等类
+  - **移除主题配色**：`app_theme_definition.dart` 删除 `TerminalColors` 类，`app_theme_registry.dart` 移除所有 `terminal:` 配色块
+  - **清理设置**：`settings_registry.dart` 移除终端设置分类（`SettingsCategory.terminal`）和所有终端设置项；`settings_store.dart` 删除终端相关信号
+  - **移除快捷键**：`keybinding_labels.dart` 移除 `ShortcutGroup.terminal` 和终端快捷键标签
+  - **移除命令面板**：`command_palette.dart` 移除 `toggle_terminal` 命令
+  - **移除依赖**：`pubspec.yaml` 删除 `myexplorer_term` 依赖
+  - **清理 i18n**：`en.i18n.json`、`zh.i18n.json`、`strings_en.g.dart`、`strings_zh.g.dart` 删除所有终端翻译键
+  - **移除主菜单**：`menus.dart` 删除"终端"菜单项
+  - 单元测试 **待验证**、`flutter analyze` **待验证**、`flutter build windows --release` **待构建**
 - ✅ **v3.3.0 已更新**（pubspec `3.3.0+47`，**本地修改完成，待提交推送**）：终端功能修复
   - **中文输入修复（IME）**：移除 `hardwareKeyboardOnly`（此前 Windows 下禁用 CustomTextEdit，改用仅硬件键盘的 CustomKeyboardListener，导致 IME 无法接入）；移除 `_openOrCloseInputConnectionIfNeeded` 中的 `consumeKeyboardToken()` 检查（切换终端时 FocusNode 键盘 token 被消费，TextInputConnection 无法重新建立）；修复搜索框关闭时 shell 顶层 FocusNode 抢走终端焦点的问题（`myexplorer_shell.dart` searchActive effect 加 `_isTerminalFocused()` 守卫）；简化 CustomTextEdit，删除移动端专用参数（`keyboardType`、`keyboardAppearance`、`deleteDetection`）。文件变更：`custom_text_edit.dart`（移除 consumeKeyboardToken）、`terminal_view.dart`（移除 hardwareKeyboardOnly 及移动端参数）、`keyboard_listener.dart`（清理 onComposing 参数）、`myexplorer_shell.dart`（searchActive effect 加终端焦点守卫）
   - **默认 shell 改为 PowerShell 7**：`terminalShell` 默认值改为 WindowsApps 路径 `Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe`；偏好路径不存在时自动回退到系统默认 shell
@@ -45,6 +56,7 @@
 
 | Commit | 说明 |
 |--------|------|
+| `feat: v3.4.0 — remove built-in terminal module` | **v3.4.0（待提交）**：pubspec `3.4.0`；删除 `lib/core/terminal/` 终端服务；移除 `pane_view.dart` 终端面板 UI；删除 `TerminalColors` 主题配色；清理终端设置分类与快捷键绑定；移除 `myexplorer_term` 依赖；清理所有终端 i18n 翻译键；移除主菜单"终端"菜单项 |
 | `fix: terminal focus stolen by searchActive effect` | **v3.3.0**：修复搜索框关闭时 shell 顶层 FocusNode 抢走终端焦点导致 TextInputConnection 断开的问题；`myexplorer_shell.dart` searchActive effect 加 `_isTerminalFocused()` 守卫 |
 | `feat: v3.3.0 — terminal IME fix, default shell PowerShell 7` | **v3.3.0（待提交）**：pubspec `3.3.0+47`；终端 IME 修复（移除 `hardwareKeyboardOnly` 让 CustomTextEdit 始终生效；移除 `consumeKeyboardToken()` 确保切换终端后 TextInputConnection 可正常重新建立）；默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退；ShellDetector 添加 WindowsApps 路径检测；README/handoff 更新 |
 | `feat: v3.2.0 — fix shortcut icon cache key collision, SVG path consistency` | **v3.2.0（待提交）**：pubspec `3.2.0+46`；缓存键由截断 base64 改为 SHA256 哈希（解决路径前缀相同导致图标共享冲突）；SVG 路径解析统一使用 `_spec` 实例变量；CHANGELOG/README/handoff 更新 |
@@ -183,14 +195,15 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
- - MyExplorer **v3.3.0**（pubspec name: myexplorer，version 3.3.0+47，**待提交推送**）
- - v3.3.0 内容：① 终端 IME 修复（移除 `hardwareKeyboardOnly` + 移除 `consumeKeyboardToken()`，确保 CustomTextEdit 始终启用且切换终端后 TextInputConnection 可重新建立；修复 searchActive effect 抢焦点导致 TextInputConnection 断开的次生问题）② 默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退到系统默认 shell ③ ShellDetector 添加 WindowsApps 路径检测
- - v3.2.0 前置：快捷栏图标缓存冲突修复（SHA256 哈希）+ SVG 路径解析一致性修复
+ - MyExplorer **v3.4.0**（pubspec name: myexplorer，version 3.4.0，**待提交推送**）
+ - v3.4.0 内容：移除内置终端功能模块（删除 lib/core/terminal/、pane_view.dart 终端面板 UI、TerminalColors 主题配色、终端设置分类与快捷键绑定、myexplorer_term 依赖；移除主菜单"终端"菜单项；清理所有终端 i18n 翻译键）
+ - v3.3.0 前置：终端 IME 修复 + 默认 shell PowerShell 7
+ - v3.2.0 前置：快捷栏图标缓存冲突修复
  - v3.1.0 前置：稳定性大修 + 移除容器与标签功能
  - v3.0.1 前置：INI 化 + 书签拖拽排序 + 复制修复（已推送，CI 全绿，Release 已发布）
- - 行为变化：快捷栏/终端/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
+ - 行为变化：快捷栏/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
  - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
- - 单元测试 561 全过、flutter analyze 通过、release 构建成功；v3.3.0 待提交推送（NEVER push，需用户确认）
+ - 单元测试待验证、flutter analyze 待通过、release 构建待完成；v3.4.0 待提交推送
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

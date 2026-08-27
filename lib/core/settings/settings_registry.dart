@@ -5,11 +5,9 @@ import 'package:signals/signals.dart';
 import '../../i18n/strings.g.dart';
 import '../../ui/theme/app_theme_definition.dart';
 import '../../ui/theme/app_theme_registry.dart';
-import '../terminal/shell_detector.dart';
-import '../terminal/terminal.dart';
 import 'settings_store.dart';
 
-enum SettingsCategory { general, appearance, terminal, quickLook }
+enum SettingsCategory { general, appearance, quickLook }
 
 enum SettingKind { toggle, choice, text }
 
@@ -238,110 +236,6 @@ class SettingsRegistry {
       ],
     ),
     ChoiceSetting<String>(
-      id: 'terminal.shell',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.terminal.shellLabel,
-      hint: () => t.preferences.terminal.shellHint,
-      searchTerms: const ['terminal', 'shell', 'bash', 'zsh', 'powershell'],
-      signal: SettingsStore.instance.terminalShell,
-      choices: _shellChoices(const []),
-    ),
-    ChoiceSetting<String>(
-      id: 'terminal.external',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.general.terminalLabel,
-      hint: () => t.preferences.general.terminalHint,
-      searchTerms: const ['terminal', 'open in terminal'],
-      signal: SettingsStore.instance.terminal,
-      choices: _externalTerminalChoices(const []),
-    ),
-    TextSetting(
-      id: 'terminal.externalCustomCommand',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.general.terminalCustomLabel,
-      hint: () => t.preferences.general.terminalCustomHelp,
-      hintText: t.preferences.general.terminalCustomHint,
-      searchTerms: const ['terminal', 'command'],
-      signal: SettingsStore.instance.terminalCustomCommand,
-    ),
-    ToggleSetting(
-      id: 'terminal.useSystemFont',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.terminal.useSystemFont,
-      hint: () => t.preferences.terminal.useSystemFontHint,
-      searchTerms: const ['terminal', 'font', 'system', 'monospace'],
-      signal: SettingsStore.instance.terminalUseSystemFont,
-    ),
-    ChoiceSetting<String>(
-      id: 'terminal.fontFamily',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.terminal.fontFamily,
-      hint: () => t.preferences.terminal.fontFamilyHint,
-      searchTerms: const ['terminal', 'font', 'family', 'monospace'],
-      signal: SettingsStore.instance.terminalFontFamily,
-      choices: _fontChoices(const ['monospace']),
-    ),
-    ChoiceSetting<int>(
-      id: 'terminal.fontSize',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.terminal.fontSize,
-      hint: () => t.preferences.terminal.fontSizeHint,
-      searchTerms: const ['terminal', 'font', 'size', 'zoom'],
-      signal: SettingsStore.instance.terminalFontSize,
-      choices: [
-        for (final value in SettingsStore.terminalFontSizes)
-          SettingChoice(
-            value: value,
-            label: () => '${value}px',
-            icon: MyExplorerIconsRegular.textAa,
-          ),
-      ],
-    ),
-    ChoiceSetting<double>(
-      id: 'terminal.lineHeight',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.terminal.lineHeight,
-      hint: () => t.preferences.terminal.lineHeightHint,
-      searchTerms: const ['terminal', 'line', 'height', 'spacing', 'leading'],
-      signal: SettingsStore.instance.terminalLineHeight,
-      choices: [
-        for (final value in const [1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
-          SettingChoice(
-            value: value,
-            label: () => value.toStringAsFixed(1),
-            icon: MyExplorerIconsRegular.rows,
-          ),
-      ],
-    ),
-    ChoiceSetting<String>(
-      id: 'terminal.copyPasteMode',
-      category: SettingsCategory.terminal,
-      label: () => t.preferences.terminal.copyPasteMode,
-      hint: () => t.preferences.terminal.copyPasteModeHint,
-      searchTerms: const [
-        'terminal',
-        'copy',
-        'paste',
-        'clipboard',
-        'ctrl',
-        'shift',
-        'modifier',
-      ],
-      signal: SettingsStore.instance.terminalCopyPasteMode,
-      choices: [
-        SettingChoice(
-          value: 'standard',
-          label: () => t.preferences.terminal.copyPasteModeStandard,
-          icon: MyExplorerIconsRegular.copy,
-        ),
-        SettingChoice(
-          value: 'shift',
-          label: () => t.preferences.terminal.copyPasteModeShift,
-          icon: MyExplorerIconsRegular.clipboard,
-        ),
-      ],
-    ),
-    ChoiceSetting<String>(
       id: 'appearance.theme',
       category: SettingsCategory.appearance,
       label: () => t.preferences.appearance.theme,
@@ -555,7 +449,7 @@ class SettingsRegistry {
       searchTerms: const ['quick look', 'editor', 'font', 'size'],
       signal: SettingsStore.instance.quickLookFontSize,
       choices: [
-        for (final value in SettingsStore.terminalFontSizes)
+        for (final value in SettingsStore.quickLookFontSizes)
           SettingChoice(
             value: value,
             label: () => '${value}px',
@@ -648,45 +542,6 @@ class SettingsRegistry {
     return all.firstWhere((setting) => setting.id == id);
   }
 
-  void refreshTerminalFontChoices(List<String> families) {
-    final setting = byId('terminal.fontFamily') as ChoiceSetting<String>;
-    final current = setting.value;
-    final names = [
-      ...families,
-      if (current.isNotEmpty && !families.contains(current)) current,
-    ];
-    setting.choices = _fontChoices(names);
-  }
-
-  void refreshQuickLookFontChoices(List<String> families) {
-    final setting = byId('quickLook.fontFamily') as ChoiceSetting<String>;
-    final current = setting.value;
-    final names = [
-      ...families,
-      if (current.isNotEmpty && !families.contains(current)) current,
-    ];
-    setting.choices = _fontChoices(names);
-  }
-
-  Future<void> refreshExternalTerminalChoices() async {
-    final terminals = await TerminalService.availableTerminals();
-    final setting = byId('terminal.external') as ChoiceSetting<String>;
-    setting.choices = _externalTerminalChoices(terminals);
-  }
-
-  void refreshShellChoices() {
-    final setting = byId('terminal.shell') as ChoiceSetting<String>;
-    final detected = ShellDetector.detect();
-    final current = setting.value;
-    final extra =
-        current.isNotEmpty &&
-            current != 'system' &&
-            !detected.any((s) => s.path == current)
-        ? current
-        : null;
-    setting.choices = _shellChoices(detected, extra: extra);
-  }
-
   void refreshThemeChoices() {
     final setting = byId('appearance.theme') as ChoiceSetting<String>;
     setting.choices = [
@@ -698,59 +553,6 @@ class SettingsRegistry {
         ),
     ];
   }
-}
-
-List<SettingChoice<String>> _externalTerminalChoices(
-  List<ExternalTerminal> terminals,
-) {
-  return [
-    SettingChoice(
-      value: 'builtin',
-      label: () => t.preferences.general.terminalBuiltin,
-      icon: MyExplorerIconsRegular.terminal,
-    ),
-    SettingChoice(
-      value: 'auto',
-      label: () => t.preferences.general.terminalAuto,
-      icon: MyExplorerIconsRegular.magicWand,
-    ),
-    for (final term in terminals)
-      SettingChoice(
-        value: term.id,
-        label: () => term.displayName,
-        icon: MyExplorerIconsRegular.appWindow,
-      ),
-    SettingChoice(
-      value: 'custom',
-      label: () => t.preferences.general.terminalCustom,
-      icon: MyExplorerIconsRegular.code,
-    ),
-  ];
-}
-
-List<SettingChoice<String>> _shellChoices(
-  List<ShellOption> shells, {
-  String? extra,
-}) {
-  return [
-    SettingChoice(
-      value: 'system',
-      label: () => t.preferences.terminal.shellSystem,
-      icon: MyExplorerIconsRegular.magicWand,
-    ),
-    for (final shell in shells)
-      SettingChoice(
-        value: shell.path,
-        label: () => shell.label,
-        icon: MyExplorerIconsRegular.terminal,
-      ),
-    if (extra != null)
-      SettingChoice(
-        value: extra,
-        label: () => extra,
-        icon: MyExplorerIconsRegular.terminal,
-      ),
-  ];
 }
 
 List<SettingChoice<String>> _fontChoices(List<String> families) {

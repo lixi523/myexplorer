@@ -20,7 +20,6 @@ void main() {
       expect(parsed.brightness, Brightness.dark);
       expect(parsed.palette.bg, darkTheme.palette.bg);
       expect(parsed.palette.accent, darkTheme.palette.accent);
-      expect(parsed.palette.terminal.blue, darkTheme.palette.terminal.blue);
     });
 
     test('parses rgb and argb hex colors', () {

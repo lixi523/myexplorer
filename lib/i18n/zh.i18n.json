@@ -4,9 +4,6 @@
     "tagline": "随心浏览你的文件。",
     "description": "一款基于 Flutter 构建的快速、键盘优先的桌面文件管理器。"
   },
-  "terminal": {
-    "title": "终端"
-  },
   "menu": {
     "view": "视图",
     "open": "打开",
@@ -38,7 +35,6 @@
     "invertSelection": "反向选择",
     "saveSelection": "保存选择到文件…",
     "loadSelection": "从文件加载选择…",
-    "openInTerminal": "在终端中打开",
     "rename": "重命名",
     "openLocation": "打开位置",
     "openInNewTab": "在新标签页中打开",
@@ -47,9 +43,6 @@
     "eject": "弹出",
     "disconnect": "断开连接",
     "dualPaneMode": "双栏模式",
-    "toggleTerminal": "切换终端",
-    "newTerminalTab": "新建终端标签页",
-    "closeTerminalTab": "关闭终端标签页",
     "properties": "属性",
     "openWith": "打开方式",
     "openWithApp": "使用 $app 打开",
@@ -193,7 +186,6 @@
     "categories": {
       "general": "常规",
       "appearance": "外观",
-      "terminal": "终端",
       "quickLook": "快速预览",
       "bookmarks": "书签",
       "plugins": "插件",
@@ -267,39 +259,7 @@
       "deleteKeyBehavior": "Delete 键行为",
       "deleteKeyBehaviorHint": "Delete 键的默认行为。Shift+Delete 始终执行永久删除。",
       "deleteKeyTrash": "移入回收站",
-      "deleteKeyPermanent": "永久删除",
-      "terminalSection": "终端",
-      "terminalLabel": "默认终端",
-      "terminalHint": "用于“在终端中打开”。",
-      "terminalBuiltin": "内置终端",
-      "terminalAuto": "外部（自动检测）",
-      "terminalCustom": "自定义命令…",
-      "terminalCustomLabel": "命令",
-      "terminalCustomHint": "例如 wt -d {dir}",
-      "terminalCustomHelp": "使用 {dir} 作为目录路径的占位符。"
-    },
-    "terminal": {
-      "title": "终端",
-      "subtitle": "内置终端字体和外部终端集成。",
-      "appearanceSection": "外观",
-      "useSystemFont": "使用系统字体",
-      "useSystemFontHint": "使用系统等宽字体渲染终端。",
-      "fontFamily": "字体",
-      "fontFamilyHint": "选择已安装的等宽字体。",
-      "fontSize": "字号",
-      "fontSizeHint": "使用 Ctrl++、Ctrl+- 和 Ctrl+0 即时调整。",
-      "lineHeight": "行高",
-      "lineHeightHint": "终端行之间的垂直间距。",
-      "shellSection": "Shell",
-      "shellLabel": "Shell",
-      "shellHint": "内置终端启动的程序。",
-      "shellSystem": "系统默认",
-      "externalSection": "在终端中打开",
-      "behaviorSection": "行为",
-      "copyPasteMode": "复制/粘贴修饰键",
-      "copyPasteModeHint": "终端中复制和粘贴使用的组合键。",
-      "copyPasteModeStandard": "标准（Ctrl+C / Ctrl+V）",
-      "copyPasteModeShift": "加 Shift（Ctrl+Shift+C / Ctrl+Shift+V）"
+      "deleteKeyPermanent": "永久删除"
     },
     "quickLook": {
       "title": "快速预览",
@@ -628,10 +588,6 @@
           "title": "网络路径与 WSL",
           "body": "MyExplorer 处理网络共享和适用于 Linux 的 Windows 子系统路径。\n\n- 像本地文件夹一样浏览已挂载的 SMB / 网络共享。\n- 在 Windows 上，WSL 发行版路径可被识别和打开。\n- 网络位置受到保护，慢速共享不会冻结界面。"
         },
-        "terminal": {
-          "title": "终端",
-          "body": "每个面板都有自己的内置终端，在你查看的文件夹中打开。\n\n- `Ctrl` + 反引号打开或聚焦终端。\n- `Ctrl+Shift` + 反引号显示或隐藏终端面板。\n- `Ctrl+Shift+T` 新建终端标签页；`Ctrl+Shift+W` 关闭一个。\n- `Ctrl++` / `Ctrl+-` 调整字号，`Ctrl+0` 重置。\n- 更喜欢外部终端？在 **设置 -> 终端** 中选择一个。"
-        },
         "git": {
           "title": "Git 状态",
           "body": "MyExplorer 为版本控制下的文件夹显示 Git 信息。\n\n- 列表中标记已更改、已暂存和未跟踪的文件。\n- 显示文件夹的当前分支。\n- 在仓库中工作时状态实时更新。"
@@ -869,13 +825,6 @@
     "multiRenameOtherErrors(one)": "1 个错误",
     "multiRenameOtherErrors(other)": "$count 个错误",
     "multiRenameTrashBlocked": "回收站中无法使用批量重命名"
-  },
-  "terminalInsert": {
-    "title": "插入 $count 个选中项目",
-    "separator": "分隔符",
-    "customHint": "分隔符",
-    "preview": "预览",
-    "insert": "插入"
   },
   "selectionFile": {
     "saveTitle": "保存选择",
