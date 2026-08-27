@@ -9,8 +9,6 @@ class CustomKeyboardListener extends StatelessWidget {
 
   final void Function(String) onInsert;
 
-  final void Function(String?) onComposing;
-
   final KeyEventResult Function(FocusNode, KeyEvent) onKeyEvent;
 
   const CustomKeyboardListener({
@@ -19,16 +17,12 @@ class CustomKeyboardListener extends StatelessWidget {
     required this.focusNode,
     this.autofocus = false,
     required this.onInsert,
-    required this.onComposing,
     required this.onKeyEvent,
   });
 
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent keyEvent) {
-    // First try to handle the key event directly.
     final handled = onKeyEvent(focusNode, keyEvent);
     if (handled == KeyEventResult.ignored) {
-      // If it was not handled, but the key corresponds to a character,
-      // insert the character.
       if (keyEvent.character != null && keyEvent.character != "") {
         onInsert(keyEvent.character!);
         return KeyEventResult.handled;

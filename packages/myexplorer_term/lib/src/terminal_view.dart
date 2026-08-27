@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +9,6 @@ import 'package:myexplorer_term/src/ui/cursor_type.dart';
 import 'package:myexplorer_term/src/ui/custom_text_edit.dart';
 import 'package:myexplorer_term/src/ui/gesture/gesture_handler.dart';
 import 'package:myexplorer_term/src/ui/input_map.dart';
-import 'package:myexplorer_term/src/ui/keyboard_listener.dart';
 import 'package:myexplorer_term/src/ui/keyboard_visibility.dart';
 import 'package:myexplorer_term/src/ui/render.dart';
 import 'package:myexplorer_term/src/ui/scroll_handler.dart';
@@ -38,15 +36,11 @@ class TerminalView extends StatefulWidget {
     this.onSecondaryTapDown,
     this.onSecondaryTapUp,
     this.mouseCursor = SystemMouseCursors.text,
-    this.keyboardType = TextInputType.emailAddress,
-    this.keyboardAppearance = Brightness.dark,
     this.cursorType = TerminalCursorType.block,
     this.alwaysShowCursor = false,
-    this.deleteDetection = false,
     this.shortcuts,
     this.onKeyEvent,
     this.readOnly = false,
-    this.hardwareKeyboardOnly = false,
     this.simulateScroll = true,
   });
 
@@ -98,26 +92,12 @@ class TerminalView extends StatefulWidget {
   /// [SystemMouseCursors.text] by default.
   final MouseCursor mouseCursor;
 
-  /// The type of information for which to optimize the text input control.
-  /// [TextInputType.emailAddress] by default.
-  final TextInputType keyboardType;
-
-  /// The appearance of the keyboard. [Brightness.dark] by default.
-  ///
-  /// This setting is only honored on iOS devices.
-  final Brightness keyboardAppearance;
-
   /// The type of cursor to use. [TerminalCursorType.block] by default.
   final TerminalCursorType cursorType;
 
   /// Whether to always show the cursor. This is useful for debugging.
   /// [false] by default.
   final bool alwaysShowCursor;
-
-  /// Workaround to detect delete key for platforms and IMEs that does not
-  /// emit hardware delete event. Prefered on mobile platforms. [false] by
-  /// default.
-  final bool deleteDetection;
 
   /// Shortcuts for this terminal. This has higher priority than input handler
   /// of the terminal If not provided, [defaultTerminalShortcuts] will be used.
@@ -129,10 +109,6 @@ class TerminalView extends StatefulWidget {
 
   /// True if no input should send to the terminal.
   final bool readOnly;
-
-  /// True if only hardware keyboard events should be used as input. This will
-  /// also prevent any on-screen keyboard to be shown.
-  final bool hardwareKeyboardOnly;
 
   /// If true, when the terminal is in alternate buffer (for example running
   /// vim, man, etc), if the application does not declare that it can handle
@@ -150,17 +126,17 @@ class TerminalViewState extends State<TerminalView> {
 
   late final ShortcutManager _shortcutManager;
 
-  final _customTextEditKey = GlobalKey<CustomTextEditState>();
-
   final _scrollableKey = GlobalKey<ScrollableState>();
 
   final _viewportKey = GlobalKey();
 
-  String? _composingText;
-
   late TerminalController _controller;
 
   late ScrollController _scrollController;
+
+  final _customTextEditKey = GlobalKey<CustomTextEditState>();
+
+  String? _composingText;
 
   RenderTerminal get renderTerminal =>
       _viewportKey.currentContext!.findRenderObject() as RenderTerminal;
@@ -248,14 +224,11 @@ class TerminalViewState extends State<TerminalView> {
       child: child,
     );
 
-    if (!widget.hardwareKeyboardOnly) {
+    if (!widget.readOnly) {
       child = CustomTextEdit(
         key: _customTextEditKey,
         focusNode: _focusNode,
         autofocus: widget.autofocus,
-        inputType: widget.keyboardType,
-        keyboardAppearance: widget.keyboardAppearance,
-        deleteDetection: widget.deleteDetection,
         onInsert: _onInsert,
         onDelete: () {
           _scrollToBottom();
@@ -264,7 +237,6 @@ class TerminalViewState extends State<TerminalView> {
         onComposing: _onComposing,
         onAction: (action) {
           _scrollToBottom();
-          // Android sends TextInputAction.newline when the user presses the virtual keyboard's enter key.
           if (action == TextInputAction.done ||
               action == TextInputAction.newline) {
             widget.terminal.keyInput(TerminalKey.enter);
@@ -273,16 +245,6 @@ class TerminalViewState extends State<TerminalView> {
         onKeyEvent: _handleKeyEvent,
         readOnly: widget.readOnly,
         child: child,
-      );
-    } else if (!widget.readOnly) {
-      // Only listen for key input from a hardware keyboard.
-      child = CustomKeyboardListener(
-        child: child,
-        focusNode: _focusNode,
-        autofocus: widget.autofocus,
-        onInsert: _onInsert,
-        onComposing: _onComposing,
-        onKeyEvent: _handleKeyEvent,
       );
     }
 
@@ -366,11 +328,7 @@ class TerminalViewState extends State<TerminalView> {
     if (_controller.selection != null) {
       _controller.clearSelection();
     } else {
-      if (!widget.hardwareKeyboardOnly) {
-        _customTextEditKey.currentState?.requestKeyboard();
-      } else {
-        _focusNode.requestFocus();
-      }
+      _customTextEditKey.currentState?.requestKeyboard();
     }
   }
 
@@ -391,9 +349,6 @@ class TerminalViewState extends State<TerminalView> {
   void _onInsert(String text) {
     final key = charToTerminalKey(text.trim());
 
-    // On mobile platforms there is no guarantee that virtual keyboard will
-    // generate hardware key events. So we need first try to send the key
-    // as a hardware key event. If it fails, then we send it as a text input.
     final consumed = key == null ? false : widget.terminal.keyInput(key);
 
     if (!consumed) {

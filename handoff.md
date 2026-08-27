@@ -19,7 +19,7 @@
 ## 2. 当前进度（2026-08-26）
 
 - ✅ **v3.3.0 已更新**（pubspec `3.3.0+47`，**本地修改完成，待提交推送**）：终端功能修复
-  - **中文输入修复**：移除 `hardwareKeyboardOnly: Platform.isWindows`，改用 `CustomTextEdit` 建立 TextInputConnection 支持 IME 中文输入
+  - **中文输入修复（IME）**：移除 `hardwareKeyboardOnly`（此前 Windows 下禁用 CustomTextEdit，改用仅硬件键盘的 CustomKeyboardListener，导致 IME 无法接入）；移除 `_openOrCloseInputConnectionIfNeeded` 中的 `consumeKeyboardToken()` 检查（切换终端时 FocusNode 键盘 token 被消费，TextInputConnection 无法重新建立）；简化 CustomTextEdit，删除移动端专用参数（`keyboardType`、`keyboardAppearance`、`deleteDetection`）。文件变更：`custom_text_edit.dart`（移除 consumeKeyboardToken）、`terminal_view.dart`（移除 hardwareKeyboardOnly 及移动端参数）、`keyboard_listener.dart`（清理 onComposing 参数）
   - **默认 shell 改为 PowerShell 7**：`terminalShell` 默认值改为 WindowsApps 路径 `Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe`；偏好路径不存在时自动回退到系统默认 shell
   - `ShellDetector` 同步添加 WindowsApps 路径检测
   - 单元测试 **561 全过**、`flutter analyze` 0 issues、`flutter build windows --release` 成功、README/handoff 已更新
@@ -45,7 +45,7 @@
 
 | Commit | 说明 |
 |--------|------|
-| `feat: v3.3.0 — terminal IME fix, default shell PowerShell 7` | **v3.3.0（待提交）**：pubspec `3.3.0+47`；移除 `hardwareKeyboardOnly` 修复 Windows 终端中文输入；默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退；ShellDetector 添加 WindowsApps 路径检测；README/handoff 更新 |
+| `feat: v3.3.0 — terminal IME fix, default shell PowerShell 7` | **v3.3.0（待提交）**：pubspec `3.3.0+47`；终端 IME 修复（移除 `hardwareKeyboardOnly` 让 CustomTextEdit 始终生效；移除 `consumeKeyboardToken()` 确保切换终端后 TextInputConnection 可正常重新建立）；默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退；ShellDetector 添加 WindowsApps 路径检测；README/handoff 更新 |
 | `feat: v3.2.0 — fix shortcut icon cache key collision, SVG path consistency` | **v3.2.0（待提交）**：pubspec `3.2.0+46`；缓存键由截断 base64 改为 SHA256 哈希（解决路径前缀相同导致图标共享冲突）；SVG 路径解析统一使用 `_spec` 实例变量；CHANGELOG/README/handoff 更新 |
 | `feat: v3.1.0 — copy cancel, archive-edit off UI thread, drag-reorder shortcuts, drop containers & tags` | **v3.1.0（已提交未推送）**：pubspec `3.1.0+45`；Rust `copy.rs`（线程内 CopyFileEx + 原子取消/进度 + 4 FFI 入口）；QuickLook 包内读写移出 UI isolate（fs_worker_pool 新增 archiveRead/archiveMutate）；压缩覆盖误删修复；分割双读/插件超时/剪贴板 stdin/冲突超时/pool 超时/sftp panic 屏障/`_uniqueName` 加固/探针缓存/7z 残留清理；快捷栏配置拖动排序 + **图标修复**（命令+参数图标列/引号索引/增删即时刷新/右键菜单 Overlay 崩溃）；**移除容器与标签功能**（49+ 文件）；561 单测 + 图标/复制集成测试；CHANGELOG/README/handoff 更新 |
 | `feat: v3.0.1 — INI persistence, bookmark drag reorder, copy fix` | **v3.0.1（已推送，2026-08-24）**：pubspec `3.0.1+44`；书签/标签/侧栏 INI 化（含迁移 + ini_file 工具 + 12 单测）；书签拖拽排序；`_randomHex` 控制字符 bug 修复（复制/移动恢复）；CHANGELOG/README/handoff 更新；推送含下方两个未推送提交 |
@@ -183,7 +183,7 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 
 项目状态：
  - MyExplorer **v3.3.0**（pubspec name: myexplorer，version 3.3.0+47，**待提交推送**）
- - v3.3.0 内容：① 终端中文输入修复（移除 `hardwareKeyboardOnly`，改用 `CustomTextEdit` 建立 TextInputConnection 支持 IME）② 默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退到系统默认 shell ③ ShellDetector 添加 WindowsApps 路径检测
+ - v3.3.0 内容：① 终端 IME 修复（移除 `hardwareKeyboardOnly` + 移除 `consumeKeyboardToken()`，确保 CustomTextEdit 始终启用且切换终端后 TextInputConnection 可重新建立）② 默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退到系统默认 shell ③ ShellDetector 添加 WindowsApps 路径检测
  - v3.2.0 前置：快捷栏图标缓存冲突修复（SHA256 哈希）+ SVG 路径解析一致性修复
  - v3.1.0 前置：稳定性大修 + 移除容器与标签功能
  - v3.0.1 前置：INI 化 + 书签拖拽排序 + 复制修复（已推送，CI 全绿，Release 已发布）

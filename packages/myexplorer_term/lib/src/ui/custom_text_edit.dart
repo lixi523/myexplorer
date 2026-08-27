@@ -141,9 +141,9 @@ class CustomTextEditState extends State<CustomTextEdit> with TextInputClient {
   }
 
   void _openOrCloseInputConnectionIfNeeded() {
-    if (widget.focusNode.hasFocus && widget.focusNode.consumeKeyboardToken()) {
+    if (widget.focusNode.hasFocus) {
       _openInputConnection();
-    } else if (!widget.focusNode.hasFocus) {
+    } else {
       _closeInputConnectionIfNeeded();
     }
   }
