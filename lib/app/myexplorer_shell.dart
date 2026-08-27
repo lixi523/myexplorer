@@ -199,6 +199,7 @@ class _MyExplorerShellState extends State<MyExplorerShell>
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
             if (_isEditableFocused()) return;
+            if (_isTerminalFocused()) return;
             _focusNode.requestFocus();
           });
         }
