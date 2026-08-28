@@ -28,7 +28,6 @@ void main() {
     await db.updateSettings(
       const AppSettingsCompanion(
         themeMode: Value('nord'),
-        terminal: Value('wezterm'),
         isDual: Value(true),
         splitRatio: Value(0.7),
         confirmCopy: Value(true),
@@ -60,7 +59,6 @@ void main() {
     final tabs = await db.getTabs();
 
     expect(settings.themeMode, 'nord');
-    expect(settings.terminal, 'wezterm');
     expect(settings.isDual, isTrue);
     expect(settings.splitRatio, 0.7);
     expect(settings.confirmCopy, isTrue);

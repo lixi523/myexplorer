@@ -19,8 +19,6 @@ void main() {
       final settings = await db.getSettings();
 
       expect(settings.themeMode, 'dark');
-      expect(settings.terminal, 'builtin');
-      expect(settings.terminalCustomCommand, '');
       expect(settings.isDual, false);
       expect(settings.splitRatio, 0.5);
       expect(settings.activePaneIndex, 0);
@@ -43,8 +41,6 @@ void main() {
       await db.getSettings();
       await db.updateSettings(
         const AppSettingsCompanion(
-          terminal: Value('alacritty'),
-          terminalCustomCommand: Value('alacritty -e'),
           fileListHorizontalSpacing: Value(8),
           fileListVerticalSpacing: Value(4),
           columnWidthMode: Value('resizable'),
@@ -56,8 +52,6 @@ void main() {
       );
 
       final settings = await db.getSettings();
-      expect(settings.terminal, 'alacritty');
-      expect(settings.terminalCustomCommand, 'alacritty -e');
       expect(settings.fileListHorizontalSpacing, 8);
       expect(settings.fileListVerticalSpacing, 4);
       expect(settings.columnWidthMode, 'resizable');
@@ -70,11 +64,11 @@ void main() {
     test('updateSettings partial update leaves other fields intact', () async {
       await db.getSettings();
       await db.updateSettings(
-        const AppSettingsCompanion(terminal: Value('kitty')),
+        const AppSettingsCompanion(fileListHorizontalSpacing: Value(10)),
       );
 
       final settings = await db.getSettings();
-      expect(settings.terminal, 'kitty');
+      expect(settings.fileListHorizontalSpacing, 10);
       expect(settings.isDual, false);
       expect(settings.splitRatio, 0.5);
     });
