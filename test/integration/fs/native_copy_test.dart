@@ -38,14 +38,14 @@ void main() {
   test('native copy can be cancelled mid-flight', () async {
     final src = File('${tempDir.path}/big.bin');
     final sink = src.openSync(mode: FileMode.write);
-    sink.truncateSync(512 * 1024 * 1024);
+    sink.truncateSync(2 * 1024 * 1024 * 1024);
     sink.closeSync();
     final dst = '${tempDir.path}/dst.bin';
-    var polls = 0;
+    final sw = Stopwatch()..start();
     final result = await NativeCopy.tryFastCopy(
       src.path,
       dst,
-      shouldCancel: () => ++polls > 3,
+      shouldCancel: () => sw.elapsedMilliseconds > 200,
     );
     expect(result, FastCopyResult.cancelled);
   });
