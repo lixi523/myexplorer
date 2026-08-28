@@ -18,7 +18,7 @@
 
 ## 2. 当前进度（2026-08-28）
 
-- ✅ **v3.5.0 已提交并推送**（pubspec `3.5.0`）：全量代码审查与加固
+- ✅ **v3.5.0 已发布**（pubspec `3.5.0`，tag `v3.5.0`，Release 已发布 2026-08-28）：全量代码审查与加固
   - **系统性审查 72 个文件**（Dart + Rust），修复 **80+ 项问题**
   - **P0 崩溃级**（5 项）：`launch_args.dart` switch fall-through 加 `break`、`base.dart` `_active` getter StateError 安全回退、`search.rs` FFI 入口添加 `guard()` panic 屏障、`walker.rs` Drop 实现改用 `if let Ok` 避免 unwinding 二次 panic、`pty.rs` spawn 失败正确清理 `child`/`writer` 并处理 mutex poison
   - **P1 功能异常**（15 项）：`actions.dart` 5 个 `async void` 改 `Future<void>` + try-catch、`operation_store.dart` catch 分支补 `_currentWorker?.dispose()` 防 isolate 泄漏、`drive_store.dart` 全局实例改懒加载 + `disposeDriveStore()` 回收 Timer、`shell_store.dart` `dispose()` 中 `current = null` 解除静态引用、`drag_drop.dart` Completer 加 `.timeout()` + `whereType<String>()`、`format.dart` `formatBytes` 处理 `<= 0` 输入、`ini_file.dart` 跳过空 key、`sftp/ops.rs` 单次读取上限 16 MiB
@@ -26,11 +26,16 @@
   - **P3 主题一致性**（37 处）：`Colors.black.withValues` → `AppColors.shadowSubtle`、`Colors.white`（checkbox/icon）→ `AppColors.bg`、`Colors.black54` → `AppColors.bg.withValues(alpha: 0.4)`；补全 `zh.i18n.json` `terminalInsert` 翻译
   - **CI 加固**（4 项）：pdfium 版本固定、集成测试覆盖整个目录、Rust 构建缓存、fastforge 版本固定
   - `dart analyze lib/` ✅ **0 issues**、`cargo check` ✅ **编译通过**
-  - **CI 修复推送**（v3.5.0 后续）：
+  - **CI 修复推送**（v3.5.0 发布前）：
     - `chore: fix dart formatting (11 files)` — `a7b8d3d`：CI `dart format --set-exit-if-changed` 发现 11 个文件格式不合规，自动格式化后推送
     - `fix: remove const from BoxDecoration using AppColors.bg getter` — `7d3f5d6`：`AppColors.bg` 是 getter 而非编译时常量，不能用于 `const BoxDecoration`，移除 `const` 修复 release 构建失败
     - `fix: correct pdfium version format to chromium/8021` — `f6a7070`：pdfium-binaries 版本标签格式为 `chromium/<build>` 而非语义化版本 `v134.0.7099.0`，修复 404 下载失败
     - `fix: remove stale terminal columns from drift generated file` — `3c31bbe`：`app_database.g.dart` 残留 8 个终端列（`terminal`/`terminalShell` 等，v3.4.0 移除终端模块时未同步重新生成），迁移测试 `map` 时 `!` 空值检查崩溃；手动移除 596 行废弃代码，同步更新迁移测试
+  - **v3.5.0 发布后追加修复**（3 项，tag 已更新至最新 commit）：
+    - `fix: remove terminal references from database tests after v3.4.0 terminal removal` — `ff2aaf4`：移除 `app_database_test.dart` 和 `app_database_persistence_test.dart` 中残留的 `terminal`/`terminalCustomCommand` 引用（v3.4.0 移除终端模块时遗漏），修复 10 项编译错误
+    - `fix: make native copy cancel test deterministic on fast CI disks` — `2fa63d1`：native copy 取消测试在快 SSD 上竞态失败（拷贝在取消信号前完成），文件从 512MB 增至 2GB + 取消条件从轮询 3 次改为 200ms 时间阈值
+    - `ci: remove invalid fastforge 3.2.0 version pin` — `bc1b637`：CI workflow 中 `fastforge 3.2.0` 不存在（最新为 0.6.12），移除版本号约束使用最新版本
+  - **CI 全绿**（Run #33147084975，20m14s，4 job 全过）、**Release v3.5.0 已发布**（`MyExplorer-3.5.0-windows-setup.exe` + `.zip`）
 - ✅ **v3.4.0 已提交并推送**（pubspec `3.4.0`）：移除内置终端功能模块
   - **删除 `lib/core/terminal/` 目录**：终端服务（`terminal.dart`）、shell 检测（`shell_detector.dart`）、终端启动（`terminal_launch.dart`）、系统字体（`system_fonts.dart`）
   - **删除终端面板 UI**：`pane_view.dart` 中移除 `_TerminalPanel`、`_TerminalHeader`、`_TerminalTabChip`、`_TerminalIconButton`、`_TerminalResizeHandle` 等类
@@ -72,7 +77,10 @@
 
 | Commit | 说明 |
 |--------|------|
-| `feat: v3.5.0 — full code review & hardening, 80+ fixes` | **v3.5.0（已推送）**：pubspec `3.5.0`；全量代码审查 72 文件（Dart + Rust），修复 80+ 项问题（P0 崩溃级 5 + P1 功能异常 15 + P2 空安全/资源 25 + P3 主题一致性 37 + CI 加固 4）；`dart analyze` 0 issues、`cargo check` 通过（72 文件变更，+533/-372） |
+| `feat: v3.5.0 — full code review & hardening, 80+ fixes` | **v3.5.0（已发布）**：pubspec `3.5.0`；全量代码审查 72 文件（Dart + Rust），修复 80+ 项问题（P0 崩溃级 5 + P1 功能异常 15 + P2 空安全/资源 25 + P3 主题一致性 37 + CI 加固 4）；`dart analyze` 0 issues、`cargo check` 通过（72 文件变更，+533/-372） |
+| `fix: remove terminal references from database tests after v3.4.0 terminal removal` | **v3.5.0 发布后修复**：移除 `app_database_test.dart` 和 `app_database_persistence_test.dart` 中残留的 `terminal`/`terminalCustomCommand` 命名参数和 getter 断言（10 项编译错误，2 文件，+2/-10） |
+| `fix: make native copy cancel test deterministic on fast CI disks` | **v3.5.0 发布后修复**：`native_copy_test.dart` 取消竞态修复——文件从 512MB 增至 2GB，取消条件从轮询 3 次改为 200ms 时间阈值（1 文件，+3/-3） |
+| `ci: remove invalid fastforge 3.2.0 version pin` | **v3.5.0 发布后修复**：CI workflow 中 `fastforge 3.2.0` 不存在（pub.dev 最新 0.6.12），移除版本号约束使用 latest（1 文件 1 行） |
 | `chore: fix dart formatting (11 files)` | **v3.5.0 CI 修复**：`dart format --set-exit-if-changed` 发现 `open_service.dart`、`drive_store.dart`、`file_view.dart` 等 11 个文件缺少尾逗号/换行不合规；自动格式化后推送（11 文件，+36/-25） |
 | `fix: remove const from BoxDecoration using AppColors.bg getter` | **Release 构建修复**：`settings_widgets.dart` 第 334 行 `const BoxDecoration(color: AppColors.bg)` 编译失败——`AppColors.bg` 是 getter 非常量；移除 `const` 修复（1 文件 1 行） |
 | `fix: correct pdfium version format to chromium/8021` | **CI 构建修复**：`build_myexplorer_core_windows.ps1` pdfium 版本 `v134.0.7099.0` 不存在（实际标签格式 `chromium/<build>`）；改为 `chromium/8021`（2026-08-25 最新），修复下载 404 |
@@ -181,24 +189,23 @@
 
 | 测试项 | 结果 |
 |--------|------|
-| `flutter analyze --fatal-infos --fatal-warnings` | ✅ No issues found（v3.4.0 修复后通过） |
-| `flutter test --exclude-tags=integration` | ✅ 561 全过（v3.1.0；v3.0.1 时为 578）；v3.4.0 待重新验证 |
-| `flutter test --tags=integration` | ✅ v3.0.1：86 过 + 4 skip；v3.1.0 相关子集（fs/operations/plugin/archive/navigation/database）全过 |
-| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.1.0 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.0.1 已验证（Run #50 全绿 + Release 已发布 2026-08-24）**；v3.4.0 CI 待验证 |
+| `flutter analyze --fatal-infos --fatal-warnings` | ✅ No issues found（v3.5.0 发布后通过） |
+| `flutter test --exclude-tags=integration` | ✅ 561 全过（v3.1.0；v3.0.1 时为 578）；v3.5.0 发布后通过 |
+| `flutter test --tags=integration` | ✅ **v3.5.0：89 过 + 4 skip**（含 database/archive/fs/operations/plugin/navigation 全部子集，native copy 取消竞态修复后稳定） |
+| `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.5.0 实测产物正常，super_native_extensions 插件警告无害） |
+| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.5.0 已验证（Run #33147084975 全绿 + Release 已发布 2026-08-24）** |
 
 ---
 
 ## 9. 下一步计划（可选方向）
 
 1. ~~**v3.0.1 CI & Release 验证**~~：✅ **已完成（2026-08-24）** —— Run #50 全绿（4 job），Release v3.0.1 已发布（setup.exe + zip）。
-2. ~~**v3.2.0 CI & Release 验证**~~：待验证
-3. ~~**v3.3.0 CI & Release 验证**~~：待验证
-2. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`；插件 `exec` 同理（open-vscode 需 `cmd /c code`）。
-3. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
-4. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2484 行）、`navigation_store.dart`（1900+ 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
-5. ~~**Rust panic 屏障收官**~~：✅ **已完成（v3.1.0）** —— `session::block` 统一包 `catch_unwind` + panic 日志（sftp 全部入口一处覆盖）。
-6. **INI/DB 收尾**：`app_database.dart` 中 bookmarks/file_tags/sidebar_prefs 表及 DAO 已无 store 调用方（tags 功能 v3.1.0 已删），schema 保留以兼容旧数据迁移，DAO 可考虑后续清理。
+2. ~~**v3.5.0 CI & Release 验证**~~：✅ **已完成（2026-08-28）** —— Run #33147084975 全绿（4 job，20m14s），Release v3.5.0 已发布（setup.exe + zip）；发布后追加 3 项修复（测试终端引用、native copy 竞态、fastforge 版本号），tag 已更新至最新 commit。
+3. **行为迁移提醒**：v2.8.0 起快捷栏/终端命令不再隐式经 cmd.exe——README 已注明，若用户反馈 `>`/`|` 按钮失效需引导写 `cmd /c`；插件 `exec` 同理（open-vscode 需 `cmd /c code`）。
+4. **补测试**：operations 的 isolate 深层、sftp_task_executor worker 路径覆盖偏少；压缩包内编辑路径可补更多边界。
+5. **拆分收尾**：`toolbar.dart`（1100+ 行）、`file_system_workers.dart`（2484 行）、`navigation_store.dart`（1900+ 行）、`operation_store.dart`（1380 行）、`info_panel.dart`（1373 行）等仍偏大，可按域继续拆分。
+6. ~~**Rust panic 屏障收官**~~：✅ **已完成（v3.1.0）** —— `session::block` 统一包 `catch_unwind` + panic 日志（sftp 全部入口一处覆盖）。
+7. **INI/DB 收尾**：`app_database.dart` 中 bookmarks/file_tags/sidebar_prefs 表及 DAO 已无 store 调用方（tags 功能 v3.1.0 已删），schema 保留以兼容旧数据迁移，DAO 可考虑后续清理。
 
 ---
 
@@ -213,10 +220,9 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
- - MyExplorer **v3.4.0**（pubspec name: myexplorer，version 3.4.0，**已推送**）
- - v3.4.0 内容：移除内置终端功能模块（删除 lib/core/terminal/、pane_view.dart 终端面板 UI、TerminalColors 主题配色、终端设置分类与快捷键绑定、myexplorer_term 依赖；移除主菜单"终端"菜单项；清理所有终端 i18n 翻译键；删除 packages/myexplorer_term/ 整个终端包；删除终端测试并修复其他测试引用）
- - v3.4.0 修复：flutter analyze --fatal-infos --fatal-warnings 0 issues（移除未使用导入、排除 .g.dart 生成文件）
- - CI 待验证、release 构建待完成
+ - MyExplorer **v3.5.0**（pubspec name: myexplorer，version 3.5.0，**已发布**）
+ - v3.5.0 内容：全量代码审查 72 文件（Dart + Rust），修复 80+ 项问题（P0 崩溃级 5 + P1 功能异常 15 + P2 空安全/资源 25 + P3 主题一致性 37 + CI 加固 4）；发布后追加 3 项修复（测试终端引用清理、native copy 取消竞态、fastforge 版本号）
+ - v3.5.0 CI 全绿（Run #33147084975，4 job），Release 已发布（setup.exe + zip）
  - 行为变化：快捷栏/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
  - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
 
