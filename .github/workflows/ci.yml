@@ -143,7 +143,7 @@ jobs:
         run: choco install innosetup -y --no-progress
 
       - name: Install fastforge
-        run: dart pub global activate fastforge 3.2.0
+        run: dart pub global activate fastforge
 
       - name: Read version
         id: version
