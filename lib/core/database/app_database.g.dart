@@ -34,105 +34,6 @@ class $AppSettingsTable extends AppSettings
     requiredDuringInsert: false,
     defaultValue: const Constant('dark'),
   );
-  static const VerificationMeta _terminalMeta = const VerificationMeta(
-    'terminal',
-  );
-  @override
-  late final GeneratedColumn<String> terminal = GeneratedColumn<String>(
-    'terminal',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('builtin'),
-  );
-  static const VerificationMeta _terminalShellMeta = const VerificationMeta(
-    'terminalShell',
-  );
-  @override
-  late final GeneratedColumn<String> terminalShell = GeneratedColumn<String>(
-    'terminal_shell',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('system'),
-  );
-  static const VerificationMeta _terminalCustomCommandMeta =
-      const VerificationMeta('terminalCustomCommand');
-  @override
-  late final GeneratedColumn<String> terminalCustomCommand =
-      GeneratedColumn<String>(
-        'terminal_custom_command',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant(''),
-      );
-  static const VerificationMeta _terminalUseSystemFontMeta =
-      const VerificationMeta('terminalUseSystemFont');
-  @override
-  late final GeneratedColumn<bool> terminalUseSystemFont =
-      GeneratedColumn<bool>(
-        'terminal_use_system_font',
-        aliasedName,
-        false,
-        type: DriftSqlType.bool,
-        requiredDuringInsert: false,
-        defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("terminal_use_system_font" IN (0, 1))',
-        ),
-        defaultValue: const Constant(true),
-      );
-  static const VerificationMeta _terminalFontFamilyMeta =
-      const VerificationMeta('terminalFontFamily');
-  @override
-  late final GeneratedColumn<String> terminalFontFamily =
-      GeneratedColumn<String>(
-        'terminal_font_family',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant(''),
-      );
-  static const VerificationMeta _terminalFontSizeMeta = const VerificationMeta(
-    'terminalFontSize',
-  );
-  @override
-  late final GeneratedColumn<int> terminalFontSize = GeneratedColumn<int>(
-    'terminal_font_size',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(13),
-  );
-  static const VerificationMeta _terminalLineHeightMeta =
-      const VerificationMeta('terminalLineHeight');
-  @override
-  late final GeneratedColumn<double> terminalLineHeight =
-      GeneratedColumn<double>(
-        'terminal_line_height',
-        aliasedName,
-        false,
-        type: DriftSqlType.double,
-        requiredDuringInsert: false,
-        defaultValue: const Constant(1.2),
-      );
-  static const VerificationMeta _terminalCopyPasteModeMeta =
-      const VerificationMeta('terminalCopyPasteMode');
-  @override
-  late final GeneratedColumn<String> terminalCopyPasteMode =
-      GeneratedColumn<String>(
-        'terminal_copy_paste_mode',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant(''),
-      );
   static const VerificationMeta _isDualMeta = const VerificationMeta('isDual');
   @override
   late final GeneratedColumn<bool> isDual = GeneratedColumn<bool>(
@@ -796,14 +697,6 @@ class $AppSettingsTable extends AppSettings
   List<GeneratedColumn> get $columns => [
     id,
     themeMode,
-    terminal,
-    terminalShell,
-    terminalCustomCommand,
-    terminalUseSystemFont,
-    terminalFontFamily,
-    terminalFontSize,
-    terminalLineHeight,
-    terminalCopyPasteMode,
     isDual,
     splitRatio,
     activePaneIndex,
@@ -872,75 +765,6 @@ class $AppSettingsTable extends AppSettings
       context.handle(
         _themeModeMeta,
         themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta),
-      );
-    }
-    if (data.containsKey('terminal')) {
-      context.handle(
-        _terminalMeta,
-        terminal.isAcceptableOrUnknown(data['terminal']!, _terminalMeta),
-      );
-    }
-    if (data.containsKey('terminal_shell')) {
-      context.handle(
-        _terminalShellMeta,
-        terminalShell.isAcceptableOrUnknown(
-          data['terminal_shell']!,
-          _terminalShellMeta,
-        ),
-      );
-    }
-    if (data.containsKey('terminal_custom_command')) {
-      context.handle(
-        _terminalCustomCommandMeta,
-        terminalCustomCommand.isAcceptableOrUnknown(
-          data['terminal_custom_command']!,
-          _terminalCustomCommandMeta,
-        ),
-      );
-    }
-    if (data.containsKey('terminal_use_system_font')) {
-      context.handle(
-        _terminalUseSystemFontMeta,
-        terminalUseSystemFont.isAcceptableOrUnknown(
-          data['terminal_use_system_font']!,
-          _terminalUseSystemFontMeta,
-        ),
-      );
-    }
-    if (data.containsKey('terminal_font_family')) {
-      context.handle(
-        _terminalFontFamilyMeta,
-        terminalFontFamily.isAcceptableOrUnknown(
-          data['terminal_font_family']!,
-          _terminalFontFamilyMeta,
-        ),
-      );
-    }
-    if (data.containsKey('terminal_font_size')) {
-      context.handle(
-        _terminalFontSizeMeta,
-        terminalFontSize.isAcceptableOrUnknown(
-          data['terminal_font_size']!,
-          _terminalFontSizeMeta,
-        ),
-      );
-    }
-    if (data.containsKey('terminal_line_height')) {
-      context.handle(
-        _terminalLineHeightMeta,
-        terminalLineHeight.isAcceptableOrUnknown(
-          data['terminal_line_height']!,
-          _terminalLineHeightMeta,
-        ),
-      );
-    }
-    if (data.containsKey('terminal_copy_paste_mode')) {
-      context.handle(
-        _terminalCopyPasteModeMeta,
-        terminalCopyPasteMode.isAcceptableOrUnknown(
-          data['terminal_copy_paste_mode']!,
-          _terminalCopyPasteModeMeta,
-        ),
       );
     }
     if (data.containsKey('is_dual')) {
@@ -1374,38 +1198,6 @@ class $AppSettingsTable extends AppSettings
         DriftSqlType.string,
         data['${effectivePrefix}theme_mode'],
       )!,
-      terminal: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}terminal'],
-      )!,
-      terminalShell: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}terminal_shell'],
-      )!,
-      terminalCustomCommand: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}terminal_custom_command'],
-      )!,
-      terminalUseSystemFont: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}terminal_use_system_font'],
-      )!,
-      terminalFontFamily: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}terminal_font_family'],
-      )!,
-      terminalFontSize: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}terminal_font_size'],
-      )!,
-      terminalLineHeight: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
-        data['${effectivePrefix}terminal_line_height'],
-      )!,
-      terminalCopyPasteMode: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}terminal_copy_paste_mode'],
-      )!,
       isDual: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_dual'],
@@ -1610,14 +1402,6 @@ class $AppSettingsTable extends AppSettings
 class AppSetting extends DataClass implements Insertable<AppSetting> {
   final int id;
   final String themeMode;
-  final String terminal;
-  final String terminalShell;
-  final String terminalCustomCommand;
-  final bool terminalUseSystemFont;
-  final String terminalFontFamily;
-  final int terminalFontSize;
-  final double terminalLineHeight;
-  final String terminalCopyPasteMode;
   final bool isDual;
   final double splitRatio;
   final int activePaneIndex;
@@ -1669,14 +1453,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   const AppSetting({
     required this.id,
     required this.themeMode,
-    required this.terminal,
-    required this.terminalShell,
-    required this.terminalCustomCommand,
-    required this.terminalUseSystemFont,
-    required this.terminalFontFamily,
-    required this.terminalFontSize,
-    required this.terminalLineHeight,
-    required this.terminalCopyPasteMode,
     required this.isDual,
     required this.splitRatio,
     required this.activePaneIndex,
@@ -1731,14 +1507,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['theme_mode'] = Variable<String>(themeMode);
-    map['terminal'] = Variable<String>(terminal);
-    map['terminal_shell'] = Variable<String>(terminalShell);
-    map['terminal_custom_command'] = Variable<String>(terminalCustomCommand);
-    map['terminal_use_system_font'] = Variable<bool>(terminalUseSystemFont);
-    map['terminal_font_family'] = Variable<String>(terminalFontFamily);
-    map['terminal_font_size'] = Variable<int>(terminalFontSize);
-    map['terminal_line_height'] = Variable<double>(terminalLineHeight);
-    map['terminal_copy_paste_mode'] = Variable<String>(terminalCopyPasteMode);
     map['is_dual'] = Variable<bool>(isDual);
     map['split_ratio'] = Variable<double>(splitRatio);
     map['active_pane_index'] = Variable<int>(activePaneIndex);
@@ -1800,14 +1568,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     return AppSettingsCompanion(
       id: Value(id),
       themeMode: Value(themeMode),
-      terminal: Value(terminal),
-      terminalShell: Value(terminalShell),
-      terminalCustomCommand: Value(terminalCustomCommand),
-      terminalUseSystemFont: Value(terminalUseSystemFont),
-      terminalFontFamily: Value(terminalFontFamily),
-      terminalFontSize: Value(terminalFontSize),
-      terminalLineHeight: Value(terminalLineHeight),
-      terminalCopyPasteMode: Value(terminalCopyPasteMode),
       isDual: Value(isDual),
       splitRatio: Value(splitRatio),
       activePaneIndex: Value(activePaneIndex),
@@ -1867,24 +1627,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     return AppSetting(
       id: serializer.fromJson<int>(json['id']),
       themeMode: serializer.fromJson<String>(json['themeMode']),
-      terminal: serializer.fromJson<String>(json['terminal']),
-      terminalShell: serializer.fromJson<String>(json['terminalShell']),
-      terminalCustomCommand: serializer.fromJson<String>(
-        json['terminalCustomCommand'],
-      ),
-      terminalUseSystemFont: serializer.fromJson<bool>(
-        json['terminalUseSystemFont'],
-      ),
-      terminalFontFamily: serializer.fromJson<String>(
-        json['terminalFontFamily'],
-      ),
-      terminalFontSize: serializer.fromJson<int>(json['terminalFontSize']),
-      terminalLineHeight: serializer.fromJson<double>(
-        json['terminalLineHeight'],
-      ),
-      terminalCopyPasteMode: serializer.fromJson<String>(
-        json['terminalCopyPasteMode'],
-      ),
       isDual: serializer.fromJson<bool>(json['isDual']),
       splitRatio: serializer.fromJson<double>(json['splitRatio']),
       activePaneIndex: serializer.fromJson<int>(json['activePaneIndex']),
@@ -1965,14 +1707,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'themeMode': serializer.toJson<String>(themeMode),
-      'terminal': serializer.toJson<String>(terminal),
-      'terminalShell': serializer.toJson<String>(terminalShell),
-      'terminalCustomCommand': serializer.toJson<String>(terminalCustomCommand),
-      'terminalUseSystemFont': serializer.toJson<bool>(terminalUseSystemFont),
-      'terminalFontFamily': serializer.toJson<String>(terminalFontFamily),
-      'terminalFontSize': serializer.toJson<int>(terminalFontSize),
-      'terminalLineHeight': serializer.toJson<double>(terminalLineHeight),
-      'terminalCopyPasteMode': serializer.toJson<String>(terminalCopyPasteMode),
       'isDual': serializer.toJson<bool>(isDual),
       'splitRatio': serializer.toJson<double>(splitRatio),
       'activePaneIndex': serializer.toJson<int>(activePaneIndex),
@@ -2037,14 +1771,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   AppSetting copyWith({
     int? id,
     String? themeMode,
-    String? terminal,
-    String? terminalShell,
-    String? terminalCustomCommand,
-    bool? terminalUseSystemFont,
-    String? terminalFontFamily,
-    int? terminalFontSize,
-    double? terminalLineHeight,
-    String? terminalCopyPasteMode,
     bool? isDual,
     double? splitRatio,
     int? activePaneIndex,
@@ -2096,14 +1822,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   }) => AppSetting(
     id: id ?? this.id,
     themeMode: themeMode ?? this.themeMode,
-    terminal: terminal ?? this.terminal,
-    terminalShell: terminalShell ?? this.terminalShell,
-    terminalCustomCommand: terminalCustomCommand ?? this.terminalCustomCommand,
-    terminalUseSystemFont: terminalUseSystemFont ?? this.terminalUseSystemFont,
-    terminalFontFamily: terminalFontFamily ?? this.terminalFontFamily,
-    terminalFontSize: terminalFontSize ?? this.terminalFontSize,
-    terminalLineHeight: terminalLineHeight ?? this.terminalLineHeight,
-    terminalCopyPasteMode: terminalCopyPasteMode ?? this.terminalCopyPasteMode,
     isDual: isDual ?? this.isDual,
     splitRatio: splitRatio ?? this.splitRatio,
     activePaneIndex: activePaneIndex ?? this.activePaneIndex,
@@ -2163,28 +1881,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     return AppSetting(
       id: data.id.present ? data.id.value : this.id,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
-      terminal: data.terminal.present ? data.terminal.value : this.terminal,
-      terminalShell: data.terminalShell.present
-          ? data.terminalShell.value
-          : this.terminalShell,
-      terminalCustomCommand: data.terminalCustomCommand.present
-          ? data.terminalCustomCommand.value
-          : this.terminalCustomCommand,
-      terminalUseSystemFont: data.terminalUseSystemFont.present
-          ? data.terminalUseSystemFont.value
-          : this.terminalUseSystemFont,
-      terminalFontFamily: data.terminalFontFamily.present
-          ? data.terminalFontFamily.value
-          : this.terminalFontFamily,
-      terminalFontSize: data.terminalFontSize.present
-          ? data.terminalFontSize.value
-          : this.terminalFontSize,
-      terminalLineHeight: data.terminalLineHeight.present
-          ? data.terminalLineHeight.value
-          : this.terminalLineHeight,
-      terminalCopyPasteMode: data.terminalCopyPasteMode.present
-          ? data.terminalCopyPasteMode.value
-          : this.terminalCopyPasteMode,
       isDual: data.isDual.present ? data.isDual.value : this.isDual,
       splitRatio: data.splitRatio.present
           ? data.splitRatio.value
@@ -2333,14 +2029,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     return (StringBuffer('AppSetting(')
           ..write('id: $id, ')
           ..write('themeMode: $themeMode, ')
-          ..write('terminal: $terminal, ')
-          ..write('terminalShell: $terminalShell, ')
-          ..write('terminalCustomCommand: $terminalCustomCommand, ')
-          ..write('terminalUseSystemFont: $terminalUseSystemFont, ')
-          ..write('terminalFontFamily: $terminalFontFamily, ')
-          ..write('terminalFontSize: $terminalFontSize, ')
-          ..write('terminalLineHeight: $terminalLineHeight, ')
-          ..write('terminalCopyPasteMode: $terminalCopyPasteMode, ')
           ..write('isDual: $isDual, ')
           ..write('splitRatio: $splitRatio, ')
           ..write('activePaneIndex: $activePaneIndex, ')
@@ -2399,14 +2087,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   int get hashCode => Object.hashAll([
     id,
     themeMode,
-    terminal,
-    terminalShell,
-    terminalCustomCommand,
-    terminalUseSystemFont,
-    terminalFontFamily,
-    terminalFontSize,
-    terminalLineHeight,
-    terminalCopyPasteMode,
     isDual,
     splitRatio,
     activePaneIndex,
@@ -2462,14 +2142,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       (other is AppSetting &&
           other.id == this.id &&
           other.themeMode == this.themeMode &&
-          other.terminal == this.terminal &&
-          other.terminalShell == this.terminalShell &&
-          other.terminalCustomCommand == this.terminalCustomCommand &&
-          other.terminalUseSystemFont == this.terminalUseSystemFont &&
-          other.terminalFontFamily == this.terminalFontFamily &&
-          other.terminalFontSize == this.terminalFontSize &&
-          other.terminalLineHeight == this.terminalLineHeight &&
-          other.terminalCopyPasteMode == this.terminalCopyPasteMode &&
           other.isDual == this.isDual &&
           other.splitRatio == this.splitRatio &&
           other.activePaneIndex == this.activePaneIndex &&
@@ -2524,14 +2196,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
 class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   final Value<int> id;
   final Value<String> themeMode;
-  final Value<String> terminal;
-  final Value<String> terminalShell;
-  final Value<String> terminalCustomCommand;
-  final Value<bool> terminalUseSystemFont;
-  final Value<String> terminalFontFamily;
-  final Value<int> terminalFontSize;
-  final Value<double> terminalLineHeight;
-  final Value<String> terminalCopyPasteMode;
   final Value<bool> isDual;
   final Value<double> splitRatio;
   final Value<int> activePaneIndex;
@@ -2583,14 +2247,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   const AppSettingsCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
-    this.terminal = const Value.absent(),
-    this.terminalShell = const Value.absent(),
-    this.terminalCustomCommand = const Value.absent(),
-    this.terminalUseSystemFont = const Value.absent(),
-    this.terminalFontFamily = const Value.absent(),
-    this.terminalFontSize = const Value.absent(),
-    this.terminalLineHeight = const Value.absent(),
-    this.terminalCopyPasteMode = const Value.absent(),
     this.isDual = const Value.absent(),
     this.splitRatio = const Value.absent(),
     this.activePaneIndex = const Value.absent(),
@@ -2643,14 +2299,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   AppSettingsCompanion.insert({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
-    this.terminal = const Value.absent(),
-    this.terminalShell = const Value.absent(),
-    this.terminalCustomCommand = const Value.absent(),
-    this.terminalUseSystemFont = const Value.absent(),
-    this.terminalFontFamily = const Value.absent(),
-    this.terminalFontSize = const Value.absent(),
-    this.terminalLineHeight = const Value.absent(),
-    this.terminalCopyPasteMode = const Value.absent(),
     this.isDual = const Value.absent(),
     this.splitRatio = const Value.absent(),
     this.activePaneIndex = const Value.absent(),
@@ -2703,14 +2351,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   static Insertable<AppSetting> custom({
     Expression<int>? id,
     Expression<String>? themeMode,
-    Expression<String>? terminal,
-    Expression<String>? terminalShell,
-    Expression<String>? terminalCustomCommand,
-    Expression<bool>? terminalUseSystemFont,
-    Expression<String>? terminalFontFamily,
-    Expression<int>? terminalFontSize,
-    Expression<double>? terminalLineHeight,
-    Expression<String>? terminalCopyPasteMode,
     Expression<bool>? isDual,
     Expression<double>? splitRatio,
     Expression<int>? activePaneIndex,
@@ -2763,19 +2403,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (themeMode != null) 'theme_mode': themeMode,
-      if (terminal != null) 'terminal': terminal,
-      if (terminalShell != null) 'terminal_shell': terminalShell,
-      if (terminalCustomCommand != null)
-        'terminal_custom_command': terminalCustomCommand,
-      if (terminalUseSystemFont != null)
-        'terminal_use_system_font': terminalUseSystemFont,
-      if (terminalFontFamily != null)
-        'terminal_font_family': terminalFontFamily,
-      if (terminalFontSize != null) 'terminal_font_size': terminalFontSize,
-      if (terminalLineHeight != null)
-        'terminal_line_height': terminalLineHeight,
-      if (terminalCopyPasteMode != null)
-        'terminal_copy_paste_mode': terminalCopyPasteMode,
       if (isDual != null) 'is_dual': isDual,
       if (splitRatio != null) 'split_ratio': splitRatio,
       if (activePaneIndex != null) 'active_pane_index': activePaneIndex,
@@ -2845,14 +2472,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   AppSettingsCompanion copyWith({
     Value<int>? id,
     Value<String>? themeMode,
-    Value<String>? terminal,
-    Value<String>? terminalShell,
-    Value<String>? terminalCustomCommand,
-    Value<bool>? terminalUseSystemFont,
-    Value<String>? terminalFontFamily,
-    Value<int>? terminalFontSize,
-    Value<double>? terminalLineHeight,
-    Value<String>? terminalCopyPasteMode,
     Value<bool>? isDual,
     Value<double>? splitRatio,
     Value<int>? activePaneIndex,
@@ -2905,17 +2524,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     return AppSettingsCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
-      terminal: terminal ?? this.terminal,
-      terminalShell: terminalShell ?? this.terminalShell,
-      terminalCustomCommand:
-          terminalCustomCommand ?? this.terminalCustomCommand,
-      terminalUseSystemFont:
-          terminalUseSystemFont ?? this.terminalUseSystemFont,
-      terminalFontFamily: terminalFontFamily ?? this.terminalFontFamily,
-      terminalFontSize: terminalFontSize ?? this.terminalFontSize,
-      terminalLineHeight: terminalLineHeight ?? this.terminalLineHeight,
-      terminalCopyPasteMode:
-          terminalCopyPasteMode ?? this.terminalCopyPasteMode,
       isDual: isDual ?? this.isDual,
       splitRatio: splitRatio ?? this.splitRatio,
       activePaneIndex: activePaneIndex ?? this.activePaneIndex,
@@ -2982,36 +2590,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     }
     if (themeMode.present) {
       map['theme_mode'] = Variable<String>(themeMode.value);
-    }
-    if (terminal.present) {
-      map['terminal'] = Variable<String>(terminal.value);
-    }
-    if (terminalShell.present) {
-      map['terminal_shell'] = Variable<String>(terminalShell.value);
-    }
-    if (terminalCustomCommand.present) {
-      map['terminal_custom_command'] = Variable<String>(
-        terminalCustomCommand.value,
-      );
-    }
-    if (terminalUseSystemFont.present) {
-      map['terminal_use_system_font'] = Variable<bool>(
-        terminalUseSystemFont.value,
-      );
-    }
-    if (terminalFontFamily.present) {
-      map['terminal_font_family'] = Variable<String>(terminalFontFamily.value);
-    }
-    if (terminalFontSize.present) {
-      map['terminal_font_size'] = Variable<int>(terminalFontSize.value);
-    }
-    if (terminalLineHeight.present) {
-      map['terminal_line_height'] = Variable<double>(terminalLineHeight.value);
-    }
-    if (terminalCopyPasteMode.present) {
-      map['terminal_copy_paste_mode'] = Variable<String>(
-        terminalCopyPasteMode.value,
-      );
     }
     if (isDual.present) {
       map['is_dual'] = Variable<bool>(isDual.value);
@@ -3185,14 +2763,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     return (StringBuffer('AppSettingsCompanion(')
           ..write('id: $id, ')
           ..write('themeMode: $themeMode, ')
-          ..write('terminal: $terminal, ')
-          ..write('terminalShell: $terminalShell, ')
-          ..write('terminalCustomCommand: $terminalCustomCommand, ')
-          ..write('terminalUseSystemFont: $terminalUseSystemFont, ')
-          ..write('terminalFontFamily: $terminalFontFamily, ')
-          ..write('terminalFontSize: $terminalFontSize, ')
-          ..write('terminalLineHeight: $terminalLineHeight, ')
-          ..write('terminalCopyPasteMode: $terminalCopyPasteMode, ')
           ..write('isDual: $isDual, ')
           ..write('splitRatio: $splitRatio, ')
           ..write('activePaneIndex: $activePaneIndex, ')
@@ -7352,14 +6922,6 @@ typedef $$AppSettingsTableCreateCompanionBuilder =
     AppSettingsCompanion Function({
       Value<int> id,
       Value<String> themeMode,
-      Value<String> terminal,
-      Value<String> terminalShell,
-      Value<String> terminalCustomCommand,
-      Value<bool> terminalUseSystemFont,
-      Value<String> terminalFontFamily,
-      Value<int> terminalFontSize,
-      Value<double> terminalLineHeight,
-      Value<String> terminalCopyPasteMode,
       Value<bool> isDual,
       Value<double> splitRatio,
       Value<int> activePaneIndex,
@@ -7413,14 +6975,6 @@ typedef $$AppSettingsTableUpdateCompanionBuilder =
     AppSettingsCompanion Function({
       Value<int> id,
       Value<String> themeMode,
-      Value<String> terminal,
-      Value<String> terminalShell,
-      Value<String> terminalCustomCommand,
-      Value<bool> terminalUseSystemFont,
-      Value<String> terminalFontFamily,
-      Value<int> terminalFontSize,
-      Value<double> terminalLineHeight,
-      Value<String> terminalCopyPasteMode,
       Value<bool> isDual,
       Value<double> splitRatio,
       Value<int> activePaneIndex,
@@ -7487,46 +7041,6 @@ class $$AppSettingsTableFilterComposer
 
   ColumnFilters<String> get themeMode => $composableBuilder(
     column: $table.themeMode,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get terminal => $composableBuilder(
-    column: $table.terminal,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get terminalShell => $composableBuilder(
-    column: $table.terminalShell,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get terminalCustomCommand => $composableBuilder(
-    column: $table.terminalCustomCommand,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get terminalUseSystemFont => $composableBuilder(
-    column: $table.terminalUseSystemFont,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get terminalFontFamily => $composableBuilder(
-    column: $table.terminalFontFamily,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get terminalFontSize => $composableBuilder(
-    column: $table.terminalFontSize,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get terminalLineHeight => $composableBuilder(
-    column: $table.terminalLineHeight,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get terminalCopyPasteMode => $composableBuilder(
-    column: $table.terminalCopyPasteMode,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7790,46 +7304,6 @@ class $$AppSettingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get terminal => $composableBuilder(
-    column: $table.terminal,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get terminalShell => $composableBuilder(
-    column: $table.terminalShell,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get terminalCustomCommand => $composableBuilder(
-    column: $table.terminalCustomCommand,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get terminalUseSystemFont => $composableBuilder(
-    column: $table.terminalUseSystemFont,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get terminalFontFamily => $composableBuilder(
-    column: $table.terminalFontFamily,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get terminalFontSize => $composableBuilder(
-    column: $table.terminalFontSize,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get terminalLineHeight => $composableBuilder(
-    column: $table.terminalLineHeight,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get terminalCopyPasteMode => $composableBuilder(
-    column: $table.terminalCopyPasteMode,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<bool> get isDual => $composableBuilder(
     column: $table.isDual,
     builder: (column) => ColumnOrderings(column),
@@ -8085,44 +7559,6 @@ class $$AppSettingsTableAnnotationComposer
 
   GeneratedColumn<String> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
-
-  GeneratedColumn<String> get terminal =>
-      $composableBuilder(column: $table.terminal, builder: (column) => column);
-
-  GeneratedColumn<String> get terminalShell => $composableBuilder(
-    column: $table.terminalShell,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get terminalCustomCommand => $composableBuilder(
-    column: $table.terminalCustomCommand,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<bool> get terminalUseSystemFont => $composableBuilder(
-    column: $table.terminalUseSystemFont,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get terminalFontFamily => $composableBuilder(
-    column: $table.terminalFontFamily,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get terminalFontSize => $composableBuilder(
-    column: $table.terminalFontSize,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<double> get terminalLineHeight => $composableBuilder(
-    column: $table.terminalLineHeight,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get terminalCopyPasteMode => $composableBuilder(
-    column: $table.terminalCopyPasteMode,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<bool> get isDual =>
       $composableBuilder(column: $table.isDual, builder: (column) => column);
@@ -8394,14 +7830,6 @@ class $$AppSettingsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> themeMode = const Value.absent(),
-                Value<String> terminal = const Value.absent(),
-                Value<String> terminalShell = const Value.absent(),
-                Value<String> terminalCustomCommand = const Value.absent(),
-                Value<bool> terminalUseSystemFont = const Value.absent(),
-                Value<String> terminalFontFamily = const Value.absent(),
-                Value<int> terminalFontSize = const Value.absent(),
-                Value<double> terminalLineHeight = const Value.absent(),
-                Value<String> terminalCopyPasteMode = const Value.absent(),
                 Value<bool> isDual = const Value.absent(),
                 Value<double> splitRatio = const Value.absent(),
                 Value<int> activePaneIndex = const Value.absent(),
@@ -8453,14 +7881,6 @@ class $$AppSettingsTableTableManager
               }) => AppSettingsCompanion(
                 id: id,
                 themeMode: themeMode,
-                terminal: terminal,
-                terminalShell: terminalShell,
-                terminalCustomCommand: terminalCustomCommand,
-                terminalUseSystemFont: terminalUseSystemFont,
-                terminalFontFamily: terminalFontFamily,
-                terminalFontSize: terminalFontSize,
-                terminalLineHeight: terminalLineHeight,
-                terminalCopyPasteMode: terminalCopyPasteMode,
                 isDual: isDual,
                 splitRatio: splitRatio,
                 activePaneIndex: activePaneIndex,
@@ -8514,14 +7934,6 @@ class $$AppSettingsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> themeMode = const Value.absent(),
-                Value<String> terminal = const Value.absent(),
-                Value<String> terminalShell = const Value.absent(),
-                Value<String> terminalCustomCommand = const Value.absent(),
-                Value<bool> terminalUseSystemFont = const Value.absent(),
-                Value<String> terminalFontFamily = const Value.absent(),
-                Value<int> terminalFontSize = const Value.absent(),
-                Value<double> terminalLineHeight = const Value.absent(),
-                Value<String> terminalCopyPasteMode = const Value.absent(),
                 Value<bool> isDual = const Value.absent(),
                 Value<double> splitRatio = const Value.absent(),
                 Value<int> activePaneIndex = const Value.absent(),
@@ -8573,14 +7985,6 @@ class $$AppSettingsTableTableManager
               }) => AppSettingsCompanion.insert(
                 id: id,
                 themeMode: themeMode,
-                terminal: terminal,
-                terminalShell: terminalShell,
-                terminalCustomCommand: terminalCustomCommand,
-                terminalUseSystemFont: terminalUseSystemFont,
-                terminalFontFamily: terminalFontFamily,
-                terminalFontSize: terminalFontSize,
-                terminalLineHeight: terminalLineHeight,
-                terminalCopyPasteMode: terminalCopyPasteMode,
                 isDual: isDual,
                 splitRatio: splitRatio,
                 activePaneIndex: activePaneIndex,

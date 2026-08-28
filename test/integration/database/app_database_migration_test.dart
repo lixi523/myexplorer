@@ -32,7 +32,6 @@ void main() {
     final tabs = await db.getTabs();
 
     expect(settings.themeMode, 'nord');
-    expect(settings.terminal, 'kitty');
     expect(settings.confirmCopy, isFalse);
     expect(settings.confirmMove, isTrue);
     expect(settings.fileListHorizontalSpacing, 6);
@@ -68,8 +67,6 @@ void _createSchemaV12(String path) {
 CREATE TABLE app_settings (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   theme_mode TEXT NOT NULL DEFAULT 'dark',
-  terminal TEXT NOT NULL DEFAULT 'auto',
-  terminal_custom_command TEXT NOT NULL DEFAULT '',
   is_dual INTEGER NOT NULL DEFAULT 0 CHECK (is_dual IN (0, 1)),
   split_ratio REAL NOT NULL DEFAULT 0.5,
   active_pane_index INTEGER NOT NULL DEFAULT 0,
@@ -125,8 +122,6 @@ CREATE TABLE default_apps (
 );
 INSERT INTO app_settings (
   theme_mode,
-  terminal,
-  terminal_custom_command,
   is_dual,
   split_ratio,
   active_pane_index,
@@ -144,8 +139,6 @@ INSERT INTO app_settings (
   folders_first
 ) VALUES (
   'nord',
-  'kitty',
-  'kitty -e',
   1,
   0.65,
   1,
