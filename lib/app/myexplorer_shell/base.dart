@@ -40,8 +40,9 @@ mixin _MyExplorerStateBase on State<MyExplorerShell> {
         return tab.store;
       }
     }
-
-    throw StateError('no active navigation store');
+    // Extremely unlikely: no panes/tabs available. Return first known store
+    // from the shell's store list to avoid crashing during transient states.
+    return _shell.allStores.first;
   }
 
   void _installRenameErrorEffects() {

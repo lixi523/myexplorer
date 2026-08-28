@@ -286,8 +286,8 @@ class ArchiveReader {
         final baseName = target.contains('/')
             ? target.substring(target.lastIndexOf('/') + 1)
             : target;
-        final stagedRoot = '$stagingDir/$baseName';
-        final src = p.joinAll([work.path, ...target.split('/')]);
+        final stagedRoot = p.join(stagingDir, baseName);
+        final src = p.join(work.path, target);
         final type = FileSystemEntity.typeSync(src);
         if (type == FileSystemEntityType.directory) {
           Directory(src).renameSync(stagedRoot);
@@ -361,7 +361,7 @@ class ArchiveReader {
   }) {
     extractAllResolved(
       archivePath,
-      (epath, isDir) => '$destDir/$epath',
+      (epath, isDir) => p.join(destDir, epath),
       onEntry: onEntry,
       isCancelled: isCancelled,
     );

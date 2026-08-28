@@ -173,45 +173,59 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
     return 'archive';
   }
 
-  void _quickCompress(ArchiveFormat format) async {
-    final store = _active;
-    final sources = _compressSources();
-    if (sources.isEmpty) return;
-    final dir = await store.resolveForOperation(store.currentPath.value);
-    if (dir == null) return;
-    final dest = FileSystemService.uniquePath(
-      p.join(dir, '${_compressBaseName()}.${format.extension}'),
-    );
-    store.operationStore.enqueueCompress(
-      sources,
-      dest,
-      format: format.name,
-      level: CompressionLevel.normal.name,
-    );
+  Future<void> _quickCompress(ArchiveFormat format) async {
+    try {
+      final store = _active;
+      final sources = _compressSources();
+      if (sources.isEmpty) return;
+      final dir = await store.resolveForOperation(store.currentPath.value);
+      if (dir == null) return;
+      final dest = FileSystemService.uniquePath(
+        p.join(dir, '${_compressBaseName()}.${format.extension}'),
+      );
+      store.operationStore.enqueueCompress(
+        sources,
+        dest,
+        format: format.name,
+        level: CompressionLevel.normal.name,
+      );
+    } catch (e, st) {
+      log.error('action', 'quick compress failed', error: e, stack: st);
+      if (mounted) {
+        showToast(context: context, message: e.toString());
+      }
+    }
   }
 
   Future<void> _compressWithOptions() async {
-    final store = _active;
-    final sources = _compressSources();
-    if (sources.isEmpty) return;
-    final dir = store.currentPath.value;
-    final req = await showCompressDialog(
-      context: context,
-      defaultBaseName: _compressBaseName(),
-      destinationDir: dir,
-    );
-    if (req == null) return;
-    final physicalDir = await store.resolveForOperation(dir);
-    if (physicalDir == null) return;
-    final dest = FileSystemService.uniquePath(
-      p.join(physicalDir, req.fileName),
-    );
-    store.operationStore.enqueueCompress(
-      sources,
-      dest,
-      format: req.format.name,
-      level: req.level.name,
-    );
+    try {
+      final store = _active;
+      final sources = _compressSources();
+      if (sources.isEmpty) return;
+      final dir = store.currentPath.value;
+      final req = await showCompressDialog(
+        context: context,
+        defaultBaseName: _compressBaseName(),
+        destinationDir: dir,
+      );
+      if (req == null) return;
+      final physicalDir = await store.resolveForOperation(dir);
+      if (physicalDir == null) return;
+      final dest = FileSystemService.uniquePath(
+        p.join(physicalDir, req.fileName),
+      );
+      store.operationStore.enqueueCompress(
+        sources,
+        dest,
+        format: req.format.name,
+        level: req.level.name,
+      );
+    } catch (e, st) {
+      log.error('action', 'compress with options failed', error: e, stack: st);
+      if (mounted) {
+        showToast(context: context, message: e.toString());
+      }
+    }
   }
 
   void _multiRename(NavigationStore store) async {
@@ -325,32 +339,39 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
     return parts.join(', ');
   }
 
-  void _extractSelected({required bool toOwnFolder}) async {
-    final store = _active;
-    final base = await store.resolveForOperation(store.currentPath.value);
-    if (base == null) return;
-    final archives = store.selectedEntries
-        .where(
-          (e) =>
-              e.type == FileItemType.file &&
-              ArchivePath.isArchiveName(e.name) &&
-              !FileSystemService.isInsideArchive(e.realPath),
-        )
-        .toList();
-    if (archives.isEmpty) return;
+  Future<void> _extractSelected({required bool toOwnFolder}) async {
+    try {
+      final store = _active;
+      final base = await store.resolveForOperation(store.currentPath.value);
+      if (base == null) return;
+      final archives = store.selectedEntries
+          .where(
+            (e) =>
+                e.type == FileItemType.file &&
+                ArchivePath.isArchiveName(e.name) &&
+                !FileSystemService.isInsideArchive(e.realPath),
+          )
+          .toList();
+      if (archives.isEmpty) return;
 
-    if (toOwnFolder) {
-      for (final entry in archives) {
-        final dest = FileSystemService.uniquePath(
-          p.join(base, FileSystemService.archiveBaseName(entry.name)),
+      if (toOwnFolder) {
+        for (final entry in archives) {
+          final dest = FileSystemService.uniquePath(
+            p.join(base, FileSystemService.archiveBaseName(entry.name)),
+          );
+          store.operationStore.enqueueExtract([entry.realPath], dest);
+        }
+      } else {
+        store.operationStore.enqueueExtract(
+          archives.map((e) => e.realPath).toList(),
+          base,
         );
-        store.operationStore.enqueueExtract([entry.realPath], dest);
       }
-    } else {
-      store.operationStore.enqueueExtract(
-        archives.map((e) => e.realPath).toList(),
-        base,
-      );
+    } catch (e, st) {
+      log.error('action', 'extract failed', error: e, stack: st);
+      if (mounted) {
+        showToast(context: context, message: e.toString());
+      }
     }
   }
 
@@ -474,18 +495,25 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
     NavigationStore store, {
     required bool move,
   }) async {
-    final activeIdx = _shell.activePaneIndex.value;
-    final otherStore =
-        _shell.panes.value[1 - activeIdx].tabs.activeTab.value.store;
-    final otherPath = otherStore.currentPath.value;
-    final sources = _dualPaneSources(store);
-    if (sources.isEmpty) return;
-    final dest = await otherStore.resolveForOperation(otherPath);
-    if (dest == null) return;
-    if (move) {
-      _operationStore.enqueueMove(sources, dest);
-    } else {
-      _operationStore.enqueueCopy(sources, dest);
+    try {
+      final activeIdx = _shell.activePaneIndex.value;
+      final otherStore =
+          _shell.panes.value[1 - activeIdx].tabs.activeTab.value.store;
+      final otherPath = otherStore.currentPath.value;
+      final sources = _dualPaneSources(store);
+      if (sources.isEmpty) return;
+      final dest = await otherStore.resolveForOperation(otherPath);
+      if (dest == null) return;
+      if (move) {
+        _operationStore.enqueueMove(sources, dest);
+      } else {
+        _operationStore.enqueueCopy(sources, dest);
+      }
+    } catch (e, st) {
+      log.error('action', 'dual pane transfer failed', error: e, stack: st);
+      if (mounted) {
+        showToast(context: context, message: e.toString());
+      }
     }
   }
 
@@ -525,18 +553,25 @@ mixin _MyExplorerActionsMixin on State<MyExplorerShell>, _MyExplorerStateBase {
   }
 
   Future<void> _duplicateSelected(NavigationStore store) async {
-    if (store.isTrashView) return;
-    final entries = _dualPaneEntries(store);
-    if (entries.isEmpty) return;
-    final dest = await store.resolveForOperation(store.currentPath.value);
-    if (dest == null) return;
-    final sources = entries.map((e) => e.realPath).toList();
-    await _operationStore.enqueueDuplicate(sources, dest);
-    if (!mounted) return;
-    showToast(
-      context: context,
-      message: t.toast.duplicatedItems(count: entries.length),
-    );
+    try {
+      if (store.isTrashView) return;
+      final entries = _dualPaneEntries(store);
+      if (entries.isEmpty) return;
+      final dest = await store.resolveForOperation(store.currentPath.value);
+      if (dest == null) return;
+      final sources = entries.map((e) => e.realPath).toList();
+      await _operationStore.enqueueDuplicate(sources, dest);
+      if (!mounted) return;
+      showToast(
+        context: context,
+        message: t.toast.duplicatedItems(count: entries.length),
+      );
+    } catch (e, st) {
+      log.error('action', 'duplicate selected failed', error: e, stack: st);
+      if (mounted) {
+        showToast(context: context, message: e.toString());
+      }
+    }
   }
 
   void _toggleViewMode() {

@@ -826,6 +826,13 @@
     "multiRenameOtherErrors(other)": "$count 个错误",
     "multiRenameTrashBlocked": "回收站中无法使用批量重命名"
   },
+  "terminalInsert": {
+    "title": "插入 $count 个选中项",
+    "separator": "分隔符",
+    "customHint": "分隔符",
+    "preview": "预览",
+    "insert": "插入"
+  },
   "selectionFile": {
     "saveTitle": "保存选择",
     "loadTitle": "加载选择",

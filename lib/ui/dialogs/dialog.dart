@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme.dart';
 import '../widgets/app_modal.dart';
 
 class DialogAction {
@@ -21,7 +22,7 @@ Future<T?> showCustomDialog<T>({
 }) {
   return showDialog<T>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     builder: (ctx) {
       return _CustomDialogBody(
         title: title,

@@ -1,75 +1,65 @@
-# MyExplorer
+# 技术规范
 
-Desktop file manager built with Flutter/Dart. Fast, minimal, dark theme, keyboard-driven navigation. Target: Windows.
+## 编码与架构原则
+- 始终使用简体中文显示思考过程，执行过程，交流和回复，特定术语、名词除外。
+- 你是一个优秀的技术架构师和优秀的程序员，在进行架构分析、功能模块分析，以及进行编码的时候，请遵循如下规则：
+  1. 分析问题和技术架构、代码模块组合等的时候请遵循“第一性原理”
+  2. 在编码的时候，请遵循 “DRY原则”、“KISS原则”、“SOLID原则”、“YAGNI原则”
+  3. 如果单独的类、函数或代码文件超过500行，请进行识别分解和分离，在识别、分解、分离的过程中请遵循以上原则
 
-## Project structure
+## 代码风格
+- 遵循项目现有约定和代码风格，保持与周边代码一致
+- 使用有意义的变量名和函数名，命名即文档
+- 单个函数不超过 50 行，超过时考虑拆分
+- 仅对复杂逻辑添加注释，避免显而易见的注释
 
-Feature-driven structure:
+## 沟通原则
+- 我们的所有对话、分析说明、方案汇报、Issue 描述、PR 描述等沟通内容，统一遵循金字塔原理
+- 表达时先结论后论据，先全局后细节，先结果后过程；避免先堆砌细节再给结论
+- 结构化表达时，优先将信息按互斥且穷尽的方式分组，避免内容交叉、重复和跳跃
+- 在撰写 Issue、PR 等说明性内容时，优先使用如下顺序：目的/结论、背景、方案或改动点、影响与风险、验收或验证结果
+- 如果用户提供的原始内容结构混乱，你需要主动按金字塔原理重组后再输出
 
-- `lib/core/` - cross-cutting services: `archive`, `clipboard`, `database`, `fs`, `keyboard`, `logging`, `models`, `open`, `platform`, `settings`, `terminal`
-- `lib/features/` - feature modules: `drives`, `files`, `git`, `navigation`, `operations`, `panes`, `plugins`, `quick_look`, `settings`, `tabs`
-- `lib/ui/` - shared UI: `chrome`, `dialogs`, `icons`, `overlays`, `theme`, `widgets`, `window`
-- `lib/app/` - main app widget and page
-- `lib/utils/` - small helpers: `drag_drop`, `format`
-- `lib/i18n/` - translations (slang); currently English only
-- `docs/` - `plugins.md` plugin authoring guide, plus `examples/`, `screenshots/`, `gifs/`
-- `rust/myexplorer_core/` - native Rust core (cdylib) for path-heavy work (listing, search, trash)
-- `third_party/myexplorer_core/windows/` - vendored prebuilt native lib loaded at runtime via `lib/core/fs/myexplorer_core_loader.dart`
-- `test/unit/`, `test/integration/`, `test/support/` - tests split by kind, not a strict mirror of `lib/`
+## 安全规范
+- 禁止硬编码密钥、API Key、密码等敏感信息，统一使用环境变量或配置中心
+- 对用户输入进行校验，不信任任何外部输入
+- 错误必须显式处理，禁止静默失败
 
-Each feature has its own folder with views and store.
+## 依赖管理
+- 前端一般使用 pnpm 进行依赖管理
+- 后端是 Python 的时候使用 uv 进行依赖管理
 
-## Key patterns
+## Git 工作流
+- 采用 GitHub Flow：main 为默认稳定分支；所有功能/修复分支均从 main 拉出并通过 PR 合并回 main；禁止直接提交到 main
+- Commit 遵循 Conventional Commits 规范：feat/fix/refactor/docs/test/chore
+- 保持原子提交，一个 Commit 只解决一个关注点
+- 禁止向 main 分支强制推送（force push）
 
-- **Signals** (`signals` package) - all reactive state via `signal()`, `computed()`, `batch()`
-- **Isolated operations** - copy/move/delete run in separate Isolates, never block UI
-- **FsWorkerPool** - isolate pool for simple FS ops (list, stat, exists, etc.)
-- **Native Rust core** - heavy FS work (recursive list, search, trash) goes through `rust/myexplorer_core` via FFI, off the UI thread
-- **drift + sqlite3** - persistent state in `lib/core/database/app_database.dart`; regenerate with build_runner after schema changes
-- **Custom window chrome** - `bitsdojo_window`-based custom title bar in `lib/ui/chrome/` and `lib/ui/window/`
-- **slang** for i18n - translations in `lib/i18n/*.i18n.json`, generated via `slang_build_runner`
-- **FFI plugins** - `lib/features/plugins/` loads plugins through the native core via FFI (`plugin_ffi.dart`); authoring guide in `docs/plugins.md`
+注意：当用户指令不是最佳实践时，你需要及时提醒
 
-## Signals usage
+取舍：以上整体偏稳、不偏快。真正琐碎的改动（错别字、一行显而易见的小修）自行放宽，别硬套全套流程。
 
-- All signals live in store classes (e.g. `NavigationStore`, `OperationStore`), never in widgets
-- Stores are passed to widgets via constructor params
-- Consume signals in UI with `Watch((context) => ...)` from `signals_flutter`
-- `setState` is only for purely local widget state (_hovered, _dragging, etc.)
-- Do NOT use: `StreamBuilder`, `ValueNotifier`, `ChangeNotifier`, `InheritedWidget` for state
+## 编码前思考
+先想清楚再动手，别把困惑憋在心里。
+- 拿不准就问，别替我拍板做假设；有歧义就摆出几种理解让我选，别默默定一个。
+- 有更省事的路子就直说，该反对就反对。
+- 会欠下技术债、或有现成轮子能复用，提前讲一声。
 
-## Commands
+## 极简优先
+能 50 行搞定就别写 200 行，写多了就推倒重来。
+- 需求没点名的特性、灵活性、可配置项，一概不加。
+- 一次性代码不做抽象；不为压根不会发生的场景兜错。
+- 交付前自检一句：这段是不是绕得没必要？是就砍到最简。
 
-- `dart format .` - format code
-- `flutter analyze` - static analysis
-- `flutter test` - run tests
-- `flutter test --exclude-tags=integration` - run fast unit tests only
-- `flutter test --tags=integration` - run integration tests only
-- `dart run slang` - regenerate translations after JSON changes
-- `dart run build_runner build --delete-conflicting-outputs` - regenerate drift code after DB schema changes
-- `scripts/build_myexplorer_core_windows.ps1` - build and vendor the native Rust core
-- `fastforge package --platform windows --targets exe,zip` - build installable artifacts (config in `distribute_options.yaml` and `windows/packaging/`). The `exe` target requires Inno Setup installed.
+## 精准修改
+只碰非改不可的地方，只收拾自己弄出的烂摊子。
+- 先读懂上下文再下手，改动范围紧贴需求，别外扩。
+- 不顺手“美化”相邻代码、注释或格式；没坏的不重构；跟着现有风格走，哪怕你有更顺手的写法。
+- 撞见无关的死代码：只提醒、不删；但自己改动留下的孤儿导入/变量/函数，要顺手清干净。
+- 底线：每一行 diff 都能对上某个具体需求。
 
-## Git
-
-- Push to https://github.com/lixi523/myexplorer (main branch)
-- Each feature on a separate branch
-- Conventional commits: `feat:`, `fix:`, `refactor:`, `chore:`, `test:`
-- Commit messages: title only, no body
-
-## Styling
-
-- Never hardcode `TextStyle(fontSize: …)` in widgets. Use roles from `AppTextStyles` via `context.txt.<role>` (e.g. `context.txt.row`, `context.txt.dialogTitle`, `context.txt.keyCap`)
-- For per-instance overrides (color, fontStyle), use `context.txt.row.copyWith(color: …)`
-- If no existing role fits, add a new one to `lib/ui/theme/app_text_styles.dart` (don't inline)
-- Colors: use `AppColors.*` from `lib/ui/theme/app_theme.dart`, never raw `Color(0x…)` in widgets
-
-## Rules
-
-- After any change: run `dart format .` to reformat, then `flutter analyze` and make sure it passes
-- No code comments
-- No unnecessary dependencies
-- Tests split into `unit/` and `integration/` under `test/`
-- Integration tests must start with `@Tags(<String>['integration'])` on line 1 so they pick up the 2x timeout from `dart_test.yaml` and the tag filters
-- Integration tests need the native `myexplorer_core` library; build it with `scripts/build_myexplorer_core_windows.ps1` or they fail with "Native myexplorer_core not found"
-- Translation keys in English
+## 目标驱动执行
+给足成功标准，让它自己循环到达标，而不是一步一停等你喂指令。
+- 把祈使句翻成可验证目标：与其说“修个 bug”，不如说“先写一个能复现的测试，再让它变绿”。
+- 多步任务先摆出计划，每一步都挂一个验证点（改完就跑测试/构建/看输出）。
+- 标准越硬，它越能自己迭代；标准越含糊（“能跑就行”），越要没完没了地来回确认。

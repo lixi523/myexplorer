@@ -99,7 +99,7 @@ class _AppearancePaneState extends State<AppearancePane> {
 
     return showDialog<String>(
       context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.4),
+      barrierColor: AppColors.bg.withValues(alpha: 0.4),
       builder: (ctx) {
         return Center(
           child: Material(

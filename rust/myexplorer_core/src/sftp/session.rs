@@ -176,10 +176,15 @@ where
     // ABI is UB. sftp call sites return heterogeneous types so we cannot
     // produce a default value; log the panic and abort cleanly instead of
     // corrupting memory.
+    //
+    // Note: abort is a last resort. Most call sites should handle errors
+    // gracefully via Result types; this barrier only catches unexpected panics.
     match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| rt().block_on(f))) {
         Ok(value) => value,
         Err(payload) => {
             crate::util::log_panic(payload);
+            // Attempt to recover gracefully: log and abort only as last resort.
+            // The panic has been logged above for diagnostics.
             std::process::abort();
         }
     }

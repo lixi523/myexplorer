@@ -50,7 +50,24 @@ class DriveStore {
 
   void dispose() {
     _timer?.cancel();
+    _timer = null;
   }
 }
 
-final driveStore = DriveStore();
+DriveStore? _driveStore;
+
+DriveStore get driveStore {
+  if (_driveStore == null) {
+    throw StateError('DriveStore not initialized. Call DriveStore.init() first.');
+  }
+  return _driveStore!;
+}
+
+void initDriveStore() {
+  _driveStore ??= DriveStore();
+}
+
+void disposeDriveStore() {
+  _driveStore?.dispose();
+  _driveStore = null;
+}

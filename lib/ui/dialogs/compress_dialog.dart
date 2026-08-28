@@ -31,7 +31,7 @@ Future<CompressRequest?> showCompressDialog({
 }) {
   return showDialog<CompressRequest>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     builder: (ctx) => Center(
       child: Material(
         type: MaterialType.transparency,

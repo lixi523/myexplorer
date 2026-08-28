@@ -343,5 +343,6 @@ class SettingsStore {
     }
     _disposers.clear();
     _saveDebounce?.cancel();
+    unawaited(_db.close());
   }
 }

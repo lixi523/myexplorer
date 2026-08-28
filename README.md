@@ -10,7 +10,7 @@ A lightweight, self-use Windows file manager similar to Total Commander, forked 
   <img src="docs/screenshots/hero.png" alt="MyExplorer" width="860">
 </p>
 
-> **V3.4.0**: 移除内置终端功能模块 —— 删除 `lib/core/terminal/` 终端服务、`pane_view.dart` 终端面板 UI、`TerminalColors` 主题配色、终端设置分类与快捷键绑定、`myexplorer_term` 依赖；移除主菜单"终端"菜单项；清理所有终端相关 i18n 翻译键。
+> **V3.5.0**: 全量代码审查与加固 —— 系统性审查 72 个文件（Dart + Rust），修复 80+ 项问题：**P0 崩溃级**（switch fall-through、StateError、Rust panic barrier、Drop unwinding、PTY spawn 失败资源泄漏）、**P1 功能异常**（async void 改 Future、isolate/Timer 泄漏、Completer 超时、负字节格式化、ini 空 key、SFTP 读内存上限）、**P2 空安全与资源**（DB 连接未关闭、FFI 异常吞掉、Shift 选择越界、`on Object` 捕获致命错误、路径硬编码 `/`、force unwrap 回退）、**P3 主题一致性**（37 处 `Colors.black.withValues` 统一为 `AppColors.shadowSubtle`/`bg`、补全 `terminalInsert` 中文翻译）；CI 加固（pdfium 版本固定、集成测试覆盖整个目录、Rust 构建缓存、fastforge 版本固定）。
 
 > **V3.3.0**: 终端功能修复 —— 修复 Windows 终端无法输入中文（移除 `hardwareKeyboardOnly`，改用 `CustomTextEdit` 建立 TextInputConnection 支持 IME）；终端默认 shell 改为 PowerShell 7（WindowsApps 路径 `Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe`），偏好路径不存在时自动回退到系统默认 shell。
 >

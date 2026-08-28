@@ -18,7 +18,7 @@ Future<void> showUpdateDialog(BuildContext context) {
     context: context,
     barrierDismissible: true,
     barrierLabel: t.update.title,
-    barrierColor: Colors.black.withValues(alpha: 0.5),
+    barrierColor: AppColors.bg.withValues(alpha: 0.5),
     transitionDuration: const Duration(milliseconds: 120),
     pageBuilder: (ctx, _, _) => const _UpdateDialog(),
     transitionBuilder: (ctx, anim, secondary, child) {

@@ -49,7 +49,7 @@ class AppModal extends StatelessWidget {
             border: Border.all(color: AppColors.borderColor),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.6),
+                color: AppColors.shadowSubtle,
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),

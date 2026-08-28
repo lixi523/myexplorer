@@ -25,7 +25,9 @@ New-Item -ItemType Directory -Force -Path (Split-Path $pdfiumZip) | Out-Null
 
 if (-not (Test-Path (Join-Path $dest "pdfium.dll"))) {
   Write-Host "downloading pdfium..."
-  $pdfiumUrl = "https://github.com/bblanchon/pdfium-binaries/releases/latest/download/pdfium-win-x64.tgz"
+  # Pin to a specific version to avoid supply chain risks from mutable 'latest' tag.
+  $pdfiumVersion = "v134.0.7099.0"
+  $pdfiumUrl = "https://github.com/bblanchon/pdfium-binaries/releases/download/$pdfiumVersion/pdfium-win-x64.tgz"
   Invoke-WebRequest -Uri $pdfiumUrl -OutFile $pdfiumZip -UseBasicParsing
   tar xzf $pdfiumZip -C (Split-Path $pdfiumZip)
   $pdfiumDll = Get-ChildItem (Split-Path $pdfiumZip) -Recurse -Filter pdfium.dll | Select-Object -First 1

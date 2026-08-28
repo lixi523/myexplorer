@@ -29,7 +29,7 @@ Future<void> showQuickLook({
     context: context,
     barrierDismissible: true,
     barrierLabel: t.quickLook.title,
-    barrierColor: Colors.black.withValues(alpha: 0.5),
+    barrierColor: AppColors.bg.withValues(alpha: 0.5),
     transitionDuration: const Duration(milliseconds: 110),
     pageBuilder: (context, animation, secondaryAnimation) {
       return _QuickLook(store: store, explicitEntry: explicitEntry);
@@ -262,8 +262,8 @@ class _QuickLookState extends State<_QuickLook> {
               border: Border.all(color: AppColors.borderColor),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.55),
-                  blurRadius: 32,
+color: AppColors.shadowSubtle,
+blurRadius: 32,
                   offset: const Offset(0, 16),
                 ),
               ],

@@ -127,7 +127,13 @@ class HiddenListStore {
       final bytes = [0xEF, 0xBB, 0xBF, ...utf8.encode(content)];
       final tmp = File('${file.path}.tmp');
       await tmp.writeAsBytes(bytes, flush: true);
-      if (file.existsSync()) await file.delete();
+      if (file.existsSync()) {
+        try {
+          await file.delete();
+        } catch (_) {
+          // File may have been deleted by another process; rename will fail below if needed.
+        }
+      }
       await tmp.rename(file.path);
     } catch (e, st) {
       log.error('hidden', 'failed to write $filePath', error: e, stack: st);

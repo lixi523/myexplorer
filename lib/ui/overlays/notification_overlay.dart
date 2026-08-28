@@ -120,7 +120,7 @@ class _NotificationCardState extends State<_NotificationCard>
             border: Border.all(color: AppColors.borderColor),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.5),
+                color: AppColors.shadowSubtle,
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -267,7 +267,7 @@ class _ApplyToAllCheckboxState extends State<_ApplyToAllCheckbox> {
                     ? Icon(
                         MyExplorerIconsRegular.check,
                         size: 10,
-                        color: Colors.white,
+                        color: AppColors.bg,
                       )
                     : null,
               ),

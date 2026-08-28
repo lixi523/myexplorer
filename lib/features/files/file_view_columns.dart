@@ -266,8 +266,8 @@ class _ColumnConfigMenu extends StatelessWidget {
         border: Border.all(color: AppColors.borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
-            blurRadius: 16,
+color: AppColors.shadowSubtle,
+blurRadius: 16,
             offset: const Offset(0, 6),
           ),
         ],
@@ -385,7 +385,7 @@ class _ColumnCheckbox extends StatelessWidget {
         ),
       ),
       child: value
-          ? Icon(MyExplorerIconsRegular.check, size: 10, color: Colors.white)
+          ? Icon(MyExplorerIconsRegular.check, size: 10, color: AppColors.bg)
           : null,
     );
   }

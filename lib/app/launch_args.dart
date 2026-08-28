@@ -55,12 +55,15 @@ Options:
         case '-h':
         case '--help':
           showHelp = true;
+          break;
         case '-v':
         case '--version':
           showVersion = true;
+          break;
         case '-s':
         case '--split':
           split = true;
+          break;
         case '-r':
         case '--reveal':
         case '--select':

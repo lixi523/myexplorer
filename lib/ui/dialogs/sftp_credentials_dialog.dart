@@ -16,7 +16,7 @@ Future<SftpCredentials?> showSftpCredentialsDialog(
 }) {
   return showGeneralDialog<SftpCredentials>(
     context: context,
-    barrierColor: Colors.black54,
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     barrierDismissible: true,
     barrierLabel: t.password.dismiss,
     transitionDuration: const Duration(milliseconds: 200),

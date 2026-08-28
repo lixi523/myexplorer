@@ -812,7 +812,8 @@ class _FileListState extends State<FileList> {
                 _kRowPaddingRight;
             final automaticOptionalCols = columns.fold<double>(
               0,
-              (sum, col) => sum + automaticColumnWidths[col]! + _kColumnGap,
+              (sum, col) =>
+                  sum + (automaticColumnWidths[col] ?? _kNameMinWidth) + _kColumnGap,
             );
             final automaticFixedCols =
                 iconSlot +
@@ -846,7 +847,7 @@ class _FileListState extends State<FileList> {
                       col: _persistedColumnWidth(
                         persistedColumnWidths,
                         columnWidthKey(col),
-                        automaticColumnWidths[col]!,
+                        automaticColumnWidths[col] ?? _kNameMinWidth,
                       ),
                   }
                 : automaticColumnWidths;

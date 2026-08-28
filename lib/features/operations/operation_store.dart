@@ -712,7 +712,9 @@ class OperationStore {
     _currentTaskId = null;
     _processing = false;
 
-    unawaited(_processQueue());
+    unawaited(_processQueue().catchError((e, st) {
+      log.error('operation', 'queue processing failed', error: e, stack: st);
+    }));
   }
 
   Future<void> _executeTask(FileTask task) async {
@@ -926,6 +928,10 @@ class OperationStore {
       _dismissTaskConflictNotification(task.id);
       _showFinishNotification(task);
       _scheduleCleanup(task);
+      if (_currentWorker != null) {
+        _currentWorker?.dispose();
+        _currentWorker = null;
+      }
     } finally {
       if (_currentTaskId == task.id) {
         _currentCancelWatchdog?.cancel();

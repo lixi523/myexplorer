@@ -221,5 +221,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
 }
 
 extension AppTextStylesGetter on BuildContext {
-  AppTextStyles get txt => Theme.of(this).extension<AppTextStyles>()!;
+  AppTextStyles get txt =>
+      Theme.of(this).extension<AppTextStyles>() ??
+      AppTextStyles.forBrightness();
 }

@@ -16,7 +16,7 @@ class CredentialsResult {
 Future<String?> showPasswordDialog(BuildContext context, {String? title}) {
   return showGeneralDialog<String>(
     context: context,
-    barrierColor: Colors.black54,
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     barrierDismissible: true,
     barrierLabel: t.password.dismiss,
     transitionDuration: const Duration(milliseconds: 200),
@@ -41,7 +41,7 @@ Future<CredentialsResult?> showSmbCredentialsDialog(
 }) {
   return showGeneralDialog<CredentialsResult>(
     context: context,
-    barrierColor: Colors.black54,
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     barrierDismissible: true,
     barrierLabel: t.password.dismiss,
     transitionDuration: const Duration(milliseconds: 200),

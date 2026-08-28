@@ -291,7 +291,11 @@ class UpdateStore {
       return;
     }
     final cmd = 'explorer';
-    Process.start(cmd, [uri.toString()], mode: ProcessStartMode.detached);
+    try {
+      Process.start(cmd, [uri.toString()], mode: ProcessStartMode.detached);
+    } catch (e, st) {
+      log.warn('update', 'failed to open release page', error: e, stack: st);
+    }
   }
 
   void reset() {

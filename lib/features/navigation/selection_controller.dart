@@ -79,8 +79,12 @@ class SelectionController {
         final lo = start < end ? start : end;
         final hi = start < end ? end : start;
         final paths = <String>{};
-        for (int i = lo; i <= hi; i++) {
-          paths.add(_vf[i].path);
+        // Capture snapshot to avoid race with filesystem watcher refreshes.
+        final vf = _vf;
+        if (lo >= 0 && hi < vf.length) {
+          for (int i = lo; i <= hi; i++) {
+            paths.add(vf[i].path);
+          }
         }
         selectedPaths.value = paths;
         cursorIndex.value = event.index;

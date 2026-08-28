@@ -24,7 +24,7 @@ Future<void> showCommandPalette({
 }) {
   return showDialog<void>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     builder: (ctx) => Align(
       alignment: Alignment.topCenter,
       child: Padding(
@@ -191,7 +191,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
         border: Border.all(color: AppColors.borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: AppColors.shadowSubtle,
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),

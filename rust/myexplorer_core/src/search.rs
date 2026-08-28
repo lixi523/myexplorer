@@ -342,13 +342,28 @@ pub unsafe extern "C" fn myexplorer_search_poll(
     out_scanned: *mut usize,
     out_done: *mut i32,
 ) -> *mut u8 {
+    crate::util::guard(
+        || unsafe { search_poll_entry(session, out_len, out_scanned, out_done) },
+        std::ptr::null_mut(),
+    )
+}
+
+unsafe fn search_poll_entry(
+    session: *mut SearchSession,
+    out_len: *mut usize,
+    out_scanned: *mut usize,
+    out_done: *mut i32,
+) -> *mut u8 {
     if session.is_null() || out_len.is_null() || out_scanned.is_null() || out_done.is_null() {
         return std::ptr::null_mut();
     }
     let session = &*session;
 
     let (body, count) = {
-        let mut g = session.pending.lock().unwrap();
+        let mut g = session
+            .pending
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
         let body = std::mem::take(&mut g.0);
         let count = std::mem::replace(&mut g.1, 0);
         (body, count)

@@ -5,6 +5,21 @@ All notable changes to MyExplorer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.0] - 2026-08-28
+
+### Fixed
+- Full code review hardening across 72 files (Dart + Rust), fixing 80+ issues:
+  - **P0 — crash level (5):** `launch_args.dart` switch fall-through now breaks correctly; `base.dart` `_active` getter has a safe fallback instead of throwing `StateError`; `search.rs` FFI entry wrapped with `guard()` panic barrier; `walker.rs` Drop impls use `if let Ok` to avoid double-panic during unwinding; `pty.rs` spawn failure now cleans up `child`/`writer` and handles mutex poison.
+  - **P1 — functional bugs (15):** `actions.dart` 5 `async void` methods converted to `Future<void>` with try-catch; `operation_store.dart` catch branch disposes `_currentWorker` (isolate leak fix); `drive_store.dart` global instance replaced with lazy init + `disposeDriveStore()` (Timer leak fix); `shell_store.dart` nullifies `current` on dispose (static-reference-GC fix); `drag_drop.dart` Completer has `.timeout()` + `whereType<String>()`; `format.dart` `formatBytes` handles negative input; `ini_file.dart` skips empty keys; `sftp/ops.rs` read capped at 16 MiB.
+  - **P2 — null safety & resource leaks (25):** `archive_reader.dart` uses `p.join()` instead of hardcoded `/`; `settings_store.dart` closes DB on dispose; `update_store.dart`/`open_service.dart` handle detached-process exceptions; `selection_controller.dart` Shift-select bounds-checked with snapshot; `git_status_store.dart` catches `Exception` (not `on Object`); `hidden_list_store.dart` `delete()` wrapped in try-catch; `myexplorer_core_loader.dart` FFI calls wrapped in try-catch; `file_view.dart` uses correct constant name; `app_text_styles.dart` force-unwrap replaced with fallback.
+  - **P3 — theme consistency (37):** Replaced `Colors.black.withValues` → `AppColors.shadowSubtle`, `Colors.white` (icons) → `AppColors.bg`, `Colors.black54` → `AppColors.bg.withValues(alpha: 0.4)` across 27 UI files.
+- CI hardening: pdfium version pinned, integration tests cover full `test/integration/` directory, Rust build cached, fastforge pinned to `3.2.0`.
+- Added missing `terminalInsert` Chinese translation block in `zh.i18n.json`.
+
+### Tests
+- `dart analyze lib/` — 0 issues
+- `cargo check` — compiles successfully
+
 ## [3.1.0] - 2026-08-24
 
 ### Added

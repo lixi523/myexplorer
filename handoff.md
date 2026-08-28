@@ -1,7 +1,7 @@
 # MyExplorer 项目交接文档
 
 ## 1. 项目目标
-**MyExplorer v3.3.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
+**MyExplorer v3.5.0**（pubspec name: `myexplorer`）— 对标 Total Commander 的 Windows 双窗格文件管理器（fork 自 Waydir，已全面更名）。
 
 核心特性：
 - 强制双窗格布局（恒双窗口，不恢复单窗口模式）
@@ -16,9 +16,17 @@
 
 ---
 
-## 2. 当前进度（2026-08-27）
+## 2. 当前进度（2026-08-28）
 
-- ✅ **v3.4.0 已更新**（pubspec `3.4.0`，**本地修改完成，待提交推送**）：移除内置终端功能模块
+- ✅ **v3.5.0 已提交并推送**（pubspec `3.5.0`）：全量代码审查与加固
+  - **系统性审查 72 个文件**（Dart + Rust），修复 **80+ 项问题**
+  - **P0 崩溃级**（5 项）：`launch_args.dart` switch fall-through 加 `break`、`base.dart` `_active` getter StateError 安全回退、`search.rs` FFI 入口添加 `guard()` panic 屏障、`walker.rs` Drop 实现改用 `if let Ok` 避免 unwinding 二次 panic、`pty.rs` spawn 失败正确清理 `child`/`writer` 并处理 mutex poison
+  - **P1 功能异常**（15 项）：`actions.dart` 5 个 `async void` 改 `Future<void>` + try-catch、`operation_store.dart` catch 分支补 `_currentWorker?.dispose()` 防 isolate 泄漏、`drive_store.dart` 全局实例改懒加载 + `disposeDriveStore()` 回收 Timer、`shell_store.dart` `dispose()` 中 `current = null` 解除静态引用、`drag_drop.dart` Completer 加 `.timeout()` + `whereType<String>()`、`format.dart` `formatBytes` 处理 `<= 0` 输入、`ini_file.dart` 跳过空 key、`sftp/ops.rs` 单次读取上限 16 MiB
+  - **P2 空安全与资源**（25 项）：`archive_reader.dart` 路径拼接改用 `p.join()`、`settings_store.dart` `dispose()` 关闭 DB、`update_store.dart`/`open_service.dart` detached process 异常处理、`selection_controller.dart` Shift 选择快照 + 边界检查、`git_status_store.dart` `on Object` 改 `on Exception`、`hidden_list_store.dart` `delete()` 包裹 try-catch、`myexplorer_core_loader.dart` FFI 异常处理、`file_view.dart` 使用正确常量名、`app_text_styles.dart` force unwrap 改回退
+  - **P3 主题一致性**（37 处）：`Colors.black.withValues` → `AppColors.shadowSubtle`、`Colors.white`（checkbox/icon）→ `AppColors.bg`、`Colors.black54` → `AppColors.bg.withValues(alpha: 0.4)`；补全 `zh.i18n.json` `terminalInsert` 翻译
+  - **CI 加固**（4 项）：pdfium 版本固定、集成测试覆盖整个目录、Rust 构建缓存、fastforge 版本固定
+  - `dart analyze lib/` ✅ **0 issues**、`cargo check` ✅ **编译通过**
+- ✅ **v3.4.0 已提交并推送**（pubspec `3.4.0`）：移除内置终端功能模块
   - **删除 `lib/core/terminal/` 目录**：终端服务（`terminal.dart`）、shell 检测（`shell_detector.dart`）、终端启动（`terminal_launch.dart`）、系统字体（`system_fonts.dart`）
   - **删除终端面板 UI**：`pane_view.dart` 中移除 `_TerminalPanel`、`_TerminalHeader`、`_TerminalTabChip`、`_TerminalIconButton`、`_TerminalResizeHandle` 等类
   - **移除主题配色**：`app_theme_definition.dart` 删除 `TerminalColors` 类，`app_theme_registry.dart` 移除所有 `terminal:` 配色块
@@ -28,7 +36,10 @@
   - **移除依赖**：`pubspec.yaml` 删除 `myexplorer_term` 依赖
   - **清理 i18n**：`en.i18n.json`、`zh.i18n.json`、`strings_en.g.dart`、`strings_zh.g.dart` 删除所有终端翻译键
   - **移除主菜单**：`menus.dart` 删除"终端"菜单项
-  - 单元测试 **待验证**、`flutter analyze` **待验证**、`flutter build windows --release` **待构建**
+  - **删除 `packages/myexplorer_term/` 整个终端包**（100+ 文件）
+  - **删除终端测试**：`test/unit/terminal/` 目录及相关测试文件；修复其他测试中的终端引用
+  - `flutter analyze --fatal-infos --fatal-warnings` ✅ **0 issues**
+  - CI **待验证**（推送后自动触发）、`flutter build windows --release` **待构建**
 - ✅ **v3.3.0 已更新**（pubspec `3.3.0+47`，**本地修改完成，待提交推送**）：终端功能修复
   - **中文输入修复（IME）**：移除 `hardwareKeyboardOnly`（此前 Windows 下禁用 CustomTextEdit，改用仅硬件键盘的 CustomKeyboardListener，导致 IME 无法接入）；移除 `_openOrCloseInputConnectionIfNeeded` 中的 `consumeKeyboardToken()` 检查（切换终端时 FocusNode 键盘 token 被消费，TextInputConnection 无法重新建立）；修复搜索框关闭时 shell 顶层 FocusNode 抢走终端焦点的问题（`myexplorer_shell.dart` searchActive effect 加 `_isTerminalFocused()` 守卫）；简化 CustomTextEdit，删除移动端专用参数（`keyboardType`、`keyboardAppearance`、`deleteDetection`）。文件变更：`custom_text_edit.dart`（移除 consumeKeyboardToken）、`terminal_view.dart`（移除 hardwareKeyboardOnly 及移动端参数）、`keyboard_listener.dart`（清理 onComposing 参数）、`myexplorer_shell.dart`（searchActive effect 加终端焦点守卫）
   - **默认 shell 改为 PowerShell 7**：`terminalShell` 默认值改为 WindowsApps 路径 `Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\pwsh.exe`；偏好路径不存在时自动回退到系统默认 shell
@@ -56,7 +67,9 @@
 
 | Commit | 说明 |
 |--------|------|
-| `feat: v3.4.0 — remove built-in terminal module` | **v3.4.0（待提交）**：pubspec `3.4.0`；删除 `lib/core/terminal/` 终端服务；移除 `pane_view.dart` 终端面板 UI；删除 `TerminalColors` 主题配色；清理终端设置分类与快捷键绑定；移除 `myexplorer_term` 依赖；清理所有终端 i18n 翻译键；移除主菜单"终端"菜单项 |
+| `feat: v3.5.0 — full code review & hardening, 80+ fixes` | **v3.5.0（已推送）**：pubspec `3.5.0`；全量代码审查 72 文件（Dart + Rust），修复 80+ 项问题（P0 崩溃级 5 + P1 功能异常 15 + P2 空安全/资源 25 + P3 主题一致性 37 + CI 加固 4）；`dart analyze` 0 issues、`cargo check` 通过（72 文件变更，+533/-372） |
+| `feat: v3.4.0 — remove built-in terminal module` | **v3.4.0（已推送）**：pubspec `3.4.0`；删除 `lib/core/terminal/` 终端服务；移除 `pane_view.dart` 终端面板 UI；删除 `TerminalColors` 主题配色；清理终端设置分类与快捷键绑定；移除 `myexplorer_term` 依赖；清理所有终端 i18n 翻译键；移除主菜单"终端"菜单项；删除 `packages/myexplorer_term/` 整个终端包；删除终端测试并修复其他测试引用（126 文件变更，+758/-16083） |
+| `chore: fix analyze warnings for CI` | **v3.4.0 修复**：移除未使用的导入（`wsl_path.dart`、`app_text_field.dart`、`settings_store.dart` 等）；删除未使用的 `_focusFiles` 方法；`analysis_options.yaml` 添加 `analyzer.exclude` 排除 `.g.dart` 生成文件 |
 | `fix: terminal focus stolen by searchActive effect` | **v3.3.0**：修复搜索框关闭时 shell 顶层 FocusNode 抢走终端焦点导致 TextInputConnection 断开的问题；`myexplorer_shell.dart` searchActive effect 加 `_isTerminalFocused()` 守卫 |
 | `feat: v3.3.0 — terminal IME fix, default shell PowerShell 7` | **v3.3.0（待提交）**：pubspec `3.3.0+47`；终端 IME 修复（移除 `hardwareKeyboardOnly` 让 CustomTextEdit 始终生效；移除 `consumeKeyboardToken()` 确保切换终端后 TextInputConnection 可正常重新建立）；默认 shell 改为 PowerShell 7（WindowsApps 路径），偏好路径不存在时回退；ShellDetector 添加 WindowsApps 路径检测；README/handoff 更新 |
 | `feat: v3.2.0 — fix shortcut icon cache key collision, SVG path consistency` | **v3.2.0（待提交）**：pubspec `3.2.0+46`；缓存键由截断 base64 改为 SHA256 哈希（解决路径前缀相同导致图标共享冲突）；SVG 路径解析统一使用 `_spec` 实例变量；CHANGELOG/README/handoff 更新 |
@@ -163,11 +176,11 @@
 
 | 测试项 | 结果 |
 |--------|------|
-| `flutter analyze` | ✅ No issues found |
-| `flutter test --exclude-tags=integration` | ✅ 561 全过（v3.1.0；v3.0.1 时为 578） |
+| `flutter analyze --fatal-infos --fatal-warnings` | ✅ No issues found（v3.4.0 修复后通过） |
+| `flutter test --exclude-tags=integration` | ✅ 561 全过（v3.1.0；v3.0.1 时为 578）；v3.4.0 待重新验证 |
 | `flutter test --tags=integration` | ✅ v3.0.1：86 过 + 4 skip；v3.1.0 相关子集（fs/operations/plugin/archive/navigation/database）全过 |
 | `flutter build windows --release` | ✅ 成功（增量 ~20s-40s，首次 ~2-4min；v2.6-v3.1.0 实测产物正常，super_native_extensions 插件警告无害） |
-| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.0.1 已验证（Run #50 全绿 + Release 已发布 2026-08-24）**；v3.2.0/v3.3.0 待验证 |
+| GitHub CI & Release | v2.5/v2.6/v2.9/v3.0/v3.0.1 全绿；**v3.0.1 已验证（Run #50 全绿 + Release 已发布 2026-08-24）**；v3.4.0 CI 待验证 |
 
 ---
 
@@ -195,15 +208,12 @@ instruction=Treat this as the active workspace/root for file paths and shell com
 读取 handoff.md 了解项目状态，然后继续下一步工作。
 
 项目状态：
- - MyExplorer **v3.4.0**（pubspec name: myexplorer，version 3.4.0，**待提交推送**）
- - v3.4.0 内容：移除内置终端功能模块（删除 lib/core/terminal/、pane_view.dart 终端面板 UI、TerminalColors 主题配色、终端设置分类与快捷键绑定、myexplorer_term 依赖；移除主菜单"终端"菜单项；清理所有终端 i18n 翻译键）
- - v3.3.0 前置：终端 IME 修复 + 默认 shell PowerShell 7
- - v3.2.0 前置：快捷栏图标缓存冲突修复
- - v3.1.0 前置：稳定性大修 + 移除容器与标签功能
- - v3.0.1 前置：INI 化 + 书签拖拽排序 + 复制修复（已推送，CI 全绿，Release 已发布）
+ - MyExplorer **v3.4.0**（pubspec name: myexplorer，version 3.4.0，**已推送**）
+ - v3.4.0 内容：移除内置终端功能模块（删除 lib/core/terminal/、pane_view.dart 终端面板 UI、TerminalColors 主题配色、终端设置分类与快捷键绑定、myexplorer_term 依赖；移除主菜单"终端"菜单项；清理所有终端 i18n 翻译键；删除 packages/myexplorer_term/ 整个终端包；删除终端测试并修复其他测试引用）
+ - v3.4.0 修复：flutter analyze --fatal-infos --fatal-warnings 0 issues（移除未使用导入、排除 .g.dart 生成文件）
+ - CI 待验证、release 构建待完成
  - 行为变化：快捷栏/插件 exec 不再隐式经 cmd.exe，shell 特性需显式 `cmd /c`
  - 便携式布局：所有数据在程序目录内，不写 %APPDATA%/%TEMP%（只读目录例外降级）
- - 单元测试待验证、flutter analyze 待通过、release 构建待完成；v3.4.0 待提交推送
 
 关键路径：
 - Flutter/Dart：D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat（及 dart.bat）

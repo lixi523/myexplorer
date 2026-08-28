@@ -50,6 +50,7 @@ class IniFile {
       final eq = line.indexOf('=');
       if (eq < 0) continue;
       final key = line.substring(0, eq).trim();
+      if (key.isEmpty) continue;
       final value = line.substring(eq + 1).trim();
       _ensure(section).add(IniEntry(key, value));
     }

@@ -144,7 +144,7 @@ class PaneView extends StatelessWidget {
           if (!isActive)
             Positioned.fill(
               child: IgnorePointer(
-                child: ColoredBox(color: Colors.black.withValues(alpha: 0.10)),
+                child: ColoredBox(color: AppColors.shadowSubtle),
               ),
             ),
         ],

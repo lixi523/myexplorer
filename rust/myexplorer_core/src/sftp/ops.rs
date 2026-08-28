@@ -665,6 +665,9 @@ pub unsafe extern "C" fn myexplorer_sftp_reader_read(
             None => return Err("no reader".to_string()),
         };
         let mut file = reader.lock().await;
+        // Cap single read to 16 MiB to prevent unbounded allocation from
+        // a malformed or malicious FFI caller.
+        let max_len = max_len.min(16 * 1024 * 1024);
         let mut buf = vec![0u8; max_len];
         let mut total = 0usize;
         while total < max_len {

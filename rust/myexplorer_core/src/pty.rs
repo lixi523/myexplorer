@@ -129,25 +129,40 @@ unsafe fn pty_open_entry(
                 }
             }
             t_alive.store(false, Ordering::Release);
-        })
-        .ok();
+        });
+
+    let handle = match handle {
+        Ok(h) => h,
+        Err(_) => {
+            // Spawn failed: clean up resources and return 0 to signal failure.
+            drop(child);
+            drop(writer);
+            return 0;
+        }
+    };
 
     let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
-    if let Ok(mut map) = SESSIONS.lock() {
-        map.insert(
-            id,
-            PtySession {
-                master: pair.master,
-                writer,
-                child,
-                buffer,
-                alive,
-                reader: handle,
-            },
-        );
-        id
-    } else {
-        0
+    match SESSIONS.lock() {
+        Ok(mut map) => {
+            map.insert(
+                id,
+                PtySession {
+                    master: pair.master,
+                    writer,
+                    child,
+                    buffer,
+                    alive,
+                    reader: Some(handle),
+                },
+            );
+            id
+        }
+        Err(_) => {
+            // Mutex poisoned: clean up resources and returnFailure.
+            drop(child);
+            drop(writer);
+            0
+        }
     }
 }
 

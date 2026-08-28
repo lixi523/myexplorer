@@ -479,7 +479,7 @@ class GitStatusStore {
       }
 
       return ProcessResult(p.pid, exitCode, await stdoutF, await stderrF);
-    } on Object {
+    } on Exception {
       proc?.kill(ProcessSignal.sigkill);
 
       return null;

@@ -138,10 +138,14 @@ class OpenService {
 
   /// Opens the native "Open with…" chooser.
   static Future<void> systemOpenWithDialog(String path) async {
-    await Process.start('rundll32.exe', [
-      'shell32.dll,OpenAs_RunDLL',
-      path,
-    ], mode: ProcessStartMode.detached);
+    try {
+      await Process.start('rundll32.exe', [
+        'shell32.dll,OpenAs_RunDLL',
+        path,
+      ], mode: ProcessStartMode.detached);
+    } catch (e, st) {
+      log.warn('open', 'failed to open "Open with" dialog', error: e, stack: st);
+    }
   }
 
   static Future<List<AppEntry>> _recentFor(MimeType mime) async {

@@ -17,7 +17,9 @@ impl Drop for ChunkSink<'_> {
             return;
         }
         let buf = std::mem::take(&mut self.local);
-        self.chunks.lock().unwrap().push((buf, self.count));
+        if let Ok(mut guard) = self.chunks.lock() {
+            guard.push((buf, self.count));
+        }
     }
 }
 
@@ -32,7 +34,9 @@ impl Drop for EntrySink<'_> {
             return;
         }
         let v = std::mem::take(&mut self.local);
-        self.buckets.lock().unwrap().push(v);
+        if let Ok(mut guard) = self.buckets.lock() {
+            guard.push(v);
+        }
     }
 }
 

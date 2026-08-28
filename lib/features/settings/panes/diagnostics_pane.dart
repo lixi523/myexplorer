@@ -21,7 +21,7 @@ Future<void> showDiagnosticsDialog(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: true,
-    barrierColor: Colors.black.withValues(alpha: 0.55),
+    barrierColor: AppColors.bg.withValues(alpha: 0.55),
     builder: (ctx) => AppModal(
       icon: MyExplorerIconsRegular.bug,
       title: t.preferences.diagnostics.title,

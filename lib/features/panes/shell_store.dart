@@ -303,5 +303,6 @@ class ShellStore {
     for (final pane in panes.value) {
       pane.dispose();
     }
+    current = null;
   }
 }

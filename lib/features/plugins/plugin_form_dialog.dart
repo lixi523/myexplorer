@@ -22,7 +22,7 @@ Future<Map<String, dynamic>?> showPluginFormDialog({
 }) {
   return showDialog<Map<String, dynamic>>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     builder: (ctx) => _PluginFormBody(
       title: title,
       fields: fields,

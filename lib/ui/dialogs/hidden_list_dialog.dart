@@ -15,7 +15,7 @@ import '../widgets/app_text_field.dart';
 Future<void> showHiddenListDialog(BuildContext context) {
   return showGeneralDialog<void>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierColor: AppColors.bg.withValues(alpha: 0.4),
     barrierDismissible: true,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     transitionDuration: const Duration(milliseconds: 200),

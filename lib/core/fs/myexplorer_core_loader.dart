@@ -854,11 +854,15 @@ class MyExplorerCoreLoader {
   }
 
   static void sftpClose(int sessionId) {
-    final lib = requireLib();
-    final fn = lib.lookupFunction<_SftpCloseNative, _SftpCloseDart>(
-      'myexplorer_sftp_session_close',
-    );
-    fn(sessionId);
+    try {
+      final lib = requireLib();
+      final fn = lib.lookupFunction<_SftpCloseNative, _SftpCloseDart>(
+        'myexplorer_sftp_session_close',
+      );
+      fn(sessionId);
+    } catch (e, st) {
+      _warnNative('sftp close', e, st);
+    }
   }
 
   static String? sftpRealPath(int sessionId, String path) {
@@ -1350,11 +1354,15 @@ class MyExplorerCoreLoader {
   }
 
   static void ptyResize(int id, int cols, int rows) {
-    final lib = requireLib();
-    final fn = lib.lookupFunction<_PtyResizeNative, _PtyResizeDart>(
-      'myexplorer_pty_resize',
-    );
-    fn(id, cols, rows);
+    try {
+      final lib = requireLib();
+      final fn = lib.lookupFunction<_PtyResizeNative, _PtyResizeDart>(
+        'myexplorer_pty_resize',
+      );
+      fn(id, cols, rows);
+    } catch (e, st) {
+      _warnNative('pty resize', e, st);
+    }
   }
 
   static bool ptyAlive(int id) {
@@ -1366,11 +1374,15 @@ class MyExplorerCoreLoader {
   }
 
   static void ptyClose(int id) {
-    final lib = requireLib();
-    final fn = lib.lookupFunction<_PtyCloseNative, _PtyCloseDart>(
-      'myexplorer_pty_close',
-    );
-    fn(id);
+    try {
+      final lib = requireLib();
+      final fn = lib.lookupFunction<_PtyCloseNative, _PtyCloseDart>(
+        'myexplorer_pty_close',
+      );
+      fn(id);
+    } catch (e, st) {
+      _warnNative('pty close', e, st);
+    }
   }
 
   /// Full path to the vendored Pdfium library, resolved next to the loaded

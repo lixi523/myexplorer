@@ -162,7 +162,7 @@ class _AppDropdownMenu<T> extends StatelessWidget {
         border: Border.all(color: AppColors.borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: AppColors.shadowSubtle,
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),

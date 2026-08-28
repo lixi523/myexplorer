@@ -5,12 +5,15 @@ const formatLocalFile = CustomValueFormat<String>(
   applicationId: 'dev.myexplorer.local-file',
 );
 
+/// Maximum time to wait for a single drag-and-drop data read operation.
+const _kDragDropReadTimeout = Duration(seconds: 5);
+
 Future<List<String>> pathsFromSession(DropSession session) async {
   final paths = <String>[];
   for (final item in session.items) {
     final local = item.localData;
     if (local is Map && local['paths'] is List) {
-      paths.addAll((local['paths'] as List).cast<String>());
+      paths.addAll((local['paths'] as List).whereType<String>());
       continue;
     }
     if (item.canProvide(formatLocalFile)) {
@@ -20,7 +23,10 @@ Future<List<String>> pathsFromSession(DropSession session) async {
         reader.getValue(formatLocalFile, (value) {
           completer.complete(value);
         }, onError: (_) => completer.complete(null));
-        final data = await completer.future;
+        final data = await completer.future.timeout(
+          _kDragDropReadTimeout,
+          onTimeout: () => null,
+        );
         if (data != null && data.isNotEmpty) {
           final lines = data.split('\n');
           for (final line in lines) {
@@ -37,7 +43,10 @@ Future<List<String>> pathsFromSession(DropSession session) async {
         reader.getValue(Formats.fileUri, (value) {
           completer.complete(value?.toFilePath());
         }, onError: (_) => completer.complete(null));
-        final path = await completer.future;
+        final path = await completer.future.timeout(
+          _kDragDropReadTimeout,
+          onTimeout: () => null,
+        );
         if (path != null && path.isNotEmpty) paths.add(path);
       }
     }

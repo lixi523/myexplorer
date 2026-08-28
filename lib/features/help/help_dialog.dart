@@ -14,7 +14,7 @@ Future<void> showHelpDialog(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: true,
-    barrierColor: Colors.black.withValues(alpha: 0.55),
+    barrierColor: AppColors.bg.withValues(alpha: 0.55),
     builder: (ctx) => const _HelpDialog(),
   );
 }

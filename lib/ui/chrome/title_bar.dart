@@ -408,7 +408,7 @@ class _WindowButtons extends StatelessWidget {
 
   static final _closeColors = WindowButtonColors(
     iconNormal: _iconColor,
-    iconMouseOver: Colors.white,
+    iconMouseOver: AppColors.bg,
     mouseOver: AppColors.windowCloseHover,
     mouseDown: AppColors.windowClosePressed,
   );

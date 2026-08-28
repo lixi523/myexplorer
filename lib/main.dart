@@ -20,6 +20,7 @@ import 'features/navigation/sidebar_store.dart';
 import 'features/hidden/hidden_list_store.dart';
 import 'features/plugins/plugin_settings_store.dart';
 import 'features/plugins/plugin_store.dart';
+import 'features/drives/drive_store.dart';
 import 'i18n/strings.g.dart';
 import 'ui/theme/app_theme_registry.dart';
 
@@ -78,6 +79,7 @@ void main(List<String> args) async {
       await SidebarStore.instance.load();
       await PluginSettingsStore.instance.load(SettingsStore.instance.db);
       await AppInfo.init();
+      initDriveStore();
       if (LaunchArgs.options.showVersion) {
         stdout.writeln('MyExplorer ${AppInfo.version.value}');
         exit(0);

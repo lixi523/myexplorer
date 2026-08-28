@@ -18,7 +18,7 @@ Future<void> showPreferencesDialog(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
-    barrierColor: Colors.black.withValues(alpha: 0.55),
+    barrierColor: AppColors.bg.withValues(alpha: 0.55),
     builder: (ctx) => const _PreferencesDialog(),
   );
 }
