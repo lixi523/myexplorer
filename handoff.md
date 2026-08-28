@@ -26,6 +26,11 @@
   - **P3 主题一致性**（37 处）：`Colors.black.withValues` → `AppColors.shadowSubtle`、`Colors.white`（checkbox/icon）→ `AppColors.bg`、`Colors.black54` → `AppColors.bg.withValues(alpha: 0.4)`；补全 `zh.i18n.json` `terminalInsert` 翻译
   - **CI 加固**（4 项）：pdfium 版本固定、集成测试覆盖整个目录、Rust 构建缓存、fastforge 版本固定
   - `dart analyze lib/` ✅ **0 issues**、`cargo check` ✅ **编译通过**
+  - **CI 修复推送**（v3.5.0 后续）：
+    - `chore: fix dart formatting (11 files)` — `a7b8d3d`：CI `dart format --set-exit-if-changed` 发现 11 个文件格式不合规，自动格式化后推送
+    - `fix: remove const from BoxDecoration using AppColors.bg getter` — `7d3f5d6`：`AppColors.bg` 是 getter 而非编译时常量，不能用于 `const BoxDecoration`，移除 `const` 修复 release 构建失败
+    - `fix: correct pdfium version format to chromium/8021` — `f6a7070`：pdfium-binaries 版本标签格式为 `chromium/<build>` 而非语义化版本 `v134.0.7099.0`，修复 404 下载失败
+    - `fix: remove stale terminal columns from drift generated file` — `3c31bbe`：`app_database.g.dart` 残留 8 个终端列（`terminal`/`terminalShell` 等，v3.4.0 移除终端模块时未同步重新生成），迁移测试 `map` 时 `!` 空值检查崩溃；手动移除 596 行废弃代码，同步更新迁移测试
 - ✅ **v3.4.0 已提交并推送**（pubspec `3.4.0`）：移除内置终端功能模块
   - **删除 `lib/core/terminal/` 目录**：终端服务（`terminal.dart`）、shell 检测（`shell_detector.dart`）、终端启动（`terminal_launch.dart`）、系统字体（`system_fonts.dart`）
   - **删除终端面板 UI**：`pane_view.dart` 中移除 `_TerminalPanel`、`_TerminalHeader`、`_TerminalTabChip`、`_TerminalIconButton`、`_TerminalResizeHandle` 等类
@@ -68,6 +73,10 @@
 | Commit | 说明 |
 |--------|------|
 | `feat: v3.5.0 — full code review & hardening, 80+ fixes` | **v3.5.0（已推送）**：pubspec `3.5.0`；全量代码审查 72 文件（Dart + Rust），修复 80+ 项问题（P0 崩溃级 5 + P1 功能异常 15 + P2 空安全/资源 25 + P3 主题一致性 37 + CI 加固 4）；`dart analyze` 0 issues、`cargo check` 通过（72 文件变更，+533/-372） |
+| `chore: fix dart formatting (11 files)` | **v3.5.0 CI 修复**：`dart format --set-exit-if-changed` 发现 `open_service.dart`、`drive_store.dart`、`file_view.dart` 等 11 个文件缺少尾逗号/换行不合规；自动格式化后推送（11 文件，+36/-25） |
+| `fix: remove const from BoxDecoration using AppColors.bg getter` | **Release 构建修复**：`settings_widgets.dart` 第 334 行 `const BoxDecoration(color: AppColors.bg)` 编译失败——`AppColors.bg` 是 getter 非常量；移除 `const` 修复（1 文件 1 行） |
+| `fix: correct pdfium version format to chromium/8021` | **CI 构建修复**：`build_myexplorer_core_windows.ps1` pdfium 版本 `v134.0.7099.0` 不存在（实际标签格式 `chromium/<build>`）；改为 `chromium/8021`（2026-08-25 最新），修复下载 404 |
+| `fix: remove stale terminal columns from drift generated file` | **数据库迁移修复**：`app_database.g.dart` 残留 8 个终端列（`terminal`/`terminalShell`/`terminalFontFamily` 等），v3.4.0 移除终端模块时 `app_database.dart` 已删除但生成文件未重新生成；迁移测试从 v12 升级时 `map` 读 `terminal_shell`（旧库无此列）触发 `Null check operator used on a null value`；手动移除 596 行废弃代码 + 更新迁移测试（2 文件，+6/-596） |
 | `feat: v3.4.0 — remove built-in terminal module` | **v3.4.0（已推送）**：pubspec `3.4.0`；删除 `lib/core/terminal/` 终端服务；移除 `pane_view.dart` 终端面板 UI；删除 `TerminalColors` 主题配色；清理终端设置分类与快捷键绑定；移除 `myexplorer_term` 依赖；清理所有终端 i18n 翻译键；移除主菜单"终端"菜单项；删除 `packages/myexplorer_term/` 整个终端包；删除终端测试并修复其他测试引用（126 文件变更，+758/-16083） |
 | `chore: fix analyze warnings for CI` | **v3.4.0 修复**：移除未使用的导入（`wsl_path.dart`、`app_text_field.dart`、`settings_store.dart` 等）；删除未使用的 `_focusFiles` 方法；`analysis_options.yaml` 添加 `analyzer.exclude` 排除 `.g.dart` 生成文件 |
 | `fix: terminal focus stolen by searchActive effect` | **v3.3.0**：修复搜索框关闭时 shell 顶层 FocusNode 抢走终端焦点导致 TextInputConnection 断开的问题；`myexplorer_shell.dart` searchActive effect 加 `_isTerminalFocused()` 守卫 |
@@ -135,11 +144,7 @@
 - **插件 Lua API 为 `myexplorer.register` 等**（勿改回 waydir）
 - ~~**NEVER push**~~（已移除，可直接推送到 main 分支）
 - **git commit 前必须 `dart format`**（CI 有格式关卡）
-- **Flutter/Dart 不在 PATH**，用完整路径：
-  ```
-  D:\wd\.cowork-temp\flutter-sdk\flutter\bin\flutter.bat
-  D:\wd\.cowork-temp\flutter-sdk\flutter\bin\dart.bat
-  ```
+- **Flutter/Dart 已安装到 `C:\flutter\flutter\bin`**（2026-08-28 安装，Flutter 3.38.10 / Dart 3.10.9），**已加入用户 PATH**
 - **cargo 不在 PATH**：`C:\Users\shenl\.cargo\bin\cargo.exe`（构建 Rust core 用）
 - **工作区 junction**：`D:\wd` → `D:\Documents\VS Code\MyExplorer-main`；真仓库在 `github.com/lixi523/myexplorer`
 - **主题配色来源是 `themes/*.ini`**：内置 const 仅作兜底，改动配色应改 ini 文件
