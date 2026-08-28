@@ -262,8 +262,8 @@ class _QuickLookState extends State<_QuickLook> {
               border: Border.all(color: AppColors.borderColor),
               boxShadow: [
                 BoxShadow(
-color: AppColors.shadowSubtle,
-blurRadius: 32,
+                  color: AppColors.shadowSubtle,
+                  blurRadius: 32,
                   offset: const Offset(0, 16),
                 ),
               ],

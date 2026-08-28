@@ -58,7 +58,9 @@ DriveStore? _driveStore;
 
 DriveStore get driveStore {
   if (_driveStore == null) {
-    throw StateError('DriveStore not initialized. Call DriveStore.init() first.');
+    throw StateError(
+      'DriveStore not initialized. Call DriveStore.init() first.',
+    );
   }
   return _driveStore!;
 }

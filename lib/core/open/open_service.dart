@@ -144,7 +144,12 @@ class OpenService {
         path,
       ], mode: ProcessStartMode.detached);
     } catch (e, st) {
-      log.warn('open', 'failed to open "Open with" dialog', error: e, stack: st);
+      log.warn(
+        'open',
+        'failed to open "Open with" dialog',
+        error: e,
+        stack: st,
+      );
     }
   }
 

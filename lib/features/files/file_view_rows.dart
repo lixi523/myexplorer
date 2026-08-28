@@ -387,9 +387,9 @@ class _ListRowState extends State<_ListRow> {
         border: Border.all(color: AppColors.bgDivider),
         boxShadow: [
           BoxShadow(
-color: AppColors.shadowSubtle,
-blurRadius: 10,
-offset: const Offset(0, 4),
+            color: AppColors.shadowSubtle,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),

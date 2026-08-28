@@ -208,10 +208,10 @@ class _PdfPageItemState extends State<_PdfPageItem> {
       width: widget.logicalWidth,
       height: widget.logicalWidth * widget.aspect,
       decoration: BoxDecoration(
-color: AppColors.bg,
-boxShadow: [
-BoxShadow(
-color: AppColors.shadowSubtle,
+        color: AppColors.bg,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowSubtle,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

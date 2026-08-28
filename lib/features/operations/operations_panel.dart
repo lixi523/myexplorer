@@ -41,9 +41,9 @@ class _OperationsPanelBody extends StatelessWidget {
         border: Border.all(color: AppColors.borderColor),
         boxShadow: [
           BoxShadow(
-color: AppColors.shadowSubtle,
-blurRadius: 16,
-offset: const Offset(0, 6),
+            color: AppColors.shadowSubtle,
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),

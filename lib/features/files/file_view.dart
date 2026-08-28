@@ -813,7 +813,9 @@ class _FileListState extends State<FileList> {
             final automaticOptionalCols = columns.fold<double>(
               0,
               (sum, col) =>
-                  sum + (automaticColumnWidths[col] ?? _kNameMinWidth) + _kColumnGap,
+                  sum +
+                  (automaticColumnWidths[col] ?? _kNameMinWidth) +
+                  _kColumnGap,
             );
             final automaticFixedCols =
                 iconSlot +

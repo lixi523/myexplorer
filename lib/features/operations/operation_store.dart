@@ -712,9 +712,11 @@ class OperationStore {
     _currentTaskId = null;
     _processing = false;
 
-    unawaited(_processQueue().catchError((e, st) {
-      log.error('operation', 'queue processing failed', error: e, stack: st);
-    }));
+    unawaited(
+      _processQueue().catchError((e, st) {
+        log.error('operation', 'queue processing failed', error: e, stack: st);
+      }),
+    );
   }
 
   Future<void> _executeTask(FileTask task) async {
