@@ -331,7 +331,7 @@ class _SettingsToggleState extends State<SettingsToggle> {
                 child: Container(
                   width: 14,
                   height: 14,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.bg,
                     shape: BoxShape.circle,
                   ),
