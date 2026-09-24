@@ -1,0 +1,1166 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:myexplorer/ui/icons/myexplorer_icons.dart'
+    show MyExplorerIconsRegular;
+import 'package:signals/signals_flutter.dart';
+import 'package:super_drag_and_drop/super_drag_and_drop.dart';
+import '../../i18n/strings.g.dart';
+import '../../core/fs/file_sort.dart';
+import '../../core/models/file_entry.dart';
+import '../../core/models/file_kind_names.dart';
+import '../../core/platform/platform_paths.dart';
+import '../../core/settings/settings_store.dart';
+import '../../ui/overlays/popup_overlay.dart';
+import '../../ui/theme/app_theme.dart';
+import '../../ui/theme/app_text_styles.dart';
+import '../../utils/drag_drop.dart';
+import 'package:path/path.dart' as p;
+import '../../utils/format.dart';
+import '../operations/drag_hint.dart';
+import 'file_icons.dart';
+import 'row_decorations.dart';
+import 'rubber_band_layer.dart';
+
+part 'file_view_rows.dart';
+part 'file_view_columns.dart';
+
+typedef FileSelectCallback = void Function(FileSelectionEvent event);
+typedef FileOpenCallback = void Function(FileEntry entry);
+typedef BackgroundTapCallback = void Function();
+typedef BackgroundContextMenuCallback = void Function(Offset position);
+typedef FileContextMenuCallback =
+    void Function(FileSelectionEvent event, Offset position);
+typedef FileMenuActionCallback = void Function(String action);
+typedef FileDropCallback =
+    void Function(List<String> paths, String destination, {bool move});
+typedef RenameSubmitCallback = void Function(String newName);
+typedef RenameCancelCallback = void Function();
+typedef OpenInNewTabCallback = void Function(String path);
+
+const _kDoubleTapMs = 300;
+const _kRowHeightComfortable = 26.0;
+const _kRowHeightCompact = 20.0;
+const _kRowGapComfortable = 6.0;
+const _kLocationWidth = 190.0;
+const _kScrollbarThumbWidth = 6.0;
+const _kScrollbarGutterWidth = _kScrollbarThumbWidth;
+const _kRowPaddingLeft = 8.0;
+const _kRowPaddingRight = 10.0;
+const _kNameMinWidth = 160.0;
+const _kNameManualDefaultWidth = 260.0;
+const _kLocationMinWidth = 120.0;
+const _kColumnGap = 6.0;
+const _kHeaderHeight = 24.0;
+const _kResizeHandleWidth = 8.0;
+const _kColumnWidthsNameKey = 'name';
+const _kColumnWidthsLocationKey = 'location';
+const _kTreeIndentWidth = 14.0;
+const _kTreeDisclosureWidth = 18.0;
+
+/// Optional, user-toggleable file-list columns (Name and the recursive-search
+/// Location column are not part of this set). Order here is the display order.
+enum FileColumn { size, date, kind, created, added, permissions, owner }
+
+String fileColumnLabel(FileColumn col) {
+  final c = t.fileView.columns;
+  switch (col) {
+    case FileColumn.size:
+      return c.size;
+    case FileColumn.date:
+      return c.dateModified;
+    case FileColumn.kind:
+      return c.kind;
+    case FileColumn.created:
+      return c.dateCreated;
+    case FileColumn.added:
+      return c.dateAdded;
+    case FileColumn.permissions:
+      return c.permissions;
+    case FileColumn.owner:
+      return c.owner;
+  }
+}
+
+SortKey fileColumnSortKey(FileColumn col) {
+  switch (col) {
+    case FileColumn.size:
+      return SortKey.size;
+    case FileColumn.date:
+      return SortKey.date;
+    case FileColumn.kind:
+      return SortKey.kind;
+    case FileColumn.created:
+      return SortKey.created;
+    case FileColumn.added:
+      return SortKey.added;
+    case FileColumn.permissions:
+      return SortKey.permissions;
+    case FileColumn.owner:
+      return SortKey.owner;
+  }
+}
+
+String fileColumnText(
+  FileColumn col,
+  FileEntry e, {
+  required String dateFmt,
+  required bool recentDatesRelative,
+  int? folderSize,
+}) {
+  final isFolder = e.type == FileItemType.folder;
+  switch (col) {
+    case FileColumn.size:
+      if (isFolder) return folderSize == null ? '--' : formatBytes(folderSize);
+
+      return formatBytes(e.size);
+    case FileColumn.date:
+      return _formatDateBy(
+        e.modified,
+        dateFmt,
+        recentDatesRelative: recentDatesRelative,
+      );
+    case FileColumn.kind:
+      return _kindDisplay(e.kind);
+    case FileColumn.created:
+      return _formatDateBy(
+        e.created,
+        dateFmt,
+        recentDatesRelative: recentDatesRelative,
+      );
+    case FileColumn.added:
+      return _formatDateBy(
+        e.added,
+        dateFmt,
+        recentDatesRelative: recentDatesRelative,
+      );
+    case FileColumn.permissions:
+      return e.permissionsString;
+    case FileColumn.owner:
+      return e.ownerName;
+  }
+}
+
+Signal<bool> fileColumnSignal(FileColumn col) {
+  final s = SettingsStore.instance;
+  switch (col) {
+    case FileColumn.size:
+      return s.showColumnSize;
+    case FileColumn.date:
+      return s.showColumnDate;
+    case FileColumn.kind:
+      return s.showColumnKind;
+    case FileColumn.created:
+      return s.showColumnCreated;
+    case FileColumn.added:
+      return s.showColumnAdded;
+    case FileColumn.permissions:
+      return s.showColumnPermissions;
+    case FileColumn.owner:
+      return s.showColumnOwner;
+  }
+}
+
+/// Parses the saved column order (a CSV of [FileColumn] names) into the full
+/// ordered list. Unknown ids are dropped and any column missing from the saved
+/// string is appended in declaration order, so newly added columns always show.
+List<FileColumn> parseColumnOrder(String csv) {
+  final byName = {for (final c in FileColumn.values) c.name: c};
+  final out = <FileColumn>[];
+  for (final id in csv.split(',')) {
+    final col = byName[id.trim()];
+    if (col != null && !out.contains(col)) out.add(col);
+  }
+  for (final c in FileColumn.values) {
+    if (!out.contains(c)) out.add(c);
+  }
+
+  return out;
+}
+
+String columnOrderToString(List<FileColumn> columns) =>
+    columns.map((c) => c.name).join(',');
+
+/// Whether [col] is meaningful on the current platform. Permissions and owner
+/// are POSIX concepts that Windows doesn't expose, so they're hidden there.
+bool columnAvailable(FileColumn col) {
+  if (PlatformPaths.isWindows &&
+      (col == FileColumn.permissions || col == FileColumn.owner)) {
+    return false;
+  }
+
+  return true;
+}
+
+/// All optional columns in the user-defined display order.
+List<FileColumn> orderedColumns() => [
+  for (final col in parseColumnOrder(SettingsStore.instance.columnOrder.value))
+    if (columnAvailable(col)) col,
+];
+
+String columnWidthKey(FileColumn col) => col.name;
+
+Map<String, double> parseColumnWidths(String json) {
+  try {
+    final decoded = jsonDecode(json);
+    if (decoded is! Map<String, dynamic>) return const {};
+
+    return {
+      for (final entry in decoded.entries)
+        if (entry.value is num) entry.key: (entry.value as num).toDouble(),
+    };
+  } catch (_) {
+    return const {};
+  }
+}
+
+String columnWidthsToString(Map<String, double> widths) {
+  final sorted = Map<String, double>.fromEntries(
+    widths.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
+  );
+
+  return jsonEncode(sorted);
+}
+
+double minColumnWidth(String key) {
+  if (key == _kColumnWidthsNameKey) return _kNameMinWidth;
+  if (key == _kColumnWidthsLocationKey) return _kLocationMinWidth;
+
+  return 56;
+}
+
+class FileList extends StatefulWidget {
+  final List<FileEntry> files;
+  final String currentPath;
+  final FileSelectCallback onSelect;
+  final FileSelectCallback? onSecondarySelect;
+  final Set<String> secondarySelectedPaths;
+  final FileOpenCallback onOpen;
+  final BackgroundTapCallback? onBackgroundTap;
+  final BackgroundContextMenuCallback? onBackgroundContextMenu;
+  final FileContextMenuCallback? onContextMenu;
+  final FileMenuActionCallback? onMenuAction;
+  final FileDropCallback? onDropFiles;
+  final Set<String> selectedPaths;
+  final int cursorIndex;
+  final Set<String> cutPaths;
+  final String? renamingPath;
+  final int renameAttempt;
+  final RenameSubmitCallback? onRenameSubmit;
+  final RenameCancelCallback? onRenameCancel;
+  final bool recursiveResults;
+  final VoidCallback? onCloseSearch;
+  final OpenInNewTabCallback? onOpenInNewTab;
+  final RubberBandSelectCallback? onRectSelect;
+  final SortKey sortColumn;
+  final bool sortAscending;
+  final void Function(SortKey key)? onSortColumn;
+  final ValueChanged<int>? onPageRows;
+  final Map<String, int> folderSizes;
+  final Map<String, RowDecoration> rowDecorations;
+  final List<FileTreeRow>? treeRows;
+  final ValueChanged<FileEntry>? onToggleTreeFolder;
+
+  const FileList({
+    super.key,
+    required this.files,
+    required this.currentPath,
+    this.folderSizes = const {},
+    this.rowDecorations = const {},
+    this.treeRows,
+    this.onToggleTreeFolder,
+    required this.onSelect,
+    this.onSecondarySelect,
+    this.secondarySelectedPaths = const {},
+    required this.onOpen,
+    this.sortColumn = SortKey.name,
+    this.sortAscending = true,
+    this.onSortColumn,
+    this.onBackgroundTap,
+    this.onBackgroundContextMenu,
+    this.onContextMenu,
+    this.onMenuAction,
+    this.onDropFiles,
+    this.selectedPaths = const {},
+    this.cursorIndex = -1,
+    this.cutPaths = const {},
+    this.renamingPath,
+    this.renameAttempt = 0,
+    this.onRenameSubmit,
+    this.onRenameCancel,
+    this.recursiveResults = false,
+    this.onCloseSearch,
+    this.onOpenInNewTab,
+    this.onRectSelect,
+    this.onPageRows,
+  });
+
+  @override
+  State<FileList> createState() => _FileListState();
+}
+
+class FileTree extends StatelessWidget {
+  final List<FileTreeRow> rows;
+  final String currentPath;
+  final FileSelectCallback onSelect;
+  final FileSelectCallback? onSecondarySelect;
+  final Set<String> secondarySelectedPaths;
+  final FileOpenCallback onOpen;
+  final BackgroundTapCallback? onBackgroundTap;
+  final BackgroundContextMenuCallback? onBackgroundContextMenu;
+  final FileContextMenuCallback? onContextMenu;
+  final FileMenuActionCallback? onMenuAction;
+  final FileDropCallback? onDropFiles;
+  final Set<String> selectedPaths;
+  final int cursorIndex;
+  final Set<String> cutPaths;
+  final String? renamingPath;
+  final int renameAttempt;
+  final RenameSubmitCallback? onRenameSubmit;
+  final RenameCancelCallback? onRenameCancel;
+  final VoidCallback? onCloseSearch;
+  final OpenInNewTabCallback? onOpenInNewTab;
+  final RubberBandSelectCallback? onRectSelect;
+  final SortKey sortColumn;
+  final bool sortAscending;
+  final void Function(SortKey key)? onSortColumn;
+  final ValueChanged<int>? onPageRows;
+  final Map<String, int> folderSizes;
+  final Map<String, RowDecoration> rowDecorations;
+  final ValueChanged<FileEntry> onToggleFolder;
+
+  const FileTree({
+    super.key,
+    required this.rows,
+    required this.currentPath,
+    required this.onSelect,
+    this.onSecondarySelect,
+    this.secondarySelectedPaths = const {},
+    required this.onOpen,
+    required this.onToggleFolder,
+    this.folderSizes = const {},
+    this.rowDecorations = const {},
+    this.sortColumn = SortKey.name,
+    this.sortAscending = true,
+    this.onSortColumn,
+    this.onBackgroundTap,
+    this.onBackgroundContextMenu,
+    this.onContextMenu,
+    this.onMenuAction,
+    this.onDropFiles,
+    this.selectedPaths = const {},
+    this.cursorIndex = -1,
+    this.cutPaths = const {},
+    this.renamingPath,
+    this.renameAttempt = 0,
+    this.onRenameSubmit,
+    this.onRenameCancel,
+    this.onCloseSearch,
+    this.onOpenInNewTab,
+    this.onRectSelect,
+    this.onPageRows,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FileList(
+      files: [for (final row in rows) row.entry],
+      treeRows: rows,
+      currentPath: currentPath,
+      onSelect: onSelect,
+      onSecondarySelect: onSecondarySelect,
+      secondarySelectedPaths: secondarySelectedPaths,
+      onOpen: onOpen,
+      onToggleTreeFolder: onToggleFolder,
+      onBackgroundTap: onBackgroundTap,
+      onBackgroundContextMenu: onBackgroundContextMenu,
+      onContextMenu: onContextMenu,
+      onMenuAction: onMenuAction,
+      onDropFiles: onDropFiles,
+      selectedPaths: selectedPaths,
+      cursorIndex: cursorIndex,
+      cutPaths: cutPaths,
+      renamingPath: renamingPath,
+      renameAttempt: renameAttempt,
+      onRenameSubmit: onRenameSubmit,
+      onRenameCancel: onRenameCancel,
+      onCloseSearch: onCloseSearch,
+      onOpenInNewTab: onOpenInNewTab,
+      onRectSelect: onRectSelect,
+      sortColumn: sortColumn,
+      sortAscending: sortAscending,
+      onSortColumn: onSortColumn,
+      onPageRows: onPageRows,
+      folderSizes: folderSizes,
+      rowDecorations: rowDecorations,
+    );
+  }
+}
+
+class _FileListState extends State<FileList> {
+  final _scrollController = ScrollController();
+  final _hScrollController = ScrollController();
+  int _secondaryDragLastIndex = -1;
+  Offset? _secondaryDownPos;
+  bool _secondaryDragged = false;
+  bool _secondaryLongPressed = false;
+  Timer? _secondaryLongPressTimer;
+  double _contentWidth = 0;
+  bool _isDragOver = false;
+  String? _hoveredFolderPath;
+  double _rowH = _kRowHeightComfortable;
+  double _rowG = _kRowGapComfortable;
+  double _itemExt = _kRowHeightComfortable + _kRowGapComfortable;
+  double _listHorizontalSpacing = _kRowGapComfortable;
+  double _scale = 1.0;
+  double _viewportWidth = 0;
+  String _dateFmt = 'locale';
+  bool _recentDatesRelative = true;
+  String? _lastRevealedKey;
+  int _lastReportedRows = -1;
+
+  double get _listTopPadding => _rowG;
+  double get _listHorizontalPadding => _listHorizontalSpacing;
+  List<FileEntry> get _displayFiles => widget.treeRows == null
+      ? widget.files
+      : [for (final row in widget.treeRows!) row.entry];
+
+  double _measureWidth(String text, TextStyle style) {
+    if (text.isEmpty) return 0;
+    final tp = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+      textScaler: TextScaler.linear(_scale),
+    )..layout();
+
+    return tp.width;
+  }
+
+  List<FileColumn> _visibleColumns() => [
+    for (final col in orderedColumns())
+      if (fileColumnSignal(col).value) col,
+  ];
+
+  Map<FileColumn, double> _computeColumnWidths(
+    BuildContext context,
+    List<FileColumn> columns,
+    List<FileEntry> files,
+  ) {
+    final muted = context.txt.muted;
+    final headerStyle = context.txt.fieldLabel;
+    final widths = <FileColumn, double>{};
+    for (final col in columns) {
+      var longest = fileColumnLabel(col);
+      for (final e in files) {
+        final v = fileColumnText(
+          col,
+          e,
+          dateFmt: _dateFmt,
+          recentDatesRelative: _recentDatesRelative,
+          folderSize: widget.folderSizes[e.realPath],
+        );
+        if (v.length > longest.length) longest = v;
+      }
+      final cellW = _measureWidth(longest, muted);
+      final headerW = _measureWidth(fileColumnLabel(col), headerStyle) + 14;
+      widths[col] = math.max(cellW, headerW).ceilToDouble() + 8;
+    }
+
+    return widths;
+  }
+
+  double _persistedColumnWidth(
+    Map<String, double> persisted,
+    String key,
+    double fallback,
+  ) {
+    final min = minColumnWidth(key);
+    final saved = persisted[key];
+    if (saved == null || !saved.isFinite) return math.max(min, fallback);
+
+    return math.max(min, saved);
+  }
+
+  void _resizeColumn(String key, double delta) {
+    if (delta == 0) return;
+    final settings = SettingsStore.instance;
+    final widths = Map<String, double>.of(
+      parseColumnWidths(settings.columnWidths.value),
+    );
+    final current = _persistedColumnWidth(
+      widths,
+      key,
+      key == _kColumnWidthsNameKey
+          ? _kNameManualDefaultWidth
+          : key == _kColumnWidthsLocationKey
+          ? _kLocationWidth
+          : minColumnWidth(key),
+    );
+    widths[key] = math.max(minColumnWidth(key), current + delta);
+    settings.columnWidths.value = columnWidthsToString(widths);
+  }
+
+  void _openColumnMenu(BuildContext context, Offset position) {
+    showPopup(
+      context: context,
+      position: position,
+      width: 230,
+      builder: (_) => const _ColumnConfigMenu(),
+    );
+  }
+
+  String? _relativeParent(String entryPath, String currentPath) {
+    final rel = p.relative(p.dirname(entryPath), from: currentPath);
+    if (rel == '.') return null;
+
+    return rel;
+  }
+
+  String? _compactLocation(String entryPath, String currentPath) {
+    final rel = _relativeParent(entryPath, currentPath);
+    if (rel == null) return null;
+    final parts = p.split(rel).where((part) => part.isNotEmpty).toList();
+    if (parts.length <= 2) return rel;
+
+    return p.join('...', parts[parts.length - 2], parts.last);
+  }
+
+  /// NC-mode right-button long-press threshold (2 s).
+  static const _kSecondaryLongPressMs = 2000;
+  static const _kSecondaryDragSlop = 4.0;
+
+  void _cancelSecondaryLongPress() {
+    _secondaryLongPressTimer?.cancel();
+    _secondaryLongPressTimer = null;
+  }
+
+  void _handleSecondaryPointerDown(PointerDownEvent event) {
+    // Match any press that includes the secondary button (Windows may report
+    // extra bits; strict equality would miss the right button entirely).
+    if (event.buttons & kSecondaryMouseButton == 0) return;
+    _secondaryDownPos = event.localPosition;
+    _secondaryDragLastIndex = -1;
+    _secondaryDragged = false;
+    _secondaryLongPressed = false;
+    _cancelSecondaryLongPress();
+    // Long-press (2 s) opens the context menu — on a row it shows the file
+    // menu, on empty space the background menu.
+    _secondaryLongPressTimer = Timer(
+      const Duration(milliseconds: _kSecondaryLongPressMs),
+      () {
+        if (_secondaryDownPos == null) return; // up/cancel already handled
+        _secondaryLongPressed = true;
+        _secondaryLongPressTimer = null;
+        final index = _rowAt(_secondaryDownPos!);
+        if (index < 0) {
+          widget.onBackgroundContextMenu?.call(event.position);
+        } else {
+          widget.onContextMenu?.call(
+            FileSelectionEvent(entry: _displayFiles[index], index: index),
+            event.position,
+          );
+        }
+      },
+    );
+  }
+
+  /// NC-mode right-button drag: every row the pointer passes over while the
+  /// secondary button is held is added to the selection; near the edges the
+  /// list auto-scrolls so the sweep can continue.
+  void _handleSecondaryPointerMove(PointerMoveEvent event) {
+    // PointerMoveEvent.buttons is unreliable on Windows (often 0), so gate
+    // on our own interaction state instead.
+    if (_secondaryDownPos == null) return;
+    final down = _secondaryDownPos!;
+    if ((event.localPosition - down).distance > _kSecondaryDragSlop) {
+      _secondaryDragged = true;
+      _cancelSecondaryLongPress();
+    }
+    if (!_secondaryDragged) return;
+
+    final index = _rowAt(event.localPosition);
+    if (index < 0) return;
+    // Sweep-select the whole span between the last handled row and the
+    // current row so fast drags never skip rows in between.
+    final from = _secondaryDragLastIndex >= 0 ? _secondaryDragLastIndex : index;
+    final lo = math.min(from, index);
+    final hi = math.max(from, index);
+    for (var i = lo; i <= hi; i++) {
+      if (i < 0 || i >= _displayFiles.length) continue;
+      widget.onSecondarySelect?.call(
+        FileSelectionEvent(entry: _displayFiles[i], index: i),
+      );
+    }
+    _secondaryDragLastIndex = index;
+    _autoScrollForSecondaryDrag(event);
+  }
+
+  /// Scrolls the list while the pointer is near the top/bottom edge during a
+  /// right-button drag sweep.
+  void _autoScrollForSecondaryDrag(PointerMoveEvent event) {
+    if (!_scrollController.hasClients) return;
+    const edge = 24.0;
+    const step = 32.0;
+    final viewport = _scrollController.position.viewportDimension;
+    final y = event.localPosition.dy;
+    double? target;
+    if (y < edge) {
+      target = _scrollController.offset - step;
+    } else if (y > viewport - edge) {
+      target = _scrollController.offset + step;
+    }
+    if (target == null) return;
+    final clamped = target.clamp(
+      _scrollController.position.minScrollExtent,
+      _scrollController.position.maxScrollExtent,
+    );
+    if (clamped != _scrollController.offset) {
+      _scrollController.jumpTo(clamped);
+    }
+  }
+
+  void _handleSecondaryPointerCancel(PointerCancelEvent event) {
+    _cancelSecondaryLongPress();
+    _secondaryDownPos = null;
+    _secondaryDragged = false;
+  }
+
+  void _handleSecondaryPointerUp(PointerUpEvent event) {
+    // PointerUpEvent.buttons is unreliable on Windows (may still contain the
+    // released button), so never gate on it here — a pointer-up always ends
+    // the secondary-button interaction and must cancel the long-press timer.
+    _cancelSecondaryLongPress();
+    if (_secondaryDragged || _secondaryLongPressed) {
+      _secondaryDownPos = null;
+
+      return;
+    }
+    // Quick right-click (no drag, no long-press): add to selection. Only a
+    // press on a row does that; a press on empty space does nothing — menus
+    // are shown exclusively by the 2 s long-press timer.
+    final down = _secondaryDownPos;
+    _secondaryDownPos = null;
+    if (down == null) return; // no matching down → not our interaction
+    final index = _rowAt(down);
+    if (index >= 0) {
+      widget.onSecondarySelect?.call(
+        FileSelectionEvent(entry: _displayFiles[index], index: index),
+      );
+    }
+  }
+
+  int _rowAt(Offset localPosition) {
+    if (localPosition.dy < 0 || localPosition.dx < _listHorizontalPadding) {
+      return -1;
+    }
+    final rightEdge = _contentWidth - _listHorizontalPadding;
+    if (_contentWidth > 0 && localPosition.dx >= rightEdge) return -1;
+
+    final adjustedY =
+        localPosition.dy + _scrollController.offset - _listTopPadding;
+    if (adjustedY < 0) return -1;
+    final index = (adjustedY / _itemExt).floor();
+    if (index < 0 || index >= _displayFiles.length) return -1;
+
+    final relativeY = adjustedY % _itemExt;
+    if (relativeY >= _rowH) return -1;
+
+    return index;
+  }
+
+  bool _canStartRubberBandAt(Offset localPosition) {
+    if (_contentWidth <= 0) return true;
+
+    return localPosition.dx < _contentWidth - _listHorizontalPadding;
+  }
+
+  void _updateHover(Offset localPosition) {
+    final index = _rowAt(localPosition);
+    String? folder;
+    if (index >= 0) {
+      final entry = _displayFiles[index];
+      if (entry.type == FileItemType.folder) folder = entry.path;
+    }
+    if (folder != _hoveredFolderPath || !_isDragOver) {
+      setState(() {
+        _isDragOver = true;
+        _hoveredFolderPath = folder;
+      });
+    }
+  }
+
+  void _clearDrag() {
+    if (_isDragOver || _hoveredFolderPath != null) {
+      setState(() {
+        _isDragOver = false;
+        _hoveredFolderPath = null;
+      });
+    }
+  }
+
+  void _revealSelectedRow() {
+    final index = widget.cursorIndex;
+    final files = _displayFiles;
+    if (index < 0 || index >= files.length) return;
+    final key = '$index:${files[index].path}';
+    if (key == _lastRevealedKey) return;
+    _lastRevealedKey = key;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      final viewport = _scrollController.position.viewportDimension;
+      final top = _listTopPadding + index * _itemExt;
+      final bottom = top + _rowH;
+      final current = _scrollController.offset;
+      final target = top < current
+          ? top
+          : bottom > current + viewport
+          ? bottom - viewport
+          : current;
+      if (target == current) return;
+      _scrollController.animateTo(
+        target.clamp(
+          _scrollController.position.minScrollExtent,
+          _scrollController.position.maxScrollExtent,
+        ),
+        duration: const Duration(milliseconds: 80),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  void _reportPageRows() {
+    if (widget.onPageRows == null || !_scrollController.hasClients) return;
+    final viewport = _scrollController.position.viewportDimension;
+    if (viewport <= 0 || _itemExt <= 0) return;
+    final rows = (viewport / _itemExt).floor().clamp(1, 1 << 20);
+    if (rows == _lastReportedRows) return;
+    _lastReportedRows = rows;
+    widget.onPageRows!(rows);
+  }
+
+  @override
+  void dispose() {
+    _cancelSecondaryLongPress();
+    _scrollController.dispose();
+    _hScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SignalBuilder(
+      builder: (context) {
+        final density = SettingsStore.instance.rowDensity.value;
+        final horizontalSpacing =
+            SettingsStore.instance.fileListHorizontalSpacing.value;
+        final verticalSpacing =
+            SettingsStore.instance.fileListVerticalSpacing.value;
+        _dateFmt = SettingsStore.instance.dateFormat.value;
+        _recentDatesRelative = SettingsStore.instance.recentDatesRelative.value;
+        _scale = SettingsStore.instance.fileListScale.value;
+        _rowH =
+            (density == 'compact'
+                ? _kRowHeightCompact
+                : _kRowHeightComfortable) *
+            _scale;
+        _rowG = verticalSpacing.toDouble();
+        _listHorizontalSpacing = horizontalSpacing.toDouble();
+        _itemExt = _rowH + _rowG;
+        _revealSelectedRow();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _reportPageRows();
+        });
+
+        final displayFiles = _displayFiles;
+        final columns = _visibleColumns();
+        final automaticColumnWidths = _computeColumnWidths(
+          context,
+          columns,
+          displayFiles,
+        );
+        final resizableColumns =
+            SettingsStore.instance.columnWidthMode.value == 'resizable';
+        final persistedColumnWidths = parseColumnWidths(
+          SettingsStore.instance.columnWidths.value,
+        );
+        final recursive = widget.recursiveResults;
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            _viewportWidth = constraints.maxWidth;
+
+            final maxTreeDepth = widget.treeRows == null
+                ? 0
+                : widget.treeRows!.fold<int>(
+                    0,
+                    (max, row) => row.depth > max ? row.depth : max,
+                  );
+            final treeLeading = widget.treeRows == null
+                ? 0.0
+                : maxTreeDepth * _kTreeIndentWidth + _kTreeDisclosureWidth;
+            final iconSlot = 16 * _scale + 6 + treeLeading;
+            final rowChrome =
+                _listHorizontalPadding * 2 +
+                _kScrollbarGutterWidth +
+                _kRowPaddingLeft +
+                _kRowPaddingRight;
+            final automaticOptionalCols = columns.fold<double>(
+              0,
+              (sum, col) =>
+                  sum +
+                  (automaticColumnWidths[col] ?? _kNameMinWidth) +
+                  _kColumnGap,
+            );
+            final automaticFixedCols =
+                iconSlot +
+                automaticOptionalCols +
+                (recursive ? _kLocationWidth + _kColumnGap : 0);
+            final automaticAvailable =
+                _viewportWidth - rowChrome - automaticFixedCols;
+            final automaticNameWidth = math.max(
+              _kNameMinWidth,
+              automaticAvailable,
+            );
+            final nameWidth = resizableColumns
+                ? _persistedColumnWidth(
+                    persistedColumnWidths,
+                    _kColumnWidthsNameKey,
+                    automaticNameWidth.isFinite
+                        ? automaticNameWidth
+                        : _kNameManualDefaultWidth,
+                  )
+                : automaticNameWidth;
+            final locationWidth = resizableColumns
+                ? _persistedColumnWidth(
+                    persistedColumnWidths,
+                    _kColumnWidthsLocationKey,
+                    _kLocationWidth,
+                  )
+                : _kLocationWidth;
+            final columnWidths = resizableColumns
+                ? {
+                    for (final col in columns)
+                      col: _persistedColumnWidth(
+                        persistedColumnWidths,
+                        columnWidthKey(col),
+                        automaticColumnWidths[col] ?? _kNameMinWidth,
+                      ),
+                  }
+                : automaticColumnWidths;
+            final optionalCols = columns.fold<double>(
+              0,
+              (sum, col) => sum + columnWidths[col]! + _kColumnGap,
+            );
+            final fixedCols =
+                iconSlot +
+                optionalCols +
+                (recursive ? locationWidth + _kColumnGap : 0);
+            _contentWidth = nameWidth + fixedCols + rowChrome;
+            final bodyWidth = math.max(_contentWidth, _viewportWidth);
+
+            return Stack(
+              children: [
+                ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(scrollbars: false),
+                  child: RawScrollbar(
+                    controller: _hScrollController,
+                    thumbVisibility: bodyWidth > _viewportWidth,
+                    thumbColor: AppColors.fgSubtle,
+                    thickness: _kScrollbarThumbWidth,
+                    crossAxisMargin: 0,
+                    radius: Radius.zero,
+                    scrollbarOrientation: ScrollbarOrientation.bottom,
+                    child: SingleChildScrollView(
+                      controller: _hScrollController,
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: bodyWidth,
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _ListHeader(
+                                    recursive: recursive,
+                                    leadingWidth: iconSlot,
+                                    nameWidth: nameWidth,
+                                    locationWidth: locationWidth,
+                                    columns: columns,
+                                    columnWidths: columnWidths,
+                                    resizable: resizableColumns,
+                                    sortColumn: widget.sortColumn,
+                                    sortAscending: widget.sortAscending,
+                                    onSortColumn: widget.onSortColumn,
+                                    onResizeColumn: _resizeColumn,
+                                    onConfigureColumns: (pos) =>
+                                        _openColumnMenu(context, pos),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: _kScrollbarGutterWidth,
+                                  height: 24,
+                                  child: ColoredBox(color: AppColors.bg),
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              height: 1,
+                              thickness: 1,
+                              color: AppColors.bgDivider,
+                            ),
+                            Expanded(
+                              child: RubberBandLayer(
+                                scrollController: _scrollController,
+                                itemCount: displayFiles.length,
+                                itemExtent: _itemExt,
+                                rowHeight: _rowH,
+                                topPadding: _listTopPadding,
+                                pathAt: (i) => displayFiles[i].path,
+                                rowAt: _rowAt,
+                                canStartSelectionAt: _canStartRubberBandAt,
+                                onSelectionChanged: widget.onRectSelect,
+                                onBackgroundTap: widget.onBackgroundTap,
+                                child: DropRegion(
+                                  formats: [Formats.fileUri, formatLocalFile],
+                                  hitTestBehavior: HitTestBehavior.opaque,
+                                  onDropOver: (event) {
+                                    _updateHover(event.position.local);
+
+                                    return DragHintController
+                                                .instance
+                                                .mode
+                                                .value ==
+                                            DragMode.move
+                                        ? DropOperation.move
+                                        : DropOperation.copy;
+                                  },
+                                  onDropLeave: (_) => _clearDrag(),
+                                  onDropEnded: (_) => _clearDrag(),
+                                  onPerformDrop: (event) async {
+                                    final pos = event.position.local;
+                                    final index = _rowAt(pos);
+                                    String? target;
+                                    if (index >= 0 &&
+                                        displayFiles[index].type ==
+                                            FileItemType.folder) {
+                                      target = displayFiles[index].path;
+                                    }
+                                    final paths = await pathsFromSession(
+                                      event.session,
+                                    );
+                                    final move =
+                                        DragHintController
+                                            .instance
+                                            .mode
+                                            .value ==
+                                        DragMode.move;
+                                    if (paths.isNotEmpty) {
+                                      widget.onDropFiles?.call(
+                                        paths,
+                                        target ?? widget.currentPath,
+                                        move: move,
+                                      );
+                                    }
+                                    _clearDrag();
+                                  },
+                                  child: ScrollConfiguration(
+                                    behavior: ScrollConfiguration.of(
+                                      context,
+                                    ).copyWith(scrollbars: false),
+                                    child: Listener(
+                                      onPointerDown:
+                                          _handleSecondaryPointerDown,
+                                      onPointerMove:
+                                          _handleSecondaryPointerMove,
+                                      onPointerUp: _handleSecondaryPointerUp,
+                                      onPointerCancel:
+                                          _handleSecondaryPointerCancel,
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        child: MediaQuery.withClampedTextScaling(
+                                          minScaleFactor: _scale,
+                                          maxScaleFactor: _scale,
+                                          child: ListView.builder(
+                                            controller: _scrollController,
+                                            padding: EdgeInsets.only(
+                                              left: _listHorizontalPadding,
+                                              top: _listTopPadding,
+                                              right:
+                                                  _listHorizontalPadding +
+                                                  _kScrollbarGutterWidth,
+                                            ),
+                                            itemCount: displayFiles.length,
+                                            itemExtent: _itemExt,
+                                            addAutomaticKeepAlives: false,
+                                            addRepaintBoundaries: false,
+                                            addSemanticIndexes: false,
+                                            itemBuilder: (context, i) => RepaintBoundary(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                  bottom: _rowG,
+                                                ),
+                                                child: _ListRow(
+                                                  rowHeight: _rowH,
+                                                  iconSize: 16 * _scale,
+                                                  dateFmt: _dateFmt,
+                                                  recentDatesRelative:
+                                                      _recentDatesRelative,
+                                                  entry: displayFiles[i],
+                                                  folderSize:
+                                                      widget
+                                                          .folderSizes[displayFiles[i]
+                                                          .realPath],
+                                                  rowDecoration:
+                                                      widget
+                                                          .rowDecorations[displayFiles[i]
+                                                          .path] ??
+                                                      widget
+                                                          .rowDecorations[displayFiles[i]
+                                                          .realPath],
+                                                  index: i,
+                                                  nameWidth: nameWidth,
+                                                  locationWidth: locationWidth,
+                                                  selected: widget.selectedPaths
+                                                      .contains(
+                                                        displayFiles[i].path,
+                                                      ),
+                                                  selectedPaths:
+                                                      widget.selectedPaths,
+                                                  isCut: widget.cutPaths
+                                                      .contains(
+                                                        displayFiles[i].path,
+                                                      ),
+                                                  isDraggingSelected: widget
+                                                      .selectedPaths
+                                                      .isNotEmpty,
+                                                  isFolderDragOver:
+                                                      _hoveredFolderPath ==
+                                                      displayFiles[i].path,
+                                                  isRenaming:
+                                                      widget.renamingPath ==
+                                                      displayFiles[i].path,
+                                                  renameAttempt:
+                                                      widget.renameAttempt,
+                                                  onRenameSubmit:
+                                                      widget.onRenameSubmit,
+                                                  onRenameCancel:
+                                                      widget.onRenameCancel,
+                                                  onSelect: widget.onSelect,
+                                                  onSecondarySelect:
+                                                      widget.onSecondarySelect,
+                                                  secondarySelectedPaths: widget
+                                                      .secondarySelectedPaths,
+                                                  onOpen: widget.onOpen,
+                                                  onContextMenu:
+                                                      widget.onContextMenu,
+                                                  onMenuAction:
+                                                      widget.onMenuAction,
+                                                  recursive: recursive,
+                                                  treeMode:
+                                                      widget.treeRows != null,
+                                                  treeDepth:
+                                                      widget
+                                                          .treeRows?[i]
+                                                          .depth ??
+                                                      0,
+                                                  treeExpanded:
+                                                      widget
+                                                          .treeRows?[i]
+                                                          .expanded ??
+                                                      false,
+                                                  treeLoading:
+                                                      widget
+                                                          .treeRows?[i]
+                                                          .loading ??
+                                                      false,
+                                                  onToggleTree:
+                                                      widget.onToggleTreeFolder ==
+                                                          null
+                                                      ? null
+                                                      : () =>
+                                                            widget
+                                                                .onToggleTreeFolder!(
+                                                              displayFiles[i],
+                                                            ),
+                                                  columns: columns,
+                                                  columnWidths: columnWidths,
+                                                  location: recursive
+                                                      ? _compactLocation(
+                                                          displayFiles[i].path,
+                                                          widget.currentPath,
+                                                        )
+                                                      : null,
+                                                  onOpenInNewTab:
+                                                      widget.onOpenInNewTab,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: _kHeaderHeight + 1,
+                  right: 0,
+                  bottom: 0,
+                  width: _kScrollbarGutterWidth,
+                  child: _PinnedVerticalScrollbar(
+                    controller: _scrollController,
+                  ),
+                ),
+                if (displayFiles.isEmpty)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      ignoring: !widget.recursiveResults,
+                      child: ColoredBox(
+                        color: AppColors.bg,
+                        child: _EmptyState(
+                          isSearching: widget.recursiveResults,
+                          onCloseSearch: widget.onCloseSearch,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (_isDragOver)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: AppColors.accent.withValues(alpha: 0.4),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+String _kindDisplay(String kind) =>
+    LocaleSettings.currentLocale == AppLocale.zh ? kindZhLabel(kind) : kind;

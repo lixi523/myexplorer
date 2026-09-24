@@ -1,0 +1,8 @@
+{
+  "id": "open-vscode",
+  "name": "在 VS Code 中打开",
+  "version": "1.0.0",
+  "author": "myexplorer",
+  "description": "工具栏按钮，在 VS Code（或任意编辑器命令）中打开当前文件夹。",
+  "api_version": 2
+}

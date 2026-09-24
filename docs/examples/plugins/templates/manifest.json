@@ -1,0 +1,8 @@
+{
+  "id": "templates",
+  "name": "从模板新建",
+  "version": "1.0.0",
+  "author": "myexplorer",
+  "description": "从样板模板创建文件：工具栏按钮、背景菜单、菜单栏操作、快捷键和对话框。",
+  "api_version": 2
+}
