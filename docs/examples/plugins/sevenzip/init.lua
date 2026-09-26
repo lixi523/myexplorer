@@ -20,7 +20,7 @@ end
 
 local function run_7z(ctx, name, fmt, level)
   if not name:match("^[%w%.%-_]+$") then
-    myexplorer.toast({ title: "Invalid archive name", kind = "error" })
+    myexplorer.toast({ title = "Invalid archive name", kind = "error" })
     return
   end
   if not ({ zip = true, ["7z"] = true, tar = true, ["tar.gz"] = true })[fmt] then
@@ -43,7 +43,7 @@ end
 
 local function run_targz(ctx, name)
   if not name:match("^[%w%.%-_]+$") then
-    myexplorer.toast({ title: "Invalid archive name", kind = "error" })
+    myexplorer.toast({ title = "Invalid archive name", kind = "error" })
     return
   end
   local args = { "-czf", name .. ".tar.gz" }
@@ -117,7 +117,7 @@ myexplorer.register({
     if not name or name == "" then return end
 
     if not name:match("^[%w%.%-_]+$") then
-      myexplorer.toast({ title: "Invalid characters in archive name", kind = "error" })
+      myexplorer.toast({ title = "Invalid characters in archive name", kind = "error" })
       return
     end
 
@@ -140,7 +140,7 @@ myexplorer.register({
     for _, path in ipairs(ctx.paths) do
       local dest = ctx.dir .. "/" .. strip_ext(basename(path))
       if dest:find("%.%.") then
-        myexplorer.toast({ title: "Invalid path", kind = "error" })
+        myexplorer.toast({ title = "Invalid path", kind = "error" })
         return
       end
       myexplorer.run_task({
