@@ -94,6 +94,8 @@ class SmbShareDiscovery {
         '\\\\$host',
         '/all',
       ]).timeout(const Duration(seconds: 10));
+    } on TimeoutException catch (_) {
+      return SmbShareListError(t.errors.netViewFailed(code: 'timeout'));
     } on ProcessException catch (e) {
       return SmbShareListError(t.errors.netUnavailable(message: e.message));
     }

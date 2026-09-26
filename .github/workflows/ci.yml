@@ -68,6 +68,7 @@ jobs:
     name: Integration Tests
     needs: analyze
     runs-on: windows-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v6
 
@@ -99,6 +100,7 @@ jobs:
         run: flutter pub get
 
       - name: Run integration tests
+        timeout-minutes: 40
         run: flutter test --tags=integration test/integration/
 
   build:
