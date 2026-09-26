@@ -24,7 +24,7 @@ local function run_7z(ctx, name, fmt, level)
     return
   end
   if not ({ zip = true, ["7z"] = true, tar = true, ["tar.gz"] = true })[fmt] then
-    myexplorer.toast({ title: "Invalid compression format", kind = "error" })
+    myexplorer.toast({ title = "Invalid compression format", kind = "error" })
     return
   end
   local archive = ctx.dir .. "/" .. name .. "." .. fmt
