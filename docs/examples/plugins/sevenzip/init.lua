@@ -19,7 +19,6 @@ local function default_name(ctx)
 end
 
 local function run_7z(ctx, name, fmt, level)
-  -- 验证用户输入，防止命令注入
   if not name:match("^[%w%.%-_]+$") then
     myexplorer.toast({ title: "Invalid archive name", kind = "error" })
     return
@@ -43,7 +42,6 @@ local function run_7z(ctx, name, fmt, level)
 end
 
 local function run_targz(ctx, name)
-  -- 验证用户输入，防止命令注入
   if not name:match("^[%w%.%-_]+$") then
     myexplorer.toast({ title: "Invalid archive name", kind = "error" })
     return
@@ -118,7 +116,6 @@ myexplorer.register({
     local name = ctx.form.name
     if not name or name == "" then return end
 
-    -- 验证用户输入的压缩包名称，防止命令注入
     if not name:match("^[%w%.%-_]+$") then
       myexplorer.toast({ title: "Invalid characters in archive name", kind = "error" })
       return
@@ -142,7 +139,6 @@ myexplorer.register({
   run = function(ctx)
     for _, path in ipairs(ctx.paths) do
       local dest = ctx.dir .. "/" .. strip_ext(basename(path))
-      -- 路径合法性校验：确保提取目标路径不包含 ..
       if dest:find("%.%.") then
         myexplorer.toast({ title: "Invalid path", kind = "error" })
         return
