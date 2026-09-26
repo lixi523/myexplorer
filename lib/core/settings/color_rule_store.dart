@@ -69,8 +69,8 @@ class ColorRuleStore {
     return null;
   }
 
-  /// 有效的扩展名只允许字母、数字和连字符（如 "tar-gz"）。
-  static final _validExt = RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9\-]*$');
+  /// 有效的扩展名只允许字母、数字、下划线和连字符（如 "tar_gz"、"custom-ext"）。
+  static final _validExt = RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9_\-]*$');
 
   void addRule(String extension, Color color) {
     final ext = extension.trim().replaceAll('.', '').toLowerCase();

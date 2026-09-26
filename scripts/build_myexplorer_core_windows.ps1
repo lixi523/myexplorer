@@ -31,8 +31,8 @@ if (-not (Test-Path (Join-Path $dest "pdfium.dll"))) {
   $pdfiumVersion = "chromium/8021"
   $pdfiumUrl = "https://github.com/bblanchon/pdfium-binaries/releases/download/$pdfiumVersion/pdfium-win-x64.tgz"
 
-  # 已知的 SHA256 校验值（发布时手动更新）
-  $expectedHash = "0000000000000000000000000000000000000000000000000000000000000000"
+  # 已知的 SHA256 校验值（pdfium-win-x64.tgz，chromium/8021 版本）
+  $expectedHash = "ADAC8CE034015427B5DAA81F8EEDDFCC8E84BC2A9F036F007890FF18BD4388C4"
 
   Invoke-WebRequest -Uri $pdfiumUrl -OutFile $pdfiumZip -UseBasicParsing
 
