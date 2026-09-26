@@ -55,6 +55,7 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$commandPalette$zh commandPalette = _Translations$commandPalette$zh._(_root);
 	@override late final _Translations$quickLook$zh quickLook = _Translations$quickLook$zh._(_root);
 	@override late final _Translations$toast$zh toast = _Translations$toast$zh._(_root);
+	@override late final _Translations$terminalInsert$zh terminalInsert = _Translations$terminalInsert$zh._(_root);
 	@override late final _Translations$selectionFile$zh selectionFile = _Translations$selectionFile$zh._(_root);
 	@override late final _Translations$dragHint$zh dragHint = _Translations$dragHint$zh._(_root);
 	@override late final _Translations$fileView$zh fileView = _Translations$fileView$zh._(_root);
@@ -617,6 +618,20 @@ class _Translations$toast$zh extends Translations$toast$en {
 	@override String get multiRenameTrashBlocked => '回收站中无法使用批量重命名';
 }
 
+// Path: terminalInsert
+class _Translations$terminalInsert$zh extends Translations$terminalInsert$en {
+	_Translations$terminalInsert$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String title({required Object count}) => '插入 ${count} 个选中项';
+	@override String get separator => '分隔符';
+	@override String get customHint => '分隔符';
+	@override String get preview => '预览';
+	@override String get insert => '插入';
+}
+
 // Path: selectionFile
 class _Translations$selectionFile$zh extends Translations$selectionFile$en {
 	_Translations$selectionFile$zh._(TranslationsZh root) : this._root = root, super.internal(root);
@@ -1031,6 +1046,8 @@ class _Translations$tasks$zh extends Translations$tasks$en {
 	@override String extractingSingle({required Object name}) => '正在解压 ${name}';
 	@override String extractingMultiple({required Object count}) => '正在解压 ${count} 个压缩包';
 	@override String compressingTo({required Object name}) => '正在压缩到 ${name}';
+	@override String get unknownSource => '未命名项目';
+	@override String get unknownDest => '未知目标';
 	@override String get updatingArchive => '正在更新压缩包';
 	@override String splittingSingle({required Object name}) => '正在分割 ${name}';
 	@override String splittingMultiple({required Object count}) => '正在分割 ${count} 个项目';
@@ -1545,6 +1562,7 @@ class _Translations$tasks$status$zh extends Translations$tasks$status$en {
 	@override String get scanning => '正在扫描文件...';
 	@override String conflicts({required Object count}) => '${count} 个冲突';
 	@override String running({required Object current, required Object processed, required Object total}) => '${current}（${processed}/${total}）';
+	@override String get paused => '已暂停';
 	@override String get cancelling => '正在取消...';
 	@override String completedWithErrors({required Object count}) => '完成，${count} 个错误';
 	@override String get completed => '已完成';
@@ -2747,6 +2765,11 @@ extension on TranslationsZh {
 			'toast.multiRenameInvalid' => ({required Object count}) => '${count} 个无效名称',
 			'toast.multiRenameOtherErrors' => ({required Object count}) => '${count} 个错误',
 			'toast.multiRenameTrashBlocked' => '回收站中无法使用批量重命名',
+			'terminalInsert.title' => ({required Object count}) => '插入 ${count} 个选中项',
+			'terminalInsert.separator' => '分隔符',
+			'terminalInsert.customHint' => '分隔符',
+			'terminalInsert.preview' => '预览',
+			'terminalInsert.insert' => '插入',
 			'selectionFile.saveTitle' => '保存选择',
 			'selectionFile.loadTitle' => '加载选择',
 			'selectionFile.pathLabel' => '文本文件',
@@ -3049,6 +3072,8 @@ extension on TranslationsZh {
 			'tasks.extractingSingle' => ({required Object name}) => '正在解压 ${name}',
 			'tasks.extractingMultiple' => ({required Object count}) => '正在解压 ${count} 个压缩包',
 			'tasks.compressingTo' => ({required Object name}) => '正在压缩到 ${name}',
+			'tasks.unknownSource' => '未命名项目',
+			'tasks.unknownDest' => '未知目标',
 			'tasks.updatingArchive' => '正在更新压缩包',
 			'tasks.splittingSingle' => ({required Object name}) => '正在分割 ${name}',
 			'tasks.splittingMultiple' => ({required Object count}) => '正在分割 ${count} 个项目',
@@ -3058,6 +3083,7 @@ extension on TranslationsZh {
 			'tasks.status.scanning' => '正在扫描文件...',
 			'tasks.status.conflicts' => ({required Object count}) => '${count} 个冲突',
 			'tasks.status.running' => ({required Object current, required Object processed, required Object total}) => '${current}（${processed}/${total}）',
+			'tasks.status.paused' => '已暂停',
 			'tasks.status.cancelling' => '正在取消...',
 			'tasks.status.completedWithErrors' => ({required Object count}) => '完成，${count} 个错误',
 			'tasks.status.completed' => '已完成',
@@ -3100,6 +3126,8 @@ extension on TranslationsZh {
 			'openWith.windowsDefaultDialogRequired' => '使用系统“打开方式”对话框更改 Windows 上的默认应用',
 			'hiddenList.title' => '隐藏列表',
 			'hiddenList.pathHint' => '每行一个名称或完整路径（支持粘贴多行）',
+			_ => null,
+		} ?? switch (path) {
 			'hiddenList.add' => '添加',
 			'hiddenList.edit' => '编辑',
 			'hiddenList.save' => '保存',

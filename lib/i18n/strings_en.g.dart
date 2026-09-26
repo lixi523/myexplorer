@@ -2326,6 +2326,12 @@ class Translations$tasks$en {
 	/// en: 'Compressing to $name'
 	String compressingTo({required Object name}) => 'Compressing to ${name}';
 
+	/// en: 'Unnamed Item'
+	String get unknownSource => 'Unnamed Item';
+
+	/// en: 'Unknown Destination'
+	String get unknownDest => 'Unknown Destination';
+
 	/// en: 'Updating archive'
 	String get updatingArchive => 'Updating archive';
 
@@ -3447,6 +3453,9 @@ class Translations$tasks$status$en {
 
 	/// en: '$current ($processed/$total)'
 	String running({required Object current, required Object processed, required Object total}) => '${current} (${processed}/${total})';
+
+	/// en: 'Paused'
+	String get paused => 'Paused';
 
 	/// en: 'Cancelling...'
 	String get cancelling => 'Cancelling...';
@@ -5145,6 +5154,8 @@ extension on Translations {
 			'tasks.extractingSingle' => ({required Object name}) => 'Extracting ${name}',
 			'tasks.extractingMultiple' => ({required Object count}) => 'Extracting ${count} archives',
 			'tasks.compressingTo' => ({required Object name}) => 'Compressing to ${name}',
+			'tasks.unknownSource' => 'Unnamed Item',
+			'tasks.unknownDest' => 'Unknown Destination',
 			'tasks.updatingArchive' => 'Updating archive',
 			'tasks.splittingSingle' => ({required Object name}) => 'Splitting ${name}',
 			'tasks.splittingMultiple' => ({required Object count}) => 'Splitting ${count} items',
@@ -5154,6 +5165,7 @@ extension on Translations {
 			'tasks.status.scanning' => 'Scanning files...',
 			'tasks.status.conflicts' => ({required Object count}) => '${count} conflicts',
 			'tasks.status.running' => ({required Object current, required Object processed, required Object total}) => '${current} (${processed}/${total})',
+			'tasks.status.paused' => 'Paused',
 			'tasks.status.cancelling' => 'Cancelling...',
 			'tasks.status.completedWithErrors' => ({required Object count}) => 'Completed with ${count} errors',
 			'tasks.status.completed' => 'Completed',
@@ -5196,11 +5208,11 @@ extension on Translations {
 			'openWith.windowsDefaultDialogRequired' => 'Use the system "Open with" dialog to change the default on Windows',
 			'hiddenList.title' => 'Hidden List',
 			'hiddenList.pathHint' => 'One name or full path per line (multi-line paste supported)',
+			_ => null,
+		} ?? switch (path) {
 			'hiddenList.add' => 'Add',
 			'hiddenList.edit' => 'Edit',
 			'hiddenList.save' => 'Save',
-			_ => null,
-		} ?? switch (path) {
 			'hiddenList.cancel' => 'Cancel',
 			'hiddenList.empty' => 'No hidden items',
 			'hiddenList.added' => ({required Object count}) => 'Added ${count} items',
