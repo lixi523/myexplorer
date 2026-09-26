@@ -130,7 +130,9 @@ class LocationUri {
     String? username;
     final at = authority.lastIndexOf('@');
     if (at >= 0) {
-      username = _sanitizeUsername(Uri.decodeComponent(authority.substring(0, at)));
+      username = _sanitizeUsername(
+        Uri.decodeComponent(authority.substring(0, at)),
+      );
       authority = authority.substring(at + 1);
     }
     String host = authority;
@@ -170,7 +172,9 @@ class LocationUri {
     var hostPart = authority;
     final at = authority.lastIndexOf('@');
     if (at >= 0) {
-      username = _sanitizeUsername(Uri.decodeComponent(authority.substring(0, at)));
+      username = _sanitizeUsername(
+        Uri.decodeComponent(authority.substring(0, at)),
+      );
       hostPart = authority.substring(at + 1);
     }
     String host = hostPart;

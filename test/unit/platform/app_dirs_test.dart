@@ -146,7 +146,8 @@ void main() {
         expect(
           psResult.exitCode,
           0,
-          reason: 'PowerShell failed to set LastWriteTime: '
+          reason:
+              'PowerShell failed to set LastWriteTime: '
               '${psResult.stderr}',
         );
 

@@ -11,8 +11,10 @@ void main() {
   test('every configured toolbar icon resolves', () async {
     final ini = File('build/windows/x64/runner/Release/快捷栏.ini');
     if (!ini.existsSync()) {
-      fail('快捷栏.ini not found at ${ini.absolute.path}. '
-          'Build the Windows release first.');
+      fail(
+        '快捷栏.ini not found at ${ini.absolute.path}. '
+        'Build the Windows release first.',
+      );
     }
     final items = parseToolbarIni(await ini.readAsString());
     var failures = 0;

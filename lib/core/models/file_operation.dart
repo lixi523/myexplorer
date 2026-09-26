@@ -117,21 +117,15 @@ class TaskLabel {
         : t.tasks.unknownSource;
 
     return switch (task.type) {
-      TaskType.copy when count == 1 => t.tasks.copyingSingle(
-        name: firstName,
-      ),
+      TaskType.copy when count == 1 => t.tasks.copyingSingle(name: firstName),
       TaskType.copy => t.tasks.copyingMultiple(count: count),
-      TaskType.move when count == 1 => t.tasks.movingSingle(
-        name: firstName,
-      ),
+      TaskType.move when count == 1 => t.tasks.movingSingle(name: firstName),
       TaskType.move => t.tasks.movingMultiple(count: count),
       TaskType.delete when count == 1 => t.tasks.deletingSingle(
         name: firstName,
       ),
       TaskType.delete => t.tasks.deletingMultiple(count: count),
-      TaskType.trash when count == 1 => t.tasks.trashingSingle(
-        name: firstName,
-      ),
+      TaskType.trash when count == 1 => t.tasks.trashingSingle(name: firstName),
       TaskType.trash => t.tasks.trashingMultiple(count: count),
       TaskType.trashRestore when count == 1 => t.tasks.restoringTrashSingle(
         name: firstName,
